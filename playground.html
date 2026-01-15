@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://ardes.bg/uploads/fck/image/content/Poli/fonts/fonts.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Fav Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/img/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/img/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/css/img/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- GLightbox -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+
+    <style>
+        /* --- MAIN STYLES --- */
+        :root {
+            --text-color: #222;
+            --bg-color: #fff;
+            --accent: #D4AF37;
+            /* Gold */
+            --dark-bg: #111111;
+            --gray-light: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Uni Sans', 'Montserrat', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            font-weight: 400;
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .section-divider {
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 0 auto 25px;
+        }
+
+        /* --- NAV --- */
+        .navbar {
+            background-color: var(--dark-bg) !important;
+            padding: 0;
+            border-bottom: 1px solid #222;
+            min-height: 80px;
+            transition: all 0.3s;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff !important;
+            margin: 0 15px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .logo-mobile {
+            max-height: 40px;
+        }
+
+        .logo-desktop {
+            max-height: 55px;
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+            margin-right: 15px;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background-color: var(--dark-bg);
+                padding: 20px 0;
+                text-align: center;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 15px 0;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .navbar .container {
+                height: 80px;
+            }
+
+            .navbar-collapse,
+            .navbar-nav,
+            .nav-item {
+                height: 100%;
+            }
+        }
+
+        /* --- HERO --- */
+        .commercial-hero {
+            min-height: 60vh;
+            background-image: url('css/img/ads/moonlight.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -1px;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-title {
+            color: white;
+            text-align: center;
+            z-index: 2;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-title h1 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-title p {
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #eee;
+        }
+
+        @media (min-width: 992px) {
+            .hero-title h1 {
+                color: white;
+                font-size: 3.5rem;
+                margin-bottom: 10px;
+            }
+
+            .hero-title p {
+                font-size: 1.2rem;
+                font-weight: 500;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: #eee;
+            }
+        }
+
+        /* --- SERVICES GRID --- */
+        .service-card {
+            padding: 40px 30px;
+            background: #fff;
+            border: 1px solid #eee;
+            text-align: center;
+            transition: 0.3s;
+            height: 100%;
+            border-bottom: 3px solid transparent;
+            border-radius: 4px;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-bottom-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: #333;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            color: var(--accent);
+        }
+
+        .service-card h5 {
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        /* --- FILTERS --- */
+        .portfolio-filters {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #555;
+            padding: 10px 25px;
+            margin: 5px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* --- MASONRY GALLERY --- */
+        .masonry {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .masonry-item {
+            width: calc(33.333% - 15px);
+            margin-bottom: 15px;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .masonry-item.hidden {
+            display: none;
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .masonry-item img:hover {
+            /* transform: scale(1.02); */
+        }
+
+        @media (max-width: 991px) {
+            .masonry-item {
+                width: calc(50% - 15px);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .masonry-item {
+                width: 100%;
+            }
+        }
+
+        /* --- PORTFOLIO ITEM STYLES --- */
+        .portfolio-item {
+            max-width: fit-content;
+            width: 100%;
+            height: auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 0;
+            aspect-ratio: 3/2;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        .portfolio-info {
+            transform: translateY(0);
+            transition: all 0.5s ease;
+            text-align: left;
+        }
+
+        .portfolio-title {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .portfolio-subtitle {
+            color: var(--accent);
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        @media (min-width: 992px) {
+            .portfolio-title {
+                color: white;
+                font-size: 1.4rem;
+                margin-bottom: 5px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            }
+
+            .portfolio-subtitle {
+                color: var(--accent);
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                font-weight: 700;
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+
+        .portfolio-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-desc {
+            color: #ddd;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        /* --- HOVER EFFECTS --- */
+        .portfolio-item:hover .portfolio-overlay {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 100%);
+        }
+
+        .portfolio-item:hover .portfolio-desc {
+            max-height: 200px;
+            opacity: 1;
+            transform: translateY(0);
+            margin-top: 10px;
+        }
+
+
+        /* --- NEW CONTACT FORM STYLES (CreateUBG Inspired & Improved Contrast) --- */
+        .bg-black-section {
+            background-color: #0b0b0b;
+            color: #fff;
+            position: relative;
+        }
+
+        .contact-box-dark {
+            background: transparent;
+            padding: 50px 0;
+        }
+
+        .form-section-title-dark {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-section-title-dark::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background: #444;
+            /* Slightly lighter line */
+            margin-left: 20px;
+        }
+
+        /* Input Styling - High Contrast */
+        .form-control-dark {
+            background: transparent !important;
+            border: none;
+            border-bottom: 1px solid #555;
+            border-radius: 0;
+            color: #fff !important;
+            padding: 15px 0;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control-dark:focus {
+            border-bottom-color: var(--accent);
+            box-shadow: none;
+            outline: none;
+        }
+
+        /* Placeholder Contrast Improvement */
+        .form-control-dark::placeholder {
+            color: #aaa;
+            /* Much lighter than #666 */
+            font-size: 0.9rem;
+            opacity: 1;
+            /* Firefox fix */
+        }
+
+        .form-select-dark {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid #555;
+            color: #fff;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        /* Dropdown options background */
+        .form-select-dark option {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 10px;
+        }
+
+        /* Custom Selection Buttons */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            margin: auto;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-check:checked+.btn-selection {
+            background-color: transparent;
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-check:checked+.btn-selection i {
+            color: var(--accent);
+        }
+
+        .btn-selection {
+            background-color: #1a1a1a;
+            color: #ccc;
+            /* Improved contrast */
+            border: 1px solid #444;
+            /* Better border visibility */
+            padding: 20px;
+            text-align: left;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            font-weight: 500;
+            height: 100px;
+            font-size: 0.95rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            align-content: center;
+        }
+
+        .btn-selection:hover {
+            border-color: #888;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-selection i {
+            font-size: 1.2rem;
+            /* margin-right: 15px; */
+            padding: 5px 0;
+            width: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        /* Hidden Sections Utility */
+        .dynamic-section {
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out;
+            border-left: 2px solid var(--accent);
+            padding-left: 25px;
+            margin-left: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-submit-dark {
+            background: var(--accent);
+            color: #000;
+            padding: 18px 40px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            transition: 0.4s;
+            margin-top: 30px;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-submit-dark:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .label-dark {
+            color: #e0e0e0;
+            /* Significant contrast boost */
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* Checkbox styling */
+        .form-check-input-dark {
+            background-color: transparent;
+            border: 1px solid #777;
+            width: 1.2em;
+            height: 1.2em;
+            cursor: pointer;
+        }
+
+        .form-check-input-dark:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .form-check-label-dark {
+            color: #ddd;
+            cursor: pointer;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #000;
+            color: #aaa;
+            padding-top: 60px;
+            font-size: 0.9rem;
+            border-top: 1px solid #222;
+        }
+
+        footer h5 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        footer ul {
+            padding: 0;
+            list-style: none;
+        }
+
+        footer ul li {
+            margin-bottom: 10px;
+        }
+
+        footer ul li a {
+            color: #aaa;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        footer ul li a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #222;
+            padding: 20px 0;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .social-link {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .social-link:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body class="commercial">
+
+    <!-- НАВИГАЦИЯ -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container h-100">
+            <a class="navbar-brand d-lg-none" href="/">
+                <img src="https://taketwostudio1603.com/css/img/logo-tts-white.webp" alt="Take Two Studio"
+                    class="logo-mobile">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-center h-100" id="navbarNav">
+                <ul class="navbar-nav align-items-center w-100 justify-content-between h-100">
+                    <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="#about">За нас</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#portfolio">Портфолио</a></li>
+                    </div>
+
+                    <li class="nav-item d-none d-lg-flex align-items-center mx-auto">
+                        <a class="navbar-brand m-0" href="/">
+                            <img src="https://taketwostudio1603.com/css/img/logo-tts-white.webp" alt="Take Two Studio"
+                                class="logo-desktop">
+                        </a>
+                    </li>
+
+                    <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="#services">Услуги</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Контакти</a></li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header / Hero -->
+    <section class="commercial-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-title" data-aos="fade-up">
+            <h1>Реклама и Бизнес</h1>
+            <p>Визуална идентичност, която продава</p>
+        </div>
+    </section>
+
+    <!-- SEO Intro -->
+    <section class="py-5 text-center container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <h3 class="mb-4 h4 text-muted fw-normal lh-base">
+                    В дигиталната ера визуалното съдържание е лицето на вашия бизнес.
+                </h3>
+                <div class="section-divider"></div>
+                <p class="text-muted mb-4">
+                    В <b>Take Two Studio 1603</b> създаваме висококачествено фото и видео съдържание за брандове, които
+                    искат да се отличат.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section id="services" class="py-5 bg-gray-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Корпоративни Услуги</h2>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                    <div class="service-card"><i class="fas fa-video service-icon"></i>
+                        <h5>Рекламни Клипове</h5>
+                        <p>Динамични видеа за социалните мрежи.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card"><i class="fas fa-box-open service-icon"></i>
+                        <h5>Продуктова Фотография</h5>
+                        <p>Качествени кадри за вашия каталог.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card"><i class="fas fa-briefcase service-icon"></i>
+                        <h5>Корпоративни Събития</h5>
+                        <p>Репортажно заснемане на събития.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                    <div class="service-card"><i class="fas fa-helicopter service-icon"></i>
+                        <h5>Дрон Заснемане</h5>
+                        <p>Впечатляващи въздушни кадри.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card"><i class="fas fa-id-card service-icon"></i>
+                        <h5>Видео Визитки</h5>
+                        <p>Кратко представяне на вашия бизнес.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card"><i class="fas fa-camera-retro service-icon"></i>
+                        <h5>Имиджови Сесии</h5>
+                        <p>Бизнес портрети и интериор.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filterable Portfolio Gallery -->
+    <section class="py-5 bg-white" id="portfolio">
+        <div class="container">
+            <h2 class="text-center mb-4">Нашият почерк</h2>
+            <div class="section-divider"></div>
+
+            <div class="portfolio-filters" data-aos="fade-up">
+                <button class="filter-btn active" data-filter="all">Всички</button>
+                <button class="filter-btn" data-filter="ads">Реклама</button>
+                <button class="filter-btn" data-filter="product">Продуктова</button>
+                <button class="filter-btn" data-filter="imoti">Имоти</button>
+                <button class="filter-btn" data-filter="events">Събития</button>
+            </div>
+
+            <div class="masonry" data-aos="fade-up">
+                <!-- 1. Реклама -->
+                <div class="masonry-item ads">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/topa-na-banketa-momcheto-fyre.webp" class="portfolio-img"
+                            alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">MOM4ETO x FYRE - TOPA NA BANKETA</h4>
+                                <span class="portfolio-subtitle">Рекламна Фотография</span>
+                                <p class="portfolio-desc">Динамични кадри от снимачната площадка на един от
+                                    най-успешните музикални проекти.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/topa-na-banketa-momcheto-fyre.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item ads">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/moonlight.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Moonlight Event Center</h4>
+                                <span class="portfolio-subtitle">Рекламна Фотография</span>
+                                <p class="portfolio-desc">Представяне на атмосферата и мащаба на Moonlight Event Center.
+                                </p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/moonlight.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item ads">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/razors.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Razors</h4>
+                                <span class="portfolio-subtitle">Рекламна Фотография</span>
+                                <p class="portfolio-desc">Имиджова сесия за Razors Barbershop.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/razors.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <!-- 2. Продуктова -->
+                <div class="masonry-item product">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/product.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Maksuda</h4>
+                                <span class="portfolio-subtitle">Продуктова Фотография</span>
+                                <p class="portfolio-desc">Чиста и детайлна продуктова фотография за Maksuda.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/product.png" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item product">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/dress.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Tailor Boutique</h4>
+                                <span class="portfolio-subtitle">Продуктова Фотография</span>
+                                <p class="portfolio-desc">Елегантна модна фотография за Tailor Boutique.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/dress.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item product">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/clothes.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Calieate</h4>
+                                <span class="portfolio-subtitle">Продуктова Фотография</span>
+                                <p class="portfolio-desc">Лайфстайл фотосесия за Calieate.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/clothes.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item ads">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/fyre.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Fyre</h4>
+                                <span class="portfolio-subtitle">Рекламна Фотография</span>
+                                <p class="portfolio-desc">Ексклузивни кадри с FYRE.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/fyre.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <div class="masonry-item product">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/masterchef.webp" class="portfolio-img" alt="Продуктова">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Master chef</h4>
+                                <span class="portfolio-subtitle">Продуктова Фотография</span>
+                                <p class="portfolio-desc">Апетитна кулинарна фотография, достойна за Master Chef.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/masterchef.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <!-- 3. Имоти -->
+                <div class="masonry-item imoti">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/hotel.webp" class="portfolio-img" alt="Имот">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Hotel Continental</h4>
+                                <span class="portfolio-subtitle">Интериорна фотография</span>
+                                <p class="portfolio-desc">Луксозна интериорна фотография за Hotel Continental.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/hotel.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <!-- 4. Събития -->
+                <div class="masonry-item events">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="css/img/ads/subitie.webp" class="portfolio-img" alt="Събитие">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Каменица</h4>
+                                <span class="portfolio-subtitle">Бизнес събитие</span>
+                                <p class="portfolio-desc">Динамично репортажно заснемане на събитие за Каменица.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/subitie.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+                <!-- 5. Дрон -->
+                <div class="masonry-item drone">
+                    <div class="portfolio-item" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            class="portfolio-img" alt="Дрон">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-info">
+                                <h4 class="portfolio-title">Дрон</h4>
+                                <span class="portfolio-subtitle">Въздушни Кадри</span>
+                                <p class="portfolio-desc">Въздушна фотография и видео с висока резолюция.</p>
+                            </div>
+                        </div>
+                        <a href="css/img/ads/drone.jpg" class="glightbox d-none"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW Inquiry Form (CreateUBG Style) -->
+    <section class="py-5 bg-black-section" id="contact">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="contact-box-dark">
+                        <h2 class="text-start text-white mb-2 display-6 fw-bold">Нека създаваме заедно</h2>
+                        <p class="text-start text-white mb-5" style="max-width: 600px;">
+                            Попълнете формата, за да разберем по-добре вашата визия. Ще се свържем с вас с конкретна
+                            стратегия и оферта.
+                        </p>
+
+                        <form action="submit_order_index.php" method="post">
+                            <input type="hidden" name="orderType" value="Commercial">
+
+                            <!-- СЕКЦИЯ 1: Тип Услуга (GRID SELECT) -->
+                            <div class="form-section-title-dark">Какво ви трябва?</div>
+                            <div class="selection-grid mb-4">
+                                <div>
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv1"
+                                        value="Commercial Video" required>
+                                    <label class="btn-selection" for="srv1"><i class="fas fa-video"></i> Видео реклама
+                                        за бизнес</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv2"
+                                        value="Product Photography">
+                                    <label class="btn-selection" for="srv2"><i class="fas fa-camera"></i> Продуктова
+                                        фотография</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv3"
+                                        value="Event Coverage">
+                                    <label class="btn-selection" for="srv3"><i class="fas fa-glass-cheers"></i>
+                                        Събитие</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv4"
+                                        value="Social Media">
+                                    <label class="btn-selection" for="srv4"><i class="fab fa-instagram"></i>Социални
+                                        Мрежи</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv5"
+                                        value="Drone">
+                                    <label class="btn-selection" for="srv5"><i
+                                            class="fas fa-helicopter"></i>Дрон</label>
+                                </div>
+                                <div class="d-none">
+                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv6"
+                                        value="Other">
+                                    <label class="btn-selection" for="srv6"><i class="fas fa-ellipsis-h"></i>
+                                        Other</label>
+                                </div>
+                            </div>
+
+                            <!-- DYNAMIC SECTIONS (Hidden by default) -->
+
+                            <!-- A) Details for COMMERCIAL VIDEO -->
+                            <div id="details-commercial" class="dynamic-section mb-4">
+                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
+                                    Видеото</div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Къде ще се излъчва?</label>
+                                        <select class="form-select-dark w-100 py-3" name="video_usage">
+                                            <option value="Socials">Само Социални мрежи</option>
+                                            <option value="Web">Уебсайт / YouTube</option>
+                                            <option value="TV">Телевизия (TV Commercial)</option>
+                                            <option value="Internal">Вътрешна употреба (Корпоративно)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Ориентировъчна дължина</label>
+                                        <input type="text" class="form-control-dark" name="video_length"
+                                            placeholder="напр. 15 сек, 30 сек, 2 мин...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Аудио и Глас (Voiceover)</label>
+                                        <select class="form-select-dark w-100 py-3" name="audio_needs">
+                                            <option value="Stock Music">Само фонова музика (Stock)</option>
+                                            <option value="Voiceover">Музика + Професионален диктор</option>
+                                            <option value="Sound Design">Sound Design (SFX)</option>
+                                            <option value="None">Без звук / Ние ще го добавим</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Имате ли сценарий?</label>
+                                        <select class="form-select-dark w-100 py-3" name="has_script">
+                                            <option value="No">Не, искаме вие да предложите идея</option>
+                                            <option value="Yes">Да, имаме готов сценарий</option>
+                                            <option value="Concept">Имаме само груба концепция</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="label-dark">Примери за стил (Референции)</label>
+                                        <textarea class="form-control-dark" rows="2" name="video_references"
+                                            placeholder="Поставете линкове към видеа, които ви харесват като стил..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- B) Details for PRODUCT PHOTO -->
+                            <div id="details-product" class="dynamic-section mb-4">
+                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
+                                    Продуктите</div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Какъв тип са продуктите?</label>
+                                        <input type="text" class="form-control-dark" name="product_type"
+                                            placeholder="Козметика, Храна, Бижута, Мебели...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Брой продукти (приблизително)</label>
+                                        <input type="number" class="form-control-dark" name="product_count"
+                                            placeholder="напр. 10, 50, 100...">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Стил на заснемане</label>
+                                        <select class="form-select-dark w-100 py-3" name="photo_style">
+                                            <option value="White Background">Каталожни (Бял фон)</option>
+                                            <option value="Creative Lifestyle">Creative / Lifestyle (С декор)</option>
+                                            <option value="Black Background">Луксозни (Тъмен фон)</option>
+                                            <option value="Invisible Mannequin">Невидим манекен (За дрехи)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Нуждаете ли се от ретуш?</label>
+                                        <select class="form-select-dark w-100 py-3" name="retouch_level">
+                                            <option value="Standard">Стандартен (Цветокорекция)</option>
+                                            <option value="High End">High-End (Премахване на дефекти, блясък)</option>
+                                            <option value="Basic">Базов (Без дълбока обработка)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- C) Details for EVENTS -->
+                            <div id="details-event" class="dynamic-section mb-4">
+                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
+                                    Събитието</div>
+                                <div class="row g-4">
+                                    <div class="col-md-7">
+                                        <label class="label-dark">Тип събитие</label>
+                                        <input type="text" class="form-control-dark" name="event_type"
+                                            placeholder="Конференция, Парти, Откриване...">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="label-dark">Дата на събитието</label>
+                                        <input type="date" class="form-control-dark" name="event_date">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Локация (На закрито/открито?)</label>
+                                        <input type="text" class="form-control-dark" name="event_venue"
+                                            placeholder="Име на залата/мястото (Важно за осветлението)">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Продължителност (Часове)</label>
+                                        <input type="number" class="form-control-dark" name="event_duration"
+                                            placeholder="напр. 4 часа">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="label-dark">Какво искате да заснемем?</label>
+                                        <select class="form-select-dark w-100 py-3" name="event_coverage_type">
+                                            <option value="Photo">Само Фотография</option>
+                                            <option value="Video">Само Видео (Aftermovie)</option>
+                                            <option value="Both">Фото и Видео (Комбинирано)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- D) Details for SOCIAL MEDIA -->
+                            <div id="details-social" class="dynamic-section mb-4">
+                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Social
+                                    Media Пакет</div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Формат на видеата</label>
+                                        <select class="form-select-dark w-100 py-3" name="social_format">
+                                            <option value="9:16">Вертикално (9:16) - Reels/TikTok</option>
+                                            <option value="4:5">Квадратно/Портрет (4:5) - Feed</option>
+                                            <option value="16:9">Хоризонтално (16:9) - YouTube</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Количество / Честота</label>
+                                        <select class="form-select-dark w-100 py-3" name="social_videos_count">
+                                            <option value="Single">Еднократно (1-2 видеа)</option>
+                                            <option value="Small Pack">Месечен пакет (4-8 видеа)</option>
+                                            <option value="Large Pack">Интензивен пакет (12+ видеа)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Стил на монтажа</label>
+                                        <select class="form-select-dark w-100 py-3" name="social_style">
+                                            <option value="Trending">Trending (Бърз монтаж, ефекти, музика)</option>
+                                            <option value="Educational">Образователно (Говорещ човек, субтитри)</option>
+                                            <option value="Cinematic">Естетично / Cinematic</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Основна платформа</label>
+                                        <input type="text" class="form-control-dark" name="platform"
+                                            placeholder="Instagram, TikTok, LinkedIn...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- E) Details for DRONE -->
+                            <div id="details-drone" class="dynamic-section mb-4">
+                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Дрон
+                                    Специфики</div>
+                                <div class="row g-4">
+                                    <div class="col-12">
+                                        <label class="label-dark">Точна локация (GPS/Адрес)</label>
+                                        <input type="text" class="form-control-dark" name="drone_location"
+                                            placeholder="Важно за проверка на зони за летене">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Вид материал</label>
+                                        <select class="form-select-dark w-100 py-3" name="drone_type">
+                                            <option value="Video">Видео (4K)</option>
+                                            <option value="Photo">Фотография (Висока резолюция)</option>
+                                            <option value="Panorama">360 Панорама</option>
+                                            <option value="All">Всичко</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="label-dark">Цел на заснемането</label>
+                                        <input type="text" class="form-control-dark" name="drone_goal"
+                                            placeholder="Строителен обект, Земеделие, Реклама...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- СЕКЦИЯ: Детайли за контакт (Minimalist Inputs) -->
+                            <div class="form-section-title-dark">Вашите данни за контакт</div>
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="label-dark">Име и Фамилия</label>
+                                    <input type="text" class="form-control-dark" name="name" required
+                                        placeholder="Иван Иванов">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="label-dark">Имейл</label>
+                                    <input type="email" class="form-control-dark" name="email" required
+                                        placeholder="name@company.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="label-dark">Телефон</label>
+                                    <input type="text" class="form-control-dark" name="phone" required
+                                        placeholder="+359 888 ...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="label-dark">Фирма / Бранд</label>
+                                    <input type="text" class="form-control-dark" name="company"
+                                        placeholder="Име на бизнеса">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="label-dark">Допълнителни изисквания</label>
+                                <textarea class="form-control-dark" rows="3" name="message"
+                                    placeholder="Тук може да опишете всичко друго, което е важно за проекта..."></textarea>
+                            </div>
+
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="label-dark">Град / Локация на снимките</label>
+                                    <input type="text" class="form-control-dark" name="location"
+                                        placeholder="Варна, София или студио...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="label-dark">Краен срок (Deadline)</label>
+                                    <input type="text" class="form-control-dark" name="deadline"
+                                        placeholder="Кога трябва да е готово?">
+                                </div>
+                            </div>
+
+                            <!-- СЕКЦИЯ 3: Бюджет (GRID SELECT) -->
+                            <div class="form-section-title-dark">Ориентировъчен Бюджет</div>
+                            <div class="selection-grid">
+                                <div>
+                                    <input type="radio" class="btn-check" name="budget" id="bud1" value="Starter">
+                                    <label class="btn-selection" for="bud1">&lt; €500</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check" name="budget" id="bud2" value="Standard">
+                                    <label class="btn-selection" for="bud2">€500 - €1000</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check" name="budget" id="bud3" value="Pro">
+                                    <label class="btn-selection" for="bud3">€1000 - €2000</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check" name="budget" id="bud4" value="Premium">
+                                    <label class="btn-selection" for="bud4">€2000+</label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="btn-check" name="budget" id="bud5" value="Other">
+                                    <label class="btn-selection" for="bud5">Друг</label>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-5">
+                                <button type="submit" class="btn btn-submit-dark">Изпрати Запитване <i
+                                        class="fas fa-arrow-right ms-2"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3 class="text-white">Take Two Studio 1603</h3>
+                    <p>
+                        Професионална фотография и видеозаснемане във Варна и цялата страна.
+                        Ние улавяме емоциите от вашите сватби, кръщенета, абитуриентски балове
+                        и корпоративни събития. Превръщаме миговете в изкуство чрез 4K видео,
+                        дрон кадри и креативен поглед.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/taketwostudio1603" class="social-link"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/taketwostudio1603" class="social-link"><i
+                                class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <h3 class="text-white">Нашите Услуги</h3>
+                    <ul>
+                        <li><a href="/weddings">Сватбена фотография и видео</a></li>
+                        <li><a href="/proms">Абитуриентски балове и фотосесии</a></li>
+                        <li><a href="/baptism">Детска фотография и Кръщенета</a></li>
+                        <li><a href="/commercial">Рекламна и продуктова фотография</a></li>
+                        <li><a href="/commercial">Корпоративно видеозаснемане и дрон</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4">
+                    <h3 class="text-white">Контакти</h3>
+                    <ul class="contact-list">
+                        <li><span>📍</span> ж.к. Възраждане IV 1603, Варна, България</li>
+                        <li><span>📞</span> <a href="tel:0886190124">088 619 0124</a></li>
+                        <li><span>✉️</span> <a href="mailto:info@taketwostudio1603.com">info@taketwostudio1603.com</a>
+                        </li>
+                        <li><span>🕒</span> Понеделник - Неделя</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="row">
+                <div class="col-md-12 col-lg-10 text-center m-auto">
+                    <p>&copy; 2026 Take Two Studio 1603. Всички права запазени.</p>
+                    <p class="seo-text-small">
+                        Take Two Studio 1603 е вашето студио за професионални фото и видео услуги.
+                        Като водещи фотографи във Варна, ние предлагаме цялостно заснемане на сватби,
+                        кинематографични сватбени филми, заснемане на семейни празници и бизнес събития.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+        const lightbox = GLightbox({
+            selector: '.glightbox'
+        });
+
+        // Филтриране на галерията
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.masonry-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                items.forEach(item => {
+                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                        item.classList.remove('hidden');
+                        item.style.display = 'block';
+                    } else {
+                        item.classList.add('hidden');
+                        setTimeout(() => {
+                            if (item.classList.contains('hidden')) {
+                                item.style.display = 'none';
+                            }
+                        }, 400);
+                    }
+                });
+            });
+        });
+
+        // Функция за отваряне на лайтбокса
+        function openLightbox(element) {
+            const link = element.querySelector('.glightbox');
+            if (link) link.click();
+        }
+
+        // --- ДИНАМИЧНА ФОРМА (Скриване/Показване) ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const triggers = document.querySelectorAll('.service-trigger');
+            const allSections = document.querySelectorAll('.dynamic-section');
+
+            // Карта на стойностите към ID-тата на секциите
+            const sectionMap = {
+                'Commercial Video': 'details-commercial',
+                'Product Photography': 'details-product',
+                'Event Coverage': 'details-event',
+                'Social Media': 'details-social',
+                'Drone': 'details-drone'
+            };
+
+            triggers.forEach(trigger => {
+                trigger.addEventListener('change', function () {
+                    // 1. Скриваме всички секции първо
+                    allSections.forEach(sec => sec.style.display = 'none');
+
+                    // 2. Намираме кое ID отговаря на избора
+                    const selectedValue = this.value;
+                    const targetId = sectionMap[selectedValue];
+
+                    // 3. Ако има съвпадение, показваме секцията
+                    if (targetId) {
+                        const targetSection = document.getElementById(targetId);
+                        if (targetSection) {
+                            targetSection.style.display = 'block';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
