@@ -156,7 +156,7 @@ h4 {
 /* HERO */
 .hero {
     min-height: 75vh;
-    background-image: url('../img/header.jpg');
+    background-image: url('img/header.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
