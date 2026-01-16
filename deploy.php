@@ -5,11 +5,8 @@ error_reporting(E_ALL);
 
 echo "--- Старт на Deployment ---<br>";
 
-// Име на вашето хранилище (repository)
-$repo_name = "TakeTwoStudio";
-
 // Опит за изпълнение на командата
-$output = shell_exec("/usr/local/cpanel/bin/jethost-git-sync --repo=$repo_name 2>&1");
+$output = shell_exec('/usr/local/cpanel/bin/jethost-git-sync --repo=TakeTwoStudio');
 
 if ($output === null) {
     echo "ГРЕШКА: Функцията shell_exec е забранена или командата не работи.<br>";
