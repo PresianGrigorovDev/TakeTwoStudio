@@ -1,0 +1,461 @@
+/* --- MAIN STYLES --- */
+:root {
+    --text-color: #222;
+    --bg-color: #fff;
+    --accent: #D4AF37;
+    /* Gold */
+    --dark-bg: #111111;
+    --gray-light: #f9f9f9;
+}
+
+body {
+    font-family: 'Uni Sans', 'Montserrat', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    font-weight: 400;
+    line-height: 1.6;
+    padding-top: 80px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #111;
+}
+
+.section-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 0 auto 25px;
+}
+
+.section-divider.start {
+    margin: 0 0 25px 0;
+}
+
+@media (max-width: 991px) {
+    .section-divider.start {
+        margin: 0 auto 25px;
+    }
+
+    .text-lg-start {
+        text-align: center !important;
+    }
+}
+
+/* --- NAV --- */
+.navbar {
+    background-color: var(--dark-bg) !important;
+    padding: 0;
+    border-bottom: 1px solid #222;
+    min-height: 80px;
+    transition: all 0.3s;
+}
+
+.nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff !important;
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--accent) !important;
+}
+
+.logo-mobile {
+    max-height: 40px;
+}
+
+.logo-desktop {
+    max-height: 55px;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin-right: 15px;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: var(--dark-bg);
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .nav-link {
+        justify-content: center;
+        padding: 15px 0;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar .container {
+        height: 80px;
+    }
+
+    .navbar-collapse,
+    .navbar-nav,
+    .nav-item {
+        height: 100%;
+    }
+}
+
+/* --- HERO --- */
+.baptism-hero {
+    min-height: 60vh;
+    /* Снимката от твоя сайт */
+    background-image: url('../css/img/krustene.jpg');
+    /* Fixed path relative to css file */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -1px;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-title {
+    color: white;
+    text-align: center;
+    z-index: 2;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+.hero-title h1 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.hero-title p {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #eee;
+}
+
+@media (min-width: 992px) {
+    .hero-title h1 {
+        font-size: 3.5rem !important;
+    }
+}
+
+/* --- MOMENTS GRID --- */
+.moment-card {
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #eee;
+    text-align: center;
+    transition: 0.3s;
+    height: 100%;
+    border-bottom: 3px solid transparent;
+}
+
+.moment-card:hover {
+    transform: translateY(-5px);
+    border-bottom-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.moment-icon {
+    font-size: 2.5rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+/* --- CALCULATOR STYLES --- */
+.calc-section {
+    background-color: var(--gray-light);
+    padding: 60px 0;
+}
+
+.calc-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-top: 3px solid var(--accent);
+}
+
+.package-option {
+    display: none;
+}
+
+.package-label {
+    display: block;
+    border: 2px solid #eee;
+    padding: 25px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 4px;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.package-label:hover {
+    border-color: #ccc;
+    transform: translateY(-2px);
+}
+
+.package-option:checked+.package-label {
+    border-color: var(--accent);
+    background-color: #fffcf5;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.15);
+}
+
+.package-icon {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 15px;
+    display: block;
+    transition: 0.3s;
+}
+
+.package-option:checked+.package-label .package-icon {
+    color: var(--accent);
+}
+
+.custom-check-wrapper {
+    background: #fff;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    height: 100%;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.custom-check-wrapper:hover {
+    border-color: #ccc;
+}
+
+.form-check-input:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Price Display */
+.total-price-box {
+    background: #222;
+    color: #fff;
+    padding: 40px 30px;
+    border-radius: 4px;
+    text-align: center;
+    position: sticky;
+    top: 100px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.price-display {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin: 20px 0;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #444;
+    padding: 8px 0;
+    color: #aaa;
+}
+
+.summary-item span:last-child {
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-custom {
+    border: 2px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 30px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    width: 100%;
+    display: block;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.btn-custom:hover {
+    background: #fff;
+    color: var(--accent);
+}
+
+/* --- FAQ --- */
+.accordion-button:not(.collapsed) {
+    background-color: #fffcf0;
+    color: #000;
+    box-shadow: none;
+    border-bottom: 2px solid var(--accent);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, 0.125);
+}
+
+.accordion-button {
+    font-weight: 600;
+}
+
+/* --- GALLERY --- */
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.portfolio-img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.6s;
+    display: block;
+}
+
+.portfolio-item:hover .portfolio-img {
+    transform: scale(1.05);
+}
+
+/* --- CONTACT & MAP --- */
+.btn-submit {
+    background: #111;
+    color: white;
+    padding: 14px 0;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.btn-submit:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.map-container {
+    height: 100%;
+    min-height: 400px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eee;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* --- FOOTER --- */
+footer {
+    background: #111;
+    color: #aaa;
+    padding-top: 60px;
+    font-size: 0.9rem;
+    overflow: hidden;
+}
+
+footer h5 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+footer ul {
+    padding: 0;
+    list-style: none;
+}
+
+footer ul li {
+    margin-bottom: 10px;
+}
+
+footer ul li a {
+    color: #aaa;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+footer ul li a:hover {
+    color: var(--accent);
+}
+
+.footer-bottom {
+    border-top: 1px solid #222;
+    padding: 20px 0;
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+
+.social-link {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.social-link:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 991px) {
+
+    .g-5,
+    .gx-5 {
+        --bs-gutter-x: 0;
+    }
+
+    .calc-card {
+        padding: 40px 0;
+    }
+
+    h2.mb-4.h2.text-black.fw-normal.lh-base {
+        font-size: 1.2rem;
+    }
+}

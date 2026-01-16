@@ -105,7 +105,7 @@ h5 {
 /* --- HERO --- */
 .commercial-hero {
     min-height: 60vh;
-    background-image: url('../css/img/ads/moonlight.jpg'); /* Fixed path */
+    background-image: url('css/img/ads/moonlight.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -258,9 +258,7 @@ h5 {
     transition: transform 0.3s ease;
 }
 
-.masonry-item img:hover {
-    /* transform: scale(1.02); */
-}
+
 
 @media (max-width: 991px) {
     .masonry-item {
@@ -274,7 +272,7 @@ h5 {
     }
 }
 
-/* --- PORTFOLIO ITEM STYLES (ALWAYS VISIBLE TITLE + HOVER DESC) --- */
+/* --- PORTFOLIO ITEM STYLES --- */
 .portfolio-item {
     max-width: fit-content;
     width: 100%;
@@ -293,18 +291,15 @@ h5 {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Постоянно видим градиент в долната част, за да се чете заглавието */
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 100%);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 30px;
     opacity: 1;
-    /* ВИНАГИ ВИДИМО */
     transition: all 0.5s ease;
 }
 
-/* Заглавието и подзаглавието са винаги видими */
 .portfolio-info {
     transform: translateY(0);
     transition: all 0.5s ease;
@@ -358,90 +353,242 @@ h5 {
     transition: transform 0.5s ease;
 }
 
-/* Описанието е скрито по подразбиране */
 .portfolio-desc {
     color: #ddd;
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 0;
-
-    /* Скриване */
     max-height: 0;
     opacity: 0;
     transform: translateY(20px);
-
-    /* Анимация */
     transition: all 0.5s ease;
     overflow: hidden;
 }
 
 /* --- HOVER EFFECTS --- */
-
-/* 1. Снимката се приближава */
-.portfolio-item:hover .portfolio-img {
-    /* transform: scale(1.1); */
-}
-
-/* 2. Градиентът става по-плътен и тъмен */
 .portfolio-item:hover .portfolio-overlay {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 100%);
 }
 
-/* 3. Описанието се появява и разгъва */
 .portfolio-item:hover .portfolio-desc {
     max-height: 200px;
-    /* Достатъчно място за текста */
     opacity: 1;
     transform: translateY(0);
     margin-top: 10px;
-    /* Отстояние от заглавието */
-}
-
-/* 4. Заглавието леко се повдига, за да направи място (автоматично от flexbox, но добавяме и лек транслейт) */
-.portfolio-item:hover .portfolio-info {
-    /* Няма нужда от транслейт, flexbox ще го бутне нагоре, когато описанието се появи */
 }
 
 
-/* --- CONTACT FORM --- */
-.contact-box {
-    background: #fff;
-    padding: 50px 5px;
+/* --- NEW CONTACT FORM STYLES (CreateUBG Inspired & Improved Contrast) --- */
+.bg-black-section {
+    background-color: #0b0b0b;
+    color: #fff;
+    position: relative;
+}
+
+.contact-box-dark {
+    background: transparent;
+    padding: 50px 0;
+}
+
+.form-section-title-dark {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 25px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.form-section-title-dark::after {
+    content: "";
+    flex-grow: 1;
+    height: 1px;
+    background: #444;
+    /* Slightly lighter line */
+    margin-left: 20px;
+}
+
+/* Input Styling - High Contrast */
+.form-control-dark {
+    background: transparent !important;
+    border: none;
+    border-bottom: 1px solid #555;
+    border-radius: 0;
+    color: #fff !important;
+    padding: 15px 0;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-control-dark:focus {
+    border-bottom-color: var(--accent);
+    box-shadow: none;
+    outline: none;
+}
+
+/* Placeholder Contrast Improvement */
+.form-control-dark::placeholder {
+    color: #aaa;
+    /* Much lighter than #666 */
+    font-size: 0.9rem;
+    opacity: 1;
+    /* Firefox fix */
+}
+
+.form-select-dark {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #555;
+    color: #fff;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+/* Dropdown options background */
+.form-select-dark option {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px;
+}
+
+/* Custom Selection Buttons */
+.selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    margin: auto;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-check:checked+.btn-selection {
+    background-color: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.btn-check:checked+.btn-selection i {
+    color: var(--accent);
+}
+
+.btn-selection {
+    background-color: #1a1a1a;
+    color: #ccc;
+    /* Improved contrast */
+    border: 1px solid #444;
+    /* Better border visibility */
+    padding: 20px;
+    text-align: left;
     border-radius: 4px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-    border-top: 3px solid var(--accent);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    font-weight: 500;
+    height: 100px;
+    font-size: 0.95rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    align-content: center;
 }
 
-@media (min-width: 992px) {
-    .contact-box {
-        padding: 50px;
+.btn-selection:hover {
+    border-color: #888;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-selection i {
+    font-size: 1.2rem;
+    /* margin-right: 15px; */
+    padding: 5px 0;
+    width: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+/* Hidden Sections Utility */
+.dynamic-section {
+    display: none;
+    /* Hidden by default */
+    animation: fadeIn 0.5s ease-in-out;
+    border-left: 2px solid var(--accent);
+    padding-left: 25px;
+    margin-left: 5px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-.btn-submit {
-    background: #111;
-    color: white;
-    padding: 14px 0;
+.btn-submit-dark {
+    background: var(--accent);
+    color: #000;
+    padding: 18px 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: none;
+    transition: 0.4s;
+    margin-top: 30px;
     width: 100%;
+    font-size: 1rem;
+}
+
+.btn-submit-dark:hover {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.label-dark {
+    color: #e0e0e0;
+    /* Significant contrast boost */
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border: none;
-    transition: 0.3s;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 
-.btn-submit:hover {
-    background: var(--accent);
-    color: white;
+/* Checkbox styling */
+.form-check-input-dark {
+    background-color: transparent;
+    border: 1px solid #777;
+    width: 1.2em;
+    height: 1.2em;
+    cursor: pointer;
+}
+
+.form-check-input-dark:checked {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.form-check-label-dark {
+    color: #ddd;
+    cursor: pointer;
 }
 
 /* --- FOOTER --- */
 footer {
-    background: #111;
+    background: #000;
     color: #aaa;
     padding-top: 60px;
     font-size: 0.9rem;
-    overflow: hidden;
+    border-top: 1px solid #222;
 }
 
 footer h5 {
