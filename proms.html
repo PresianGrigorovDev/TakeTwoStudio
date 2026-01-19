@@ -297,14 +297,14 @@
                             </h4>
 
                             <div class="row g-4 mb-5 justify-content-center">
-                                <!-- PARTY (103 EUR) -->
+                                <!-- PARTY (100 EUR) -->
                                 <div class="col-md-6">
                                     <input type="radio" name="prom_package" id="party" class="package-option"
                                         value="100" data-label="Пакет Парти" checked onchange="calculatePromTotal()">
                                     <label for="party" class="package-label">
                                         <i class="fas fa-glass-cheers package-icon"></i>
                                         <strong>ПАРТИ ПАКЕТ</strong>
-                                        <span class="d-block small text-muted mt-2 fw-bold fs-5">€100/ученик</span>
+                                        <span class="d-block small text-muted mt-2 fw-bold fs-5">€ 100 / 199.58 лв. / ученик</span>
                                         <ul class="package-details">
                                             <li><i class="fas fa-check"></i> Фото и Видео заснемане</li>
                                             <li><i class="fas fa-check"></i> 1 Фотосесия (Есен/Пролет)</li>
@@ -314,14 +314,14 @@
                                         </ul>
                                     </label>
                                 </div>
-                                <!-- LUX (113 EUR) - PURPLE HOVER -->
+                                <!-- LUX (110 EUR) - PURPLE HOVER -->
                                 <div class="col-md-6">
-                                    <input type="radio" name="prom_package" id="lux" class="package-option" value="120"
+                                    <input type="radio" name="prom_package" id="lux" class="package-option" value="110"
                                         data-label="Пакет Лукс" onchange="calculatePromTotal()">
                                     <label for="lux" class="package-label lux-pack">
                                         <i class="fas fa-gem package-icon"></i>
                                         <strong>ЛУКС ПАКЕТ</strong>
-                                        <span class="d-block small text-muted mt-2 fw-bold fs-5">€120/ученик</span>
+                                        <span class="d-block small text-muted mt-2 fw-bold fs-5">€ 110 / 219.54 лв. / ученик</span>
                                         <ul class="package-details">
                                             <li><i class="fas fa-check"></i> Фото и Видео заснемане</li>
                                             <li><i class="fas fa-check"></i> <strong>2 Фотосесии</strong> (Есен и
@@ -342,7 +342,7 @@
                                         <input class="form-check-input" type="checkbox" name="album_small" id="stdAlbum"
                                             value="15" data-label="Албум 10x15" onchange="calculatePromTotal()">
                                         <label class="form-check-label fw-bold mx-4" for="stdAlbum">Фото книга
-                                            (10x15)<br>(+€15)</label>
+                                            (10x15)<br>(+€ 15 / 29.94 лв.)</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -351,7 +351,7 @@
                                             id="custAlbum" value="30" data-label="Голяма Фото книга"
                                             onchange="calculatePromTotal()">
                                         <label class="form-check-label fw-bold mx-4" for="custAlbum">Голяма фото
-                                            книга<br>(+€30)</label>
+                                            книга<br>(+€ 30 / 59.87 лв.)</label>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -359,7 +359,7 @@
                                         <input class="form-check-input" type="checkbox" name="usb" id="usbDrive"
                                             value="5" data-label="Флашка" onchange="calculatePromTotal()">
                                         <label class="form-check-label fw-bold mx-4" for="usbDrive">Запис на външен
-                                            носител (Флашка)<br>(+€5)</label>
+                                            носител (Флашка)<br>(+€ 5 / 9.98 лв.)</label>
                                     </div>
                                 </div>
                             </div>
@@ -371,7 +371,7 @@
                     <div class="col-lg-4">
                         <div class="total-price-box">
                             <h5 class="text-uppercase text-white-50">Цена на ученик</h5>
-                            <div class="price-display">€<span id="finalPrice">103</span></div>
+                            <div class="price-display">€ <span id="finalPrice">103</span> / <span id="finalPriceBgn">205.57</span> лв.</div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">
@@ -490,38 +490,7 @@
             selector: '.glightbox'
         });
 
-        function calculatePromTotal() {
-            let total = 0;
-            let detailsArr = [];
 
-            // Package
-            const pkg = document.querySelector('input[name="prom_package"]:checked');
-            if (pkg) {
-                total += parseInt(pkg.value);
-                detailsArr.push(pkg.getAttribute('data-label'));
-            }
-
-            // Extras
-            if (document.getElementById('stdAlbum').checked) {
-                total += parseInt(document.getElementById('stdAlbum').value);
-                detailsArr.push("Малък Албум");
-            }
-            if (document.getElementById('custAlbum').checked) {
-                total += parseInt(document.getElementById('custAlbum').value);
-                detailsArr.push("Голям Албум");
-            }
-            if (document.getElementById('usbDrive').checked) {
-                total += parseInt(document.getElementById('usbDrive').value);
-                detailsArr.push("Флашка");
-            }
-
-            // UI Updates
-            animateValue("finalPrice", parseInt(document.getElementById('finalPrice').innerText), total, 300);
-            document.getElementById('hiddenPrice').value = total;
-
-            // ВАЖНО: Записваме имената в скритото поле за PHP
-            document.getElementById('hiddenDetails').value = detailsArr.join(", ");
-        }
 
         function calculatePromTotal() {
             let total = 0;
@@ -596,6 +565,7 @@
             const increment = end > start ? 1 : -1;
             const stepTime = Math.abs(Math.floor(duration / (range / increment)));
             const obj = document.getElementById(id);
+            const objBgn = document.getElementById(id + "Bgn");
             const timer = setInterval(function () {
                 current += increment;
                 if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
@@ -603,6 +573,9 @@
                     clearInterval(timer);
                 }
                 obj.innerHTML = current;
+                if (objBgn) {
+                    objBgn.innerHTML = (current * 1.99583).toFixed(2);
+                }
             }, Math.max(stepTime, 10));
         }
 

@@ -634,3 +634,7 @@ footer ul li a:hover {
 .social-link:hover {
     color: var(--accent);
 }
+
+.fs-5 {
+    font-size: 1rem !important;
+}

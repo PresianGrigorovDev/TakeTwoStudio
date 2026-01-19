@@ -375,7 +375,7 @@ h5 {
 }
 
 .price-display {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--accent);
     line-height: 1;
@@ -504,4 +504,12 @@ footer ul li a:hover {
     h2.mb-4.h2.text-black.fw-normal.lh-base {
         font-size: 1.2rem;
     }
+
+    .price-display {
+        font-size: 1.7rem;
+    }
+}
+
+.fs-5 {
+    font-size: 1rem !important;
 }

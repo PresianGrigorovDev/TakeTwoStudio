@@ -46,7 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_content .= "--------------------------------------\n";
     $email_content .= "ИЗБРАНИ УСЛУГИ:\n";
     $email_content .= "$details\n\n";
-    $email_content .= "ОБЩА ЦЕНА: $final_price €\n";
+    $final_price_bgn = floatval($final_price) * 1.99583;
+    $email_content .= "ОБЩА ЦЕНА: $final_price € / " . number_format($final_price_bgn, 2) . " лв.\n";
     $email_content .= "--------------------------------------\n";
 
     // Хедъри

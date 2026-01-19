@@ -249,7 +249,6 @@ h4 {
     height: auto;
 }
 
-/* Добавено height:auto */
 .team-member {
     cursor: pointer;
 }
@@ -639,4 +638,8 @@ footer ul li a:hover {
     z-index: 10000;
     justify-content: center;
     align-items: center;
+}
+
+.fs-5 {
+    font-size: 1rem !important;
 }
