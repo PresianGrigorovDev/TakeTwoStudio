@@ -253,6 +253,12 @@
     <!-- CALCULATOR SECTION -->
     <section class="calc-section" id="calculator">
         <div class="container">
+            <h2 class="text-center mb-4">Сватбен Калкулатор</h2>
+            <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
+                Изчислете лесно и прозрачно цената за заснемане на вашата сватба. Нашите пакети включват професионално
+                фото и 4K видео заснемане, дрон кадри и луксозни фотокниги. Без скрити такси – виждате крайната сума
+                веднага.
+            </p>
             <form id="calcForm" action="submit_order.php" method="post">
                 <div class="row g-5">
 
@@ -271,25 +277,28 @@
                                     <label for="op0" class="package-label">
                                         <i class="fas fa-ban package-icon"></i>
                                         <strong>Без</strong>
+                                        <p class="extra-description">Без видео заснемане.</p>
                                         <span class="d-block small text-muted mt-1">€ 0</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="radio" name="operators" id="op1" class="package-option" value="895"
+                                    <input type="radio" name="operators" id="op1" class="package-option" value="890"
                                         data-label="Видео: 1 човек" checked onchange="calculateTotal()">
                                     <label for="op1" class="package-label">
                                         <i class="fas fa-video package-icon"></i>
                                         <strong>Един</strong>
-                                        <span class="d-block small text-muted mt-1">€ 895</span>
+                                        <p class="extra-description">Един видеограф, основно покритие.</p>
+                                        <span class="d-block small text-muted mt-1">€ 890 / 1740.69 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="radio" name="operators" id="op2" class="package-option" value="1120"
+                                    <input type="radio" name="operators" id="op2" class="package-option" value="1145"
                                         data-label="Видео: 2 човека" onchange="calculateTotal()">
                                     <label for="op2" class="package-label">
                                         <i class="fas fa-film package-icon"></i>
                                         <strong>Двама</strong>
-                                        <span class="d-block small text-muted mt-1">€ 1120</span>
+                                        <p class="extra-description">Двама видеографи, пълно кинематографично покритие.</p>
+                                        <span class="d-block small text-muted mt-1">€ 1145 / 2239.43 лв.</span>
                                     </label>
                                 </div>
                             </div>
@@ -302,25 +311,28 @@
                                     <label for="ph0" class="package-label">
                                         <i class="fas fa-ban package-icon"></i>
                                         <strong>Без</strong>
+                                        <p class="extra-description">Без фото заснемане.</p>
                                         <span class="d-block small text-muted mt-1">€ 0</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="radio" name="photographers" id="ph1" class="package-option" value="895"
+                                    <input type="radio" name="photographers" id="ph1" class="package-option" value="890"
                                         data-label="Фото: 1 човек" checked onchange="calculateTotal()">
                                     <label for="ph1" class="package-label">
                                         <i class="fas fa-camera package-icon"></i>
                                         <strong>Един</strong>
-                                        <span class="d-block small text-muted mt-1">€ 895</span>
+                                        <p class="extra-description">Един фотограф, улавяне на ключовите моменти.</p>
+                                        <span class="d-block small text-muted mt-1">€ 890 / 1740.69 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
                                     <input type="radio" name="photographers" id="ph2" class="package-option"
-                                        value="1120" data-label="Фото: 2 човека" onchange="calculateTotal()">
+                                        value="1145" data-label="Фото: 2 човека" onchange="calculateTotal()">
                                     <label for="ph2" class="package-label">
                                         <i class="fas fa-images package-icon"></i>
                                         <strong>Двама</strong>
-                                        <span class="d-block small text-muted mt-1">€ 1120</span>
+                                        <p class="extra-description">Двама фотографи за детайлно заснемане.</p>
+                                        <span class="d-block small text-muted mt-1">€ 1145 / 2239.43 лв.</span>
                                     </label>
                                 </div>
                             </div>
@@ -328,127 +340,153 @@
                             <!-- ДЕТАЙЛИ -->
                             <h4 class="mb-4 mt-5"><i class="fas fa-sliders-h me-2 text-warning"></i> Детайли</h4>
                             <div class="row g-3">
-                                <!-- Cameras -->
-                                <div class="col-md-6">
-                                    <label class="fw-bold mb-2">Брой камери</label>
-                                    <div class="custom-check-wrapper">
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="cameras" id="cam2"
-                                                value="0" data-label="Камери: 2" checked onchange="calculateTotal()">
-                                            <label class="form-check-label" for="cam2">Две (Стандарт)</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="cameras" id="cam3"
-                                                value="255" data-label="Камери: 3" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="cam3">Три (+€ 255 / 508.94 лв.)</label>
-                                        </div>
-                                    </div>
+                                <!-- After Wedding Session (Checkbox) -->
+                                <div class="col-12"><h6 class="text-white mb-2">Фотосесии</h6></div>
+                                <div class="col-md-12">
+                                    <input class="extra-option" type="checkbox" id="afterWedding" value="113"
+                                        data-label="Следсватбена сесия" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="afterWedding">
+                                        <i class="fas fa-heart extra-card-icon"></i>
+                                        <span>Добави: Следсватбена фотосесия</span>
+                                        <p class="extra-description">Артистична сесия в отделен ден (2-3 часа).</p>
+                                        <span class="extra-price">+€ 113 / 225.53 лв.</span>
+                                    </label>
                                 </div>
-                                <!-- After Wedding -->
-                                <div class="col-md-6">
-                                    <label class="fw-bold mb-2">Следсватбена фотосесия</label>
-                                    <div class="custom-check-wrapper">
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="after_wedding"
-                                                id="afterNo" value="0" data-label="Сесия: Не" checked
-                                                onchange="calculateTotal()">
-                                            <label class="form-check-label" for="afterNo">Не (Стандарт)</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="after_wedding"
-                                                id="afterYes" value="113" data-label="Сесия: Да"
-                                                onchange="calculateTotal()">
-                                            <label class="form-check-label" for="afterYes">Да (+€ 113 / 225.53 лв.)</label>
-                                        </div>
-                                    </div>
-                                </div>
+
                                 <!-- Film Length -->
-                                <div class="col-md-6">
-                                    <label class="fw-bold mb-2">Дължина на филма</label>
-                                    <div class="custom-check-wrapper">
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="film_length" id="len60"
-                                                value="-25" data-label="Филм: 60мин" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len60">До 60 мин (-€ 25 / 49.90 лв.)</label>
-                                        </div>
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="film_length" id="len90"
-                                                value="0" data-label="Филм: 90мин" checked onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len90">До 90 мин (Стандарт)</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="film_length" id="len120"
-                                                value="50" data-label="Филм: 120мин" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len120">До 120 мин (+€ 50 / 99.79 лв.)</label>
-                                        </div>
-                                    </div>
+                                <div class="col-12 mt-4"><h6 class="text-white mb-2">Дължина на филма</h6></div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="film_length" id="len60" value="-25"
+                                        data-label="Филм: 60мин" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="len60">
+                                        <i class="fas fa-hourglass-start extra-card-icon"></i>
+                                        <span>До 60 мин</span>
+                                        <p class="extra-description">Динамичен монтаж с най-важното.</p>
+                                        <span class="extra-price">-€ 25 / 49.90 лв.</span>
+                                    </label>
                                 </div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="film_length" id="len90" value="0"
+                                        data-label="Филм: 90мин" checked onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="len90">
+                                        <i class="fas fa-hourglass-half extra-card-icon"></i>
+                                        <span>До 90 мин</span>
+                                        <p class="extra-description">Балансиран разказ на събитието.</p>
+                                        <span class="extra-price">Стандарт</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="film_length" id="len120" value="50"
+                                        data-label="Филм: 120мин" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="len120">
+                                        <i class="fas fa-hourglass-end extra-card-icon"></i>
+                                        <span>До 120 мин</span>
+                                        <p class="extra-description">Подробен филм с повече ритуали.</p>
+                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                    </label>
+                                </div>
+
                                 <!-- Resolution -->
+                                <div class="col-12 mt-4"><h6 class="text-white mb-2">Резолюция</h6></div>
                                 <div class="col-md-6">
-                                    <label class="fw-bold mb-2">Резолюция</label>
-                                    <div class="custom-check-wrapper">
-                                        <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio" name="film_resolution"
-                                                id="resFHD" value="0" data-label="Res: 4K" checked
-                                                onchange="calculateTotal()">
-                                            <label class="form-check-label" for="resFHD">4K UHD (Стандарт)</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="film_resolution"
-                                                id="res4K" value="50" data-label="Res: 6K" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="res4K">6K (+€ 50 / 99.79 лв.)</label>
-                                        </div>
-                                    </div>
+                                    <input class="extra-option" type="radio" name="film_resolution" id="resFHD"
+                                        value="0" data-label="Res: 4K" checked onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="resFHD">
+                                        <i class="fas fa-tv extra-card-icon"></i>
+                                        <span>4K UHD</span>
+                                        <p class="extra-description">Високо качество за модерни телевизори.</p>
+                                        <span class="extra-price">Стандарт</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input class="extra-option" type="radio" name="film_resolution" id="res4K"
+                                        value="50" data-label="Res: 6K" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="res4K">
+                                        <i class="fas fa-cube extra-card-icon"></i>
+                                        <span>6K</span>
+                                        <p class="extra-description">Максимална детайлност и бъдеща устойчивост.</p>
+                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                    </label>
                                 </div>
                             </div>
 
                             <!-- ЕКСТРИ -->
                             <h4 class="mb-4 mt-5"><i class="fas fa-plus-circle me-2 text-warning"></i> Екстри</h4>
                             <div class="row g-3">
-                                <!-- Removed Stabilization -->
-                                <div class="col-md-6">
-                                    <div class="custom-check-wrapper d-flex align-items-center"><input
-                                            class="form-check-input me-2" type="checkbox" id="audio" value="50"
-                                            data-label="Аудио" onchange="calculateTotal()"><label
-                                            class="form-check-label" for="audio">Аудио пакет (+€ 50 / 99.79 лв.)</label></div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="checkbox" id="audio" value="50" data-label="Аудио"
+                                        onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="audio">
+                                        <i class="fas fa-microphone-alt extra-card-icon"></i>
+                                        <span>Аудио пакет</span>
+                                        <p class="extra-description">Запис на речите и ритуалите с отделни рекордери.</p>
+                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                    </label>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="custom-check-wrapper d-flex align-items-center"><input
-                                            class="form-check-input me-2" type="checkbox" id="drone" value="150"
-                                            data-label="Дрон" onchange="calculateTotal()"><label
-                                            class="form-check-label" for="drone">Дрон (+€ 150 / 299.37 лв.)</label></div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="checkbox" id="drone" value="100" data-label="Дрон"
+                                        onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="drone">
+                                        <i class="fas fa-paper-plane extra-card-icon"></i>
+                                        <span>Дрон</span>
+                                        <p class="extra-description">Впечатляващи въздушни кадри (ако локацията позволява).</p>
+                                        <span class="extra-price">+€ 100 / 199.58 лв.</span>
+                                    </label>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="custom-check-wrapper d-flex align-items-center"><input
-                                            class="form-check-input me-2" type="checkbox" id="light" value="130"
-                                            data-label="Осветление" onchange="calculateTotal()"><label
-                                            class="form-check-label" for="light">Осветление (+€ 130 / 259.46 лв.)</label></div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="checkbox" id="light" value="130"
+                                        data-label="Осветление" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="light">
+                                        <i class="fas fa-lightbulb extra-card-icon"></i>
+                                        <span>Осветление</span>
+                                        <p class="extra-description">Допълнително професионално осветление за партито.</p>
+                                        <span class="extra-price">+€ 130 / 259.46 лв.</span>
+                                    </label>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="custom-check-wrapper d-flex align-items-center"><input
-                                            class="form-check-input me-2" type="checkbox" id="vcard" value="100"
-                                            data-label="Видео Визитка" onchange="calculateTotal()"><label
-                                            class="form-check-label" for="vcard">Видео визитки (+€ 100 / 199.58 лв.)</label></div>
+                                    <input class="extra-option" type="checkbox" id="vcard" value="100"
+                                        data-label="Видео Визитка" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="vcard">
+                                        <i class="fas fa-id-card extra-card-icon"></i>
+                                        <span>Видео визитки (Shorts/Reels)</span>
+                                        <p class="extra-description">Вертикален трейлър (1 мин) оптимизиран за социални мрежи.</p>
+                                        <span class="extra-price">+€ 100 / 199.58 лв.</span>
+                                    </label>
                                 </div>
                             </div>
 
                             <!-- DELIVERY -->
                             <h4 class="mb-4 mt-5"><i class="fas fa-gift me-2 text-warning"></i> Получаване</h4>
-                            <div class="custom-check-wrapper">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="recording" value="0"
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <input class="extra-option" type="radio" name="recording" id="recCloud" value="0"
                                         data-label="Запис: Облак+USB" checked onchange="calculateTotal()">
-                                    <label class="form-check-label">Облак + Флашка USB 3.0 (Стандарт)</label>
+                                    <label class="extra-card-label" for="recCloud">
+                                        <i class="fas fa-cloud-download-alt extra-card-icon"></i>
+                                        <span>Облак + Флашка USB 3.0</span>
+                                        <p class="extra-description">Онлайн архив за сваляне + физическа флашка.</p>
+                                        <span class="extra-price">Стандарт</span>
+                                    </label>
                                 </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="recording" value="40"
+                                <div class="col-md-6">
+                                    <input class="extra-option" type="radio" name="recording" id="recBox" value="40"
                                         data-label="Запис: Облак+USB+Кутия" onchange="calculateTotal()">
-                                    <label class="form-check-label">Облак + Флашка + Кутия (+€ 40 / 79.83 лв.)</label>
+                                    <label class="extra-card-label" for="recBox">
+                                        <i class="fas fa-box-open extra-card-icon"></i>
+                                        <span>Облак + Флашка + Кутия</span>
+                                        <p class="extra-description">Луксозна дървена кутия с брандирана флашка.</p>
+                                        <span class="extra-price">+€ 40 / 79.83 лв.</span>
+                                    </label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="recording" value="160"
+                                <div class="col-md-6">
+                                    <input class="extra-option" type="radio" name="recording" id="recAlbum" value="120"
                                         data-label="Запис: Пълен" onchange="calculateTotal()">
-                                    <label class="form-check-label">Облак + Флашка + Кутия + Албум (+€ 160 / 319.33 лв.)</label>
+                                    <label class="extra-card-label" for="recAlbum">
+                                        <i class="fas fa-images extra-card-icon"></i>
+                                        <span>Облак + Флашка + Кутия + Албум</span>
+                                        <p class="extra-description">Луксозна фотокнига, кутия и всички дигитални файлове.</p>
+                                        <span class="extra-price">+€ 120 / 234.70 лв.</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -462,9 +500,9 @@
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">
-                                <div class="summary-item"><span>Екип:</span> <span id="sumTeam"></span></div>
-                                <div class="summary-item"><span>Детайли:</span> <span id="sumOptions"></span></div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras"></span></div>
+                                <div class="summary-item"><span>Екип:</span> <span id="sumTeam">-</span></div>
+                                <div class="summary-item"><span>Детайли:</span> <span id="sumOptions">Стандарт</span></div>
+                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
                             </div>
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
@@ -475,6 +513,8 @@
                                     placeholder="Вашето име" required>
                                 <input type="text" name="phone" class="form-control mb-2 rounded-0"
                                     placeholder="Телефон" required>
+                                <input type="date" name="date" class="form-control mb-2 rounded-0"
+                                    placeholder="Дата на сватбата" required>
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>
                             </div>
                         </div>
@@ -543,20 +583,21 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
 
     <!-- Validation Modal -->
-    <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title" id="validationModalLabel"><i class="fas fa-exclamation-triangle me-2"></i> Внимание</h5>
+                <div class="modal-header bg-warning border-0">
+                    <h5 class="modal-title text-dark fw-bold"><i class="fas fa-exclamation-circle me-2"></i> Внимание</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-dark">
-                    Трябва да изберете поне една основна услуга (Видео или Фотография)!
+                    Трябва да изберете поне една основна услуга (Видео или Фотография)!<br><br>
+                    <small class="text-muted">За да изчислим пакет и да приемем резервация, е необходимо да изберете поне един екип за заснемане.</small>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Разбрах</button>
@@ -608,17 +649,13 @@
             }
 
             // --- ДЕТАЙЛИ ---
-            const cams = document.querySelector('input[name="cameras"]:checked');
-            if (cams) {
-                total += parseInt(cams.value);
-                // Показваме само ако е екстра (3 камери), иначе не пълним място
-                if (cams.value != "0") detailsText.push("3 Камери");
-            }
+            // Cameras Removed (Assuming standard included)
 
-            const session = document.querySelector('input[name="after_wedding"]:checked');
-            if (session) {
-                total += parseInt(session.value);
-                if (parseInt(session.value) > 0) detailsText.push("Следсватбена");
+            // After Wedding Session (Checkbox)
+            const afterWed = document.getElementById('afterWedding');
+            if (afterWed && afterWed.checked) {
+                total += parseInt(afterWed.value);
+                detailsText.push("Следсватбена");
             }
 
             const len = document.querySelector('input[name="film_length"]:checked');

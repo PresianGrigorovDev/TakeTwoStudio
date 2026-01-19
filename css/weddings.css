@@ -240,7 +240,10 @@ h4 {
 }
 
 .package-label {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     border: 2px solid #eee;
     padding: 15px;
     text-align: center;
@@ -251,8 +254,55 @@ h4 {
     background: #fff;
 }
 
+/* ... existing hover styles ... */
+
+.package-option:checked+.package-label .package-icon {
+    color: var(--accent);
+}
+
+/* Ensure price is at bottom for package-label */
+.package-label span.d-block.small.text-muted {
+    margin-top: auto;
+}
+
+/* ... */
+
+.extra-card-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border: 2px solid #eee;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s all ease;
+    height: 100%;
+    background: #fff;
+    font-weight: 600;
+    color: #555;
+    position: relative;
+}
+
+.extra-card-label:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* ... */
+
+.extra-price {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: auto; /* Push to bottom */
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
 .package-label:hover {
-    border-color: #ccc;
+    border-color: var(--accent);
     transform: translateY(-2px);
 }
 
@@ -437,4 +487,51 @@ footer ul li a:hover {
 
 .fs-5 {
     font-size: 1rem !important;
+}
+
+
+
+/* Specific fix for Weddings: Ensure grid gap handling if needed */
+.row.g-3 > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+}
+
+.extra-option {
+    display: none;
+}
+
+.extra-option:checked + .extra-card-label {
+    border-color: var(--gold);
+    background-color: #fffcf5;
+    color: #000;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.15);
+}
+
+.extra-option:checked + .extra-card-label .extra-card-icon {
+    color: var(--gold);
+}
+
+.extra-option:checked + .extra-card-label .extra-price {
+    color: #444;
+}
+
+/* Extra Description in Cards */
+.extra-description {
+    font-size: 0.85rem;
+    color: #777;
+    margin: 6px auto 4px auto;
+    font-weight: 400;
+    line-height: 1.35;
+    max-width: 95%;
+    text-align: center;
+    min-height: 2.7em; /* Force at least 2 lines height for alignment */
+    display: flex;
+    align-items: center; /* Center text vertically if 1 line */
+    justify-content: center;
+}
+
+.package-option:checked + .package-label .extra-description,
+.extra-option:checked + .extra-card-label .extra-description {
+    color: #555;
 }

@@ -192,6 +192,12 @@
     <!-- CALCULATOR -->
     <section class="calc-section" id="calculator">
         <div class="container">
+            <h2 class="text-center mb-4">Калкулатор Свето Кръщение</h2>
+            <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
+                Проверете цената за заснемане на кръщене във Варна и региона. Предлагаме гъвкави пакети за фото и видео,
+                които улавят всеки важен момент от ритуала и празненството. Съхранете светостта на празника с Take Two
+                Studio.
+            </p>
             <form id="baptismCalcForm" action="submit_order.php" method="post">
                 <div class="row g-5">
 
@@ -236,24 +242,22 @@
                                 Времетраене</h4>
                             <div class="row g-3 mb-5">
                                 <div class="col-md-6">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="radio" name="bap_scope" id="scopeChurch"
-                                            value="0" data-label="Само Църква" checked
-                                            onchange="calculateBaptismTotal()">
-                                        <label class="form-check-label fw-bold mx-2" for="scopeChurch">Само
-                                            Църква/Ритуал<br><small class="text-muted fw-normal">(До 1.5
-                                                часа)</small></label>
-                                    </div>
+                                    <input class="extra-option" type="radio" name="bap_scope" id="scopeChurch" value="0"
+                                        data-label="Само Църква" checked onchange="calculateBaptismTotal()">
+                                    <label class="extra-card-label" for="scopeChurch">
+                                        <i class="fas fa-church extra-card-icon"></i>
+                                        <span>Само Църква/Ритуал</span>
+                                        <span class="extra-price">До 1.5 часа</span>
+                                    </label>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="radio" name="bap_scope" id="scopeRest"
-                                            value="30" data-label="Църква + Ресторант"
-                                            onchange="calculateBaptismTotal()">
-                                        <label class="form-check-label fw-bold mx-2" for="scopeRest">Църква +
-                                            Ресторант<br><small class="text-muted fw-normal">(+€ 30 / 59.87 лв., До 3.5
-                                                часа)</small></label>
-                                    </div>
+                                    <input class="extra-option" type="radio" name="bap_scope" id="scopeRest" value="30"
+                                        data-label="Църква + Ресторант" onchange="calculateBaptismTotal()">
+                                    <label class="extra-card-label" for="scopeRest">
+                                        <i class="fas fa-utensils extra-card-icon"></i>
+                                        <span>Църква + Ресторант</span>
+                                        <span class="extra-price">+€ 30 / 59.87 лв.<br>До 3.5 часа</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -261,28 +265,31 @@
                             <h4 class="mb-4"><i class="fas fa-gift me-2 text-warning"></i> Екстри</h4>
                             <div class="row g-3">
                                 <div class="col-md-4">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="bap_album" id="bapAlbum"
-                                            value="26" onchange="calculateBaptismTotal()">
-                                        <label class="form-check-label fw-bold mx-2"
-                                            for="bapAlbum">Фотокнига<br>(+€ 26 / 51.89 лв.)</label>
-                                    </div>
+                                    <input class="extra-option" type="checkbox" name="bap_album" id="bapAlbum"
+                                        value="26" onchange="calculateBaptismTotal()">
+                                    <label class="extra-card-label" for="bapAlbum">
+                                        <i class="fas fa-book-open extra-card-icon"></i>
+                                        <span>Фотокнига</span>
+                                        <span class="extra-price">+€ 26 / 51.89 лв.</span>
+                                    </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="bap_usb" id="bapUSB"
-                                            value="6" onchange="calculateBaptismTotal()">
-                                        <label class="form-check-label fw-bold mx-2"
-                                            for="bapUSB">Флашка<br>(+€ 6 / 11.97 лв.)</label>
-                                    </div>
+                                    <input class="extra-option" type="checkbox" name="bap_usb" id="bapUSB" value="6"
+                                        onchange="calculateBaptismTotal()">
+                                    <label class="extra-card-label" for="bapUSB">
+                                        <i class="fas fa-hdd extra-card-icon"></i>
+                                        <span>Флашка</span>
+                                        <span class="extra-price">+€ 6 / 11.97 лв.</span>
+                                    </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="bap_express"
-                                            id="bapExpress" value="50" onchange="calculateBaptismTotal()">
-                                        <label class="form-check-label fw-bold mx-2" for="bapExpress">Експресно (3
-                                            дни)<br>(+€ 50 / 99.79 лв.)</label>
-                                    </div>
+                                    <input class="extra-option" type="checkbox" name="bap_express" id="bapExpress"
+                                        value="50" onchange="calculateBaptismTotal()">
+                                    <label class="extra-card-label" for="bapExpress">
+                                        <i class="fas fa-bolt extra-card-icon"></i>
+                                        <span>Експресно (3 дни)</span>
+                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                    </label>
                                 </div>
                             </div>
 
