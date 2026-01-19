@@ -293,8 +293,7 @@
                     <div class="col-lg-4">
                         <div class="total-price-box">
                             <h5 class="text-uppercase text-white-50">Обща Цена</h5>
-                            <div class="price-display"><span
-                                    id="finalPrice" style="font-size: 1.5rem">€ 140 / 279.42 лв.</span></div>
+                            <div class="price-display">€ <span id="finalPrice">140</span> / <span id="finalPriceBgn">279.42</span> лв.</div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">
@@ -531,7 +530,9 @@
             // --- ВИЗУАЛИЗАЦИЯ ---
 
 
-            document.getElementById('finalPrice').innerText = "€ " + total + " / " + (total * 1.99583).toFixed(2) + " лв.";
+            // 1. Обща цена
+            let startVal = parseInt(document.getElementById('finalPrice').innerText) || 0;
+            animateValue("finalPrice", startVal, total, 300);
 
 
             document.getElementById('sumService').innerText = serviceText;
@@ -556,7 +557,42 @@
             document.getElementById('hiddenDetails').value = fullDetails;
         }
 
+        let priceInterval = null;
+
         function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            // Clear existing interval if any
+            if (priceInterval) clearInterval(priceInterval);
+
+            const range = end - start;
+            const minTimer = 10;
+            const steps = duration / minTimer; 
+            const increment = range / steps;
+            
+            let current = start;
+            let count = 0;
+            
+            const obj = document.getElementById(id);
+            const objBgn = document.getElementById(id + "Bgn");
+
+            priceInterval = setInterval(function () {
+                count++;
+                
+                const progress = count / steps;
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                
+                current = start + (range * easedProgress);
+                
+                if (count >= steps) {
+                    current = end;
+                    clearInterval(priceInterval);
+                }
+                
+                obj.innerText = Math.round(current);
+                if (objBgn) {
+                    objBgn.innerText = (current * 1.99583).toFixed(2);
+                }
+            }, minTimer);
         }
 
         window.onload = calculateBaptismTotal;

@@ -265,44 +265,62 @@
 
                             <h6 class="calc-sub-header">Видео Оператори</h6>
                             <div class="row g-3 mb-4">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <input type="radio" name="operators" id="op0" class="package-option" value="0"
+                                        data-label="Видео: Без" onchange="calculateTotal()">
+                                    <label for="op0" class="package-label">
+                                        <i class="fas fa-ban package-icon"></i>
+                                        <strong>Без</strong>
+                                        <span class="d-block small text-muted mt-1">€ 0</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
                                     <input type="radio" name="operators" id="op1" class="package-option" value="895"
                                         data-label="Видео: 1 човек" checked onchange="calculateTotal()">
                                     <label for="op1" class="package-label">
                                         <i class="fas fa-video package-icon"></i>
-                                        <strong>Един Оператор</strong>
-                                        <span class="d-block small text-muted mt-1">€ 895 / 1786.27 лв.</span>
+                                        <strong>Един</strong>
+                                        <span class="d-block small text-muted mt-1">€ 895</span>
                                     </label>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <input type="radio" name="operators" id="op2" class="package-option" value="1120"
                                         data-label="Видео: 2 човека" onchange="calculateTotal()">
                                     <label for="op2" class="package-label">
                                         <i class="fas fa-film package-icon"></i>
-                                        <strong>Двама Оператори</strong>
-                                        <span class="d-block small text-muted mt-1">€ 1120 / 2235.33 лв.</span>
+                                        <strong>Двама</strong>
+                                        <span class="d-block small text-muted mt-1">€ 1120</span>
                                     </label>
                                 </div>
                             </div>
 
                             <h6 class="calc-sub-header">Фотографи</h6>
                             <div class="row g-3 mb-4">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <input type="radio" name="photographers" id="ph0" class="package-option" value="0"
+                                        data-label="Фото: Без" onchange="calculateTotal()">
+                                    <label for="ph0" class="package-label">
+                                        <i class="fas fa-ban package-icon"></i>
+                                        <strong>Без</strong>
+                                        <span class="d-block small text-muted mt-1">€ 0</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
                                     <input type="radio" name="photographers" id="ph1" class="package-option" value="895"
                                         data-label="Фото: 1 човек" checked onchange="calculateTotal()">
                                     <label for="ph1" class="package-label">
                                         <i class="fas fa-camera package-icon"></i>
-                                        <strong>Един Фотограф</strong>
-                                        <span class="d-block small text-muted mt-1">€ 895 / 1786.27 лв.</span>
+                                        <strong>Един</strong>
+                                        <span class="d-block small text-muted mt-1">€ 895</span>
                                     </label>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <input type="radio" name="photographers" id="ph2" class="package-option"
                                         value="1120" data-label="Фото: 2 човека" onchange="calculateTotal()">
                                     <label for="ph2" class="package-label">
                                         <i class="fas fa-images package-icon"></i>
-                                        <strong>Двама Фотографи</strong>
-                                        <span class="d-block small text-muted mt-1">€ 1120 / 2235.33 лв.</span>
+                                        <strong>Двама</strong>
+                                        <span class="d-block small text-muted mt-1">€ 1120</span>
                                     </label>
                                 </div>
                             </div>
@@ -350,18 +368,18 @@
                                     <div class="custom-check-wrapper">
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="film_length" id="len60"
-                                                value="-50" data-label="Филм: 30мин" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len60">До 30 мин (-€ 50 / 99.79 лв.)</label>
+                                                value="-25" data-label="Филм: 60мин" onchange="calculateTotal()">
+                                            <label class="form-check-label" for="len60">До 60 мин (-€ 25 / 49.90 лв.)</label>
                                         </div>
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="film_length" id="len90"
-                                                value="0" data-label="Филм: 60мин" checked onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len90">До 60 мин (Стандарт)</label>
+                                                value="0" data-label="Филм: 90мин" checked onchange="calculateTotal()">
+                                            <label class="form-check-label" for="len90">До 90 мин (Стандарт)</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="film_length" id="len120"
-                                                value="50" data-label="Филм: 90мин" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="len120">До 90 мин (+€ 50 / 99.79 лв.)</label>
+                                                value="50" data-label="Филм: 120мин" onchange="calculateTotal()">
+                                            <label class="form-check-label" for="len120">До 120 мин (+€ 50 / 99.79 лв.)</label>
                                         </div>
                                     </div>
                                 </div>
@@ -371,14 +389,14 @@
                                     <div class="custom-check-wrapper">
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="film_resolution"
-                                                id="resFHD" value="0" data-label="Res: FHD" checked
+                                                id="resFHD" value="0" data-label="Res: 4K" checked
                                                 onchange="calculateTotal()">
-                                            <label class="form-check-label" for="resFHD">Full HD (Стандарт)</label>
+                                            <label class="form-check-label" for="resFHD">4K UHD (Стандарт)</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="film_resolution"
-                                                id="res4K" value="50" data-label="Res: 4K" onchange="calculateTotal()">
-                                            <label class="form-check-label" for="res4K">4K UHD (+€ 50 / 99.79 лв.)</label>
+                                                id="res4K" value="50" data-label="Res: 6K" onchange="calculateTotal()">
+                                            <label class="form-check-label" for="res4K">6K (+€ 50 / 99.79 лв.)</label>
                                         </div>
                                     </div>
                                 </div>
@@ -387,13 +405,7 @@
                             <!-- ЕКСТРИ -->
                             <h4 class="mb-4 mt-5"><i class="fas fa-plus-circle me-2 text-warning"></i> Екстри</h4>
                             <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="custom-check-wrapper d-flex align-items-center"><input
-                                            class="form-check-input me-2" type="checkbox" id="stab" value="100"
-                                            data-label="Стабилизация" onchange="calculateTotal()"><label
-                                            class="form-check-label" for="stab">Ел. стабилизация (+€ 100 / 199.58 лв.)</label>
-                                    </div>
-                                </div>
+                                <!-- Removed Stabilization -->
                                 <div class="col-md-6">
                                     <div class="custom-check-wrapper d-flex align-items-center"><input
                                             class="form-check-input me-2" type="checkbox" id="audio" value="50"
@@ -425,23 +437,18 @@
                             <div class="custom-check-wrapper">
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="recording" value="0"
-                                        data-label="Запис: Облак" checked onchange="calculateTotal()">
-                                    <label class="form-check-label">Облак (Стандарт)</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="recording" value="20"
-                                        data-label="Запис: USB" onchange="calculateTotal()">
-                                    <label class="form-check-label">Флашка USB 3.0 (+€ 20 / 39.92 лв.)</label>
+                                        data-label="Запис: Облак+USB" checked onchange="calculateTotal()">
+                                    <label class="form-check-label">Облак + Флашка USB 3.0 (Стандарт)</label>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="recording" value="40"
-                                        data-label="Запис: USB+Кутия" onchange="calculateTotal()">
-                                    <label class="form-check-label">Флашка + Кутия (+€ 40 / 79.83 лв.)</label>
+                                        data-label="Запис: Облак+USB+Кутия" onchange="calculateTotal()">
+                                    <label class="form-check-label">Облак + Флашка + Кутия (+€ 40 / 79.83 лв.)</label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="recording" value="160"
                                         data-label="Запис: Пълен" onchange="calculateTotal()">
-                                    <label class="form-check-label">Флашка + Кутия + Албум (+€ 160 / 319.33 лв.)</label>
+                                    <label class="form-check-label">Облак + Флашка + Кутия + Албум (+€ 160 / 319.33 лв.)</label>
                                 </div>
                             </div>
                         </div>
@@ -451,8 +458,7 @@
                     <div class="col-lg-4">
                         <div class="total-price-box">
                             <h5 class="text-uppercase text-white-50">Обща Сума</h5>
-                            <div class="price-display"><span id="finalPrice">0</span> <span
-                                    style="font-size: 1.5rem"></span></div>
+                            <div class="price-display">€ <span id="finalPrice">0</span> / <span id="finalPriceBgn">0.00</span> лв.</div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">
@@ -540,6 +546,24 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+    <!-- Validation Modal -->
+    <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="validationModalLabel"><i class="fas fa-exclamation-triangle me-2"></i> Внимание</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-dark">
+                    Трябва да изберете поне една основна услуга (Видео или Фотография)!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Разбрах</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         AOS.init();
         const lightbox = GLightbox({
@@ -556,7 +580,7 @@
 
             // --- ЕКИП ---
             const videoOp = document.querySelector('input[name="operators"]:checked');
-            if (videoOp) {
+            if (videoOp && parseInt(videoOp.value) > 0) {
                 total += parseInt(videoOp.value);
                 let label = videoOp.getAttribute('data-label').replace('Видео: ', 'Видео: ').replace(' човек', '')
                     .replace('а', '');
@@ -564,11 +588,23 @@
             }
 
             const photoOp = document.querySelector('input[name="photographers"]:checked');
-            if (photoOp) {
+            if (photoOp && parseInt(photoOp.value) > 0) {
                 total += parseInt(photoOp.value);
                 let label = photoOp.getAttribute('data-label').replace('Фото: ', 'Фото: ').replace(' човек', '')
                     .replace('а', '');
                 teamText.push(label);
+            }
+
+            // --- VALIDATION: At least one service must be selected ---
+            if (videoOp && photoOp && parseInt(videoOp.value) === 0 && parseInt(photoOp.value) === 0) {
+                // Show Bootstrap Modal
+                const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
+                validationModal.show();
+                
+                // Force select Video 1 operator (default)
+                document.getElementById('op1').checked = true;
+                // Recalculate
+                return calculateTotal();
             }
 
             // --- ДЕТАЙЛИ ---
@@ -594,7 +630,7 @@
             const res = document.querySelector('input[name="film_resolution"]:checked');
             if (res) {
                 total += parseInt(res.value);
-                if (res.value != "0") detailsText.push("4K");
+                if (res.value != "0") detailsText.push("6K");
             }
 
             // --- ЕКСТРИ ---
@@ -606,7 +642,7 @@
                 }
             }
 
-            checkExtra('stab', 'Стабилизация');
+
             checkExtra('audio', 'Аудио');
             checkExtra('drone', 'Дрон');
             checkExtra('light', 'Осветление');
@@ -622,7 +658,10 @@
             // --- ВИЗУАЛИЗАЦИЯ ---
 
             // 1. Обща цена
-            document.getElementById('finalPrice').innerText = "€ " + total + " / " + (total * 1.99583).toFixed(2) + " лв.";
+            // 1. Обща цена (с анимация)
+            // Взимаме старата стойност от елемента ("0" или някоя сума)
+            let startVal = parseInt(document.getElementById('finalPrice').innerText) || 0;
+            animateValue("finalPrice", startVal, total, 300);
 
             // 2. Попълване на текстовете
 
@@ -652,6 +691,51 @@
             if (extrasText.length > 0) fullDescription += "ЕКСТРИ: " + extrasText.join(", ");
 
             document.getElementById('hiddenDetails').value = fullDescription;
+        }
+
+        let priceInterval = null;
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            // Clear existing interval if any
+            if (priceInterval) clearInterval(priceInterval);
+
+            const range = end - start;
+            const minTimer = 10; // 10ms step
+            let stepTime = Math.abs(Math.floor(duration / (range / (end > start ? 1 : -1))));
+            
+            // If stepTime is too small (meaning range is huge), we need to increment by more than 1
+            // or we simplify: always run every 10ms, calculate increment
+            
+            const steps = duration / minTimer; 
+            const increment = range / steps;
+            
+            let current = start;
+            let count = 0;
+            
+            const obj = document.getElementById(id);
+            const objBgn = document.getElementById(id + "Bgn"); // Търсим елемента за левовете
+
+            priceInterval = setInterval(function () {
+                count++;
+                
+                // Progress from 0 to 1
+                const progress = count / steps;
+                // Ease-out Cubic: 1 - (1 - t)^3
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                
+                current = start + (range * easedProgress);
+                
+                if (count >= steps) {
+                    current = end;
+                    clearInterval(priceInterval);
+                }
+                
+                obj.innerText = Math.round(current);
+                if (objBgn) {
+                    objBgn.innerText = (current * 1.99583).toFixed(2);
+                }
+            }, minTimer);
         }
 
         window.onload = calculateTotal;

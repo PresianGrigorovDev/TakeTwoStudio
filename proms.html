@@ -558,25 +558,42 @@
             document.getElementById('hiddenDetails').value = detailsArr.join(", ");
         }
 
+        let priceInterval = null;
+
         function animateValue(id, start, end, duration) {
             if (start === end) return;
+            // Clear existing interval if any
+            if (priceInterval) clearInterval(priceInterval);
+
             const range = end - start;
+            const minTimer = 10;
+            const steps = duration / minTimer; 
+            const increment = range / steps;
+            
             let current = start;
-            const increment = end > start ? 1 : -1;
-            const stepTime = Math.abs(Math.floor(duration / (range / increment)));
+            let count = 0;
+            
             const obj = document.getElementById(id);
             const objBgn = document.getElementById(id + "Bgn");
-            const timer = setInterval(function () {
-                current += increment;
-                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+
+            priceInterval = setInterval(function () {
+                count++;
+                
+                const progress = count / steps;
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                
+                current = start + (range * easedProgress);
+                
+                if (count >= steps) {
                     current = end;
-                    clearInterval(timer);
+                    clearInterval(priceInterval);
                 }
-                obj.innerHTML = current;
+                
+                obj.innerHTML = Math.round(current);
                 if (objBgn) {
                     objBgn.innerHTML = (current * 1.99583).toFixed(2);
                 }
-            }, Math.max(stepTime, 10));
+            }, minTimer);
         }
 
         window.onload = calculatePromTotal;
