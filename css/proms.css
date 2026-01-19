@@ -513,3 +513,61 @@ footer ul li a:hover {
 .fs-5 {
     font-size: 1rem !important;
 }
+
+/* --- Extra Cards Styling --- */
+.extra-option {
+    display: none;
+}
+
+.extra-card-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #eee;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s all ease;
+    height: 100%;
+    background: #fff;
+    font-weight: 600;
+    color: #555;
+    position: relative;
+}
+
+.extra-card-label:hover {
+    border-color: #ccc;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.extra-option:checked + .extra-card-label {
+    border-color: var(--accent);
+    background-color: #fffcf5;
+    color: #000;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.15);
+}
+
+.extra-card-icon {
+    font-size: 1.8rem;
+    color: #ccc;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.extra-option:checked + .extra-card-label .extra-card-icon {
+    color: var(--accent);
+}
+
+.extra-price {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+.extra-option:checked + .extra-card-label .extra-price {
+    color: #444;
+}

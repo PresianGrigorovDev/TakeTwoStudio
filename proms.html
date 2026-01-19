@@ -329,6 +329,7 @@
                                             <li><i class="fas fa-check"></i> Канене на класен / Изпращане</li>
                                             <li><i class="fas fa-check"></i> Бал и Филм</li>
                                             <li><i class="fas fa-check"></i> Онлайн Галерия + Дрон</li>
+                                            <li><i class="fas fa-check"></i> <strong>Флашка</strong></li>
                                         </ul>
                                     </label>
                                 </div>
@@ -337,30 +338,60 @@
                             <!-- 2. ALBUMS & EXTRAS -->
                             <h4 class="mb-4 text-center"><i class="fas fa-book-open me-2 text-warning"></i> Добавки</h4>
                             <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="album_small" id="stdAlbum"
-                                            value="15" data-label="Албум 10x15" onchange="calculatePromTotal()">
-                                        <label class="form-check-label fw-bold mx-4" for="stdAlbum">Фото книга
-                                            (10x15)<br>(+€ 15 / 29.94 лв.)</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="album_large"
-                                            id="custAlbum" value="30" data-label="Голяма Фото книга"
-                                            onchange="calculatePromTotal()">
-                                        <label class="form-check-label fw-bold mx-4" for="custAlbum">Голяма фото
-                                            книга<br>(+€ 30 / 59.87 лв.)</label>
-                                    </div>
-                                </div>
+                                <!-- Studio Session -->
                                 <div class="col-md-12">
-                                    <div class="form-check custom-check-wrapper">
-                                        <input class="form-check-input" type="checkbox" name="usb" id="usbDrive"
-                                            value="5" data-label="Флашка" onchange="calculatePromTotal()">
-                                        <label class="form-check-label fw-bold mx-4" for="usbDrive">Запис на външен
-                                            носител (Флашка)<br>(+€ 5 / 9.98 лв.)</label>
-                                    </div>
+                                    <input class="extra-option" type="checkbox" name="studio_session" id="studioSession"
+                                        value="25" data-label="Студийна фотосесия" onchange="calculatePromTotal()">
+                                    <label class="extra-card-label" for="studioSession">
+                                        <i class="fas fa-camera-retro extra-card-icon"></i>
+                                        <span>Студийна фотосесия</span>
+                                        <span class="extra-price">+€ 25 / 49.90 лв.</span>
+                                    </label>
+                                </div>
+
+                                <!-- Albums Header -->
+                                <div class="col-12 mt-4">
+                                    <h6 class="text-white text-center mb-0">Избор на албум</h6>
+                                </div>
+
+                                <!-- Albums Grid -->
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="prom_album" id="noAlbum" value="0"
+                                        data-label="Без албум" checked onchange="calculatePromTotal()">
+                                    <label class="extra-card-label" for="noAlbum">
+                                        <i class="fas fa-ban extra-card-icon"></i>
+                                        <span>Без албум</span>
+                                        <span class="extra-price">Стандарт</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="prom_album" id="stdAlbum" value="15"
+                                        data-label="Малък Албум" onchange="calculatePromTotal()">
+                                    <label class="extra-card-label" for="stdAlbum">
+                                        <i class="fas fa-book extra-card-icon"></i>
+                                        <span>Фото книга (10x15)</span>
+                                        <span class="extra-price">+€ 15 / 29.94 лв.</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="extra-option" type="radio" name="prom_album" id="custAlbum" value="30"
+                                        data-label="Голям Албум" onchange="calculatePromTotal()">
+                                    <label class="extra-card-label" for="custAlbum">
+                                        <i class="fas fa-book-open extra-card-icon"></i>
+                                        <span>Голяма фото книга</span>
+                                        <span class="extra-price">+€ 30 / 59.87 лв.</span>
+                                    </label>
+                                </div>
+
+                                <!-- USB Drive -->
+                                <div class="col-md-12 mt-3" id="usbContainer">
+                                    <input class="extra-option" type="checkbox" name="usb" id="usbDrive" value="5"
+                                        data-label="Флашка" onchange="calculatePromTotal()">
+                                    <label class="extra-card-label" for="usbDrive">
+                                        <i class="fas fa-hdd extra-card-icon"></i>
+                                        <span>Запис на флашка (USB)</span>
+                                        <span class="extra-price">+€ 5 / 9.98 лв.</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -501,23 +532,37 @@
 
             // 1. ПАКЕТ
             const pkg = document.querySelector('input[name="prom_package"]:checked');
+            const usbContainer = document.getElementById('usbContainer');
+            const usbDrive = document.getElementById('usbDrive');
+
             if (pkg) {
                 total += parseInt(pkg.value);
                 pkgName = pkg.getAttribute('data-label').replace('Пакет ', '');
                 detailsArr.push(pkg.getAttribute('data-label'));
+
+                // Ако е ЛУКС пакет, скриваме флашката (тя е в цената)
+                if (pkg.id === "lux") {
+                    usbContainer.style.display = "none";
+                    if (usbDrive.checked) usbDrive.checked = false; // Махаме отметката, за да не се начислява
+                } else {
+                    usbContainer.style.display = "block";
+                }
             }
 
             // 2. ЕКСТРИ
-            if (document.getElementById('stdAlbum').checked) {
-                total += parseInt(document.getElementById('stdAlbum').value);
-                extrasNames.push("Малък Албум");
-                detailsArr.push("Малък Албум");
+            // Студийна фотосесия
+            if (document.getElementById('studioSession').checked) {
+                total += parseInt(document.getElementById('studioSession').value);
+                extrasNames.push("Студийна фотосесия");
+                detailsArr.push("Студийна фотосесия");
             }
 
-            if (document.getElementById('custAlbum').checked) {
-                total += parseInt(document.getElementById('custAlbum').value);
-                extrasNames.push("Голям Албум");
-                detailsArr.push("Голям Албум");
+            // Албуми (Radio)
+            const album = document.querySelector('input[name="prom_album"]:checked');
+            if (album && parseInt(album.value) > 0) {
+                total += parseInt(album.value);
+                extrasNames.push(album.getAttribute('data-label'));
+                detailsArr.push(album.getAttribute('data-label'));
             }
 
             if (document.getElementById('usbDrive').checked) {
