@@ -535,3 +535,29 @@ footer ul li a:hover {
 .extra-option:checked + .extra-card-label .extra-description {
     color: #555;
 }
+
+/* --- PRICE DISPLAY OPTIMIZATION --- */
+/* Prevent price wrapping globally & Make Bold */
+.package-label span.small,       /* Prices in main package cards */
+.extra-price,                    /* Prices in extra cards */
+.price-display,                  /* Total price main display */
+.price-display span,             /* Spans inside total price */
+.extra-price-tag                 /* New class for baptism refactor */
+{
+    white-space: nowrap !important;
+    font-weight: 700 !important; /* Bold as requested */
+}
+
+/* Responsive adjustment for small screens (Mobile) */
+@media (max-width: 480px) {
+    .package-label span.small,
+    .extra-price,
+    .extra-price-tag {
+        font-size: 0.75rem !important; /* Scale down slightly to fit 320-400px screens */
+        letter-spacing: -0.5px;        /* Condense text slightly */
+    }
+    
+    .price-display {
+        font-size: 1.6rem !important;  /* Scale down huge total price */
+    }
+}

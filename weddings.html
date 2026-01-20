@@ -514,7 +514,7 @@
                                 <input type="text" name="phone" class="form-control mb-2 rounded-0"
                                     placeholder="Телефон" required>
                                 <input type="date" name="date" class="form-control mb-2 rounded-0"
-                                    placeholder="Дата на сватбата" required>
+                                    placeholder="Дата на сватбата" required onclick="this.showPicker()">
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>
                             </div>
                         </div>
@@ -611,7 +611,75 @@
             selector: '.glightbox'
         });
 
+        // Initial call to set state correctly
+        window.addEventListener('DOMContentLoaded', () => {
+             updateCalculatorUI();
+             calculateTotal();
+        });
+
+        function updateCalculatorUI() {
+            const videoOp = document.querySelector('input[name="operators"]:checked');
+            const photoOp = document.querySelector('input[name="photographers"]:checked');
+            
+            const hasVideo = videoOp && parseInt(videoOp.value) > 0;
+            const hasPhoto = photoOp && parseInt(photoOp.value) > 0;
+
+            // Helper to enable/disable specific input by ID
+            const setDisabled = (id, disabled) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.disabled = disabled;
+                    // Find parent label to visually gray out
+                    const label = document.querySelector(`label[for="${id}"]`);
+                    if (label) {
+                        label.style.opacity = disabled ? "0.5" : "1";
+                        label.style.pointerEvents = disabled ? "none" : "auto";
+                    }
+                }
+            };
+
+            // Helper for named radios
+            const setDisabledByName = (name, disabled) => {
+                const els = document.querySelectorAll(`input[name="${name}"]`);
+                els.forEach(el => {
+                    el.disabled = disabled;
+                    const label = document.querySelector(`label[for="${el.id}"]`);
+                    if (label) {
+                        label.style.opacity = disabled ? "0.5" : "1";
+                        label.style.pointerEvents = disabled ? "none" : "auto";
+                    }
+                });
+            };
+
+            // VIDEO EXTRAS
+            const videoExtras = ['audio', 'drone', 'light', 'vcard'];
+            videoExtras.forEach(id => setDisabled(id, !hasVideo));
+            setDisabledByName('film_length', !hasVideo);
+            setDisabledByName('film_resolution', !hasVideo);
+
+            // PHOTO EXTRAS
+            setDisabled('afterWedding', !hasPhoto);
+            
+            // DELIVERY - Album specific
+            const albumEl = document.getElementById('recAlbum');
+            if (albumEl) {
+                albumEl.disabled = !hasPhoto;
+                const label = document.querySelector(`label[for="recAlbum"]`);
+                if (label) {
+                    label.style.opacity = !hasPhoto ? "0.5" : "1";
+                    label.style.pointerEvents = !hasPhoto ? "none" : "auto";
+                }
+                // If album is selected but photo is disabled, switch to default
+                if (!hasPhoto && albumEl.checked) {
+                    document.getElementById('recCloud').checked = true;
+                }
+            }
+        }
+
         function calculateTotal() {
+            // First update UI state (gray out items)
+            updateCalculatorUI();
+
             let total = 0;
 
             // Масиви за текстово описание (за черната кутия)
@@ -621,7 +689,10 @@
 
             // --- ЕКИП ---
             const videoOp = document.querySelector('input[name="operators"]:checked');
-            if (videoOp && parseInt(videoOp.value) > 0) {
+            // Determine if video is active for calculation
+            const hasVideo = videoOp && parseInt(videoOp.value) > 0;
+            
+            if (hasVideo) {
                 total += parseInt(videoOp.value);
                 let label = videoOp.getAttribute('data-label').replace('Видео: ', 'Видео: ').replace(' човек', '')
                     .replace('а', '');
@@ -629,7 +700,10 @@
             }
 
             const photoOp = document.querySelector('input[name="photographers"]:checked');
-            if (photoOp && parseInt(photoOp.value) > 0) {
+            // Determine if photo is active for calculation
+            const hasPhoto = photoOp && parseInt(photoOp.value) > 0;
+
+            if (hasPhoto) {
                 total += parseInt(photoOp.value);
                 let label = photoOp.getAttribute('data-label').replace('Фото: ', 'Фото: ').replace(' човек', '')
                     .replace('а', '');
@@ -637,7 +711,7 @@
             }
 
             // --- VALIDATION: At least one service must be selected ---
-            if (videoOp && photoOp && parseInt(videoOp.value) === 0 && parseInt(photoOp.value) === 0) {
+            if (!hasVideo && !hasPhoto) {
                 // Show Bootstrap Modal
                 const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
                 validationModal.show();
@@ -649,25 +723,27 @@
             }
 
             // --- ДЕТАЙЛИ ---
-            // Cameras Removed (Assuming standard included)
-
-            // After Wedding Session (Checkbox)
+            
+            // PHOTO ONLY: After Wedding Session
             const afterWed = document.getElementById('afterWedding');
-            if (afterWed && afterWed.checked) {
+            if (hasPhoto && afterWed && afterWed.checked) {
                 total += parseInt(afterWed.value);
                 detailsText.push("Следсватбена");
             }
 
-            const len = document.querySelector('input[name="film_length"]:checked');
-            if (len) {
-                total += parseInt(len.value);
-                if (len.value != "0") detailsText.push(len.getAttribute('data-label').replace('Филм: ', ''));
-            }
+            // VIDEO ONLY: Film Length
+            if (hasVideo) {
+                const len = document.querySelector('input[name="film_length"]:checked');
+                if (len) {
+                    total += parseInt(len.value);
+                    if (len.value != "0") detailsText.push(len.getAttribute('data-label').replace('Филм: ', ''));
+                }
 
-            const res = document.querySelector('input[name="film_resolution"]:checked');
-            if (res) {
-                total += parseInt(res.value);
-                if (res.value != "0") detailsText.push("6K");
+                const res = document.querySelector('input[name="film_resolution"]:checked');
+                if (res) {
+                    total += parseInt(res.value);
+                    if (res.value != "0") detailsText.push("6K");
+                }
             }
 
             // --- ЕКСТРИ ---
@@ -679,24 +755,28 @@
                 }
             }
 
-
-            checkExtra('audio', 'Аудио');
-            checkExtra('drone', 'Дрон');
-            checkExtra('light', 'Осветление');
-            checkExtra('vcard', 'Визитка');
+            if (hasVideo) {
+                checkExtra('audio', 'Аудио');
+                checkExtra('drone', 'Дрон');
+                checkExtra('light', 'Осветление');
+                checkExtra('vcard', 'Визитка');
+            }
 
             const usb = document.querySelector('input[name="recording"]:checked');
             if (usb) {
-                total += parseInt(usb.value);
-                // Показваме само ако е флашка или кутия
-                if (parseInt(usb.value) > 0) extrasText.push(usb.getAttribute('data-label').replace('Запис: ', ''));
+                // Determine if this delivery method is allowed
+                // If it is Album (value 120), it requires Photo
+                const isAlbum = usb.id === 'recAlbum';
+                
+                if (!isAlbum || hasPhoto) {
+                   total += parseInt(usb.value);
+                   if (parseInt(usb.value) > 0) extrasText.push(usb.getAttribute('data-label').replace('Запис: ', ''));
+                }
             }
 
             // --- ВИЗУАЛИЗАЦИЯ ---
 
-            // 1. Обща цена
             // 1. Обща цена (с анимация)
-            // Взимаме старата стойност от елемента ("0" или някоя сума)
             let startVal = parseInt(document.getElementById('finalPrice').innerText) || 0;
             animateValue("finalPrice", startVal, total, 300);
 
@@ -741,9 +821,6 @@
             const minTimer = 10; // 10ms step
             let stepTime = Math.abs(Math.floor(duration / (range / (end > start ? 1 : -1))));
             
-            // If stepTime is too small (meaning range is huge), we need to increment by more than 1
-            // or we simplify: always run every 10ms, calculate increment
-            
             const steps = duration / minTimer; 
             const increment = range / steps;
             
@@ -774,8 +851,6 @@
                 }
             }, minTimer);
         }
-
-        window.onload = calculateTotal;
     </script>
 </body>
 
