@@ -337,12 +337,11 @@
                                 </div>
                             </div>
 
-                            <!-- ДЕТАЙЛИ -->
-                            <h4 class="mb-4 mt-5"><i class="fas fa-sliders-h me-2 text-warning"></i> Детайли</h4>
+                            <!-- ФОТО ДОБАВКИ -->
+                            <h4 class="mb-4 mt-5"><i class="fas fa-camera me-2 text-warning"></i> Фото Добавки</h4>
                             <div class="row g-3">
                                 <!-- After Wedding Session (Checkbox) -->
-                                <div class="col-12"><h6 class="text-white mb-2">Фотосесии</h6></div>
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <input class="extra-option" type="checkbox" id="afterWedding" value="110"
                                         data-label="Следсватбена сесия" onchange="calculateTotal()">
                                     <label class="extra-card-label" for="afterWedding">
@@ -352,9 +351,23 @@
                                         <span class="extra-price">+€ 110 / 215.14 лв.</span>
                                     </label>
                                 </div>
+                                <div class="col-md-6">
+                                    <input class="extra-option" type="checkbox" id="light" value="130"
+                                        data-label="Осветление" onchange="calculateTotal()">
+                                    <label class="extra-card-label" for="light">
+                                        <i class="fas fa-lightbulb extra-card-icon"></i>
+                                        <span>Осветление</span>
+                                        <p class="extra-description">Допълнително професионално осветление за партито.</p>
+                                        <span class="extra-price">+€ 130 / 259.46 лв.</span>
+                                    </label>
+                                </div>
+                            </div>
 
+                            <!-- ВИДЕО ДОБАВКИ -->
+                            <h4 class="mb-4 mt-5"><i class="fas fa-video me-2 text-warning"></i> Видео Добавки</h4>
+                            <div class="row g-3">
                                 <!-- Film Length -->
-                                <div class="col-12 mt-4"><h6 class="text-white mb-2">Дължина на филма</h6></div>
+                                <div class="col-12"><h6 class="calc-sub-header">Дължина на филма</h6></div>
                                 <div class="col-md-4">
                                     <input class="extra-option" type="radio" name="film_length" id="len60" value="-25"
                                         data-label="Филм: 60мин" onchange="calculateTotal()">
@@ -362,7 +375,7 @@
                                         <i class="fas fa-hourglass-start extra-card-icon"></i>
                                         <span>До 60 мин</span>
                                         <p class="extra-description">Динамичен монтаж с най-важното.</p>
-                                        <span class="extra-price">-€ 25 / 49.90 лв.</span>
+                                        <span class="extra-price">-€ 25 / 48.89 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
@@ -382,12 +395,12 @@
                                         <i class="fas fa-hourglass-end extra-card-icon"></i>
                                         <span>До 120 мин</span>
                                         <p class="extra-description">Подробен филм с повече ритуали.</p>
-                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                        <span class="extra-price">+€ 50 / 97.79 лв.</span>
                                     </label>
                                 </div>
 
                                 <!-- Resolution -->
-                                <div class="col-12 mt-4"><h6 class="text-white mb-2">Резолюция</h6></div>
+                                <div class="col-12 mt-4"><h6 class="calc-sub-header">Резолюция на Видеото</h6></div>
                                 <div class="col-md-6">
                                     <input class="extra-option" type="radio" name="film_resolution" id="resFHD"
                                         value="0" data-label="Res: 4K" checked onchange="calculateTotal()">
@@ -405,14 +418,12 @@
                                         <i class="fas fa-cube extra-card-icon"></i>
                                         <span>6K</span>
                                         <p class="extra-description">Максимална детайлност и бъдеща устойчивост.</p>
-                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                        <span class="extra-price">+€ 50 / 97.79 лв.</span>
                                     </label>
                                 </div>
-                            </div>
 
-                            <!-- ЕКСТРИ -->
-                            <h4 class="mb-4 mt-5"><i class="fas fa-plus-circle me-2 text-warning"></i> Екстри</h4>
-                            <div class="row g-3">
+                                <!-- Допълнителни Екстри -->
+                                <div class="col-12 mt-4"><h6 class="calc-sub-header">Допълнителни Видео Екстри</h6></div>
                                 <div class="col-md-4">
                                     <input class="extra-option" type="checkbox" id="audio" value="50" data-label="Аудио"
                                         onchange="calculateTotal()">
@@ -420,30 +431,20 @@
                                         <i class="fas fa-microphone-alt extra-card-icon"></i>
                                         <span>Аудио пакет</span>
                                         <p class="extra-description">Запис на речите и ритуалите с отделни рекордери.</p>
-                                        <span class="extra-price">+€ 50 / 99.79 лв.</span>
+                                        <span class="extra-price">+€ 50 / 97.79 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input class="extra-option" type="checkbox" id="drone" value="100" data-label="Дрон"
+                                    <input class="extra-option" type="checkbox" id="drone" value="50" data-label="Дрон"
                                         onchange="calculateTotal()">
                                     <label class="extra-card-label" for="drone">
                                         <i class="fas fa-paper-plane extra-card-icon"></i>
                                         <span>Дрон</span>
                                         <p class="extra-description">Впечатляващи въздушни кадри (ако локацията позволява).</p>
-                                        <span class="extra-price">+€ 100 / 199.58 лв.</span>
+                                        <span class="extra-price">+€ 50 / 97.79 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4">
-                                    <input class="extra-option" type="checkbox" id="light" value="130"
-                                        data-label="Осветление" onchange="calculateTotal()">
-                                    <label class="extra-card-label" for="light">
-                                        <i class="fas fa-lightbulb extra-card-icon"></i>
-                                        <span>Осветление</span>
-                                        <p class="extra-description">Допълнително професионално осветление за партито.</p>
-                                        <span class="extra-price">+€ 130 / 259.46 лв.</span>
-                                    </label>
-                                </div>
-                                <div class="col-md-12">
                                     <input class="extra-option" type="checkbox" id="vcard" value="100"
                                         data-label="Видео Визитка" onchange="calculateTotal()">
                                     <label class="extra-card-label" for="vcard">
@@ -463,9 +464,9 @@
                                         data-label="Запис: Облак+USB" checked onchange="calculateTotal()">
                                     <label class="extra-card-label" for="recCloud">
                                         <i class="fas fa-cloud-download-alt extra-card-icon"></i>
-                                        <span>Облак + Флашка USB 3.0</span>
+                                        <span>Облак + Флашка в красиво изработена кутийка</span>
                                         <p class="extra-description">Онлайн архив за сваляне + физическа флашка.</p>
-                                        <span class="extra-price">Стандарт</span>
+                                        <span class="extra-price">Безплатно</span>
                                     </label>
                                 </div>
                                 <div class="col-md-6">
@@ -475,7 +476,7 @@
                                         <i class="fas fa-box-open extra-card-icon"></i>
                                         <span>Облак + Флашка + Кутия</span>
                                         <p class="extra-description">Луксозна дървена кутия с брандирана флашка.</p>
-                                        <span class="extra-price">+€ 40 / 79.83 лв.</span>
+                                        <span class="extra-price">+€ 40 / 78.23 лв.</span>
                                     </label>
                                 </div>
                                 <div class="col-md-6">
@@ -501,8 +502,8 @@
 
                             <div class="text-start mt-4 mb-4">
                                 <div class="summary-item"><span>Екип:</span> <span id="sumTeam">-</span></div>
-                                <div class="summary-item"><span>Детайли:</span> <span id="sumOptions">Стандарт</span></div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
+                                <div class="summary-item"><span>Фото Добавки:</span> <span id="sumPhoto">-</span></div>
+                                <div class="summary-item"><span>Видео Добавки:</span> <span id="sumVideo">-</span></div>
                             </div>
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
@@ -652,13 +653,14 @@
             };
 
             // VIDEO EXTRAS
-            const videoExtras = ['audio', 'drone', 'light', 'vcard'];
+            const videoExtras = ['audio', 'drone', 'vcard'];
             videoExtras.forEach(id => setDisabled(id, !hasVideo));
             setDisabledByName('film_length', !hasVideo);
             setDisabledByName('film_resolution', !hasVideo);
 
             // PHOTO EXTRAS
-            setDisabled('afterWedding', !hasPhoto);
+            const photoExtras = ['afterWedding', 'light'];
+            photoExtras.forEach(id => setDisabled(id, !hasPhoto));
             
             // DELIVERY - Album specific
             const albumEl = document.getElementById('recAlbum');
@@ -684,8 +686,8 @@
 
             // Масиви за текстово описание (за черната кутия)
             let teamText = [];
-            let detailsText = [];
-            let extrasText = [];
+            let photoText = [];
+            let videoText = [];
 
             // --- ЕКИП ---
             const videoOp = document.querySelector('input[name="operators"]:checked');
@@ -722,56 +724,59 @@
                 return calculateTotal();
             }
 
-            // --- ДЕТАЙЛИ ---
+            // --- ФОТО ДОБАВКИ ---
             
-            // PHOTO ONLY: After Wedding Session
-            const afterWed = document.getElementById('afterWedding');
-            if (hasPhoto && afterWed && afterWed.checked) {
-                total += parseInt(afterWed.value);
-                detailsText.push("Следсватбена");
-            }
-
-            // VIDEO ONLY: Film Length
-            if (hasVideo) {
-                const len = document.querySelector('input[name="film_length"]:checked');
-                if (len) {
-                    total += parseInt(len.value);
-                    if (len.value != "0") detailsText.push(len.getAttribute('data-label').replace('Филм: ', ''));
-                }
-
-                const res = document.querySelector('input[name="film_resolution"]:checked');
-                if (res) {
-                    total += parseInt(res.value);
-                    if (res.value != "0") detailsText.push("6K");
-                }
-            }
-
-            // --- ЕКСТРИ ---
-            function checkExtra(id, shortName) {
+            // PHOTO ONLY: Extras
+            const checkPExtra = (id, shortName) => {
                 const el = document.getElementById(id);
-                if (el && el.checked) {
+                if (hasPhoto && el && el.checked) {
                     total += parseInt(el.value);
-                    extrasText.push(shortName);
+                    photoText.push(shortName);
                 }
-            }
+            };
 
-            if (hasVideo) {
-                checkExtra('audio', 'Аудио');
-                checkExtra('drone', 'Дрон');
-                checkExtra('light', 'Осветление');
-                checkExtra('vcard', 'Визитка');
-            }
+            checkPExtra('afterWedding', 'Следсватбена');
+            checkPExtra('light', 'Осветление');
 
             const usb = document.querySelector('input[name="recording"]:checked');
             if (usb) {
-                // Determine if this delivery method is allowed
-                // If it is Album (value 120), it requires Photo
                 const isAlbum = usb.id === 'recAlbum';
-                
                 if (!isAlbum || hasPhoto) {
                    total += parseInt(usb.value);
-                   if (parseInt(usb.value) > 0) extrasText.push(usb.getAttribute('data-label').replace('Запис: ', ''));
+                   if (parseInt(usb.value) > 0) {
+                       let label = usb.getAttribute('data-label').replace('Запис: ', '');
+                       if (isAlbum) photoText.push("Албум");
+                       else videoText.push(label); // Treating USB box as general/video for simplicity in summary
+                   }
                 }
+            }
+
+            // --- ВИДЕО ДОБАВКИ ---
+            if (hasVideo) {
+                // Film Length
+                const len = document.querySelector('input[name="film_length"]:checked');
+                if (len && len.value != "0") {
+                    videoText.push(len.getAttribute('data-label').replace('Филм: ', ''));
+                }
+
+                // Resolution
+                const res = document.querySelector('input[name="film_resolution"]:checked');
+                if (res && res.value != "0") {
+                    videoText.push("6K");
+                }
+
+                // Extras
+                const checkVExtra = (id, shortName) => {
+                    const el = document.getElementById(id);
+                    if (el && el.checked) {
+                        total += parseInt(el.value);
+                        videoText.push(shortName);
+                    }
+                };
+
+                checkVExtra('audio', 'Аудио');
+                checkVExtra('drone', 'Дрон');
+                checkVExtra('vcard', 'Визитка');
             }
 
             // --- ВИЗУАЛИЗАЦИЯ ---
@@ -787,15 +792,15 @@
             document.getElementById('sumTeam').innerHTML =
                 `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${teamHtml}</span>`;
 
-            // ДЕТАЙЛИ
-            let detailsHtml = detailsText.length > 0 ? detailsText.join(", ") : "Стандарт";
-            document.getElementById('sumOptions').innerHTML =
-                `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${detailsHtml}</span>`;
+            // ФОТО ДОБАВКИ
+            let photoHtml = photoText.length > 0 ? photoText.join(", ") : "-";
+            document.getElementById('sumPhoto').innerHTML =
+                `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${photoHtml}</span>`;
 
-            // ЕКСТРИ
-            let extrasHtml = extrasText.length > 0 ? extrasText.join(", ") : "-";
-            document.getElementById('sumExtras').innerHTML =
-                `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${extrasHtml}</span>`;
+            // ВИДЕО ДОБАВКИ
+            let videoHtml = videoText.length > 0 ? videoText.join(", ") : "-";
+            document.getElementById('sumVideo').innerHTML =
+                `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${videoHtml}</span>`;
 
 
             // --- ЗАПИСВАНЕ ЗА ИЗПРАЩАНЕ ---
@@ -804,8 +809,8 @@
             // Пълно описание
             let fullDescription = "";
             if (teamText.length > 0) fullDescription += "ЕКИП: " + teamText.join(" + ") + "\n";
-            if (detailsText.length > 0) fullDescription += "ДЕТАЙЛИ: " + detailsText.join(", ") + "\n";
-            if (extrasText.length > 0) fullDescription += "ЕКСТРИ: " + extrasText.join(", ");
+            if (photoText.length > 0) fullDescription += "ФОТО: " + photoText.join(", ") + "\n";
+            if (videoText.length > 0) fullDescription += "ВИДЕО: " + videoText.join(", ");
 
             document.getElementById('hiddenDetails').value = fullDescription;
         }
