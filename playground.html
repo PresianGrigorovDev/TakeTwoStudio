@@ -311,317 +311,626 @@
         </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="py-5 bg-black-section" id="contact">
+    <!-- WIZARD CALCULATOR -->
+    <section class="py-5 wizard-section" id="contact">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-9">
-                    <div class="contact-box-dark">
-                        <h2 class="text-start text-white mb-2 display-6 fw-bold">Нека създаваме заедно</h2>
-                        <p class="text-start text-white mb-5" style="max-width: 600px;">
-                            Попълнете формата, за да разберем по-добре вашата визия. Ще се свържем с вас с конкретна
-                            стратегия и оферта.
-                        </p>
+                <div class="col-lg-10">
+                    
+                    <!-- Wizard Progress Bar -->
+                    <div class="wizard-progress-wrapper">
+                        <div class="wizard-progress">
+                            <div class="progress-step active" data-step="1">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Услуга</div>
+                            </div>
+                            <div class="progress-line"></div>
+                            <div class="progress-step" data-step="2">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Детайли</div>
+                            </div>
+                            <div class="progress-line"></div>
+                            <div class="progress-step" data-step="3">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Контакти</div>
+                            </div>
+                            <div class="progress-line"></div>
+                            <div class="progress-step" data-step="4">
+                                <div class="step-number">4</div>
+                                <div class="step-label">Преглед</div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <form action="submit_order_index.php" method="post">
-                            <input type="hidden" name="orderType" value="Commercial">
+                    <!-- Wizard Form -->
+                    <form action="submit_order_index.php" method="post" id="wizardForm">
+                        <input type="hidden" name="orderType" value="Commercial">
 
-                            <!-- TYPE -->
-                            <div class="form-section-title-dark">Какво ви трябва?</div>
-                            <div class="selection-grid mb-4">
-                                <div>
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv1"
-                                        value="Commercial Video" required>
-                                    <label class="btn-selection" for="srv1"><i class="fas fa-video"></i> Видео реклама
-                                        за бизнес</label>
+                        <!-- STEP 1: Service Selection -->
+                        <div class="wizard-step active" data-step="1">
+                            <h2 class="wizard-title">Изберете Услуга</h2>
+                            <p class="wizard-subtitle">Кое от следните най-добре описва вашата нужда?</p>
+                            
+                            <div class="service-selection-grid">
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv1" value="Commercial Video" required>
+                                    <label for="srv1" class="service-card-label">
+                                        <i class="fas fa-video service-card-icon"></i>
+                                        <h5>Видео Реклама</h5>
+                                        <p>Професионални рекламни клипове за вашия бизнес</p>
+                                    </label>
                                 </div>
-                                <div>
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv2"
-                                        value="Product Photography">
-                                    <label class="btn-selection" for="srv2"><i class="fas fa-camera"></i> Продуктова
-                                        фотография</label>
+                                
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv2" value="Product Photography">
+                                    <label for="srv2" class="service-card-label">
+                                        <i class="fas fa-camera service-card-icon"></i>
+                                        <h5>Продуктова Фотография</h5>
+                                        <p>Високо качествени снимки на вашите продукти</p>
+                                    </label>
                                 </div>
-                                <div>
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv3"
-                                        value="Event Coverage">
-                                    <label class="btn-selection" for="srv3"><i class="fas fa-glass-cheers"></i>
-                                        Събитие</label>
+                                
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv3" value="Event Coverage">
+                                    <label for="srv3" class="service-card-label">
+                                        <i class="fas fa-glass-cheers service-card-icon"></i>
+                                        <h5>Корпоративно Събитие</h5>
+                                        <p>Репортажно заснемане на вашето събитие</p>
+                                    </label>
                                 </div>
-                                <div>
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv4"
-                                        value="Social Media">
-                                    <label class="btn-selection" for="srv4"><i class="fab fa-instagram"></i>Социални
-                                        Мрежи</label>
+                                
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv4" value="Social Media">
+                                    <label for="srv4" class="service-card-label">
+                                        <i class="fab fa-instagram service-card-icon"></i>
+                                        <h5>Social Media Съдържание</h5>
+                                        <p>Видеа и снимки оптимизирани за социални мрежи</p>
+                                    </label>
                                 </div>
-                                <div>
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv5"
-                                        value="Drone">
-                                    <label class="btn-selection" for="srv5"><i
-                                            class="fas fa-helicopter"></i>Дрон</label>
+                                
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv5" value="Drone">
+                                    <label for="srv5" class="service-card-label">
+                                        <i class="fas fa-helicopter service-card-icon"></i>
+                                        <h5>Дрон Заснемане</h5>
+                                        <p>Въздушни кадри с професионална техника</p>
+                                    </label>
                                 </div>
-                                <div class="d-none">
-                                    <input type="radio" class="btn-check service-trigger" name="service_type" id="srv6"
-                                        value="Other">
-                                    <label class="btn-selection" for="srv6"><i class="fas fa-ellipsis-h"></i>
-                                        Other</label>
+                                
+                                <div class="service-card-wizard">
+                                    <input type="radio" class="service-radio" name="service_type" id="srv6" value="Image Session">
+                                    <label for="srv6" class="service-card-label">
+                                        <i class="fas fa-camera-retro service-card-icon"></i>
+                                        <h5>Имиджова Сесия</h5>
+                                        <p>Бизнес портрети и интериорна фотография</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Service Details (Dynamic) -->
+                        <div class="wizard-step" data-step="2">
+                            <h2 class="wizard-title">Детайли за Проекта</h2>
+                            <p class="wizard-subtitle">Моля, попълнете информацията за вашия проект</p>
+                            
+                            <!-- Commercial Video Details -->
+                            <div id="details-commercial" class="dynamic-details-section">
+                                <div class="form-group-wizard">
+                                    <label>Къде ще се излъчва видеото?</label>
+                                    <select class="form-control-wizard" name="video_usage">
+                                        <option value="">Изберете...</option>
+                                        <option value="Socials">Социални мрежи</option>
+                                        <option value="Web">Уебсайт / YouTube</option>
+                                        <option value="TV">Телевизия (TV Commercial)</option>
+                                        <option value="Internal">Вътрешна употреба</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Дължина на видеото</label>
+                                        <select class="form-control-wizard" name="video_length">
+                                            <option value="">Изберете...</option>
+                                            <option value="15s">15 секунди</option>
+                                            <option value="30s">30 секунди</option>
+                                            <option value="45s">45 секунди</option>
+                                            <option value="60s">60 секунди (1 мин)</option>
+                                            <option value="90s">90 секунди (1:30 мин)</option>
+                                            <option value="2min">2 минути</option>
+                                            <option value="3min">3 минути</option>
+                                            <option value="5min+">5+ минути</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Аудио изисквания (може да изберете няколко)</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="audio_options[]" value="Stock Music">
+                                                <span>Фонова музика</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="audio_options[]" value="Voiceover">
+                                                <span>Voiceover/Диктор</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="audio_options[]" value="Sound Effects">
+                                                <span>Sound Effects (SFX)</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="audio_options[]" value="None">
+                                                <span>Без звук</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <label>Имате ли сценарий?</label>
+                                    <select class="form-control-wizard" name="has_script">
+                                        <option value="">Изберете...</option>
+                                        <option value="No">Не, искаме вие да предложите</option>
+                                        <option value="Yes">Да, имаме готов сценарий</option>
+                                        <option value="Concept">Имаме само концепция</option>
+                                    </select>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <label>Референции (може да добавите няколко линка)</label>
+                                    <div id="referenceLinksContainer">
+                                        <input type="text" class="form-control-wizard mb-2" name="video_references[]" placeholder="https://youtube.com/watch?v=...">
+                                    </div>
+                                    <button type="button" class="btn-add-reference" onclick="addReferenceField()">+ Добави още линк</button>
                                 </div>
                             </div>
 
-                            <!-- DYNAMIC SECTIONS -->
-
-                            <!-- COMMERCIAL VIDEO -->
-                            <div id="details-commercial" class="dynamic-section mb-4">
-                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
-                                    Видеото</div>
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Къде ще се излъчва?</label>
-                                        <select class="form-select-dark w-100 py-3" name="video_usage">
-                                            <option value="Socials">Само Социални мрежи</option>
-                                            <option value="Web">Уебсайт / YouTube</option>
-                                            <option value="TV">Телевизия (TV Commercial)</option>
-                                            <option value="Internal">Вътрешна употреба (Корпоративно)</option>
+                            <!-- Product Photo Details -->
+                            <div id="details-product" class="dynamic-details-section">
+                                <div class="form-group-wizard">
+                                    <label>Тип продукти (може да изберете няколко)</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Козметика">
+                                            <span>Козметика</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Храна и Напитки">
+                                            <span>Храна и Напитки</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Бижута">
+                                            <span>Бижута</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Дрехи">
+                                            <span>Дрехи</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Мебели">
+                                            <span>Мебели</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Електроника">
+                                            <span>Електроника</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="product_types[]" value="Other" id="productTypeOther">
+                                            <span>Друго</span>
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control-wizard" name="product_type_other" id="productTypeOtherText" placeholder="Посочете тип продукт..." style="display: none; margin-top: 10px;">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Приблизителен брой продукти</label>
+                                        <select class="form-control-wizard" name="product_count">
+                                            <option value="">Изберете...</option>
+                                            <option value="1-5">1-5 продукта</option>
+                                            <option value="6-10">6-10 продукта</option>
+                                            <option value="11-20">11-20 продукта</option>
+                                            <option value="21-50">21-50 продукта</option>
+                                            <option value="51-100">51-100 продукта</option>
+                                            <option value="100+">Над 100 продукта</option>
                                         </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Ориентировъчна дължина</label>
-                                        <input type="text" class="form-control-dark" name="video_length"
-                                            placeholder="напр. 15 сек, 30 сек, 2 мин...">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Аудио и Глас (Voiceover)</label>
-                                        <select class="form-select-dark w-100 py-3" name="audio_needs">
-                                            <option value="Stock Music">Само фонова музика (Stock)</option>
-                                            <option value="Voiceover">Музика + Професионален диктор</option>
-                                            <option value="Sound Design">Sound Design (SFX)</option>
-                                            <option value="None">Без звук / Ние ще го добавим</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Имате ли сценарий?</label>
-                                        <select class="form-select-dark w-100 py-3" name="has_script">
-                                            <option value="No">Не, искаме вие да предложите идея</option>
-                                            <option value="Yes">Да, имаме готов сценарий</option>
-                                            <option value="Concept">Имаме само груба концепция</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="label-dark">Примери за стил (Референции)</label>
-                                        <textarea class="form-control-dark" rows="2" name="video_references"
-                                            placeholder="Поставете линкове към видеа, които ви харесват като стил..."></textarea>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- PRODUCT PHOTO -->
-                            <div id="details-product" class="dynamic-section mb-4">
-                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
-                                    Продуктите</div>
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Какъв тип са продуктите?</label>
-                                        <input type="text" class="form-control-dark" name="product_type"
-                                            placeholder="Козметика, Храна, Бижута, Мебели...">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Брой продукти (приблизително)</label>
-                                        <input type="number" class="form-control-dark" name="product_count"
-                                            placeholder="напр. 10, 50, 100...">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Стил на заснемане</label>
-                                        <select class="form-select-dark w-100 py-3" name="photo_style">
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Стил на заснемане</label>
+                                        <select class="form-control-wizard" name="photo_style">
+                                            <option value="">Изберете...</option>
                                             <option value="White Background">Каталожни (Бял фон)</option>
-                                            <option value="Creative Lifestyle">Creative / Lifestyle (С декор)</option>
+                                            <option value="Creative Lifestyle">Creative / Lifestyle</option>
                                             <option value="Black Background">Луксозни (Тъмен фон)</option>
-                                            <option value="Invisible Mannequin">Невидим манекен (За дрехи)</option>
+                                            <option value="Invisible Mannequin">Невидим манекен</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Нуждаете ли се от ретуш?</label>
-                                        <select class="form-select-dark w-100 py-3" name="retouch_level">
-                                            <option value="Standard">Стандартен (Цветокорекция)</option>
-                                            <option value="High End">High-End (Премахване на дефекти, блясък)</option>
-                                            <option value="Basic">Базов (Без дълбока обработка)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- EVENTS -->
-                            <div id="details-event" class="dynamic-section mb-4">
-                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Детайли за
-                                    Събитието</div>
-                                <div class="row g-4">
-                                    <div class="col-md-7">
-                                        <label class="label-dark">Тип събитие</label>
-                                        <input type="text" class="form-control-dark" name="event_type"
-                                            placeholder="Конференция, Парти, Откриване...">
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class="label-dark">Дата на събитието</label>
-                                        <input type="date" class="form-control-dark" name="event_date">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Локация (На закрито/открито?)</label>
-                                        <input type="text" class="form-control-dark" name="event_venue"
-                                            placeholder="Име на залата/мястото (Важно за осветлението)">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Продължителност (Часове)</label>
-                                        <input type="number" class="form-control-dark" name="event_duration"
-                                            placeholder="напр. 4 часа">
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="label-dark">Какво искате да заснемем?</label>
-                                        <select class="form-select-dark w-100 py-3" name="event_coverage_type">
-                                            <option value="Photo">Само Фотография</option>
-                                            <option value="Video">Само Видео (Aftermovie)</option>
-                                            <option value="Both">Фото и Видео (Комбинирано)</option>
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Ниво на ретуш</label>
+                                        <select class="form-control-wizard" name="retouch_level">
+                                            <option value="">Изберете...</option>
+                                            <option value="Standard">Стандартен</option>
+                                            <option value="High End">High-End (Пълна ретуш)</option>
+                                            <option value="Basic">Базов</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- SOCIAL MEDIA -->
-                            <div id="details-social" class="dynamic-section mb-4">
-                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Social
-                                    Media Пакет</div>
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Формат на видеата</label>
-                                        <select class="form-select-dark w-100 py-3" name="social_format">
-                                            <option value="9:16">Вертикално (9:16) - Reels/TikTok</option>
-                                            <option value="4:5">Квадратно/Портрет (4:5) - Feed</option>
-                                            <option value="16:9">Хоризонтално (16:9) - YouTube</option>
+                            <!-- Event Details -->
+                            <div id="details-event" class="dynamic-details-section">
+                                <div class="row">
+                                    <div class="col-md-7 form-group-wizard">
+                                        <label>Тип събитие</label>
+                                        <select class="form-control-wizard" name="event_type" id="eventTypeSelect">
+                                            <option value="">Изберете...</option>
+                                            <option value="Конференция">Конференция</option>
+                                            <option value="Корпоративно парти">Корпоративно парти</option>
+                                            <option value="Откриване">Откриване</option>
+                                            <option value="Награждаване">Награждаване</option>
+                                            <option value="Team Building">Team Building</option>
+                                            <option value="Семинар/Уъркшоп">Семинар/Уъркшоп</option>
+                                            <option value="Other">Друго</option>
+                                        </select>
+                                        <input type="text" class="form-control-wizard" name="event_type_other" id="eventTypeOtherText" placeholder="Посочете тип събитие..." style="display: none; margin-top: 10px;">
+                                    </div>
+                                    <div class="col-md-5 form-group-wizard">
+                                        <label>Дата на събитието</label>
+                                        <input type="date" class="form-control-wizard" name="event_date">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Локация</label>
+                                        <input type="text" class="form-control-wizard" name="event_venue" placeholder="Име на залата/мястото">
+                                    </div>
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Продължителност</label>
+                                        <select class="form-control-wizard" name="event_duration">
+                                            <option value="">Изберете...</option>
+                                            <option value="1-2h">1-2 часа</option>
+                                            <option value="2-4h">2-4 часа</option>
+                                            <option value="4-6h">4-6 часа (половин ден)</option>
+                                            <option value="6-8h">6-8 часа (цял ден)</option>
+                                            <option value="8+h">Над 8 часа</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Количество / Честота</label>
-                                        <select class="form-select-dark w-100 py-3" name="social_videos_count">
-                                            <option value="Single">Еднократно (1-2 видеа)</option>
-                                            <option value="Small Pack">Месечен пакет (4-8 видеа)</option>
-                                            <option value="Large Pack">Интензивен пакет (12+ видеа)</option>
+                                </div>
+                                <div class="form-group-wizard">
+                                    <label>Какво искате да заснемем?</label>
+                                    <select class="form-control-wizard" name="event_coverage_type">
+                                        <option value="">Изберете...</option>
+                                        <option value="Photo">Само Фотография</option>
+                                        <option value="Video">Само Видео</option>
+                                        <option value="Both">Фото и Видео</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Social Media Details -->
+                            <div id="details-social" class="dynamic-details-section">
+                                <div class="row">
+                                    <div class="col-md-4 form-group-wizard">
+                                        <label>Брой клипове</label>
+                                        <select class="form-control-wizard" name="social_videos_count" id="socialClipCount">
+                                            <option value="">Изберете...</option>
+                                            <option value="1">1 клип</option>
+                                            <option value="3">3 клипа</option>
+                                            <option value="5">5 клипа</option>
+                                            <option value="8">8 клипа</option>
+                                            <option value="10">10 клипа</option>
+                                            <option value="12">12 клипа</option>
+                                            <option value="15">15 клипа</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Стил на монтажа</label>
-                                        <select class="form-select-dark w-100 py-3" name="social_style">
-                                            <option value="Trending">Trending (Бърз монтаж, ефекти, музика)</option>
-                                            <option value="Educational">Образователно (Говорещ човек, субтитри)</option>
-                                            <option value="Cinematic">Естетично / Cinematic</option>
+                                    <div class="col-md-4 form-group-wizard">
+                                        <label>Формат на видеата</label>
+                                        <select class="form-control-wizard" name="social_format">
+                                            <option value="">Изберете...</option>
+                                            <option value="9:16">Вертикално (Reels/TikTok)</option>
+                                            <option value="4:5">Квадратно (Feed)</option>
+                                            <option value="16:9">Хоризонтално (YouTube)</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Основна платформа</label>
-                                        <input type="text" class="form-control-dark" name="platform"
-                                            placeholder="Instagram, TikTok, LinkedIn...">
+                                    <div class="col-md-4 form-group-wizard">
+                                        <label>Дължина на клип (макс. 90 сек)</label>
+                                        <input type="number" class="form-control-wizard" name="social_duration" placeholder="напр. 30" min="5" max="90">
+                                    </div>
+                                </div>
+                                
+                                <div class="row" id="monthlyDeliveryRow" style="display: none;">
+                                    <div class="col-12 form-group-wizard">
+                                        <div class="info-box">
+                                            <i class="fas fa-info-circle"></i>
+                                            <span>При 4+ клипа, доставката ще бъде на месечна база</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Разпределение на стиловете <span id="styleDistributionLabel"></span></label>
+                                        <div class="style-slider-container">
+                                            <div class="slider-labels">
+                                                <span>Trending</span>
+                                                <span>Образователни</span>
+                                            </div>
+                                            <input type="range" class="style-slider" id="styleDistributionSlider" name="style_distribution" min="0" max="100" value="50" disabled>
+                                            <div class="slider-values" id="sliderValues">
+                                                <div><strong>Trending:</strong> <span id="trendingCount">0</span></div>
+                                                <div><strong>Образователни:</strong> <span id="educationalCount">0</span></div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="trending_clips" id="trendingClipsHidden">
+                                        <input type="hidden" name="educational_clips" id="educationalClipsHidden">
+                                    </div>
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Платформи (може да изберете няколко)</label>
+                                        <div class="checkbox-group">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="Instagram">
+                                                <span>Instagram</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="TikTok">
+                                                <span>TikTok</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="YouTube">
+                                                <span>YouTube</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="LinkedIn">
+                                                <span>LinkedIn</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="Facebook">
+                                                <span>Facebook</span>
+                                            </label>
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="platforms[]" value="Other" id="platformOther">
+                                                <span>Друго</span>
+                                            </label>
+                                        </div>
+                                        <input type="text" class="form-control-wizard" name="platform_other" id="platformOtherText" placeholder="Посочете друга платформа..." style="display: none; margin-top: 10px;">
+                                    </div>
+                                </div>
+
+                                <div class="form-group-wizard">
+                                    <label>Аудио изисквания (може да изберете няколко)</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="social_audio[]" value="Stock Music">
+                                            <span>Stock музика</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="social_audio[]" value="Voiceover">
+                                            <span>Voiceover/Диктор</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="social_audio[]" value="Sound Effects">
+                                            <span>Sound Effects</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="social_audio[]" value="Captions">
+                                            <span>Субтитри</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="social_audio[]" value="None">
+                                            <span>Без звук</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- DRONE -->
-                            <div id="details-drone" class="dynamic-section mb-4">
-                                <div class="form-section-title-dark" style="color: #fff; border-color: #333;">Дрон
-                                    Специфики</div>
-                                <div class="row g-4">
-                                    <div class="col-12">
-                                        <label class="label-dark">Точна локация (GPS/Адрес)</label>
-                                        <input type="text" class="form-control-dark" name="drone_location"
-                                            placeholder="Важно за проверка на зони за летене">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Вид материал</label>
-                                        <select class="form-select-dark w-100 py-3" name="drone_type">
+                            <!-- Drone Details -->
+                            <div id="details-drone" class="dynamic-details-section">
+                                <div class="form-group-wizard">
+                                    <label>Точна локация (GPS/Адрес)</label>
+                                    <input type="text" class="form-control-wizard" name="drone_location" placeholder="Важно за проверка на зони за летене">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Вид материал</label>
+                                        <select class="form-control-wizard" name="drone_type">
+                                            <option value="">Изберете...</option>
                                             <option value="Video">Видео (4K)</option>
-                                            <option value="Photo">Фотография (Висока резолюция)</option>
+                                            <option value="Photo">Фотография</option>
                                             <option value="Panorama">360 Панорама</option>
                                             <option value="All">Всичко</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="label-dark">Цел на заснемането</label>
-                                        <input type="text" class="form-control-dark" name="drone_goal"
-                                            placeholder="Строителен обект, Земеделие, Реклама...">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Цел на заснемането</label>
+                                        <select class="form-control-wizard" name="drone_goal" id="droneGoalSelect">
+                                            <option value="">Изберете...</option>
+                                            <option value="Строителство">Строителство</option>
+                                            <option value="Недвижими имоти">Недвижими имоти</option>
+                                            <option value="Реклама">Реклама</option>
+                                            <option value="Земеделие">Земеделие</option>
+                                            <option value="Инспекция">Инспекция</option>
+                                            <option value="Картография">Картография</option>
+                                            <option value="Other">Друго</option>
+                                        </select>
+                                        <input type="text" class="form-control-wizard" name="drone_goal_other" id="droneGoalOtherText" placeholder="Посочете цел..." style="display: none; margin-top: 10px;">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- CONTACT DETAILS -->
-                            <div class="form-section-title-dark">Вашите данни за контакт</div>
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-6">
-                                    <label class="label-dark">Име и Фамилия</label>
-                                    <input type="text" class="form-control-dark" name="name" required
-                                        placeholder="Иван Иванов">
+                            <!-- Image Session Details -->
+                            <div id="details-image" class="dynamic-details-section">
+                                <div class="form-group-wizard">
+                                    <label>Какво искате да заснемем? (може да изберете няколко)</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Бизнес портрети">
+                                            <span>Бизнес портрети</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Офис интериор">
+                                            <span>Офис интериор</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Екипна снимка">
+                                            <span>Екипна снимка</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Продуктова фотография">
+                                            <span>Продуктова фотография</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Архитектура">
+                                            <span>Архитектура</span>
+                                        </label>
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" name="image_types[]" value="Other" id="imageTypeOther">
+                                            <span>Друго</span>
+                                        </label>
+                                    </div>
+                                    <input type="text" class="form-control-wizard" name="image_type_other" id="imageTypeOtherText" placeholder="Посочете какво друго..." style="display: none; margin-top: 10px;">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="label-dark">Имейл</label>
-                                    <input type="email" class="form-control-dark" name="email" required
-                                        placeholder="name@company.com">
+                                <div class="row">
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Брой хора за заснемане</label>
+                                        <select class="form-control-wizard" name="people_count">
+                                            <option value="">Изберете...</option>
+                                            <option value="1">1 човек</option>
+                                            <option value="2-5">2-5 човека</option>
+                                            <option value="6-10">6-10 човека</option>
+                                            <option value="11-20">11-20 човека</option>
+                                            <option value="20+">Над 20 човека</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 form-group-wizard">
+                                        <label>Локация</label>
+                                        <select class="form-control-wizard" name="session_location">
+                                            <option value="">Изберете...</option>
+                                            <option value="Studio">Студио</option>
+                                            <option value="Office">Офис</option>
+                                            <option value="Outdoor">На открито</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="label-dark">Телефон</label>
-                                    <input type="text" class="form-control-dark" name="phone" required
-                                        placeholder="+359 888 ...">
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Contact Information -->
+                        <div class="wizard-step" data-step="3">
+                            <h2 class="wizard-title">Контактна Информация</h2>
+                            <p class="wizard-subtitle">Как да се свържем с вас?</p>
+                            
+                            <div class="row">
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Име и Фамилия *</label>
+                                    <input type="text" class="form-control-wizard" name="name" required placeholder="Иван Иванов">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="label-dark">Фирма / Бранд</label>
-                                    <input type="text" class="form-control-dark" name="company"
-                                        placeholder="Име на бизнеса">
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Имейл *</label>
+                                    <input type="email" class="form-control-wizard" name="email" required placeholder="name@company.com">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Телефон *</label>
+                                    <input type="text" class="form-control-wizard" name="phone" required placeholder="+359 888 ...">
+                                </div>
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Фирма / Бранд</label>
+                                    <input type="text" class="form-control-wizard" name="company" placeholder="Име на бизнеса">
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="label-dark">Допълнителни изисквания</label>
-                                <textarea class="form-control-dark" rows="3" name="message"
-                                    placeholder="Тук може да опишете всичко друго, което е важно за проекта..."></textarea>
-                            </div>
-
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-6">
-                                    <label class="label-dark">Град / Локация на снимките</label>
-                                    <input type="text" class="form-control-dark" name="location"
-                                        placeholder="Варна, София или студио...">
+                            <div class="row">
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Град / Локация</label>
+                                    <input type="text" class="form-control-wizard" name="location" placeholder="Варна, София...">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="label-dark">Краен срок (Deadline)</label>
-                                    <input type="text" class="form-control-dark" name="deadline"
-                                        placeholder="Кога трябва да е готово?">
+                                <div class="col-md-6 form-group-wizard">
+                                    <label>Краен срок</label>
+                                    <input type="text" class="form-control-wizard" name="deadline" placeholder="Кога трябва да е готово?">
                                 </div>
                             </div>
 
-                            <!-- BUDGET -->
-                            <div class="form-section-title-dark">Ориентировъчен Бюджет</div>
-                            <div class="selection-grid">
-                                <div>
-                                    <input type="radio" class="btn-check" name="budget" id="bud1" value="Starter">
-                                    <label class="btn-selection" for="bud1">&lt; € 500 / 997.92 лв.</label>
-                                </div>
-                                <div>
-                                    <input type="radio" class="btn-check" name="budget" id="bud2" value="Standard">
-                                    <label class="btn-selection" for="bud2">€ 500 - 1000 / 997.92 - 1995.83 лв.</label>
-                                </div>
-                                <div>
-                                    <input type="radio" class="btn-check" name="budget" id="bud3" value="Pro">
-                                    <label class="btn-selection" for="bud3">€ 1000 - 2000 / 1995.83 - 3991.66 лв.</label>
-                                </div>
-                                <div>
-                                    <input type="radio" class="btn-check" name="budget" id="bud4" value="Premium">
-                                    <label class="btn-selection" for="bud4">€ 2000+ / 3991.66+ лв.</label>
-                                </div>
-                                <div>
-                                    <input type="radio" class="btn-check" name="budget" id="bud5" value="Other">
-                                    <label class="btn-selection" for="bud5">Друг</label>
-                                </div>
+                            <div class="form-group-wizard">
+                                <label>Допълнителни изисквания или коментари</label>
+                                <textarea class="form-control-wizard" rows="4" name="message" placeholder="Тук може да опишете всичко друго, което е важно за проекта..."></textarea>
                             </div>
 
-                            <div class="col-12 mt-5">
-                                <button type="submit" class="btn btn-submit-dark">Изпрати Запитване <i
-                                        class="fas fa-arrow-right ms-2"></i></button>
+                            <!-- Budget - Simplified -->
+                            <div class="form-group-wizard">
+                                <label>Ориентировъчен Бюджет (опционално)</label>
+                                <div class="budget-options">
+                                    <label class="budget-radio-label">
+                                        <input type="radio" name="budget" value="< 500 EUR">
+                                        <span>< 500 EUR</span>
+                                    </label>
+                                    <label class="budget-radio-label">
+                                        <input type="radio" name="budget" value="500-1000 EUR">
+                                        <span>500-1000 EUR</span>
+                                    </label>
+                                    <label class="budget-radio-label">
+                                        <input type="radio" name="budget" value="1000-2000 EUR">
+                                        <span>1000-2000 EUR</span>
+                                    </label>
+                                    <label class="budget-radio-label">
+                                        <input type="radio" name="budget" value="2000+ EUR">
+                                        <span>2000+ EUR</span>
+                                    </label>
+                                    <label class="budget-radio-label">
+                                        <input type="radio" name="budget" value="Custom">
+                                        <span>Друг</span>
+                                    </label>
+                                </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <!-- STEP 4: Review -->
+                        <div class="wizard-step" data-step="4">
+                            <h2 class="wizard-title">Преглед на Заявката</h2>
+                            <p class="wizard-subtitle">Моля, прегледайте информацията преди изпращане</p>
+                            
+                            <div class="review-section">
+                                <div class="review-item">
+                                    <strong>Услуга:</strong>
+                                    <span id="review-service">-</span>
+                                    <button type="button" class="btn-edit" onclick="goToStep(1)">Редактирай</button>
+                                </div>
+                                <div class="review-item">
+                                    <strong>Име:</strong>
+                                    <span id="review-name">-</span>
+                                    <button type="button" class="btn-edit" onclick="goToStep(3)">Редактирай</button>
+                                </div>
+                                <div class="review-item">
+                                    <strong>Имейл:</strong>
+                                    <span id="review-email">-</span>
+                                    <button type="button" class="btn-edit" onclick="goToStep(3)">Редактирай</button>
+                                </div>
+                                <div class="review-item">
+                                    <strong>Телефон:</strong>
+                                    <span id="review-phone">-</span>
+                                    <button type="button" class="btn-edit" onclick="goToStep(3)">Редактирай</button>
+                                </div>
+                                <div class="review-item" id="review-company-section">
+                                    <strong>Компания:</strong>
+                                    <span id="review-company">-</span>
+                                </div>
+                                <div class="review-item" id="review-message-section">
+                                    <strong>Допълнителна информация:</strong>
+                                    <p id="review-message" class="review-message-text">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="wizard-navigation">
+                            <button type="button" class="btn-wizard btn-prev" onclick="prevStep()">
+                                <i class="fas fa-arrow-left"></i> Назад
+                            </button>
+                            <button type="button" class="btn-wizard btn-next" onclick="nextStep()">
+                                Напред <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button type="submit" class="btn-wizard btn-submit">
+                                Изпрати Запитване <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
                 </div>
             </div>
         </div>
@@ -698,7 +1007,6 @@
             selector: '.glightbox'
         });
 
-
         const filterBtns = document.querySelectorAll('.filter-btn');
         const items = document.querySelectorAll('.masonry-item');
 
@@ -725,44 +1033,320 @@
             });
         });
 
-
         function openLightbox(element) {
             const link = element.querySelector('.glightbox');
             if (link) link.click();
         }
 
-        // --- ДИНАМИЧНА ФОРМА ---
-        document.addEventListener('DOMContentLoaded', function () {
-            const triggers = document.querySelectorAll('.service-trigger');
-            const allSections = document.querySelectorAll('.dynamic-section');
+        // Add reference link function (Commercial Video)
+        function addReferenceField() {
+            const container = document.getElementById('referenceLinksContainer');
+            if (container) {
+                const newInput = document.createElement('input');
+                newInput.type = 'text';
+                newInput.className = 'form-control-wizard mb-2';
+                newInput.name = 'video_references[]';
+                newInput.placeholder = 'https://youtube.com/watch?v=...';
+                container.appendChild(newInput);
+            }
+        }
 
-            // Mapping
-            const sectionMap = {
-                'Commercial Video': 'details-commercial',
-                'Product Photography': 'details-product',
-                'Event Coverage': 'details-event',
-                'Social Media': 'details-social',
-                'Drone': 'details-drone'
-            };
+        // ===== WIZARD NAVIGATION =====
+        let currentStep = 1;
+        const totalSteps = 4;
 
-            triggers.forEach(trigger => {
-                trigger.addEventListener('change', function () {
-                    // 1. Hide all
-                    allSections.forEach(sec => sec.style.display = 'none');
+        function goToStep(stepNumber) {
+            if (stepNumber < 1 || stepNumber > totalSteps) return;
 
-                    // 2. Find target
-                    const selectedValue = this.value;
-                    const targetId = sectionMap[selectedValue];
-
-                    // 3. Show target
-                    if (targetId) {
-                        const targetSection = document.getElementById(targetId);
-                        if (targetSection) {
-                            targetSection.style.display = 'block';
-                        }
-                    }
-                });
+            // Hide all steps
+            document.querySelectorAll('.wizard-step').forEach(step => {
+                step.classList.remove('active');
             });
+
+            // Show target step
+            const targetStep = document.querySelector(`.wizard-step[data-step="${stepNumber}"]`);
+            if (targetStep) {
+                targetStep.classList.add('active');
+            }
+
+            // Update progress bar
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                const stepNum = index + 1;
+                if (stepNum < stepNumber) {
+                    step.classList.add('completed');
+                    step.classList.remove('active');
+                } else if (stepNum === stepNumber) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+
+            // Update progress lines
+            document.querySelectorAll('.progress-line').forEach((line, index) => {
+                if (index < stepNumber - 1) {
+                    line.classList.add('completed');
+                } else {
+                    line.classList.remove('completed');
+                }
+            });
+
+            // Update buttons
+            const prevBtn = document.querySelector('.btn-prev');
+            const nextBtn = document.querySelector('.btn-next');
+            const submitBtn = document.querySelector('.btn-submit');
+
+            if (stepNumber === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'inline-flex';
+            }
+
+            if (stepNumber === totalSteps) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                submitBtn.style.display = 'none';
+            }
+
+            currentStep = stepNumber;
+
+            // Scroll to top of wizard
+            document.querySelector('.wizard-progress-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                // Check if service is selected
+                const selectedService = document.querySelector('input[name="service_type"]:checked');
+                if (!selectedService) {
+                    alert('Моля, изберете услуга');
+                    return false;
+                }
+            } else if (step === 3) {
+                // Check required contact fields
+                const name = document.querySelector('input[name="name"]').value.trim();
+                const email = document.querySelector('input[name="email"]').value.trim();
+                const phone = document.querySelector('input[name="phone"]').value.trim();
+
+                if (!name || !email || !phone) {
+                    alert('Моля, попълнете задължителните полета (Име, Имейл, Телефон)');
+                    return false;
+                }
+
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Моля, въведете валиден имейл адрес');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep === 3) {
+                    // Populate review before going to step 4
+                    populateReview();
+                }
+                goToStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            goToStep(currentStep - 1);
+        }
+
+        function populateReview() {
+            // Service
+            const selectedService = document.querySelector('input[name="service_type"]:checked');
+            if (selectedService) {
+                const serviceLabel = selectedService.nextElementSibling.querySelector('h5').textContent;
+                document.getElementById('review-service').textContent = serviceLabel;
+            }
+
+            // Contact info
+            document.getElementById('review-name').textContent = document.querySelector('input[name="name"]').value || '-';
+            document.getElementById('review-email').textContent = document.querySelector('input[name="email"]').value || '-';
+            document.getElementById('review-phone').textContent = document.querySelector('input[name="phone"]').value || '-';
+
+            // Company
+            const company = document.querySelector('input[name="company"]').value;
+            if (company) {
+                document.getElementById('review-company').textContent = company;
+                document.getElementById('review-company-section').style.display = 'flex';
+            } else {
+                document.getElementById('review-company-section').style.display = 'none';
+            }
+
+            // Message
+            const message = document.querySelector('textarea[name="message"]').value;
+            if (message) {
+                document.getElementById('review-message').textContent = message;
+                document.getElementById('review-message-section').style.display = 'block';
+            } else {
+                document.getElementById('review-message-section').style.display = 'none';
+            }
+        }
+
+        // Dynamic service details sections
+        const serviceRadios = document.querySelectorAll('.service-radio');
+        const detailsSections = document.querySelectorAll('.dynamic-details-section');
+
+        const sectionMapping = {
+            'Commercial Video': 'details-commercial',
+            'Product Photography': 'details-product',
+            'Event Coverage': 'details-event',
+            'Social Media': 'details-social',
+            'Drone': 'details-drone',
+            'Image Session': 'details-image'
+        };
+
+        serviceRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Hide all details sections
+                detailsSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the corresponding section
+                const selectedValue = this.value;
+                const targetSectionId = sectionMapping[selectedValue];
+                if (targetSectionId) {
+                    const targetSection = document.getElementById(targetSectionId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Social Media: Show monthly delivery info when 4+ clips selected
+        const clipCountSelect = document.getElementById('socialClipCount');
+        const styleSlider = document.getElementById('styleDistributionSlider');
+        const trendingCountEl = document.getElementById('trendingCount');
+        const educationalCountEl = document.getElementById('educationalCount');
+        const trendingHidden = document.getElementById('trendingClipsHidden');
+        const educationalHidden = document.getElementById('educationalClipsHidden');
+
+        function updateStyleDistribution() {
+            const totalClips = parseInt(clipCountSelect.value) || 0;
+            
+            if (totalClips === 0) {
+                styleSlider.disabled = true;
+                trendingCountEl.textContent = '0';
+                educationalCountEl.textContent = '0';
+                trendingHidden.value = '0';
+                educationalHidden.value = '0';
+                return;
+            }
+
+            styleSlider.disabled = false;
+            const sliderValue = parseInt(styleSlider.value);
+            
+            // Calculate distribution based on slider (0 = all Trending, 100 = all Educational)
+            const educationalPercentage = sliderValue / 100;
+            let educationalClips = Math.round(totalClips * educationalPercentage);
+            let trendingClips = totalClips - educationalClips;
+
+            trendingCountEl.textContent = trendingClips;
+            educationalCountEl.textContent = educationalClips;
+            trendingHidden.value = trendingClips;
+            educationalHidden.value = educationalClips;
+        }
+
+        if (clipCountSelect) {
+            clipCountSelect.addEventListener('change', function() {
+                const clipCount = parseInt(this.value) || 0;
+                const monthlyRow = document.getElementById('monthlyDeliveryRow');
+                
+                if (clipCount >= 4) {
+                    monthlyRow.style.display = 'block';
+                } else {
+                    monthlyRow.style.display = 'none';
+                }
+
+                // Update style distribution
+                updateStyleDistribution();
+            });
+        }
+
+        if (styleSlider) {
+            styleSlider.addEventListener('input', updateStyleDistribution);
+        }
+
+        // Platform "Other" field toggle
+        const platformOtherCheckbox = document.getElementById('platformOther');
+        const platformOtherText = document.getElementById('platformOtherText');
+
+        if (platformOtherCheckbox && platformOtherText) {
+            platformOtherCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    platformOtherText.style.display = 'block';
+                } else {
+                    platformOtherText.style.display = 'none';
+                    platformOtherText.value = '';
+                }
+            });
+        }
+
+        // Product Type "Other" toggle
+        const productTypeOther = document.getElementById('productTypeOther');
+        const productTypeOtherText = document.getElementById('productTypeOtherText');
+        
+        if (productTypeOther && productTypeOtherText) {
+            productTypeOther.addEventListener('change', function() {
+                productTypeOtherText.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) productTypeOtherText.value = '';
+            });
+        }
+
+        // Event Type "Other" toggle
+        const eventTypeSelect = document.getElementById('eventTypeSelect');
+        const eventTypeOtherText = document.getElementById('eventTypeOtherText');
+        
+        if (eventTypeSelect && eventTypeOtherText) {
+            eventTypeSelect.addEventListener('change', function() {
+                eventTypeOtherText.style.display = this.value === 'Other' ? 'block' : 'none';
+                if (this.value !== 'Other') eventTypeOtherText.value = '';
+            });
+        }
+
+        // Drone Goal "Other" toggle
+        const droneGoalSelect = document.getElementById('droneGoalSelect');
+        const droneGoalOtherText = document.getElementById('droneGoalOtherText');
+        
+        if (droneGoalSelect && droneGoalOtherText) {
+            droneGoalSelect.addEventListener('change', function() {
+                droneGoalOtherText.style.display = this.value === 'Other' ? 'block' : 'none';
+                if (this.value !== 'Other') droneGoalOtherText.value = '';
+            });
+        }
+
+        // Image Type "Other" toggle
+        const imageTypeOther = document.getElementById('imageTypeOther');
+        const imageTypeOtherText = document.getElementById('imageTypeOtherText');
+        
+        if (imageTypeOther && imageTypeOtherText) {
+            imageTypeOther.addEventListener('change', function() {
+                imageTypeOtherText.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) imageTypeOtherText.value = '';
+            });
+        }
+
+        // Initialize wizard
+        document.addEventListener('DOMContentLoaded', function() {
+            goToStep(1);
+
+            // Trigger first service selection if needed
+            const firstChecked = document.querySelector('.service-radio:checked');
+            if (firstChecked) {
+                const event = new Event('change');
+                firstChecked.dispatchEvent(event);
+            }
         });
     </script>
 
