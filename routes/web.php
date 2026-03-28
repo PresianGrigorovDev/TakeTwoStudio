@@ -16,5 +16,5 @@ Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'subm
 Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact']);
 
 // Registration Routes
-Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
-Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
+// Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
+// Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
