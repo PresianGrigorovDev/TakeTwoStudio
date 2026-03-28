@@ -51,8 +51,9 @@ class PromPortfolioPhotoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image_path')
-                    ->label('Снимка'),
-                Tables\Columns\TextInputColumn::make('sort_order')
+                    ->label('Снимка')
+                    ->height(100),
+                Tables\Columns\TextColumn::make('sort_order')
                     ->label('Подредба')
                     ->sortable(),
                 Tables\Columns\ToggleColumn::make('is_visible')
@@ -67,6 +68,7 @@ class PromPortfolioPhotoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('sort_order', 'asc')
+            ->reorderable('sort_order')
             ->filters([
                 //
             ])
