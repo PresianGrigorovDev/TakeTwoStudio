@@ -29,9 +29,16 @@ class WeddingGalleryResource extends Resource
                 Forms\Components\Section::make('Основна Информация')
                     ->schema([
                         Forms\Components\TextInput::make('title')
-                            ->label('Заглавие (напр. Янко и Радина)')
+                            ->label('Заглавие (напр. Явор и Кристина)')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \App\Support\Transliteration::slug($state))),
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug (URL)')
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
                         Forms\Components\DatePicker::make('event_date')
                             ->label('Дата на събитието')
                             ->native(false),
