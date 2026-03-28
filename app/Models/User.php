@@ -24,6 +24,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * Determine if the user is an administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
