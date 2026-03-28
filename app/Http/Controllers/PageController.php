@@ -78,11 +78,17 @@ class PageController extends Controller
             $baptismGalleries = \App\Models\BaptismGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
         }
 
+        $promPortfolioPhotos = collect();
+        if ($slug === 'proms') {
+            $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
         return view($slug, [
             'service' => $service,
             'portfolioItems' => $portfolioItems,
             'weddingGalleries' => $weddingGalleries,
             'baptismGalleries' => $baptismGalleries,
+            'promPortfolioPhotos' => $promPortfolioPhotos,
             'pageContent' => $pageContent,
         ]);
     }
