@@ -1,0 +1,396 @@
+*,
+*::before,
+*::after {
+    padding: 0px;
+    margin: 0px;
+    outline: 0;
+}
+
+body {
+    font-family: sans-serif;
+    overflow-x: visible;
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol,
+p {
+    margin: 0;
+    cursor: default;
+}
+
+.cl {
+    font-size: 0;
+    line-height: 0;
+    clear: both;
+    display: block;
+    height: 0;
+}
+
+#helpnav,
+#helpnav a {
+    background: none !important;
+    color: #fff;
+    z-index: 10 !important;
+    position: relative;
+}
+
+
+#nvidia {
+    margin-top: -52px;
+}
+
+@media (max-width: 478px) {
+    #nvidia {
+        margin-top: 0;
+    }
+}
+
+/* ___ Header ___ */
+.promo_header {
+    background: #000;
+    color: #fff;
+    font-family: "NVIDIA Sans", sans-serif;
+    overflow: hidden;
+    height: 580px;
+}
+
+
+.header_info {
+    padding: 100px 0 0 30px;
+
+    & h1 {
+        /* text-transform: uppercase; */
+        font-size: 48px;
+        line-height: normal;
+    }
+
+    & h2 {
+        padding: 30px 0;
+        font-size: 24px;
+        line-height: normal;
+    }
+
+    & p {
+        font-size: 12px;
+        line-height: 20px;
+        color: #999;
+
+        @media (min-width: 992px) {
+            padding-bottom: 90px;
+        }
+
+        & a {
+            color: #76b900;
+            text-decoration: none;
+        }
+    }
+}
+
+
+.header_img {
+    padding: 20px 0;
+    margin: auto;
+
+    @media (min-width: 992px) {
+        padding: 0;
+    }
+}
+
+
+/* ___ Products ___ */
+.cont .upgrades-table,
+.cont .upgrades-table tr:first-child td,
+.cont .upgrades-table tr:last-child td:first-child,
+.cont .upgrades-table tr:last-child td:last-child {
+    border-radius: 0;
+}
+
+.cont .upgrades-table {
+    border-color: #000;
+}
+
+.cont .upgrades-table th {
+    background: #000;
+    border-color: #000;
+}
+
+.cont .upgrades-table td,
+.cont .upgrades-table th {
+    border-color: #000;
+}
+
+@media (min-width: 992px) {
+    .cont {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.out-cont {
+    padding: 20px 0;
+    background: #000;
+}
+
+.cont a.img img {
+    max-width: fit-content;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.cont .title a {
+    font-family: "NVIDIA Sans", sans-serif;
+    color: #fff;
+}
+
+.cont ul li {
+    font-family: "NVIDIA Sans", sans-serif;
+    line-height: normal;
+
+    &::before {
+        width: 10px;
+        height: 10px;
+        background-color: #000;
+        margin: 5px 0;
+    }
+}
+
+.cont span.old-price {
+    font-family: "NVIDIA Sans", sans-serif;
+    color: #76b900;
+
+    &::before {
+        color: #76b900;
+    }
+}
+
+.cont span.price {
+    font-family: "NVIDIA Sans", sans-serif;
+    font-weight: bold;
+    color: #76b900;
+}
+
+.cont a.here {
+    font-family: "NVIDIA Sans", sans-serif;
+    background-color: #76b900;
+    border: 2px solid #76b900;
+    color: #fff;
+    transition: all .3s ease-in-out;
+
+    &:hover {
+        color: #fff;
+        background-color: transparent;
+        transform: translateY(-4px);
+    }
+}
+
+
+/* ___ Reviews ___ */
+.promo_reviews {
+    background: #000;
+    color: #fff;
+    font-family: "NVIDIA Sans", sans-serif;
+    overflow: hidden;
+    text-align: center;
+
+    & .desc {
+        padding: 30px 0;
+    }
+
+    /* Image */
+    & img {
+        max-width: fit-content;
+        width: 100%;
+        margin: auto;
+    }
+
+    /* H4 */
+    & h4 {
+        font-size: 28px;
+        padding: 0 0 20px 0;
+        line-height: normal;
+    }
+
+    /* H5 */
+    & h5 {
+        font-size: 18px;
+        line-height: normal;
+        padding: 0 0 20px 0;
+    }
+
+    /* P */
+    & p {
+        font-size: 17px;
+        text-align: center;
+        line-height: 25px;
+
+        & span {
+            font-size: 12px;
+            line-height: normal;
+            color: #999;
+            max-width: 940px;
+            width: 100%;
+            margin: auto;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /* Image */
+    & img {
+        padding: 60px 0;
+    }
+
+    /* Video */
+    & iframe {
+        @media (min-width: 992px) {
+            max-width: 1000px;
+            width: 100%;
+            height: 500px;
+        }
+
+        margin: auto;
+    }
+
+    .desc1,
+    .desc3 {
+        background-color: #111;
+    }
+}
+
+
+
+/* ___  Seperator & Footer ___ */
+p.promo_footer,
+a.promo_seperator {
+    padding: 20px 0;
+    text-align: center;
+    font-family: "NVIDIA Sans", sans-serif;
+    font-weight: bold;
+    font-size: 35px;
+    line-height: normal;
+}
+
+/* ___  Footer ___ */
+p.promo_footer {
+    background-color: #76b900;
+    color: #000;
+}
+
+/* Seperator */
+a.promo_seperator {
+    display: block;
+    margin: auto;
+    background-color: #76b900;
+    text-decoration: none;
+    color: #000;
+
+    & span {
+        font-family: "Gotham-Bold", sans-serif;
+        color: #000;
+        text-decoration: underline;
+    }
+}
+
+/* ___ Screen Size ___ */
+@media (min-width: 992px) and (max-width: 1400px) {
+
+    .promo_header img,
+    .promo_reviews img {
+        max-width: fit-content;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+}
+
+@media(max-width:991px) {
+    .landing .cont {
+        &.btn_box {
+            height: auto;
+        }
+
+        &.price {
+            font-size: 30px;
+        }
+
+        &.old-price {
+            top: 20px;
+        }
+    }
+
+    .promo_header img,
+    .promo_reviews img {
+        max-width: fit-content;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .promo_header {
+        height: auto;
+        text-align: center;
+    }
+
+    .header_info {
+        padding: 70px 0 0 0;
+
+        & h1 {
+            font-size: 40px;
+            line-height: normal;
+            padding: 0;
+        }
+
+        & p {
+            font-size: 15px;
+            padding: 0 0 20px 0;
+            line-height: normal;
+        }
+    }
+
+    .promo_reviews {
+        text-align: center;
+
+        & h4 {
+            font-size: 20px;
+        }
+
+        & p {
+            font-size: 15px;
+        }
+
+        & h5 {
+            font-size: 15px;
+        }
+    }
+
+    a.promo_seperator,
+    p.promo_footer {
+        font-size: 24px;
+        padding: 10px 5px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header_info {
+        padding: 70px 0 0 0;
+    }
+
+    p.promo_footer,
+    a.promo_seperator {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 478px) {
+    .header_info {
+        padding: 30px 0 0 0;
+    }
+}

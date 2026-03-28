@@ -1,0 +1,256 @@
+@extends('layouts.app')
+
+@section('content')
+
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Професионална фотография и видеозаснемане</h1>
+            <span class="hero-subtitle">Сватбена, събитийна и рекламна фотография във Варна и цялата страна.</span>
+            <a href="#portfolio" class="btn-custom-full">Портфолио</a>
+            <a href="#contact" class="btn-custom">Свържи се с нас</a>
+        </div>
+    </header>
+
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
+                <div class="col-lg-6">
+                    <img src="{{ asset('css/img/about.webp') }}" alt="Екипът на Take Two"
+                        class="about-img-main falling-item" width="800" height="600" loading="lazy">
+                </div>
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h2 class="mb-3">Професионално фото и видео студио</h2>
+                    <div class="section-divider start"></div>
+
+                    <p class="text-muted mb-4">
+                        Търсите ли качество и емоция? В <b>Take Two Studio 1603</b> сме специализирани в
+                        <b>професионална сватбена фотография</b> и <b>видеозаснемане</b>.
+                        Базирани във <b>Варна</b>, ние отразяваме вашите най-специални поводи -
+                        от сватби и <b>абитуриентски балове</b> до свето <b>кръщение</b> и корпоративни събития.
+                    </p>
+                    <p class="text-muted">
+                        С над десетилетие опит и стотици доволни клиенти в цялата страна, нашата мисия е да запечатаме
+                        емоциите ви в кадри с кинематографично качество.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4 justify-content-center text-center" data-aos="fade-up">
+                @foreach($teamMembers as $member)
+                    <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
+                        data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
+                        <img src="{{ $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png') }}"
+                            alt="{{ $member->name }}" class="team-img falling-item" loading="lazy">
+                        <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
+                        <p class="role-text">{{ $member->role_bg }}</p>
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
+                                class="fas fa-plus-circle me-1"></i> Прочети повече</small>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="brands-section">
+        <div class="container mb-4">
+            <div class="brands-header">
+                <h2 class="text-center">Довериха ни се</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted text-uppercase text-center" style="letter-spacing: 2px;">Партньори и Клиенти</p>
+            </div>
+        </div>
+        <div class="brands-track">
+            @foreach($partners as $partner)
+                <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}"
+                    class="brand-logo" alt="{{ $partner->name }}" loading="lazy">
+            @endforeach
+
+            <!-- Duplicated for scrolling effect -->
+            @foreach($partners as $partner)
+                <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}"
+                    class="brand-logo" alt="{{ $partner->name }}" loading="lazy">
+            @endforeach
+        </div>
+    </section>
+
+    <section class="py-5 bg-white" data-aos="fade-up">
+        <div class="container pb-5 text-center">
+            <h2 class="mb-3">Как работим</h2>
+            <div class="section-divider"></div>
+            <p class="text-muted mb-5" style="max-width: 700px; margin: 0 auto;">
+                Вярваме, че добрата фотография започва далеч преди натискането на бутона.
+            </p>
+
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="process-step falling-item">
+                        <div class="process-icon-wrap"><i class="far fa-comments"></i></div>
+                        <h3 class="fw-bold h5">Опознаване</h3>
+                        <p class="text-muted small">Преди камерата да заработи, искаме да чуем вашата история.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="process-step falling-item">
+                        <div class="process-icon-wrap"><i class="fas fa-camera-retro"></i></div>
+                        <h3 class="fw-bold h5">В деня на събитието</h3>
+                        <p class="text-muted small">Улавяме истинските емоции и спонтанни моменти.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="process-step falling-item">
+                        <div class="process-icon-wrap"><i class="fas fa-magic"></i></div>
+                        <h3 class="fw-bold h5">Вечният спомен</h3>
+                        <p class="text-muted small">Предаваме ви не просто файлове, а цялостна история.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="pb-5">
+        <div class="container pb-5">
+            <div class="text-center mb-5 portfolio-header">
+                <h2>Портфолио</h2>
+                <div class="section-divider"></div>
+                <p>Разгледайте избрани моменти от нашите проекти.</p>
+            </div>
+
+            <div class="row g-4">
+                @foreach($portfolioCategories as $index => $category)
+                    <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
+                        <a href="{{ url($category->slug) }}" class="text-decoration-none">
+                            <div class="portfolio-item falling-item">
+                                <img src="{{ $category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg') }}"
+                                    class="portfolio-img" alt="{{ $category->name_bg }}" loading="lazy">
+                                <div class="portfolio-overlay">
+                                    <div class="portfolio-info">
+                                        <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
+                                        <p class="portfolio-subtitle">{{ $category->subtitle_bg }}</p>
+                                    </div>
+                                    <div class="view-more-btn">Виж Още</div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-3">Какво казват клиентите</h2>
+            <div class="section-divider"></div>
+            <div class="row justify-content-center mt-5">
+                @foreach($testimonials as $index => $testimonial)
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                        <div class="testimonial-card falling-item">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p>"{{ $testimonial->content_bg }}"</p>
+                            <div class="mt-3 fw-bold h6">- {{ $testimonial->client_name_bg ?? $testimonial->client_name }}</div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2>Нашите Услуги</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted">Пълно фотографско и видео обслужване</p>
+            </div>
+
+            <div class="row g-4">
+                @foreach($services as $index => $service)
+                <div class="col-md-4 col-sm-6" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
+                    <div class="service-card bg-white {{ $service->slug }} falling-item">
+                        <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
+                        <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
+                        <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-5 bg-light">
+        <div class="container py-5 text-center">
+            <h2 class="mb-3">Свържете се с нас</h2>
+            <div class="section-divider"></div>
+
+            <div class="row justify-content-center mb-5 g-4 mt-2">
+                <div class="col-md-4"><i class="fas fa-phone mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:0886190124">088 619
+                            0124</a></div>
+                </div>
+                <div class="col-md-4"><i class="far fa-envelope mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
+                            href="mailto:info@taketwostudio1603.com">info@taketwostudio1603.com</a></div>
+                </div>
+                <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold">ж.к. Възраждане IV 1603, Варна</div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <form action="{{ url('/submit-contact') }}" method="post"
+                        class="h-100 p-4 border rounded shadow-sm bg-white">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-6"><input type="text" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Име" name="name" required></div>
+                            <div class="col-md-6"><input type="text" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Телефон" name="phone" required></div>
+                            <div class="col-12"><input type="email" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Email" name="email" required></div>
+                            <div class="col-12"><textarea class="form-control rounded-0 p-3 bg-light border-0" rows="5"
+                                    placeholder="Съобщение..." name="message"></textarea></div>
+                            <div class="col-12"><button type="submit" class="btn-submit mt-2">Изпрати запитване</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <div class="map-container">
+                        <iframe
+                            src="https://maps.google.com/maps?q=Take+Two+Studio+1603+Varna&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                            allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
+        <span class="position-absolute top-0 end-0 m-4 text-white fs-1 cursor-pointer">×</span>
+        <img id="lightbox-img" src="" style="max-height: 90vh; max-width: 90vw;">
+    </div>
+
+    @foreach($teamMembers as $member)
+        <div class="modal fade" id="modalTeam{{ $member->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">{{ $member->name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png') }}"
+                            alt="{{ $member->name }}" class="team-img mb-3" style="width: 120px; height: 120px;" loading="lazy">
+                        <p class="role-text mb-3">{{ $member->role_bg }}</p>
+                        <p class="text-muted">
+                            {{ $member->bio_bg }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+@endsection
