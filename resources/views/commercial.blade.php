@@ -152,6 +152,11 @@
                             предложение за вас.
                         </p>
 
+                    @if(session('success'))
+                        <div class="alert alert-success mb-4 text-center">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                         <form action="{{ url('/submit-order') }}" method="post">
                             @csrf
                             <input type="hidden" name="orderType" value="Commercial">

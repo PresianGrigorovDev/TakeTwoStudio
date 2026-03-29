@@ -128,6 +128,11 @@
                 изпращането и ресторанта, както и допълнителни екстри като дрон и видео визитки. Запазете спомените от
                 най-емоционалната вечер!
             </p>
+            @if(session('success'))
+                <div class="alert alert-success text-center mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form id="promCalcForm" action="{{ url('/submit-order') }}" method="post">
                 @csrf
                 <div class="row g-5">

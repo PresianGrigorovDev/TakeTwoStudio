@@ -227,6 +227,11 @@
                 които улавят всеки важен момент от ритуала и празненството. Съхранете светостта на празника с Take Two
                 Studio.
             </p>
+            @if(session('success'))
+                <div class="alert alert-success text-center mb-4">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form id="baptismCalcForm" action="{{ url('/submit-order') }}" method="post">
                 @csrf
                 <div class="row g-5">

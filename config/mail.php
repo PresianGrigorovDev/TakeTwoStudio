@@ -18,6 +18,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Global "Admin" Address
+    |--------------------------------------------------------------------------
+    |
+    | You may wish for all system notifications to be sent to a specific
+    | address. This address is used when sending order notifications.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', 'info@taketwostudio1603.com'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Mailer Configurations
     |--------------------------------------------------------------------------
     |

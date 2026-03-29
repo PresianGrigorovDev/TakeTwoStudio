@@ -199,6 +199,11 @@
 
             <div class="row g-4">
                 <div class="col-lg-6">
+                    @if(session('success'))
+                        <div class="alert alert-success mb-4 text-center">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <form action="{{ url('/submit-contact') }}" method="post"
                         class="h-100 p-4 border rounded shadow-sm bg-white">
                         @csrf

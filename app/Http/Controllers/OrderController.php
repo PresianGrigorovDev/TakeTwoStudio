@@ -30,7 +30,7 @@ class OrderController extends Controller
         }
 
         // Save to Database
-        \App\Models\Order::create([
+        $order = \App\Models\Order::create([
             'name' => $validated['name'],
             'phone' => $validated['phone'],
             // 'email' => $validated['email'] ?? null, // Email is not in calculator forms yet
@@ -42,6 +42,12 @@ class OrderController extends Controller
         
         // Log the order
         Log::info("New Order: $typeOfService", $validated);
+
+        try {
+            Mail::to(config('mail.admin_email'))->send(new \App\Mail\NewOrderNotification($order));
+        } catch (\Exception $e) {
+            Log::error("Failed to send order email: " . $e->getMessage());
+        }
 
         return back()->with('success', 'Вашето запитване е прието успешно! Ще се свържем с вас скоро.');
     }
@@ -59,7 +65,7 @@ class OrderController extends Controller
         $orderType = $validated['orderType'] ?? 'General Inquiry';
 
         // Save to Database
-        \App\Models\Order::create([
+        $order = \App\Models\Order::create([
             'name' => $validated['name'],
             'phone' => $validated['phone'],
             'email' => $validated['email'],
@@ -70,6 +76,12 @@ class OrderController extends Controller
 
         // Log the contact inquiry
         Log::info("New Contact Inquiry: $orderType", $validated);
+
+        try {
+            Mail::to(config('mail.admin_email'))->send(new \App\Mail\NewOrderNotification($order));
+        } catch (\Exception $e) {
+            Log::error("Failed to send contact inquiry email: " . $e->getMessage());
+        }
 
         return back()->with('success', 'Благодарим ви! Съобщението е изпратено.');
     }
