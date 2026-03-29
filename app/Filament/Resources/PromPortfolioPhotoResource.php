@@ -37,7 +37,7 @@ class PromPortfolioPhotoResource extends Resource
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Подредба')
                     ->numeric()
-                    ->default(0)
+                    ->default(fn () => \App\Models\PromPortfolioPhoto::max('sort_order') + 1)
                     ->required(),
                 Forms\Components\Toggle::make('is_visible')
                     ->label('Видима')
