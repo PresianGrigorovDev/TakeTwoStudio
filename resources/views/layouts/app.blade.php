@@ -12,7 +12,7 @@
     <meta name="description" content="@yield('meta_description', 'Търсите сватбен фотограф във Варна? Take Two Studio 1603 предлага професионално фото и видеозаснемане за сватби, абитуриентски балове и кръщенета в цялата страна. 4K качество и дрон услуги.')">
     <meta name="keywords" content="@yield('meta_keywords', 'сватбен фотограф варна, видеозаснемане сватба, фотограф за бал, заснемане на кръщене, професионална фотосесия варна, дрон услуги, Take Two Studio 1603')">
     <meta name="author" content="Take Two Studio 1603">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
 
     <link rel="canonical" href="{{ url()->current() }}">
 
@@ -165,7 +165,14 @@
         <div class="footer-bottom">
             <div class="row">
                 <div class="col-md-12 text-center m-auto">
-                    <p>© {{ date('Y') }} Take Two Studio 1603. Всички права запазени.</p>
+                    <p>
+                        © {{ date('Y') }} Take Two Studio 1603. Всички права запазени.
+                        @auth
+                            @if(auth()->user()->isAdmin())
+                                &bull; <a href="{{ url('/admin') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Админ Панел</a>
+                            @endif
+                        @endauth
+                    </p>
                 </div>
             </div>
         </div>
