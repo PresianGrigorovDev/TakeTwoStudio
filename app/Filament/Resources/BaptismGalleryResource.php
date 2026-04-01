@@ -31,7 +31,14 @@ class BaptismGalleryResource extends Resource
                         Forms\Components\TextInput::make('title')
                             ->label('Заглавие (напр. Иван и семейство)')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \App\Support\Transliteration::slug($state))),
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug (URL)')
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
                         Forms\Components\DatePicker::make('event_date')
                             ->label('Дата на събитието')
                             ->native(false),
