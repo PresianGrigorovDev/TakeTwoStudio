@@ -100,8 +100,10 @@ class PageController extends Controller
         }
 
         $promPortfolioPhotos = collect();
+        $promFaqs = collect();
         if ($slug === 'proms') {
             $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+            $promFaqs = \App\Models\PromFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $commercialPhotos = collect();
@@ -115,6 +117,7 @@ class PageController extends Controller
             'weddingGalleries' => $weddingGalleries,
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
+            'promFaqs' => $promFaqs,
             'commercialPhotos' => $commercialPhotos,
             'pageContent' => $pageContent,
         ]);

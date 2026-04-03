@@ -27,9 +27,24 @@ Route::get('/clear-cache', function () {
 Route::get('/seed-ads', function () {
     (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
     (new \Database\Seeders\GraduationContentSeeder())->run();
+
+    // Prom FAQs
+    if (\App\Models\PromFaq::count() === 0) {
+        $promFaqs = [
+            ['question' => 'Колко струва заснемането на абитуриентски бал?', 'answer' => 'Цените ни започват от €103 на ученик и включват фотосесия, видеозаснемане на каненето и бала. Използвайте нашия калкулатор по-горе за точна сума.', 'sort_order' => 1],
+            ['question' => 'Кога трябва да запазим дата за бала?', 'answer' => 'Препоръчваме да запазите дата минимум 3–4 месеца предварително. Абитуриентският сезон е натоварен и местата се запълват бързо.', 'sort_order' => 2],
+            ['question' => 'Предлагате ли дрон кадри за бала?', 'answer' => 'Да, дрон заснемането е налично като екстра към всеки пакет. Въздушните кадри добавят кинематографична визия към видеото от вашия специален ден.', 'sort_order' => 3],
+            ['question' => 'Кога получаваме готовите снимки и видео?', 'answer' => 'Обработените материали се предават до 30 работни дни след събитието. При желание за по-бърза доставка предлагаме експресна обработка.', 'sort_order' => 4],
+        ];
+        foreach ($promFaqs as $faq) {
+            \App\Models\PromFaq::create($faq);
+        }
+    }
+
     return 'Seed complete – ads: ' . \App\Models\CommercialPortfolioPhoto::count()
          . ', grad FAQ: ' . \App\Models\GraduationFaq::count()
-         . ', grad packages: ' . \App\Models\GraduationPackage::count();
+         . ', grad packages: ' . \App\Models\GraduationPackage::count()
+         . ', prom FAQ: ' . \App\Models\PromFaq::count();
 });
 
 Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);

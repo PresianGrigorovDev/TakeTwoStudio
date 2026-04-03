@@ -247,37 +247,30 @@
         </div>
     </section>
 
-    @php
-    $promFaqs = [
-        ['q' => 'Колко струва заснемането на абитуриентски бал?', 'a' => 'Цените ни започват от €103 на ученик и включват фотосесия, видеозаснемане на каненето и бала. Използвайте нашия калкулатор по-горе за точна сума.'],
-        ['q' => 'Кога трябва да запазим дата за бала?', 'a' => 'Препоръчваме да запазите дата минимум 3–4 месеца предварително. Абитуриентският сезон е натоварен и местата се запълват бързо.'],
-        ['q' => 'Предлагате ли дрон кадри за бала?', 'a' => 'Да, дрон заснемането е налично като екстра към всеки пакет. Въздушните кадри добавят кинематографична визия към видеото от вашия специален ден.'],
-        ['q' => 'Кога получаваме готовите снимки и видео?', 'a' => 'Обработените материали се предават до 30 работни дни след събитието. При желание за по-бърза доставка предлагаме експресна обработка.'],
-    ];
-    @endphp
-
     <!-- FAQ -->
     <section class="py-5 bg-white">
         <div class="container">
             <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
+                    @if($promFaqs->isNotEmpty())
                     <div class="accordion" id="promFaqAccordion">
                         @foreach($promFaqs as $i => $faq)
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#pfaq{{ $i }}">
-                                    {{ $faq['q'] }}
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#pfaq{{ $faq->id }}">
+                                    {{ $faq->question }}
                                 </button>
                             </h2>
-                            <div id="pfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#promFaqAccordion">
+                            <div id="pfaq{{ $faq->id }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#promFaqAccordion">
                                 <div class="accordion-body text-muted">
-                                    {{ $faq['a'] }}
+                                    {{ $faq->answer }}
                                 </div>
                             </div>
                         </div>
                         @endforeach
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -312,18 +305,22 @@ $promServiceSchema = [
     'description' => 'Професионално заснемане на абитуриентски балове — фотосесии, 4K видео, дрон кадри и онлайн галерия.',
     'url' => 'https://taketwostudio1603.com/proms',
 ];
+@endphp
+<script type="application/ld+json">{!! json_encode($promServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@if($promFaqs->isNotEmpty())
+@php
 $promFaqSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'FAQPage',
-    'mainEntity' => array_map(fn($faq) => [
+    'mainEntity' => $promFaqs->map(fn($faq) => [
         '@type' => 'Question',
-        'name' => $faq['q'],
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-    ], $promFaqs),
+        'name' => $faq->question,
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+    ])->values()->toArray(),
 ];
 @endphp
-<script type="application/ld+json">{!! json_encode($promServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 <script type="application/ld+json">{!! json_encode($promFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endif
 @endpush
 
 @push('scripts')
