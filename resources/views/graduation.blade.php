@@ -151,18 +151,13 @@
         <div class="masonry" data-aos="fade-up">
             @forelse($graduationPhotos as $photo)
                 <div class="masonry-item">
-                    <div class="gallery-item" onclick="openGraduationLightbox(this)">
-                        <img src="{{ Storage::url($photo->image_path) }}"
-                             alt="{{ $photo->alt_text ?? 'Пред-бална фотосесия Варна' }}"
-                             loading="lazy">
-                        <div class="gallery-overlay">
-                            @if($photo->alt_text)
-                                <span class="gallery-overlay-text">{{ $photo->alt_text }}</span>
-                            @endif
-                        </div>
-                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox d-none"
+                    <div class="portfolio-item">
+                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox"
                            data-title="{{ $photo->alt_text ?? 'Пред-бална Фотосесия' }}"
-                           data-description="{{ $photo->description ?? '' }}"></a>
+                           data-description="{{ $photo->description ?? '' }}">
+                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img"
+                                 alt="{{ $photo->alt_text ?? 'Пред-бална фотосесия Варна' }}">
+                        </a>
                     </div>
                 </div>
             @empty
@@ -378,10 +373,6 @@
     <script src="{{ asset('js/calculators/graduation.js') }}"></script>
     <script>
         const graduationLightbox = GLightbox({ selector: '.glightbox' });
-        function openGraduationLightbox(el) {
-            const link = el.querySelector('.glightbox');
-            if (link) link.click();
-        }
     </script>
 @endpush
 
