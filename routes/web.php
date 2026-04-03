@@ -15,6 +15,15 @@ Route::get('/graduation', [App\Http\Controllers\PageController::class, 'graduati
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    Artisan::call('config:clear');
+    Artisan::call('filament:cache-components');
+    return 'Cache cleared!';
+});
+
 Route::get('/seed-ads', function () {
     (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
     (new \Database\Seeders\GraduationContentSeeder())->run();
