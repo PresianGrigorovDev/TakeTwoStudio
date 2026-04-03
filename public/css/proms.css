@@ -129,6 +129,11 @@ h5 {
     align-items: center;
     justify-content: center;
     margin-top: -1px;
+
+    @media (max-width: 991px) {
+        min-height: 20vh;
+        background-position: bottom;
+    }
 }
 
 .hero-overlay {
