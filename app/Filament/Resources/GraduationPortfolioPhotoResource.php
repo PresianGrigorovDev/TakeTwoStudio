@@ -74,10 +74,7 @@ class GraduationPortfolioPhotoResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image_path')
                     ->label('Снимка')
-                    ->height(100)
-                    ->getStateUsing(fn (GraduationPortfolioPhoto $record): string =>
-                        Storage::url($record->image_path)
-                    ),
+                    ->height(100),
                 Tables\Columns\TextColumn::make('alt_text')
                     ->label('Заглавие')
                     ->searchable()
