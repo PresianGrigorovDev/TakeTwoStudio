@@ -40,6 +40,27 @@ class PageController extends Controller
         return $this->showService('commercial');
     }
 
+    public function graduation()
+    {
+        $graduationPhotos = \App\Models\GraduationPortfolioPhoto::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $graduationFaqs = \App\Models\GraduationFaq::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $graduationPackages = \App\Models\GraduationPackage::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('graduation', [
+            'graduationPhotos'   => $graduationPhotos,
+            'graduationFaqs'     => $graduationFaqs,
+            'graduationPackages' => $graduationPackages,
+        ]);
+    }
+
     private function showService($slug)
     {
         $service = Service::where('slug', $slug)->first();
@@ -83,12 +104,18 @@ class PageController extends Controller
             $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
+        $commercialPhotos = collect();
+        if ($slug === 'commercial') {
+            $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
         return view($slug, [
             'service' => $service,
             'portfolioItems' => $portfolioItems,
             'weddingGalleries' => $weddingGalleries,
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
+            'commercialPhotos' => $commercialPhotos,
             'pageContent' => $pageContent,
         ]);
     }

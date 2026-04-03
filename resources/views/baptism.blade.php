@@ -323,6 +323,14 @@
         </div>
     </section>
 
+    @php
+    $baptismFaqs = [
+        ['q' => 'Колко време трае ритуалът и снимките?', 'a' => 'Самият църковен ритуал обикновено трае около 40-50 минути. Ние винаги сме там 15-20 минути по-рано, за да снимаме детайлите и гостите. След ритуала отделяме време за семейна фотосесия пред църквата. Общо ангажиментът е около 1.5 часа (за пакет "Само Църква").'],
+        ['q' => 'Кога получаваме снимките и видеото?', 'a' => 'Стандартният срок за предаване на обработените кадри и видеото е до 30 работни дни. Ако имате нужда от материалите по-бързо, предлагаме услуга "Експресна обработка" (до 3 дни).'],
+        ['q' => 'Снимате ли в ресторанта?', 'a' => 'Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта (посрещане, разрязване на питата, торта и весели моменти с гостите).'],
+    ];
+    @endphp
+
     <!-- FAQ -->
     <section class="py-5 bg-white">
         <div class="container">
@@ -330,55 +338,22 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="accordion" id="faqAccordion">
-                        <!-- Q1 -->
+                        @foreach($baptismFaqs as $i => $faq)
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne">
-                                    Колко време трае ритуалът и снимките?
+                            <h2 class="accordion-header">
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#bfaq{{ $i }}">
+                                    {{ $faq['q'] }}
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show"
+                            <div id="bfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}"
                                 data-bs-parent="#faqAccordion">
                                 <div class="accordion-body text-muted">
-                                    Самият църковен ритуал обикновено трае около 40-50 минути. Ние винаги сме там 15-20
-                                    минути по-рано, за да снимаме детайлите и гостите. След ритуала отделяме време за
-                                    семейна фотосесия пред църквата. Общо ангажиментът е около 1.5 часа (за пакет "Само
-                                    Църква").
+                                    {{ $faq['a'] }}
                                 </div>
                             </div>
                         </div>
-                        <!-- Q2 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseTwo">
-                                    Кога получаваме снимките и видеото?
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body text-muted">
-                                    Стандартният срок за предаване на обработените кадри и видеото е до 30 работни дни.
-                                    Ако имате нужда от материалите по-бързо, предлагаме услуга "Експресна обработка" (до
-                                    3 дни).
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Q3 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseThree">
-                                    Снимате ли в ресторанта?
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body text-muted">
-                                    Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта
-                                    (посрещане, разрязване на питата, торта и весели моменти с гостите).
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -419,6 +394,35 @@
         </div>
     </section>
 @endsection
+
+@push('schema')
+@php
+$baptismServiceSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => 'Заснемане на кръщенета',
+    'provider' => [
+        '@type' => 'LocalBusiness',
+        'name' => 'Take Two Studio 1603',
+        '@id' => 'https://taketwostudio1603.com',
+    ],
+    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+    'description' => 'Дискретно и професионално заснемане на свято кръщение — ритуалът в църква, семейна фотосесия и тържеството в ресторанта.',
+    'url' => 'https://taketwostudio1603.com/baptism',
+];
+$baptismFaqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => array_map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq['q'],
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+    ], $baptismFaqs),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($baptismServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($baptismFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

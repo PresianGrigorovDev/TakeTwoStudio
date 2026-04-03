@@ -20,8 +20,15 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta property="og:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България. Вижте портфолиото ни.')">
-    <meta property="og:image" content="{{ asset('css/img/social-share-cover.jpg') }}">
+    <meta property="og:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
     <meta property="og:locale" content="bg_BG">
+    <meta property="og:site_name" content="Take Two Studio 1603">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@@taketwostudio1603">
+    <meta name="twitter:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
+    <meta name="twitter:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
 
     <meta name="geo.region" content="BG-03">
     <meta name="geo.placename" content="Varna">
@@ -52,16 +59,17 @@
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
-      "@type": "ProfessionalService",
+      "@type": ["LocalBusiness", "ProfessionalService"],
       "name": "Take Two Studio 1603",
       "image": "{{ asset('css/img/about.webp') }}",
       "@id": "https://taketwostudio1603.com",
       "url": "https://taketwostudio1603.com",
       "telephone": "+359886190124",
+      "priceRange": "€€",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Варна",
-        "addressLocality": "Varna",
+        "streetAddress": "ж.к. Възраждане IV 1603",
+        "addressLocality": "Варна",
         "postalCode": "9000",
         "addressCountry": "BG"
       },
@@ -69,6 +77,11 @@
         "@type": "GeoCoordinates",
         "latitude": 43.21405,
         "longitude": 27.914733
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Варна",
+        "addressCountry": "BG"
       },
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
@@ -81,9 +94,21 @@
         "https://www.instagram.com/taketwostudio1603"
       ],
       "description": "Професионално сватбено фото и видеозаснемане във Варна. Услуги за балове, кръщенета и корпоративни събития.",
-      "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"]
+      "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Фотографски и видео услуги",
+        "itemListElement": [
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Сватбена фотография и видеозаснемане"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Абитуриентски балове и фотосесии"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Заснемане на кръщенета"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Рекламна и продуктова фотография"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Дрон заснемане"}}
+        ]
+      }
     }
     </script>
+    @stack('schema')
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @stack('styles')
@@ -115,7 +140,19 @@
                     </li>
 
                     <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
-                        <li class="nav-item"><a class="nav-link" href="/#services">Услуги</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="/#services" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Услуги
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/weddings">Сватби</a></li>
+                                <li><a class="dropdown-item" href="/proms">Балове</a></li>
+                                <li><a class="dropdown-item" href="/baptism">Кръщенета</a></li>
+                                <li><a class="dropdown-item" href="/graduation">Изпращане</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/commercial">Реклама и Бизнес</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item"><a class="nav-link" href="/#contact">Контакти</a></li>
                     </div>
                 </ul>
@@ -180,8 +217,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js" defer></script>
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             setTimeout(function () {

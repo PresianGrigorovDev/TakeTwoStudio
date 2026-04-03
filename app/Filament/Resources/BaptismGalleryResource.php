@@ -3,22 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BaptismGalleryResource\Pages;
-use App\Filament\Resources\BaptismGalleryResource\RelationManagers;
 use App\Models\BaptismGallery;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class BaptismGalleryResource extends Resource
 {
     protected static ?string $model = BaptismGallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
-    protected static ?string $navigationGroup = 'Кръщенета';
+    protected static ?string $navigationGroup = 'Кръщения';
+    protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Галерия за Кръщене';
     protected static ?string $pluralModelLabel = 'Галерии за Кръщене';
 
@@ -42,14 +41,26 @@ class BaptismGalleryResource extends Resource
                         Forms\Components\DatePicker::make('event_date')
                             ->label('Дата на събитието')
                             ->native(false),
+                        Forms\Components\Placeholder::make('cover_image_preview')
+                            ->label('Текуща корица')
+                            ->content(fn (?BaptismGallery $record): \Illuminate\Support\HtmlString =>
+                                $record && $record->cover_image
+                                    ? new \Illuminate\Support\HtmlString(
+                                        '<img src="' . Storage::url($record->cover_image) . '" style="max-height:200px; border-radius:6px; border:2px solid #374151; object-fit:contain;">'
+                                    )
+                                    : new \Illuminate\Support\HtmlString('')
+                            )
+                            ->visibleOn('edit'),
                         Forms\Components\FileUpload::make('cover_image')
-                            ->label('Главна снимка (Корица)')
+                            ->label('Качи нова корица (оставете празно за да запазите текущата)')
                             ->image()
                             ->imageResizeMode('contain')
                             ->imageResizeTargetWidth('1920')
                             ->imageResizeTargetHeight('1080')
                             ->directory('baptism_galleries/covers')
-                            ->required(),
+                            ->disk('public')
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrated(fn ($state): bool => filled($state)),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Активна')
                             ->default(true)
@@ -70,6 +81,7 @@ class BaptismGalleryResource extends Resource
                                     ->imageResizeTargetWidth('1920')
                                     ->imageResizeTargetHeight('1080')
                                     ->directory('baptism_galleries/photos')
+                                    ->disk('public')
                                     ->required(),
                             ])
                             ->orderColumn('sort_order')

@@ -259,13 +259,12 @@ h5 {
     padding: 30px;
     opacity: 1;
     /* ВИНАГИ ВИДИМО */
-    transition: all 0.5s ease;
+    transition: background 0.3s ease;
 }
 
 /* Заглавието и подзаглавието са винаги видими */
 .portfolio-info {
     transform: translateY(0);
-    transition: all 0.5s ease;
     text-align: left;
 }
 
@@ -275,7 +274,7 @@ h5 {
     margin-bottom: 5px;
     font-weight: 700;
     letter-spacing: 1px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 8px rgba(0,0,0,1), 0 2px 16px rgba(0,0,0,0.9);
 }
 
 .portfolio-subtitle {
@@ -295,7 +294,7 @@ h5 {
         margin-bottom: 5px;
         font-weight: 700;
         letter-spacing: 1px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        text-shadow: 0 1px 8px rgba(0,0,0,1), 0 2px 16px rgba(0,0,0,0.9);
     }
 
     .portfolio-subtitle {
@@ -314,23 +313,30 @@ h5 {
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    will-change: transform;
 }
 
-/* Описанието е скрито по подразбиране */
+/* Wrapper — grid trick: 0fr → 1fr анимира реалната височина без freeze */
+.portfolio-desc-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease, margin-top 0.3s ease;
+    margin-top: 0;
+}
+
+.portfolio-item:hover .portfolio-desc-wrapper {
+    grid-template-rows: 1fr;
+    margin-top: 8px;
+}
+
+/* Описанието — overflow:hidden е нужно за grid trick-а */
 .portfolio-desc {
-    color: #ddd;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin-bottom: 0;
-
-    /* Скриване */
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(20px);
-
-    /* Анимация */
-    transition: all 0.5s ease;
     overflow: hidden;
+    color: #fff;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0;
+    text-shadow: 0 1px 6px rgba(0,0,0,1), 0 2px 12px rgba(0,0,0,0.9);
 }
 
 /* --- HOVER EFFECTS --- */
@@ -340,25 +346,12 @@ h5 {
     /* transform: scale(1.1); */
 }
 
-/* 2. Градиентът става по-плътен и тъмен */
+/* 2. Overlay изчезва при hover — снимката се вижда чисто */
 .portfolio-item:hover .portfolio-overlay {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 100%);
+    background: transparent;
 }
 
-/* 3. Описанието се появява и разгъва */
-.portfolio-item:hover .portfolio-desc {
-    max-height: 200px;
-    /* Достатъчно място за текста */
-    opacity: 1;
-    transform: translateY(0);
-    margin-top: 10px;
-    /* Отстояние от заглавието */
-}
-
-/* 4. Заглавието леко се повдига, за да направи място (автоматично от flexbox, но добавяме и лек транслейт) */
-.portfolio-item:hover .portfolio-info {
-    /* Няма нужда от транслейт, flexbox ще го бутне нагоре, когато описанието се появи */
-}
+/* 3. Overlay потъмнява при hover */
 
 
 /* --- CONTACT FORM --- */

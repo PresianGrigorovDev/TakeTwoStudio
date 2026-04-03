@@ -1,0 +1,428 @@
+@extends('layouts.app')
+
+@section('title', 'Пред-бална Фотосесия Варна | Изпращане на Абитуриент | Take Two Studio 1603')
+@section('meta_description', 'Запечатайте семейния момент преди бала! Пред-бална фотосесия за изпращане на абитуриент във Варна — семейни портрети, индивидуални кадри и невероятни спомени. Резервирайте своята дата.')
+@section('meta_keywords', 'пред-бална фотосесия варна, изпращане абитуриент, семейна фотосесия бал варна, фотограф абитуриентско изпращане, снимки изпращане от семейството варна, Take Two Studio 1603')
+@section('og_title', 'Пред-бална Фотосесия | Изпращане на Абитуриент — Take Two Studio 1603')
+@section('og_description', 'Моментът преди бала е само ваш. Семейна фотосесия за изпращане на вашия абитуриент — елегантна, емоционална и незабравима.')
+@section('og_image', asset('css/img/prom.jpg'))
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/graduation.css') }}">
+@endpush
+
+@section('content')
+
+{{-- ══════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════ --}}
+<section class="graduation-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" data-aos="fade-up">
+        <span class="hero-badge">Take Two Studio 1603</span>
+        <h1>Моментът Преди<br>Най-Важния Вечер</h1>
+        <span class="hero-subtitle">Семейна фотосесия за изпращане на вашия абитуриент</span>
+        <div>
+            <a href="#contact" class="btn-grad-primary">Резервирай дата</a>
+            <a href="#gallery" class="btn-grad-outline">Виж портфолиото</a>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     INTRO
+══════════════════════════════════════════════════════════ --}}
+<section class="intro-section py-5">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center" data-aos="fade-up">
+                <h2 class="mb-3">Изпращането от Семейството</h2>
+                <div class="section-divider"></div>
+                <p class="lead-text mb-4">
+                    Преди да тръгне към бала, той или тя ще бъдат само ваши — за последно в детската стая,
+                    сред семейния дом, заобиколени от хората, които ги обичат най-много.
+                    Тези минути са невъзвратими. Ние ги запечатваме завинаги.
+                </p>
+                <blockquote>
+                    „Снимките от изпращането станаха най-скъпите ни семейни спомени."
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     BENEFITS
+══════════════════════════════════════════════════════════ --}}
+<section class="benefit-section py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="mb-3">Защо да изберете нас</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-heart"></i></div>
+                    <h5>Емоционален подход</h5>
+                    <p>Работим деликатно, за да уловим истинската атмосфера на вашия семеен момент.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-camera"></i></div>
+                    <h5>Кинематографично качество</h5>
+                    <p>Снимаме с професионална техника — резкост, светлина и цвят на кинематографично ниво.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h5>Локация по ваш избор</h5>
+                    <p>У дома, в градинката, на любимото място — снимаме там, където се чувствате най-добре.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="benefit-card">
+                    <div class="benefit-icon"><i class="fas fa-clock"></i></div>
+                    <h5>Бърза доставка</h5>
+                    <p>Обработените снимки получавате в онлайн галерия до 5 работни дни след сесията.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════════════ --}}
+<section class="process-section py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="mb-3">Как протича сесията</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-3 step-connector" data-aos="fade-up" data-aos-delay="0">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h5>Резервирайте дата</h5>
+                    <p>Свържете се с нас поне 3-4 седмици преди бала, за да сме сигурни, че датата е свободна.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 step-connector" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h5>Избор на локация</h5>
+                    <p>Обсъждаме заедно най-подходящото място — дом, парк или друга значима за вас локация.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 step-connector" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h5>Денят на сесията</h5>
+                    <p>Снимаме 60–90 минути преди тръгването за бала, улавяйки всяка емоция и усмивка.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h5>Получавате снимките</h5>
+                    <p>До 5 дни получавате достъп до онлайн галерия с всички обработени кадри.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     GALLERY
+══════════════════════════════════════════════════════════ --}}
+<section class="gallery-section py-5" id="gallery">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="mb-3">Портфолио</h2>
+            <div class="section-divider"></div>
+            <p class="text-muted" style="font-size:.95rem;">Разгледайте нашите любими кадри от семейни изпращания</p>
+        </div>
+
+        <div class="masonry" data-aos="fade-up">
+            @forelse($graduationPhotos as $photo)
+                <div class="masonry-item">
+                    <div class="gallery-item" onclick="openGraduationLightbox(this)">
+                        <img src="{{ Storage::url($photo->image_path) }}"
+                             alt="{{ $photo->alt_text ?? 'Пред-бална фотосесия Варна' }}"
+                             loading="lazy">
+                        <div class="gallery-overlay">
+                            @if($photo->alt_text)
+                                <span class="gallery-overlay-text">{{ $photo->alt_text }}</span>
+                            @endif
+                        </div>
+                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox d-none"
+                           data-title="{{ $photo->alt_text ?? 'Пред-бална Фотосесия' }}"
+                           data-description="{{ $photo->description ?? '' }}"></a>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-camera fa-3x mb-3 d-block" style="color:#ddd;"></i>
+                    <p>Очаквайте скоро нашите първи кадри от пред-балните сесии!</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     CALCULATOR
+══════════════════════════════════════════════════════════ --}}
+<section class="calc-section" id="pricing">
+    <div class="container">
+        <h2 class="text-center mb-4">Калкулатор на цената</h2>
+        <p class="text-center mb-5" style="max-width:800px; margin:0 auto 3rem auto;">
+            Изберете пакет и желаните добавки — цената се изчислява автоматично.
+            Имате нестандартни изисквания? <a href="#contact" style="color:var(--accent); font-weight:600; text-decoration:none;">Пишете ни за индивидуална оферта.</a>
+        </p>
+
+        @if(session('success'))
+            <div class="alert alert-success text-center mb-4">{{ session('success') }}</div>
+        @endif
+
+        <form id="graduationCalcForm" action="{{ url('/submit-order') }}" method="POST">
+            @csrf
+            <input type="hidden" name="orderType" value="Graduation">
+
+            <div class="row g-5">
+
+                {{-- LEFT: пакети + екстри --}}
+                <div class="col-lg-8">
+                    <div class="calc-card h-100">
+
+                        {{-- 1. Пакети --}}
+                        <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет</h4>
+
+                        @if($graduationPackages->isEmpty())
+                            <p class="text-center text-muted">Очаквайте скоро нашите пакети.</p>
+                        @else
+                        @php
+                            $pkgCount = $graduationPackages->count();
+                            $pkgCol = match(true) {
+                                $pkgCount === 1 => 'col-md-8 mx-auto',
+                                $pkgCount === 2 => 'col-md-6',
+                                $pkgCount >= 3  => 'col-md-6',
+                                default         => 'col-md-6',
+                            };
+                        @endphp
+                        <div class="row g-4 mb-5 justify-content-center">
+                            @foreach($graduationPackages as $i => $pkg)
+                            <div class="{{ $pkgCol }}">
+                                <input type="radio" name="grad_package"
+                                       id="pkg_{{ $pkg->id }}"
+                                       class="package-option"
+                                       value="{{ (int)$pkg->price_eur }}"
+                                       data-label="{{ $pkg->name }}"
+                                       {{ $i === 0 ? 'checked' : '' }}
+                                       onchange="calculateGraduationTotal()">
+                                <label for="pkg_{{ $pkg->id }}"
+                                       class="package-label {{ $pkg->is_featured ? 'lux-pack' : '' }}">
+                                    <i class="fas {{ $pkg->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
+                                    <strong>{{ $pkg->name }}</strong>
+                                    <span class="price-tag">€ {{ number_format($pkg->price_eur, 0) }} / {{ number_format($pkg->price_eur * 1.9558, 2) }} лв.</span>
+                                    @if($pkg->description)
+                                        <p style="font-size:.8rem; color:#777; margin:8px 0 0; text-align:center;">{{ $pkg->description }}</p>
+                                    @endif
+                                    @if(!empty($pkg->features))
+                                    <ul class="package-details">
+                                        @foreach($pkg->features as $feat)
+                                            <li><i class="fas fa-check small"></i> {{ $feat }}</li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- 2. Екстри --}}
+                        <h4 class="mb-4 text-center"><i class="fas fa-book-open me-2 text-warning"></i> Добавки</h4>
+                        <div class="row g-3 justify-content-center">
+
+                            <div class="col-md-4">
+                                <input type="checkbox" class="extra-option" id="extra_video"
+                                       value="62" data-label="Кратко видео (1–2 мин.)"
+                                       onchange="calculateGraduationTotal()">
+                                <label class="extra-card-label" for="extra_video">
+                                    <i class="fas fa-video extra-card-icon"></i>
+                                    <span class="fw-bold">Кратко видео</span>
+                                    <span class="extra-price">+€ 62 / {{ number_format(62 * 1.9558, 2) }} лв.</span>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input type="checkbox" class="extra-option" id="extra_express"
+                                       value="26" data-label="Express обработка (до 2 дни)"
+                                       onchange="calculateGraduationTotal()">
+                                <label class="extra-card-label" for="extra_express">
+                                    <i class="fas fa-bolt extra-card-icon"></i>
+                                    <span class="fw-bold">Express обработка</span>
+                                    <span class="extra-price">+€ 26 / {{ number_format(26 * 1.9558, 2) }} лв.</span>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input type="checkbox" class="extra-option" id="extra_album"
+                                       value="41" data-label="Семеен фотоалбум"
+                                       onchange="calculateGraduationTotal()">
+                                <label class="extra-card-label" for="extra_album">
+                                    <i class="fas fa-book-open extra-card-icon"></i>
+                                    <span class="fw-bold">Семеен фотоалбум</span>
+                                    <span class="extra-price">+€ 41 / {{ number_format(41 * 1.9558, 2) }} лв.</span>
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                {{-- RIGHT: обобщение + форма --}}
+                <div class="col-lg-4">
+                    <div class="total-price-box">
+                        <h5 class="text-uppercase text-white-50">Цена</h5>
+                        <div class="price-display">€ <span id="finalPrice">{{ (int)($graduationPackages->first()?->price_eur ?? 0) }}</span> / <span id="finalPriceBgn">{{ number_format(($graduationPackages->first()?->price_eur ?? 0) * 1.9558, 2) }}</span> лв.</div>
+                        <div class="section-divider" style="background:#444; width:100%;"></div>
+
+                        <div class="text-start mt-4 mb-4">
+                            <div class="summary-item"><span>Пакет:</span> <span id="sumPackage">{{ $graduationPackages->first()?->name ?? '—' }}</span></div>
+                            <div class="summary-item"><span>Добавки:</span> <span id="sumExtras">—</span></div>
+                        </div>
+
+                        <input type="hidden" id="hiddenPrice" name="final_price">
+                        <input type="hidden" id="hiddenDetails" name="details">
+
+                        <div class="mt-4">
+                            <input type="text" name="name" class="form-control mb-2 rounded-0"
+                                   placeholder="Вашето ime" required>
+                            <input type="tel" name="phone" class="form-control mb-2 rounded-0"
+                                   placeholder="Телефон" required>
+                            <input type="text" name="school" class="form-control mb-2 rounded-0"
+                                   placeholder="Дата на бала (напр. 20.05.2026)">
+                            <button type="submit" class="btn-custom">Изпрати Запитване</button>
+                        </div>
+
+                        <p class="price-note mt-3 mb-0">
+                            * 50% капаро при резервация. Остатъкът – до деня на сесията.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     FAQ — за Google Featured Snippets
+══════════════════════════════════════════════════════════ --}}
+<section class="faq-section py-5" id="faq">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="mb-3">Често задавани въпроси</h2>
+            <div class="section-divider"></div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="fade-up">
+                @if($graduationFaqs->isEmpty())
+                    <p class="text-center text-muted">Очаквайте скоро.</p>
+                @else
+                <div class="accordion" id="faqAccordion">
+                    @foreach($graduationFaqs as $i => $faq)
+                        <div class="accordion-item">
+                            <h3 class="accordion-header">
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#faq{{ $faq->id }}">
+                                    {{ $faq->question }}
+                                </button>
+                            </h3>
+                            <div id="faq{{ $faq->id }}"
+                                 class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}"
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ $faq->answer }}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════════════════════
+     CONTACT CTA (anchor за navbar линк)
+══════════════════════════════════════════════════════════ --}}
+<div id="contact"></div>
+
+@endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="{{ asset('js/calculators/graduation.js') }}"></script>
+    <script>
+        const graduationLightbox = GLightbox({ selector: '.glightbox' });
+        function openGraduationLightbox(el) {
+            const link = el.querySelector('.glightbox');
+            if (link) link.click();
+        }
+    </script>
+@endpush
+
+@push('schema')
+@php
+$serviceSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => 'Пред-бална Фотосесия — Изпращане на Абитуриент',
+    'description' => 'Семейна фотосесия преди абитуриентски бал. Запечатваме момента на изпращането от семейството с професионални снимки.',
+    'provider' => [
+        '@type' => 'ProfessionalService',
+        'name' => 'Take Two Studio 1603',
+        'url' => 'https://taketwostudio1603.com',
+        'telephone' => '+359886190124',
+        'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Varna', 'addressCountry' => 'BG'],
+    ],
+    'areaServed' => ['@type' => 'City', 'name' => 'Varna'],
+    'serviceType' => 'Photography',
+    'url' => 'https://taketwostudio1603.com/graduation',
+    'offers' => $graduationPackages->map(fn($pkg) => [
+        '@type' => 'Offer',
+        'name' => $pkg->name,
+        'price' => (string) $pkg->price_eur,
+        'priceCurrency' => 'EUR',
+    ])->values()->toArray(),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($serviceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@if($graduationFaqs->isNotEmpty())
+@php
+$faqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => $graduationFaqs->map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq->question,
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+    ])->values()->toArray(),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($faqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endif
+@endpush

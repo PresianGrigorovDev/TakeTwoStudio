@@ -1,0 +1,726 @@
+/* ============================================================
+   GRADUATION — Пред-бална Семейна Фотосесия
+   ============================================================ */
+
+:root {
+    --accent:    #D4AF37;
+    --dark-bg:   #111111;
+    --warm:      #fdf8f0;
+    --warm-mid:  #f5ede0;
+    --text:      #222222;
+    --muted:     #666666;
+}
+
+body {
+    font-family: 'Uni Sans', 'Montserrat', sans-serif;
+    color: var(--text);
+    background: #fff;
+    padding-top: 80px;
+}
+
+h1, h2, h3, h4, h5 {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #111;
+}
+
+.section-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 0 auto 28px;
+}
+
+/* ─── NAVBAR ───────────────────────────────────────────────── */
+.navbar {
+    background-color: var(--dark-bg) !important;
+    padding: 0;
+    border-bottom: 1px solid #222;
+    min-height: 80px;
+    transition: all 0.3s;
+}
+.nav-link {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff !important;
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+}
+.nav-link:hover { color: var(--accent) !important; }
+.logo-mobile  { max-height: 40px; }
+.logo-desktop { max-height: 55px; }
+.navbar-toggler { border-color: rgba(255,255,255,.1); margin-right: 15px; }
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.7)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+@media (max-width: 991px) {
+    .navbar-collapse { background: var(--dark-bg); padding: 20px 0; text-align: center; }
+    .nav-link { justify-content: center; padding: 15px 0; }
+}
+@media (min-width: 992px) {
+    .navbar .container { height: 80px; }
+    .navbar-collapse, .navbar-nav, .nav-item { height: 100%; }
+}
+
+/* ─── HERO ──────────────────────────────────────────────────── */
+.graduation-hero {
+    min-height: 75vh;
+    /* Замени 'graduation-hero.jpg' с реална снимка */
+    background-image: url('../css/img/prom.jpg');
+    background-size: cover;
+    background-position: center top;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -1px;
+}
+
+.graduation-hero .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        160deg,
+        rgba(0,0,0,.65) 0%,
+        rgba(0,0,0,.35) 60%,
+        rgba(212,175,55,.15) 100%
+    );
+}
+
+.graduation-hero .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+    max-width: 820px;
+}
+
+.graduation-hero h1 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,.8);
+    line-height: 1.2;
+}
+
+.graduation-hero .hero-subtitle {
+    display: block;
+    color: rgba(255,255,255,.9);
+    font-size: .85rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    text-shadow: 0 1px 8px rgba(0,0,0,.7);
+}
+
+.graduation-hero .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+}
+
+.btn-grad-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: #111;
+    font-weight: 700;
+    font-size: .85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 36px;
+    text-decoration: none;
+    transition: .3s;
+    margin: 6px;
+    border-radius: 2px;
+}
+.btn-grad-primary:hover {
+    background: #fff;
+    color: #111;
+}
+.btn-grad-outline {
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,.7);
+    color: #fff;
+    font-weight: 600;
+    font-size: .85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 13px 36px;
+    text-decoration: none;
+    transition: .3s;
+    margin: 6px;
+    border-radius: 2px;
+}
+.btn-grad-outline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+@media (min-width: 992px) {
+    .graduation-hero h1        { font-size: 3.8rem; }
+    .graduation-hero .hero-subtitle { font-size: 1rem; }
+}
+
+/* ─── INTRO / ABOUT ─────────────────────────────────────────── */
+.intro-section { background: #fff; }
+
+.intro-section .lead-text {
+    font-size: 1.15rem;
+    color: var(--muted);
+    line-height: 1.9;
+    font-weight: 400;
+}
+
+.intro-section blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+    font-style: italic;
+    color: #555;
+    font-size: 1.05rem;
+    margin-top: 24px;
+}
+
+/* ─── BENEFIT CARDS ─────────────────────────────────────────── */
+.benefit-section { background: var(--warm); }
+
+.benefit-card {
+    background: #fff;
+    border-radius: 6px;
+    padding: 36px 28px;
+    height: 100%;
+    border-bottom: 3px solid transparent;
+    transition: .3s;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.benefit-card:hover {
+    border-bottom-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+.benefit-icon {
+    font-size: 2.4rem;
+    color: var(--accent);
+    margin-bottom: 18px;
+}
+.benefit-card h5 {
+    font-size: .95rem;
+    margin-bottom: 12px;
+}
+.benefit-card p {
+    font-size: .9rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* ─── PROCESS STEPS ─────────────────────────────────────────── */
+.process-section { background: #fff; }
+
+.step-card {
+    position: relative;
+    text-align: center;
+    padding: 0 16px;
+}
+
+.step-number {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #111;
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 16px rgba(212,175,55,.35);
+}
+
+.step-card h5 {
+    font-size: .95rem;
+    margin-bottom: 10px;
+}
+.step-card p {
+    font-size: .88rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* Connector line between steps on desktop */
+@media (min-width: 992px) {
+    .step-connector {
+        position: relative;
+    }
+    .step-connector::after {
+        content: '';
+        position: absolute;
+        top: 32px;
+        left: calc(50% + 40px);
+        width: calc(100% - 80px);
+        height: 2px;
+        background: linear-gradient(to right, var(--accent), transparent);
+    }
+    .step-connector:last-child::after { display: none; }
+}
+
+/* ─── GALLERY ────────────────────────────────────────────────── */
+.gallery-section { background: var(--warm); }
+
+.masonry {
+    column-count: 3;
+    column-gap: 12px;
+}
+.masonry-item {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin-bottom: 12px;
+}
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform .5s ease;
+    will-change: transform;
+}
+.gallery-item:hover img { transform: scale(1.04); }
+
+.gallery-item .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.7) 0%, rgba(0,0,0,0) 55%);
+    opacity: 0;
+    transition: opacity .3s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: 18px;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+
+.gallery-overlay-text {
+    color: #fff;
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 4px rgba(0,0,0,.8);
+}
+
+@media (max-width: 767px) { .masonry { column-count: 1; } }
+@media (min-width: 768px) and (max-width: 991px) { .masonry { column-count: 2; } }
+
+/* ─── PACKAGES / PRICING ─────────────────────────────────────── */
+.pricing-section { background: #fff; }
+
+.pricing-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 40px 30px;
+    height: 100%;
+    text-align: center;
+    transition: .3s;
+    position: relative;
+    overflow: hidden;
+}
+.pricing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,.08);
+    border-color: var(--accent);
+}
+.pricing-card.featured {
+    border-color: var(--accent);
+    border-width: 2px;
+    box-shadow: 0 8px 32px rgba(212,175,55,.15);
+}
+.pricing-card.featured::before {
+    content: 'Най-популярен';
+    position: absolute;
+    top: 16px;
+    right: -28px;
+    background: var(--accent);
+    color: #111;
+    font-size: .65rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 40px;
+    transform: rotate(45deg);
+}
+.pricing-name {
+    font-size: .8rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.pricing-price {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #111;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+.pricing-price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--muted);
+}
+.pricing-desc {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+}
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    text-align: left;
+}
+.pricing-features li {
+    font-size: .88rem;
+    color: #444;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.pricing-features li:last-child { border-bottom: none; }
+.pricing-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.btn-pricing {
+    display: block;
+    padding: 13px 0;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: .3s;
+}
+.btn-pricing-outline {
+    border: 1px solid #111;
+    color: #111;
+}
+.btn-pricing-outline:hover, .pricing-card.featured .btn-pricing-outline {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #111;
+}
+
+/* ─── FAQ ───────────────────────────────────────────────────── */
+.faq-section { background: var(--warm); }
+
+.accordion-button {
+    font-weight: 700;
+    font-size: .95rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    background: #fff;
+    color: #111;
+}
+.accordion-button:not(.collapsed) {
+    background: #fff;
+    color: var(--accent);
+    box-shadow: none;
+}
+.accordion-button::after {
+    filter: none;
+}
+.accordion-button:not(.collapsed)::after {
+    filter: none;
+}
+.accordion-item {
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    border-radius: 4px !important;
+    overflow: hidden;
+}
+.accordion-body {
+    font-size: .92rem;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+/* ─── CTA / CONTACT ─────────────────────────────────────────── */
+.cta-section { background: var(--dark-bg); }
+
+.cta-section h2 { color: #fff; }
+.cta-section p  { color: #aaa; }
+
+.contact-box-grad {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 48px 32px;
+    border-top: 3px solid var(--accent);
+}
+
+.form-control-grad {
+    background: #222;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 2px;
+    padding: 14px 16px;
+    font-size: .9rem;
+    transition: .3s;
+}
+.form-control-grad::placeholder { color: #666; }
+.form-control-grad:focus {
+    background: #2a2a2a;
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(212,175,55,.2);
+}
+
+.btn-grad-submit {
+    background: var(--accent);
+    color: #111;
+    border: none;
+    font-weight: 700;
+    font-size: .85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 0;
+    width: 100%;
+    border-radius: 2px;
+    transition: .3s;
+    cursor: pointer;
+}
+.btn-grad-submit:hover { background: #fff; }
+
+/* ─── FOOTER ─────────────────────────────────────────────────── */
+footer {
+    background: #111;
+    color: #aaa;
+    padding-top: 60px;
+    font-size: .9rem;
+}
+footer h5 { color: #fff; margin-bottom: 20px; font-size: 1rem; }
+footer ul { padding: 0; list-style: none; }
+footer ul li { margin-bottom: 10px; }
+footer ul li a { color: #aaa; text-decoration: none; transition: .3s; }
+footer ul li a:hover { color: var(--accent); }
+.footer-bottom {
+    border-top: 1px solid #222;
+    padding: 20px 0;
+    margin-top: 40px;
+    text-align: center;
+    font-size: .8rem;
+}
+.social-link { font-size: 1.2rem; margin-right: 15px; color: #fff; transition: .3s; }
+.social-link:hover { color: var(--accent); }
+
+/* ============================================================
+   CALCULATOR — идентичен стил с /proms
+   ============================================================ */
+.calc-section {
+    background-color: var(--warm);
+    padding: 60px 0;
+}
+
+.calc-card {
+    background: #fff;
+    padding: 40px;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-top: 3px solid var(--accent);
+}
+
+/* Package radio cards */
+.package-option { display: none; }
+
+.package-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #eee;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 4px;
+    height: 100%;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.package-label:hover,
+.package-option:checked + .package-label {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(212,175,55,0.15);
+}
+.package-label.lux-pack { border: 2px solid #e1bee7 !important; }
+.package-label.lux-pack .package-icon { color: #6a1b9a !important; }
+.package-label.lux-pack:hover,
+.package-option:checked + .package-label.lux-pack {
+    border-color: #6a1b9a !important;
+    background-color: #f8f0fa !important;
+    box-shadow: 0 8px 25px rgba(106,27,154,0.15) !important;
+}
+
+.package-icon {
+    font-size: 4rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: block;
+}
+.package-label strong {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 5px;
+}
+.package-label .price-tag {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #444;
+}
+.package-details {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 15px;
+    width: 100%;
+}
+.package-details li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+.package-details li i {
+    color: var(--accent);
+    margin-right: 10px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* Extra checkbox cards */
+.extra-option { display: none; }
+
+.extra-card-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #eee;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s all ease;
+    height: 100%;
+    background: #fff;
+    font-weight: 600;
+    color: #555;
+}
+.extra-card-label:hover,
+.extra-option:checked + .extra-card-label {
+    border-color: var(--accent);
+    background: #fffcf5;
+    color: #000;
+    box-shadow: 0 5px 15px rgba(212,175,55,0.15);
+    transform: translateY(-3px);
+}
+.extra-card-icon {
+    font-size: 1.8rem;
+    color: #ccc;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+.extra-option:checked + .extra-card-label .extra-card-icon { color: var(--accent); }
+.extra-price {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 5px;
+    font-weight: 400;
+}
+.extra-option:checked + .extra-card-label .extra-price { color: #444; }
+
+/* Price box */
+.total-price-box {
+    background: #222;
+    color: #fff;
+    padding: 40px 30px;
+    border-radius: 4px;
+    text-align: center;
+    position: sticky;
+    top: 100px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.price-display {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin: 20px 0;
+}
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #444;
+    padding: 8px 0;
+    color: #aaa;
+}
+.summary-item span:last-child { color: #fff; font-weight: 600; }
+
+.btn-custom {
+    border: 2px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 30px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.btn-custom:hover { background: #fff; color: var(--accent); }
+
+.price-note {
+    font-size: 0.75rem;
+    color: #888;
+    line-height: 1.4;
+}
+
+@media (max-width: 991px) {
+    .calc-card { padding: 40px 0; }
+    .price-display { font-size: 1.7rem; }
+}

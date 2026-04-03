@@ -461,6 +461,42 @@
         </div>
     </section>
 
+    @php
+    $weddingFaqs = [
+        ['q' => 'Колко предварително трябва да резервираме за сватбено заснемане?', 'a' => 'Препоръчваме резервация поне 6–12 месеца предварително, тъй като сезонът е много натоварен. Колкото по-рано запазите датата, толкова по-сигурно ще имате нашия екип на своята сватба.'],
+        ['q' => 'Работите ли извън Варна?', 'a' => 'Да, пътуваме из цяла България. За локации извън Варна може да се приложи такса за транспорт в зависимост от разстоянието. Свържете се с нас за конкретна оферта.'],
+        ['q' => 'Кога получаваме снимките и видеото след сватбата?', 'a' => 'Стандартният срок за предаване на обработените кадри е до 60 работни дни. При нужда от по-бърза доставка предлагаме услуга за експресна обработка.'],
+        ['q' => 'Предлагате ли дрон заснемане на сватби?', 'a' => 'Да, предлагаме дрон кадри като допълнение към всеки пакет за сватбено заснемане. Дронът добавя кинематографична въздушна перспектива към вашия сватбен филм.'],
+    ];
+    @endphp
+
+    <!-- FAQ -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="weddingFaqAccordion">
+                        @foreach($weddingFaqs as $i => $faq)
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#wfaq{{ $i }}">
+                                    {{ $faq['q'] }}
+                                </button>
+                            </h2>
+                            <div id="wfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#weddingFaqAccordion">
+                                <div class="accordion-body text-muted">
+                                    {{ $faq['a'] }}
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Validation Modal -->
     <div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -480,6 +516,35 @@
         </div>
     </div>
 @endsection
+
+@push('schema')
+@php
+$weddingServiceSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => 'Сватбена фотография и видеозаснемане',
+    'provider' => [
+        '@type' => 'LocalBusiness',
+        'name' => 'Take Two Studio 1603',
+        '@id' => 'https://taketwostudio1603.com',
+    ],
+    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+    'description' => 'Професионална сватбена фотография и видеозаснемане с 4K качество, дрон кадри и фотокниги. Онлайн калкулатор за цени.',
+    'url' => 'https://taketwostudio1603.com/weddings',
+];
+$weddingFaqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => array_map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq['q'],
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+    ], $weddingFaqs),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($weddingServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($weddingFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
