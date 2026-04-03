@@ -278,17 +278,15 @@ h1, h2, h3, h4, h5 {
     .step-connector:last-child::after { display: none; }
 }
 
-/* ─── GALLERY ────────────────────────────────────────────────── */
-.gallery-section { background: var(--warm); }
-
-.gallery-section .masonry {
+/* ─── GALLERY MASONRY ────────────────────────────────────────── */
+.masonry {
     display: block !important;
     column-count: 3;
     column-gap: 15px;
     width: 100%;
 }
 
-.gallery-section .masonry-item {
+.masonry-item {
     display: inline-block !important;
     width: 100% !important;
     margin-bottom: 10px !important;
@@ -296,7 +294,7 @@ h1, h2, h3, h4, h5 {
     padding: 0;
 }
 
-.gallery-section .portfolio-item {
+.portfolio-item {
     position: relative;
     overflow: hidden;
     border-radius: 4px;
@@ -305,8 +303,7 @@ h1, h2, h3, h4, h5 {
     aspect-ratio: auto !important;
 }
 
-.gallery-section .masonry-item img,
-.gallery-section .portfolio-img {
+.portfolio-img {
     width: 100%;
     height: auto !important;
     object-fit: contain !important;
@@ -314,12 +311,21 @@ h1, h2, h3, h4, h5 {
     transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.gallery-section .portfolio-item:hover .portfolio-img {
+.portfolio-item:hover .portfolio-img {
     transform: scale(1.05);
 }
 
-@media (max-width: 991px) { .gallery-section .masonry { column-count: 2; } }
-@media (max-width: 575px) { .gallery-section .masonry { column-count: 1; } }
+@media (max-width: 991px) {
+    .masonry {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 575px) {
+    .masonry {
+        column-count: 1;
+    }
+}
 
 /* ─── PACKAGES / PRICING ─────────────────────────────────────── */
 .pricing-section { background: #fff; }

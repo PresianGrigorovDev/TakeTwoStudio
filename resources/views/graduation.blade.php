@@ -140,31 +140,28 @@
 {{-- ══════════════════════════════════════════════════════════
      GALLERY
 ══════════════════════════════════════════════════════════ --}}
-<section class="gallery-section py-5" id="gallery">
-    <div class="container py-4">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="mb-3">Портфолио</h2>
-            <div class="section-divider"></div>
-            <p class="text-muted" style="font-size:.95rem;">Разгледайте нашите любими кадри от семейни изпращания</p>
-        </div>
+<section class="py-5 bg-white" id="portfolio">
+    <div class="container">
+        <h2 class="text-center mb-5">Разгледайте нашите любими кадри от семейни изпращания</h2>
+        <div class="section-divider"></div>
 
         <div class="masonry" data-aos="fade-up">
             @forelse($graduationPhotos as $photo)
-                <div class="masonry-item">
-                    <div class="portfolio-item">
-                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox"
-                           data-title="{{ $photo->alt_text ?? 'Пред-бална Фотосесия' }}"
-                           data-description="{{ $photo->description ?? '' }}">
-                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img"
-                                 alt="{{ $photo->alt_text ?? 'Пред-бална фотосесия Варна' }}">
-                        </a>
-                    </div>
+            <div class="masonry-item">
+                <div class="portfolio-item">
+                    <a href="{{ Storage::url($photo->image_path) }}" class="glightbox"
+                       data-title="{{ $photo->alt_text ?? 'Пред-бална Фотосесия' }}"
+                       data-description="{{ $photo->description ?? '' }}">
+                        <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img"
+                             alt="{{ $photo->alt_text ?? 'Пред-бална фотосесия Варна' }}">
+                    </a>
                 </div>
+            </div>
             @empty
-                <div class="col-12 text-center py-5 text-muted">
-                    <i class="fas fa-camera fa-3x mb-3 d-block" style="color:#ddd;"></i>
-                    <p>Очаквайте скоро нашите първи кадри от пред-балните сесии!</p>
-                </div>
+            <div class="col-12 text-center py-5 text-muted">
+                <i class="fas fa-camera fa-3x mb-3 d-block" style="color:#ddd;"></i>
+                <p>Очаквайте скоро нашите първи кадри от пред-балните сесии!</p>
+            </div>
             @endforelse
         </div>
     </div>
