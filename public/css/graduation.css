@@ -302,50 +302,48 @@ h1, h2, h3, h4, h5 {
 }
 
 /* ─── GALLERY MASONRY (Pinterest style) ──────────────────────── */
-#portfolio .masonry {
+.masonry {
     display: block !important;
-    flex-wrap: unset !important;
-    gap: unset !important;
-    justify-content: unset !important;
     column-count: 3;
-    column-gap: 8px;
+    column-gap: 15px;
     width: 100%;
 }
 
-#portfolio .masonry-item {
-    break-inside: avoid;
-    margin-bottom: 8px !important;
-    padding: 0;
+.masonry-item {
+    display: inline-block !important;
     width: 100% !important;
+    margin-bottom: 10px !important;
+    break-inside: avoid;
+    padding: 0;
 }
 
-#portfolio .portfolio-item {
+.portfolio-item {
     position: relative;
     overflow: hidden;
     border-radius: 4px;
     cursor: pointer;
-    background: #f0f0f0;
+    background: #f9f9f9;
+    aspect-ratio: auto !important;
 }
 
-#portfolio .masonry-item img,
-#portfolio .portfolio-img {
+.portfolio-img {
     width: 100%;
     height: auto !important;
-    object-fit: cover;
+    object-fit: contain !important;
     display: block;
     transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-#portfolio .portfolio-item:hover .portfolio-img {
+.portfolio-item:hover .portfolio-img {
     transform: scale(1.05);
 }
 
 @media (max-width: 991px) {
-    #portfolio .masonry { column-count: 2; }
+    .masonry { column-count: 2; }
 }
 
 @media (max-width: 575px) {
-    #portfolio .masonry { column-count: 1; }
+    .masonry { column-count: 1; }
 }
 
 /* ─── PACKAGES / PRICING ─────────────────────────────────────── */
