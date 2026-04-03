@@ -22,7 +22,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-content" data-aos="fade-up">
         <span class="hero-badge">Take Two Studio 1603</span>
-        <h1>Моментът Преди<br>Най-Важния Вечер</h1>
+        <h1>Моментът Преди<br>Най-Важната Вечер</h1>
         <span class="hero-subtitle">Семейна фотосесия за изпращане на вашия абитуриент</span>
         <div>
             <a href="#contact" class="btn-grad-primary">Резервирай дата</a>
