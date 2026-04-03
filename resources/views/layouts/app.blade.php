@@ -146,13 +146,14 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                                 <li><a class="dropdown-item" href="/weddings">Сватби</a></li>
-                                <li><a class="dropdown-item" href="/proms">Балове</a></li>
+                                <li><a class="dropdown-item" href="/proms">Абитуриентски балове</a></li>
                                 <li><a class="dropdown-item" href="/baptism">Кръщенета</a></li>
-                                <li><a class="dropdown-item" href="/graduation">Изпращане</a></li>
+                                <li><a class="dropdown-item" href="/graduation">Пред-бална фотосесия</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/commercial">Реклама и Бизнес</a></li>
                             </ul>
                         </li>
+                        {{-- <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li> --}}
                         <li class="nav-item"><a class="nav-link" href="/#contact">Контакти</a></li>
                     </div>
                 </ul>

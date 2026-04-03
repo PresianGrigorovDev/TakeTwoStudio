@@ -444,6 +444,7 @@
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">
+                            <input type="hidden" name="orderType" value="Wedding">
 
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"

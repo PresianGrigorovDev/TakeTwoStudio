@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Read(//tmp/**)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(grep -l \"axios\\\\|fetch\" /Users/pgg/Documents/GitHub/TakeTwoStudio/public/js/calculators/*.js)"
     ]
   }
 }

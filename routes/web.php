@@ -50,6 +50,11 @@ Route::get('/seed-ads', function () {
 Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);
 Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact']);
 
+Route::get('/booking', [App\Http\Controllers\BookingController::class, 'showCalendar']);
+Route::post('/submit-booking', [App\Http\Controllers\BookingController::class, 'submitBooking']);
+Route::get('/api/booking-availability', [App\Http\Controllers\BookingController::class, 'getAvailability']);
+Route::get('/api/booking-hours', [App\Http\Controllers\BookingController::class, 'getAvailableHours']);
+
 // Registration Routes
 // Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 // Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);

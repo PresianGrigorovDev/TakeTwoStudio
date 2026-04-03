@@ -69,16 +69,19 @@ h1, h2, h3, h4, h5 {
 
 /* ─── HERO ──────────────────────────────────────────────────── */
 .graduation-hero {
-    min-height: 75vh;
-    /* Замени 'graduation-hero.jpg' с реална снимка */
-    background-image: url('../css/img/prom.jpg');
+    min-height: 80vh;
+    background-image: url('../css/img/graduation-hero.jpg');
     background-size: cover;
-    background-position: center top;
+    background-position: center;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: -1px;
+
+    @media (max-width: 991px) {
+        min-height: 50vh;
+    }
 }
 
 .graduation-hero .hero-overlay {
@@ -106,6 +109,10 @@ h1, h2, h3, h4, h5 {
     margin-bottom: 16px;
     text-shadow: 0 2px 20px rgba(0,0,0,.8);
     line-height: 1.2;
+
+    @media (max-width: 991px) {
+        font-size: 1.5rem;
+    }
 }
 
 .graduation-hero .hero-subtitle {
@@ -117,6 +124,10 @@ h1, h2, h3, h4, h5 {
     text-transform: uppercase;
     margin-bottom: 36px;
     text-shadow: 0 1px 8px rgba(0,0,0,.7);
+
+    @media (max-width: 991px) {
+        font-size: .7rem;
+    }
 }
 
 .graduation-hero .hero-badge {
@@ -130,6 +141,10 @@ h1, h2, h3, h4, h5 {
     padding: 6px 20px;
     margin-bottom: 20px;
     border-radius: 2px;
+
+    @media (max-width: 991px) {
+        font-size: .5rem;
+    }
 }
 
 .btn-grad-primary {
@@ -145,6 +160,10 @@ h1, h2, h3, h4, h5 {
     transition: .3s;
     margin: 6px;
     border-radius: 2px;
+
+    @media (max-width: 991px) {
+        font-size: .5rem;
+    }
 }
 .btn-grad-primary:hover {
     background: #fff;
@@ -163,6 +182,10 @@ h1, h2, h3, h4, h5 {
     transition: .3s;
     margin: 6px;
     border-radius: 2px;
+
+    @media (max-width: 991px) {
+        font-size: .5rem;
+    }
 }
 .btn-grad-outline:hover {
     border-color: var(--accent);
@@ -718,4 +741,54 @@ footer ul li a:hover { color: var(--accent); }
 @media (max-width: 991px) {
     .calc-card { padding: 40px 0; }
     .price-display { font-size: 1.7rem; }
+}
+
+/* Hour picker in graduation form */
+.graduation-hours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 6px;
+}
+
+.grad-hour-btn {
+    padding: 7px 4px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.grad-hour-btn:hover:not(.disabled) {
+    border-color: var(--accent);
+    background: rgba(212,175,55,0.15);
+}
+
+.grad-hour-btn.selected,
+.grad-hour-btn.in-range {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.grad-hour-btn.disabled {
+    background: rgba(255,255,255,0.03);
+    color: #555;
+    cursor: not-allowed;
+    border-color: #333;
+}
+
+.graduation-time-display {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(212,175,55,0.15);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
 }

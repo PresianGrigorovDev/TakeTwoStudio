@@ -297,11 +297,18 @@
 
                         <div class="mt-4">
                             <input type="text" name="name" class="form-control mb-2 rounded-0"
-                                   placeholder="Вашето ime" required>
+                                   placeholder="Вашето име" required>
                             <input type="tel" name="phone" class="form-control mb-2 rounded-0"
                                    placeholder="Телефон" required>
-                            <input type="text" name="school" class="form-control mb-2 rounded-0"
-                                   placeholder="Дата на бала (напр. 20.05.2026)">
+                            <input type="date" name="graduation_date" id="graduationDate" class="form-control mb-2 rounded-0"
+                                   placeholder="Дата на изпращането" required onclick="this.showPicker()">
+                            <input type="hidden" name="graduation_start_time" id="graduationStartTime">
+                            <input type="hidden" name="graduation_end_time" id="graduationEndTime">
+                            <div id="graduationHoursWrapper" class="mb-2" style="display:none">
+                                <small class="text-white-50 d-block mb-1" id="graduationHoursLabel">Изберете начален час:</small>
+                                <div id="graduationHoursGrid" class="graduation-hours-grid"></div>
+                                <div id="graduationTimeDisplay" class="graduation-time-display" style="display:none"></div>
+                            </div>
                             <button type="submit" class="btn-custom">Изпрати Запитване</button>
                         </div>
 
@@ -370,6 +377,97 @@
     <script src="{{ asset('js/calculators/graduation.js') }}"></script>
     <script>
         const graduationLightbox = GLightbox({ selector: '.glightbox' });
+    </script>
+    <script>
+    (function() {
+        var dateInput = document.getElementById('graduationDate');
+        var wrapper = document.getElementById('graduationHoursWrapper');
+        var grid = document.getElementById('graduationHoursGrid');
+        var label = document.getElementById('graduationHoursLabel');
+        var timeDisplay = document.getElementById('graduationTimeDisplay');
+        var startInput = document.getElementById('graduationStartTime');
+        var endInput = document.getElementById('graduationEndTime');
+        var selectedStart = null;
+        var selectedEnd = null;
+        var availableHours = [];
+
+        dateInput.addEventListener('change', function() {
+            if (!this.value) { wrapper.style.display = 'none'; return; }
+            wrapper.style.display = 'block';
+            grid.innerHTML = '<small class="text-white-50">Зареждане...</small>';
+            selectedStart = null; selectedEnd = null;
+            startInput.value = ''; endInput.value = '';
+            timeDisplay.style.display = 'none';
+            label.textContent = 'Изберете начален час:';
+
+            fetch('/api/booking-hours?date=' + this.value)
+                .then(function(r) { return r.json(); })
+                .then(function(hours) {
+                    availableHours = hours;
+                    renderHours(hours);
+                });
+        });
+
+        function renderHours(hours) {
+            grid.innerHTML = '';
+            if (hours.length === 0) {
+                grid.innerHTML = '<small class="text-white-50">Няма свободни часове</small>';
+                return;
+            }
+            hours.forEach(function(h) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'grad-hour-btn';
+                btn.textContent = h;
+                btn.dataset.hour = h;
+                btn.addEventListener('click', onHourClick);
+                grid.appendChild(btn);
+            });
+        }
+
+        function onHourClick(e) {
+            var hour = e.currentTarget.dataset.hour;
+            if (!selectedStart) {
+                selectedStart = hour;
+                startInput.value = hour;
+                label.textContent = 'Изберете краен час:';
+                var startH = parseInt(hour);
+                var btns = grid.querySelectorAll('.grad-hour-btn');
+                btns.forEach(function(btn) {
+                    var btnH = parseInt(btn.dataset.hour);
+                    btn.classList.remove('selected', 'in-range', 'disabled');
+                    if (btnH === startH) { btn.classList.add('selected'); }
+                    else if (btnH < startH) { btn.classList.add('disabled'); btn.disabled = true; }
+                    else {
+                        var ok = true;
+                        for (var hh = startH; hh <= btnH; hh++) {
+                            if (availableHours.indexOf(String(hh).padStart(2,'0') + ':00') === -1) { ok = false; break; }
+                        }
+                        if (!ok) { btn.classList.add('disabled'); btn.disabled = true; }
+                    }
+                });
+            } else {
+                var endH = parseInt(hour) + 1;
+                selectedEnd = String(endH).padStart(2,'0') + ':00';
+                endInput.value = selectedEnd;
+                timeDisplay.style.display = 'block';
+                timeDisplay.textContent = selectedStart + ' – ' + selectedEnd;
+                var startH = parseInt(selectedStart);
+                var btns = grid.querySelectorAll('.grad-hour-btn');
+                btns.forEach(function(btn) {
+                    var btnH = parseInt(btn.dataset.hour);
+                    btn.classList.remove('in-range');
+                    if (btnH >= startH && btnH <= endH - 1) btn.classList.add('in-range');
+                });
+            }
+        }
+
+        if (timeDisplay) {
+            timeDisplay.addEventListener('click', function() {
+                if (dateInput.value) dateInput.dispatchEvent(new Event('change'));
+            });
+        }
+    })();
     </script>
 @endpush
 

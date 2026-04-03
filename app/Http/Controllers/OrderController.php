@@ -16,30 +16,64 @@ class OrderController extends Controller
             'final_price' => 'required|numeric',
             'details' => 'required|string',
             'school' => 'nullable|string|max:255',
-            'date' => 'nullable|string|max:255',
+            'date' => 'nullable|date|max:255',
+            'graduation_date' => 'nullable|date',
+            'graduation_start_time' => 'nullable|string|size:5',
+            'graduation_end_time' => 'nullable|string|size:5',
             'orderType' => 'nullable|string'
         ]);
 
-        $typeOfService = $validated['orderType'] ?? 'Поръчка от калкулатор';
-        if ($request->has('school')) {
-            $typeOfService = "Абитуриентски Бал";
-        } elseif ($request->has('date')) {
-            $typeOfService = "Свето Кръщение";
-        } elseif ($request->has('wedding_date')) { 
-             $typeOfService = "Сватба";
+        $orderType = $validated['orderType'] ?? null;
+        $eventDate = null;
+
+        $typeMap = [
+            'Wedding' => 'Сватба',
+            'Prom' => 'Абитуриентски Бал',
+            'Baptism' => 'Свето Кръщене',
+            'Graduation' => 'Изпращане',
+            'Commercial' => 'Реклама и Бизнес',
+        ];
+
+        $typeOfService = $typeMap[$orderType] ?? 'Поръчка от калкулатор';
+
+        // Extract event date from the appropriate field
+        if (!empty($validated['graduation_date'])) {
+            $eventDate = $validated['graduation_date'];
+        } elseif (!empty($validated['date'])) {
+            $eventDate = $validated['date'];
         }
 
         // Save to Database
         $order = \App\Models\Order::create([
             'name' => $validated['name'],
             'phone' => $validated['phone'],
-            // 'email' => $validated['email'] ?? null, // Email is not in calculator forms yet
             'service_type' => $typeOfService,
             'price' => $validated['final_price'],
             'details' => $validated['details'],
             'status' => 'new'
         ]);
-        
+
+        // Auto-create a booking if we have an event date
+        if ($eventDate) {
+            $workStart = BookingController::WORK_START;
+            $workEnd = BookingController::WORK_END;
+
+            $startTime = $validated['graduation_start_time'] ?? null;
+            $endTime = $validated['graduation_end_time'] ?? null;
+
+            \App\Models\Booking::create([
+                'name' => $validated['name'],
+                'phone' => $validated['phone'],
+                'event_date' => $eventDate,
+                'start_time' => $startTime ?: str_pad($workStart, 2, '0', STR_PAD_LEFT) . ':00',
+                'end_time' => $endTime ?: str_pad($workEnd, 2, '0', STR_PAD_LEFT) . ':00',
+                'service_type' => $typeOfService,
+                'message' => $validated['details'],
+                'status' => 'pending',
+                'order_id' => $order->id,
+            ]);
+        }
+
         // Log the order
         Log::info("New Order: $typeOfService", $validated);
 
