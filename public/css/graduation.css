@@ -280,21 +280,18 @@ h1, h2, h3, h4, h5 {
 
 /* ─── GALLERY MASONRY ────────────────────────────────────────── */
 #portfolio .masonry {
-    display: block !important;
-    column-count: 3 !important;
-    column-gap: 15px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
     width: 100%;
-    flex-wrap: unset !important;
-    gap: unset !important;
 }
 
 #portfolio .masonry-item {
-    display: inline-block !important;
-    width: 100% !important;
-    margin-bottom: 10px !important;
-    break-inside: avoid;
+    width: calc(33.333% - 10px) !important;
+    margin-bottom: 0 !important;
     padding: 0;
-    transition: none !important;
 }
 
 #portfolio .portfolio-item {
@@ -303,7 +300,6 @@ h1, h2, h3, h4, h5 {
     border-radius: 4px;
     cursor: pointer;
     background: #f9f9f9;
-    aspect-ratio: auto !important;
 }
 
 #portfolio .masonry-item img,
@@ -320,11 +316,11 @@ h1, h2, h3, h4, h5 {
 }
 
 @media (max-width: 991px) {
-    #portfolio .masonry { column-count: 2 !important; }
+    #portfolio .masonry-item { width: calc(50% - 10px) !important; }
 }
 
 @media (max-width: 575px) {
-    #portfolio .masonry { column-count: 1 !important; }
+    #portfolio .masonry-item { width: 100% !important; }
 }
 
 /* ─── PACKAGES / PRICING ─────────────────────────────────────── */
