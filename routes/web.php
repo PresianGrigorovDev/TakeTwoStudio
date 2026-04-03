@@ -15,6 +15,14 @@ Route::get('/graduation', [App\Http\Controllers\PageController::class, 'graduati
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
+Route::get('/seed-ads', function () {
+    (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
+    (new \Database\Seeders\GraduationContentSeeder())->run();
+    return 'Seed complete – ads: ' . \App\Models\CommercialPortfolioPhoto::count()
+         . ', grad FAQ: ' . \App\Models\GraduationFaq::count()
+         . ', grad packages: ' . \App\Models\GraduationPackage::count();
+});
+
 Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);
 Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact']);
 
