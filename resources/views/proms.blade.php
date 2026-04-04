@@ -108,7 +108,7 @@
             @php $galleryLimit = 10; @endphp
             <div class="masonry" id="promsGallery" data-aos="fade-up">
                 @foreach($promPortfolioPhotos as $i => $photo)
-                <div class="masonry-item gallery-item" @if($i >= $galleryLimit) style="display:none" @endif>
+                <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
                     <div class="portfolio-item">
                         <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
                             <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна">
@@ -338,26 +338,18 @@ $promFaqSchema = [
             selector: '.glightbox'
         });
 
-        var showCount = {{ $galleryLimit }};
-        var step = {{ $galleryLimit }};
-
         function loadMorePhotos() {
-            var items = document.querySelectorAll('#promsGallery .gallery-item');
-            var newCount = showCount + step;
-            var shown = 0;
+            var hidden = document.querySelectorAll('#promsGallery .gallery-hidden');
+            var step = {{ $galleryLimit }};
 
-            for (var i = showCount; i < newCount && i < items.length; i++) {
-                items[i].style.display = '';
-                shown++;
+            for (var i = 0; i < step && i < hidden.length; i++) {
+                hidden[i].classList.remove('gallery-hidden');
             }
 
-            showCount = newCount;
-
-            if (showCount >= items.length) {
+            if (document.querySelectorAll('#promsGallery .gallery-hidden').length === 0) {
                 document.getElementById('loadMoreBtn').style.display = 'none';
             }
 
-            // Re-init lightbox so new images work
             GLightbox({ selector: '.glightbox' });
         }
     </script>

@@ -524,6 +524,10 @@ h5 {
     }
 }
 
+.gallery-hidden {
+    display: none !important;
+}
+
 /* --- FOOTER --- */
 footer {
     background: #111;
