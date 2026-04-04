@@ -41,6 +41,7 @@ class ServiceResource extends Resource
                         'baptism' => '/baptism — Кръщенета',
                         'graduation' => '/graduation — Изпращане',
                         'commercial' => '/commercial — Реклама и Бизнес',
+                        'events' => '/events — Събитийна фотография',
                     ])
                     ->searchable(),
                 Forms\Components\Textarea::make('description_bg')
