@@ -40,14 +40,9 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
-                    ->label('Изображение')
-                    ->image()
-                    ->directory('services'),
-                // Forms\Components\FileUpload::make('icon')
-                //     ->label('Икона')
-                //     ->image()
-                //     ->directory('services/icons'),
+                Forms\Components\TextInput::make('icon_class')
+                    ->label('Икона (CSS клас)')
+                    ->placeholder('fas fa-star'),
             ]);
     }
 
