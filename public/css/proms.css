@@ -131,7 +131,7 @@ h5 {
     margin-top: -1px;
 
     @media (max-width: 991px) {
-        min-height: 20vh;
+        min-height: 30vh;
         background-position: bottom;
     }
 }
