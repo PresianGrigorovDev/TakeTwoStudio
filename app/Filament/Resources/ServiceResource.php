@@ -32,11 +32,17 @@ class ServiceResource extends Resource
                     ->label('Име (БГ)')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
+                Forms\Components\Select::make('slug')
                     ->label('Слъг (URL)')
                     ->required()
-                    ->disabled()
-                    ->maxLength(255),
+                    ->options([
+                        'weddings' => '/weddings — Сватби',
+                        'proms' => '/proms — Балове',
+                        'baptism' => '/baptism — Кръщенета',
+                        'graduation' => '/graduation — Изпращане',
+                        'commercial' => '/commercial — Реклама и Бизнес',
+                    ])
+                    ->searchable(),
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
