@@ -196,9 +196,9 @@
                                 @foreach($allExtras as $extra)
                                     @php
                                         // Specific grid matching reference exactly
-                                        $colClass = 'col-md-4'; // Albums (3 per row)
+                                        $colClass = 'col-6 col-md-4'; // 2 per row mobile, 3 per row desktop
                                         if (str_contains(strtolower($extra->label_bg), 'студийна') || str_contains(strtolower($extra->label_bg), 'флашка')) {
-                                            $colClass = 'col-md-6'; // Studio and Flash drive (2 per row)
+                                            $colClass = 'col-6 col-md-6'; // 2 per row on both
                                         }
                                     @endphp
                                     <div class="{{ $colClass }}">
