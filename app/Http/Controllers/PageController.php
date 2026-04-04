@@ -12,7 +12,7 @@ class PageController extends Controller
     public function home()
     {
         return view('home', [
-            'services' => Service::where('is_active', true)->get(),
+            'services' => Service::where('is_active', true)->orderBy('sort_order')->get(),
             'teamMembers' => \App\Models\TeamMember::where('is_active', true)->orderBy('display_order')->get(),
             'testimonials' => \App\Models\Testimonial::where('is_active', true)->latest()->get(),
             'partners' => \App\Models\Partner::orderBy('display_order')->get(),

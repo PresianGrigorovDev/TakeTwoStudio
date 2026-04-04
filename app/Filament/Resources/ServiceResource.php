@@ -83,13 +83,14 @@ class ServiceResource extends Resource
     {
         return $table
             ->columns([
-                // Tables\Columns\ImageColumn::make('icon')
-                //     ->label('Икона'),
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name_bg')
                     ->label('Име')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('Слъг (Пресо му разбира)')
+                    ->label('Слъг')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Създадено на')
@@ -102,6 +103,8 @@ class ServiceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('sort_order')
+            ->reorderable('sort_order')
             ->filters([
                 //
             ])
