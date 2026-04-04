@@ -105,9 +105,10 @@
             <h2 class="text-center mb-5">Нашето Портфолио</h2>
             <div class="section-divider"></div>
 
-            <div class="masonry" data-aos="fade-up">
-                @foreach($promPortfolioPhotos as $photo)
-                <div class="masonry-item">
+            @php $galleryLimit = 15; @endphp
+            <div class="masonry" id="promsGallery" data-aos="fade-up">
+                @foreach($promPortfolioPhotos as $i => $photo)
+                <div class="masonry-item gallery-item" @if($i >= $galleryLimit) style="display:none" @endif>
                     <div class="portfolio-item">
                         <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
                             <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна">
@@ -116,6 +117,11 @@
                 </div>
                 @endforeach
             </div>
+            @if($promPortfolioPhotos->count() > $galleryLimit)
+            <div class="text-center mt-4">
+                <button type="button" class="btn-custom" id="loadMoreBtn" onclick="loadMorePhotos()">Виж още</button>
+            </div>
+            @endif
         </div>
     </section>
 
@@ -331,5 +337,28 @@ $promFaqSchema = [
         const lightbox = GLightbox({
             selector: '.glightbox'
         });
+
+        var showCount = {{ $galleryLimit }};
+        var step = {{ $galleryLimit }};
+
+        function loadMorePhotos() {
+            var items = document.querySelectorAll('#promsGallery .gallery-item');
+            var newCount = showCount + step;
+            var shown = 0;
+
+            for (var i = showCount; i < newCount && i < items.length; i++) {
+                items[i].style.display = '';
+                shown++;
+            }
+
+            showCount = newCount;
+
+            if (showCount >= items.length) {
+                document.getElementById('loadMoreBtn').style.display = 'none';
+            }
+
+            // Re-init lightbox so new images work
+            GLightbox({ selector: '.glightbox' });
+        }
     </script>
 @endpush
