@@ -192,12 +192,11 @@
 
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4"><i class="fas fa-phone mb-3 text-black fa-2x"></i>
-                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:0886190124">088 619
-                            0124</a></div>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:{{ $siteSettings->find(4)->setting_value }}">{{ $siteSettings->find(4)->setting_value }}</a></div>
                 </div>
                 <div class="col-md-4"><i class="far fa-envelope mb-3 text-black fa-2x"></i>
                     <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
-                            href="mailto:info@taketwostudio1603.com">info@taketwostudio1603.com</a></div>
+                            href="mailto:{{ $siteSettings->find(5)->setting_value }}">{{ $siteSettings->find(5)->setting_value }}</a></div>
                 </div>
                 <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-black fa-2x"></i>
                     <div class="fs-6 fw-bold">ж.к. Възраждане IV 1603, Варна</div>

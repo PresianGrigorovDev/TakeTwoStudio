@@ -64,11 +64,11 @@
       "image": "{{ asset('css/img/about.webp') }}",
       "@id": "https://taketwostudio1603.com",
       "url": "https://taketwostudio1603.com",
-      "telephone": "+359886190124",
+      "telephone": "{{ \App\Models\SiteSetting::find(4)->setting_value }}",
       "priceRange": "€€",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "ж.к. Възраждане IV 1603",
+        "streetAddress": "{{ \App\Models\SiteSetting::find(6)->setting_value }}",
         "addressLocality": "Варна",
         "postalCode": "9000",
         "addressCountry": "BG"
@@ -86,12 +86,12 @@
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-        "opens": "09:00",
-        "closes": "20:00"
+        "opens": "{{ \App\Models\SiteSetting::find(7)->setting_value }}:00",
+        "closes": "{{ \App\Models\SiteSetting::find(8)->setting_value }}:00"
       },
       "sameAs": [
-        "https://www.facebook.com/taketwostudio1603",
-        "https://www.instagram.com/taketwostudio1603"
+        "{{ \App\Models\SiteSetting::find(7)->setting_value }}",
+        "{{ \App\Models\SiteSetting::find(8)->setting_value }}"
       ],
       "description": "Професионално сватбено фото и видеозаснемане във Варна. Услуги за балове, кръщенета и корпоративни събития.",
       "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"],
@@ -103,7 +103,8 @@
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Абитуриентски балове и фотосесии"}},
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Заснемане на кръщенета"}},
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Рекламна и продуктова фотография"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Дрон заснемане"}}
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Дрон заснемане"}},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Пред-бална фотосесия"}}
         ]
       }
     }
@@ -149,7 +150,6 @@
                                 <li><a class="dropdown-item" href="/proms">Абитуриентски балове</a></li>
                                 <li><a class="dropdown-item" href="/baptism">Кръщенета</a></li>
                                 <li><a class="dropdown-item" href="/graduation">Пред-бална фотосесия</a></li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="/commercial">Реклама и Бизнес</a></li>
                             </ul>
                         </li>
@@ -169,14 +169,15 @@
                 <div class="col-md-4">
                     <h3>Take Two Studio 1603</h3>
                     <p>
-                        Професионална фотография и видеозаснемане във Варна и цялата страна.
-                        Ние улавяме емоциите от вашите сватби, кръщенета, абитуриентски балове
-                        и корпоративни събития. Превръщаме миговете в изкуство чрез 4K видео,
-                        дрон кадри и креативен поглед.
+                        @if (\App\Models\SiteSetting::find(14))
+                            {{ \App\Models\SiteSetting::find(14)->setting_value }}
+                        @else
+                            {{ null }}
+                        @endif
                     </p>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/taketwostudio1603" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/taketwostudio1603" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="{{ \App\Models\SiteSetting::find(7)->setting_value }}" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="{{ \App\Models\SiteSetting::find(8)->setting_value }}" class="social-link"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -187,14 +188,15 @@
                         <li><a href="{{ url('baptism') }}">Детска фотография и Кръщенета</a></li>
                         <li><a href="{{ url('commercial') }}">Рекламна и продуктова фотография</a></li>
                         <li><a href="{{ url('commercial') }}">Корпоративно видеозаснемане и дрон</a></li>
+                        <li><a href="{{ url('graduation') }}">Пред-бална фотосесия</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h3>Контакти</h3>
                     <ul class="contact-list">
-                        <li><span>📍</span> ж.к. Възраждане IV 1603, Варна, България</li>
-                        <li><span>📞</span> <a href="tel:0886190124">088 619 0124</a></li>
-                        <li><span>✉️</span> info@taketwostudio1603.com</li>
+                        <li><span>📍</span> {{ \App\Models\SiteSetting::find(6)->setting_value }}</li>
+                        <li><span>📞</span> <a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a></li>
+                        <li><span>✉️</span> <a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></li>
                         <li><span>🕒</span> Понеделник - Неделя</li>
                     </ul>
                 </div>

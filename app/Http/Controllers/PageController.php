@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\PortfolioItem;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use Symfony\Component\VarDumper\VarDumper;
 
 class PageController extends Controller
 {
@@ -17,6 +18,9 @@ class PageController extends Controller
             'testimonials' => \App\Models\Testimonial::where('is_active', true)->latest()->get(),
             'partners' => \App\Models\Partner::orderBy('display_order')->get(),
             'portfolioCategories' => \App\Models\PortfolioCategory::orderBy('display_order')->get(),
+            'workStart' => BookingController::WORK_START,
+            'workEnd' => BookingController::WORK_END,
+            'siteSettings' => \App\Models\SiteSetting::all(),
         ]);
     }
 
@@ -64,9 +68,6 @@ class PageController extends Controller
     private function showService($slug)
     {
         $service = Service::where('slug', $slug)->first();
-
-        // If service doesn't exist in DB yet, we might want to fail gracefully or just pass null
-        // But for now, we assume seed data exists or will exist.
 
         $portfolioItems = PortfolioItem::whereHas('category', function ($query) use ($slug) {
             $query->where('slug', $slug);
