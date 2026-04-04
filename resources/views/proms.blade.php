@@ -105,7 +105,7 @@
             <h2 class="text-center mb-5">Нашето Портфолио</h2>
             <div class="section-divider"></div>
 
-            @php $galleryLimit = 15; @endphp
+            @php $galleryLimit = 10; @endphp
             <div class="masonry" id="promsGallery" data-aos="fade-up">
                 @foreach($promPortfolioPhotos as $i => $photo)
                 <div class="masonry-item gallery-item" @if($i >= $galleryLimit) style="display:none" @endif>
