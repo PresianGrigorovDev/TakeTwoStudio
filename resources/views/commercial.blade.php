@@ -107,7 +107,7 @@
                             'ads'     => 'Рекламна Фотография',
                             'product' => 'Продуктова Фотография',
                             'imoti'   => 'Интериорна фотография',
-                            'events'  => 'Бизнес събитие',
+                            'events'  => 'Събития',
                             'drone'   => 'Въздушни Кадри',
                         ];
                         $displayCategory = $categoryMap[$item->sub_category] ?? $item->sub_category;
