@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Service;
-use Guava\FilamentIconPicker\Forms\IconPicker;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,10 +40,35 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
-                IconPicker::make('icon_class')
+                Forms\Components\Select::make('icon_class')
                     ->label('Икона')
-                    ->columns(3)
-                    ->columnSpanFull(),
+                    ->searchable()
+                    ->options([
+                        'fas fa-heart' => '❤️ Сърце',
+                        'fas fa-star' => '⭐ Звезда',
+                        'fas fa-camera' => '📷 Камера',
+                        'fas fa-video' => '🎥 Видеокамера',
+                        'fas fa-user-graduate' => '🎓 Абитуриент',
+                        'fas fa-briefcase' => '💼 Куфарче',
+                        'fas fa-baby' => '👶 Бебе',
+                        'fas fa-church' => '⛪ Църква',
+                        'fas fa-ring' => '💍 Пръстен',
+                        'fas fa-gift' => '🎁 Подарък',
+                        'fas fa-music' => '🎵 Музика',
+                        'fas fa-glass-cheers' => '🥂 Наздраве',
+                        'fas fa-birthday-cake' => '🎂 Торта',
+                        'fas fa-users' => '👥 Хора',
+                        'fas fa-image' => '🖼️ Снимка',
+                        'fas fa-film' => '🎞️ Филм',
+                        'fas fa-magic' => '✨ Магия',
+                        'fas fa-gem' => '💎 Диамант',
+                        'fas fa-crown' => '👑 Корона',
+                        'fas fa-dove' => '🕊️ Гълъб',
+                        'fas fa-hand-holding-heart' => '🤲 Грижа',
+                        'fas fa-palette' => '🎨 Палитра',
+                        'fas fa-shopping-bag' => '🛍️ Пазаруване',
+                        'fas fa-building' => '🏢 Сграда',
+                    ]),
             ]);
     }
 
