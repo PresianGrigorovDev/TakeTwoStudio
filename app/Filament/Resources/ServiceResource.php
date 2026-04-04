@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Service;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -40,9 +41,10 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('icon_class')
-                    ->label('Икона (CSS клас)')
-                    ->placeholder('fas fa-star'),
+                IconPicker::make('icon_class')
+                    ->label('Икона')
+                    ->columns(3)
+                    ->columnSpanFull(),
             ]);
     }
 
