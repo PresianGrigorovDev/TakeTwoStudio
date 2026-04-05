@@ -28,8 +28,6 @@ Route::get('/clear-cache', function () {
 Route::get('/seed-all', function () {
     (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
     (new \Database\Seeders\GraduationContentSeeder())->run();
-    (new \Database\Seeders\PromContentSeeder())->run();
-    (new \Database\Seeders\BaptismContentSeeder())->run();
 
     // Prom FAQs
     if (\App\Models\PromFaq::count() === 0) {
