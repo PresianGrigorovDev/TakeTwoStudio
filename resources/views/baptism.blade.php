@@ -24,7 +24,7 @@
     @endphp
 
     <!-- HEADER -->
-    <section class="baptism-hero">
+    <section class="baptism-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>

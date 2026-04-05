@@ -57,7 +57,10 @@ class PageController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $service = Service::where('slug', 'graduation')->first();
+
         return view('graduation', [
+            'service'            => $service,
             'graduationPhotos'   => $graduationPhotos,
             'graduationFaqs'     => $graduationFaqs,
             'graduationPackages' => $graduationPackages,

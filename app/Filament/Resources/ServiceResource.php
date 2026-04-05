@@ -47,6 +47,13 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
+                Forms\Components\FileUpload::make('hero_image')
+                    ->label('Hero снимка (фон)')
+                    ->image()
+                    ->directory('hero-images')
+                    ->disk('public')
+                    ->imageEditor()
+                    ->columnSpanFull(),
                 Forms\Components\Select::make('icon_class')
                     ->label('Икона')
                     ->searchable()
@@ -92,6 +99,10 @@ class ServiceResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Слъг')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('hero_image')
+                    ->label('Hero снимка')
+                    ->disk('public')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Създадено на')
                     ->dateTime()

@@ -23,7 +23,7 @@
 {{-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ --}}
-<section class="graduation-hero">
+<section class="graduation-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
     <div class="hero-overlay"></div>
     <div class="hero-content" data-aos="fade-up">
         <span class="hero-badge">Take Two Studio 1603</span>
