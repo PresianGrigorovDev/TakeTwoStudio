@@ -14,11 +14,20 @@
 @endpush
 
 @section('content')
+
+{{-- Get page content --}}
+@php
+    $pageContent = \App\Models\PageContent::where('page_slug', 'proms')->get();
+    $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Направи бала незабравим';
+    $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Създаваме вечни спомени от вашия специален ден';
+    $calcTitle = $pageContent->where('section_slug', 'calculator')->where('field_key', 'title')->first()?->content_bg ?? 'Абитуриентски Калкулатор';
+@endphp
+
     <!-- HEADER -->
     <section class="prom-hero">
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>Направи бала незабравим</h1>
+            <h1>{{ $heroTitle }}</h1>
             <p>Създаваме вечни спомени от вашия специален ден</p>
         </div>
     </section>
@@ -128,7 +137,7 @@
     <!-- CALCULATOR -->
     <section class="calc-section" id="calculator">
         <div class="container">
-            <h2 class="text-center mb-4">Абитуриентски Калкулатор</h2>
+            <h2 class="text-center mb-4">{{ $calcTitle }}</h2>
             <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
                 Планирайте бюджета за вашия бал с нашия интерактивен калкулатор. Изберете фотосесия, видео заснемане на
                 изпращането и ресторанта, както и допълнителни екстри като дрон и видео визитки. Запазете спомените от

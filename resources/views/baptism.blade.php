@@ -14,12 +14,21 @@
 @endpush
 
 @section('content')
+
+    {{-- Get page content --}}
+    @php
+        $pageContent = \App\Models\PageContent::where('page_slug', 'baptism')->get();
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Свето Кръщение';
+        $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Запечатайте първия празник на вашето дете';
+        $calculator = $pageContent->where('section_slug', 'calculator')->first()?->content_bg ?? 'Калкулатор Свето Кръщение';
+    @endphp
+
     <!-- HEADER -->
     <section class="baptism-hero">
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>Свето Кръщение</h1>
-            <p>Запечатайте първия празник на вашето дете</p>
+            <h1>{{ $heroTitle }}</h1>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 

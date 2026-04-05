@@ -14,12 +14,22 @@
 @endpush
 
 @section('content')
+
+    {{-- Get page content --}}
+    @php
+
+        $pageContent = \App\Models\PageContent::where('page_slug', 'weddings')->get();
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Сватбена фотография';
+        $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Създаваме вечни спомени от вашия специален ден';
+        $calcTitle = $pageContent->where('section_slug', 'calculator')->where('field_key', 'title')->first()?->content_bg ?? 'Сватбен Калкулатор';
+    @endphp
+
     <!-- Header / Hero -->
     <section class="wedding-hero">
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>{{ $pageContent['hero']['title'] ?? 'Сватбена фотография' }}</h1>
-            <p>{{ $pageContent['hero']['subtitle'] ?? 'Създаваме вечни спомени от вашия специален ден' }}</p>
+            <h1>{{ $heroTitle }}</h1>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 
@@ -256,7 +266,7 @@
     <!-- CALCULATOR SECTION -->
     <section class="calc-section" id="calculator">
         <div class="container">
-            <h2 class="text-center mb-4">Сватбен Калкулатор</h2>
+            <h2 class="text-center mb-4">{{ $calcTitle }}</h2>
             <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
                 Изчислете лесно и прозрачно цената за заснемане на вашата сватба. Нашите пакети включват професионално
                 фото и 4K видео заснемане, дрон кадри и луксозни фотокниги. Без скрити такси – виждате крайната сума

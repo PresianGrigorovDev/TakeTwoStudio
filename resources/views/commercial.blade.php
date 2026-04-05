@@ -14,12 +14,19 @@
 @endpush
 
 @section('content')
+
+    @php
+        $pageContent = \App\Models\PageContent::where('page_slug', 'commercial')->get();
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Реклама и Бизнес';
+        $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Визуална идентичност, която продава';
+    @endphp
+
     <!-- Header / Hero -->
     <section class="commercial-hero">
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>Реклама и Бизнес</h1>
-            <p>Визуална идентичност, която продава</p>
+            <h1>{{ $heroTitle }}</h1>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 

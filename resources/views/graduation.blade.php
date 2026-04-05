@@ -15,6 +15,11 @@
 
 @section('content')
 
+{{-- Get page content --}}
+@php
+    $pageContent = \App\Models\PageContent::where('page_slug', 'graduation')->get();
+@endphp
+
 {{-- ══════════════════════════════════════════════════════════
      HERO
 ══════════════════════════════════════════════════════════ --}}
@@ -22,8 +27,8 @@
     <div class="hero-overlay"></div>
     <div class="hero-content" data-aos="fade-up">
         <span class="hero-badge">Take Two Studio 1603</span>
-        <h1>Моментът Преди<br>Най-Важната Вечер</h1>
-        <span class="hero-subtitle">Семейна фотосесия за изпращане на вашия абитуриент</span>
+        <h1>{{ $pageContent[0]->content_bg }}</h1>
+        <span class="hero-subtitle">{{ $pageContent[1]->content_bg }}</span>
         <div>
             <a href="#contact" class="btn-grad-primary">Резервирай дата</a>
             <a href="#gallery" class="btn-grad-outline">Виж портфолиото</a>
@@ -172,7 +177,7 @@
 ══════════════════════════════════════════════════════════ --}}
 <section class="calc-section" id="pricing">
     <div class="container">
-        <h2 class="text-center mb-4">Калкулатор на цената</h2>
+        <h2 class="text-center mb-4">{{ $pageContent[2]->content_bg }}</h2>
         <p class="text-center mb-5" style="max-width:800px; margin:0 auto 3rem auto;">
             Изберете пакет и желаните добавки — цената се изчислява автоматично.
             Имате нестандартни изисквания? <a href="#contact" style="color:var(--accent); font-weight:600; text-decoration:none;">Пишете ни за индивидуална оферта.</a>
