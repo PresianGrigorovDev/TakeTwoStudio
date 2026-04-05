@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', [App\Http\Controllers\PageController::class, 'home']);
 
@@ -21,7 +22,7 @@ Route::get('/clear-cache', function () {
     Artisan::call('route:clear');
     Artisan::call('config:clear');
     Artisan::call('filament:cache-components');
-    return 'Cache cleared!';
+    return redirect()->route('home')->with('success', 'Cache cleared!');
 });
 
 Route::get('/seed-ads', function () {
