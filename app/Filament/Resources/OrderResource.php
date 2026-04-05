@@ -94,6 +94,7 @@ class OrderResource extends Resource
                     ->options([
                         'new' => 'Нова',
                         'contacted' => 'Свързали сме се',
+                        'accepted' => 'Приета',
                         'completed' => 'Завършена',
                         'cancelled' => 'Отказана',
                     ])
@@ -135,7 +136,42 @@ class OrderResource extends Resource
 
                         $busyIds = $busyFromBookings->merge($busyFromOrders)->unique();
 
-                        return $allMembers->except($busyIds);
+                        return $allMembers->mapWithKeys(function ($name, $id) use ($busyIds) {
+                            if ($busyIds->contains($id)) {
+                                return [$id => $name . ' (зает)'];
+                            }
+                            return [$id => $name];
+                        });
+                    })
+                    ->disableOptionWhen(function (string $value, Forms\Get $get, ?Order $record) {
+                        $eventDate = $get('event_date');
+                        $startTime = $get('start_time');
+                        $endTime = $get('end_time');
+
+                        if (!$eventDate || !$startTime || !$endTime) {
+                            return false;
+                        }
+
+                        $busyFromBookings = Booking::where('event_date', $eventDate)
+                            ->whereIn('status', ['confirmed', 'pending'])
+                            ->where('team_member_id', $value)
+                            ->where('start_time', '<', $endTime)
+                            ->where('end_time', '>', $startTime)
+                            ->when($record, fn ($q) => $q->where('order_id', '!=', $record->id))
+                            ->exists();
+
+                        if ($busyFromBookings) {
+                            return true;
+                        }
+
+                        return Order::where('event_date', $eventDate)
+                            ->where('team_member_id', $value)
+                            ->whereNotIn('status', ['cancelled'])
+                            ->where('start_time', '<', $endTime)
+                            ->where('end_time', '>', $startTime)
+                            ->whereDoesntHave('booking')
+                            ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
+                            ->exists();
                     }),
                 Forms\Components\Textarea::make('details')
                     ->label('Детайли на поръчката')
@@ -182,6 +218,7 @@ class OrderResource extends Resource
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'new' => 'Нова',
                         'contacted' => 'Свързали сме се',
+                        'accepted' => 'Приета',
                         'completed' => 'Завършена',
                         'cancelled' => 'Отказана',
                         default => $state,
@@ -189,7 +226,8 @@ class OrderResource extends Resource
                     ->color(fn(string $state): string => match ($state) {
                         'new' => 'info',
                         'contacted' => 'warning',
-                        'completed' => 'success',
+                        'accepted' => 'success',
+                        'completed' => 'gray',
                         'cancelled' => 'danger',
                         default => 'gray',
                     }),
@@ -205,6 +243,7 @@ class OrderResource extends Resource
                     ->options([
                         'new' => 'Нова',
                         'contacted' => 'Свързали сме се',
+                        'accepted' => 'Приета',
                         'completed' => 'Завършена',
                         'cancelled' => 'Отказана',
                     ]),
@@ -237,7 +276,7 @@ class OrderResource extends Resource
                             'team_member_id' => $record->team_member_id,
                         ]);
 
-                        $record->update(['status' => 'completed']);
+                        $record->update(['status' => 'accepted']);
 
                         Notification::make()
                             ->title('Резервацията е записана в календара')
