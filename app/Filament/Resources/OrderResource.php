@@ -65,13 +65,15 @@ class OrderResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\DatePicker::make('event_date')
-                    ->label('Дата на събитието'),
+                    ->label('Дата на събитието')
+                    ->live(),
                 Forms\Components\Select::make('start_time')
                     ->label('Начален час')
                     ->options(fn () => array_combine(
                         \App\Http\Controllers\BookingController::getWorkingHours(),
                         \App\Http\Controllers\BookingController::getWorkingHours()
-                    )),
+                    ))
+                    ->live(),
                 Forms\Components\Select::make('end_time')
                     ->label('Краен час')
                     ->options(function () {
@@ -81,7 +83,8 @@ class OrderResource extends Resource
                             $hours[$val] = $val;
                         }
                         return $hours;
-                    }),
+                    })
+                    ->live(),
                 Forms\Components\TextInput::make('price')
                     ->label('Цена (€)')
                     ->numeric()
@@ -100,7 +103,33 @@ class OrderResource extends Resource
                     ->label('Назначен фотограф')
                     ->relationship('teamMember', 'name')
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->options(function (Forms\Get $get) {
+                        $eventDate = $get('event_date');
+                        $startTime = $get('start_time');
+                        $endTime = $get('end_time');
+
+                        $allMembers = \App\Models\TeamMember::pluck('name', 'id');
+
+                        if (!$eventDate || !$startTime || !$endTime) {
+                            return $allMembers;
+                        }
+
+                        // Find team members who already have a confirmed/pending booking
+                        // that overlaps with the selected time range on this date
+                        $busyMemberIds = Booking::where('event_date', $eventDate)
+                            ->whereIn('status', ['confirmed', 'pending'])
+                            ->whereNotNull('team_member_id')
+                            ->where(function ($query) use ($startTime, $endTime) {
+                                $query->where('start_time', '<', $endTime)
+                                    ->where('end_time', '>', $startTime);
+                            })
+                            ->pluck('team_member_id')
+                            ->unique();
+
+                        return $allMembers->except($busyMemberIds);
+                    })
+                    ->reactive(),
                 Forms\Components\Textarea::make('details')
                     ->label('Детайли на поръчката')
                     ->columnSpanFull(),

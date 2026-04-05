@@ -43,6 +43,9 @@ class OrderController extends Controller
             $eventDate = $validated['date'];
         }
 
+        $startTime = $validated['graduation_start_time'] ?? null;
+        $endTime = $validated['graduation_end_time'] ?? null;
+
         // Save to Database
         $order = \App\Models\Order::create([
             'name' => $validated['name'],
@@ -50,16 +53,16 @@ class OrderController extends Controller
             'service_type' => $typeOfService,
             'price' => $validated['final_price'],
             'details' => $validated['details'],
-            'status' => 'new'
+            'status' => 'new',
+            'event_date' => $eventDate,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
         ]);
 
         // Auto-create a booking if we have an event date
         if ($eventDate) {
             $workStart = BookingController::WORK_START;
             $workEnd = BookingController::WORK_END;
-
-            $startTime = $validated['graduation_start_time'] ?? null;
-            $endTime = $validated['graduation_end_time'] ?? null;
 
             \App\Models\Booking::create([
                 'name' => $validated['name'],
