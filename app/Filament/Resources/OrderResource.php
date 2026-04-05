@@ -3,15 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Models\Booking;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
@@ -65,6 +64,24 @@ class OrderResource extends Resource
                         'Поръчка от калкулатор' => 'Поръчка от калкулатор',
                     ])
                     ->required(),
+                Forms\Components\DatePicker::make('event_date')
+                    ->label('Дата на събитието'),
+                Forms\Components\Select::make('start_time')
+                    ->label('Начален час')
+                    ->options(fn () => array_combine(
+                        \App\Http\Controllers\BookingController::getWorkingHours(),
+                        \App\Http\Controllers\BookingController::getWorkingHours()
+                    )),
+                Forms\Components\Select::make('end_time')
+                    ->label('Краен час')
+                    ->options(function () {
+                        $hours = [];
+                        for ($h = \App\Http\Controllers\BookingController::getWorkStart() + 1; $h <= \App\Http\Controllers\BookingController::getWorkEnd(); $h++) {
+                            $val = str_pad($h, 2, '0', STR_PAD_LEFT) . ':00';
+                            $hours[$val] = $val;
+                        }
+                        return $hours;
+                    }),
                 Forms\Components\TextInput::make('price')
                     ->label('Цена (€)')
                     ->numeric()
@@ -79,6 +96,11 @@ class OrderResource extends Resource
                     ])
                     ->required()
                     ->default('new'),
+                Forms\Components\Select::make('team_member_id')
+                    ->label('Назначен фотограф')
+                    ->relationship('teamMember', 'name')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Textarea::make('details')
                     ->label('Детайли на поръчката')
                     ->columnSpanFull(),
@@ -95,12 +117,25 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Телефон')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->label('Имейл')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('service_type')
                     ->label('Услуга')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('event_date')
+                    ->label('Дата')
+                    ->date('d.m.Y')
+                    ->sortable()
+                    ->placeholder('—'),
+                Tables\Columns\TextColumn::make('start_time')
+                    ->label('Час')
+                    ->formatStateUsing(fn ($state, $record) => $record->start_time && $record->end_time
+                        ? $record->start_time . ' – ' . $record->end_time
+                        : '—')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('teamMember.name')
+                    ->label('Фотограф')
+                    ->default('—')
+                    ->badge()
+                    ->color('info'),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Цена (€)')
                     ->money('EUR')
@@ -127,17 +162,52 @@ class OrderResource extends Resource
                     ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Обновена на')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Статус')
+                    ->options([
+                        'new' => 'Нова',
+                        'contacted' => 'Свързали сме се',
+                        'completed' => 'Завършена',
+                        'cancelled' => 'Отказана',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('confirm_booking')
+                    ->label('Запиши в календара')
+                    ->icon('heroicon-o-calendar-days')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Запиши в календара')
+                    ->modalDescription('Ще бъде създадена резервация в календара с данните от поръчката.')
+                    ->visible(fn (Order $record) => $record->event_date
+                        && $record->start_time
+                        && $record->end_time
+                        && !$record->booking()->exists())
+                    ->action(function (Order $record) {
+                        Booking::create([
+                            'name' => $record->name,
+                            'phone' => $record->phone,
+                            'email' => $record->email,
+                            'event_date' => $record->event_date,
+                            'start_time' => $record->start_time,
+                            'end_time' => $record->end_time,
+                            'service_type' => $record->service_type,
+                            'message' => $record->details,
+                            'status' => 'confirmed',
+                            'order_id' => $record->id,
+                            'team_member_id' => $record->team_member_id,
+                        ]);
+
+                        $record->update(['status' => 'completed']);
+
+                        Notification::make()
+                            ->title('Резервацията е записана в календара')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -148,9 +218,7 @@ class OrderResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -14,8 +14,26 @@ class Order extends Model
         'phone',
         'email',
         'service_type',
+        'event_date',
+        'start_time',
+        'end_time',
         'price',
         'details',
         'status',
+        'team_member_id',
     ];
+
+    protected $casts = [
+        'event_date' => 'date',
+    ];
+
+    public function teamMember()
+    {
+        return $this->belongsTo(TeamMember::class);
+    }
+
+    public function booking()
+    {
+        return $this->hasOne(Booking::class);
+    }
 }
