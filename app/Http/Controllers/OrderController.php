@@ -99,12 +99,12 @@ class OrderController extends Controller
         $orderType = $validated['orderType'] ?? 'General Inquiry';
 
         // Save to Database
-        $order = \App\Models\Order::create([
-            'name' => $validated['name'],
-            'phone' => $validated['phone'],
-            'email' => $validated['email'],
+        $inquiry = \App\Models\Inquiry::create([
+            'customer_name' => $validated['name'],
+            'customer_phone' => $validated['phone'],
+            'customer_email' => $validated['email'],
             'service_type' => $orderType,
-            'details' => $validated['message'],
+            'message' => $validated['message'],
             'status' => 'new'
         ]);
 
@@ -112,7 +112,7 @@ class OrderController extends Controller
         Log::info("New Contact Inquiry: $orderType", $validated);
 
         try {
-            Mail::to(config('mail.admin_email'))->send(new \App\Mail\NewOrderNotification($order));
+            Mail::to(config('mail.admin_email'))->send(new \App\Mail\NewInquiryNotification($inquiry));
         } catch (\Exception $e) {
             Log::error("Failed to send contact inquiry email: " . $e->getMessage());
         }
