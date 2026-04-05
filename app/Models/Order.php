@@ -9,6 +9,13 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Order $order) {
+            $order->bookings()->delete();
+        });
+    }
+
     protected $fillable = [
         'name',
         'phone',
