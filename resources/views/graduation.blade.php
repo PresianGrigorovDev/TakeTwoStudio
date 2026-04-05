@@ -452,7 +452,7 @@
                     }
                 });
             } else {
-                var endH = parseInt(hour) + 1;
+                var endH = parseInt(hour);
                 selectedEnd = String(endH).padStart(2,'0') + ':00';
                 endInput.value = selectedEnd;
                 timeDisplay.style.display = 'block';
@@ -462,7 +462,7 @@
                 btns.forEach(function(btn) {
                     var btnH = parseInt(btn.dataset.hour);
                     btn.classList.remove('in-range');
-                    if (btnH >= startH && btnH <= endH - 1) btn.classList.add('in-range');
+                    if (btnH >= startH && btnH <= endH) btn.classList.add('in-range');
                 });
             }
         }

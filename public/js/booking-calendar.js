@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             // Selecting end time
-            var endH = parseInt(hour.substring(0, 2)) + 1; // end time is exclusive (e.g. selecting 14:00 means until 15:00)
+            var endH = parseInt(hour.substring(0, 2));
             selectedEndHour = pad(endH) + ':00';
             endTimeInput.value = selectedEndHour;
 
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
             for (var i = 0; i < buttons.length; i++) {
                 var btnH = parseInt(buttons[i].dataset.hour.substring(0, 2));
                 buttons[i].classList.remove('in-range');
-                if (btnH >= startH && btnH <= endH - 1) {
+                if (btnH >= startH && btnH <= endH) {
                     buttons[i].classList.add('in-range');
                 }
             }

@@ -54,6 +54,7 @@ class OrderResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('service_type')
                     ->label('Тип услуга')
+                    ->placeholder('Изберете услуга')
                     ->options([
                         'Сватба' => 'Сватба',
                         'Абитуриентски Бал' => 'Абитуриентски Бал',
