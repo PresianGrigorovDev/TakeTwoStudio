@@ -101,10 +101,9 @@ class OrderResource extends Resource
                     ->default('new'),
                 Forms\Components\Select::make('team_member_id')
                     ->label('Назначен фотограф')
-                    ->relationship('teamMember', 'name')
                     ->searchable()
                     ->preload()
-                    ->options(function (Forms\Get $get) {
+                    ->options(function (Forms\Get $get, ?Order $record) {
                         $eventDate = $get('event_date');
                         $startTime = $get('start_time');
                         $endTime = $get('end_time');
@@ -115,21 +114,29 @@ class OrderResource extends Resource
                             return $allMembers;
                         }
 
-                        // Find team members who already have a confirmed/pending booking
-                        // that overlaps with the selected time range on this date
-                        $busyMemberIds = Booking::where('event_date', $eventDate)
+                        // Busy from bookings
+                        $busyFromBookings = Booking::where('event_date', $eventDate)
                             ->whereIn('status', ['confirmed', 'pending'])
                             ->whereNotNull('team_member_id')
-                            ->where(function ($query) use ($startTime, $endTime) {
-                                $query->where('start_time', '<', $endTime)
-                                    ->where('end_time', '>', $startTime);
-                            })
-                            ->pluck('team_member_id')
-                            ->unique();
+                            ->where('start_time', '<', $endTime)
+                            ->where('end_time', '>', $startTime)
+                            ->when($record, fn ($q) => $q->where('order_id', '!=', $record->id))
+                            ->pluck('team_member_id');
 
-                        return $allMembers->except($busyMemberIds);
-                    })
-                    ->reactive(),
+                        // Busy from other orders (not yet in calendar)
+                        $busyFromOrders = Order::where('event_date', $eventDate)
+                            ->whereNotNull('team_member_id')
+                            ->whereNotIn('status', ['cancelled'])
+                            ->where('start_time', '<', $endTime)
+                            ->where('end_time', '>', $startTime)
+                            ->whereDoesntHave('booking')
+                            ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
+                            ->pluck('team_member_id');
+
+                        $busyIds = $busyFromBookings->merge($busyFromOrders)->unique();
+
+                        return $allMembers->except($busyIds);
+                    }),
                 Forms\Components\Textarea::make('details')
                     ->label('Детайли на поръчката')
                     ->columnSpanFull(),
