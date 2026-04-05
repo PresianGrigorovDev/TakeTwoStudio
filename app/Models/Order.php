@@ -20,20 +20,24 @@ class Order extends Model
         'price',
         'details',
         'status',
-        'team_member_id',
     ];
 
     protected $casts = [
         'event_date' => 'date',
     ];
 
-    public function teamMember()
+    public function teamMembers()
     {
-        return $this->belongsTo(TeamMember::class);
+        return $this->belongsToMany(TeamMember::class, 'order_team_member');
     }
 
     public function booking()
     {
         return $this->hasOne(Booking::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }
