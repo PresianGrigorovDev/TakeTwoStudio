@@ -333,13 +333,6 @@
         </div>
     </section>
 
-    @php
-    $baptismFaqs = [
-        ['q' => 'Колко време трае ритуалът и снимките?', 'a' => 'Самият църковен ритуал обикновено трае около 40-50 минути. Ние винаги сме там 15-20 минути по-рано, за да снимаме детайлите и гостите. След ритуала отделяме време за семейна фотосесия пред църквата. Общо ангажиментът е около 1.5 часа (за пакет "Само Църква").'],
-        ['q' => 'Кога получаваме снимките и видеото?', 'a' => 'Стандартният срок за предаване на обработените кадри и видеото е до 30 работни дни. Ако имате нужда от материалите по-бързо, предлагаме услуга "Експресна обработка" (до 3 дни).'],
-        ['q' => 'Снимате ли в ресторанта?', 'a' => 'Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта (посрещане, разрязване на питата, торта и весели моменти с гостите).'],
-    ];
-    @endphp
 
     <!-- FAQ -->
     <section class="py-5 bg-white">
@@ -353,13 +346,13 @@
                             <h2 class="accordion-header">
                                 <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#bfaq{{ $i }}">
-                                    {{ $faq['q'] }}
+                                    {{ $faq->question }}
                                 </button>
                             </h2>
                             <div id="bfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}"
                                 data-bs-parent="#faqAccordion">
                                 <div class="accordion-body text-muted">
-                                    {{ $faq['a'] }}
+                                    {{ $faq->answer }}
                                 </div>
                             </div>
                         </div>
@@ -379,11 +372,14 @@
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4">
                     <i class="fas fa-phone mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">088 619 0124</h5>
+                    <h5 class="fs-6 fw-bold">
+                        <a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a>
+                    </h5>
                 </div>
                 <div class="col-md-4">
                     <i class="far fa-envelope mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">info@taketwostudio1603.com</h5>
+                    <h5 class="fs-6 fw-bold">
+                        <a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></h5>
                 </div>
                 <div class="col-md-4">
                     <i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i>
@@ -423,11 +419,11 @@ $baptismServiceSchema = [
 $baptismFaqSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'FAQPage',
-    'mainEntity' => array_map(fn($faq) => [
+    'mainEntity' => $baptismFaqs->map(fn($faq) => [
         '@type' => 'Question',
-        'name' => $faq['q'],
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-    ], $baptismFaqs),
+        'name' => $faq->question,
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+    ])->toArray(),
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($baptismServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>

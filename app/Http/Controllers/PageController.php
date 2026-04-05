@@ -6,7 +6,6 @@ use App\Models\Service;
 use App\Models\PortfolioItem;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
-use Symfony\Component\VarDumper\VarDumper;
 
 class PageController extends Controller
 {
@@ -90,14 +89,17 @@ class PageController extends Controller
                 return $section->pluck('content_bg', 'field_key');
             });
 
+        // Get galleries
         $weddingGalleries = collect();
         if ($slug === 'weddings') {
             $weddingGalleries = \App\Models\WeddingGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
         }
 
         $baptismGalleries = collect();
+        $baptismFaqs = collect();
         if ($slug === 'baptism') {
             $baptismGalleries = \App\Models\BaptismGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+            $baptismFaqs = \App\Models\BaptismFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $promPortfolioPhotos = collect();
@@ -119,6 +121,7 @@ class PageController extends Controller
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
             'promFaqs' => $promFaqs,
+            'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
             'pageContent' => $pageContent,
         ]);
