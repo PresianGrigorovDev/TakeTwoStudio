@@ -22,12 +22,14 @@ Route::get('/clear-cache', function () {
     Artisan::call('route:clear');
     Artisan::call('config:clear');
     Artisan::call('filament:cache-components');
-    return redirect()->route('home')->with('success', 'Cache cleared!');
+    return redirect('/')->with('success', 'Cache cleared!');
 });
 
-Route::get('/seed-ads', function () {
+Route::get('/seed-all', function () {
     (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
     (new \Database\Seeders\GraduationContentSeeder())->run();
+    (new \Database\Seeders\PromContentSeeder())->run();
+    (new \Database\Seeders\BaptismContentSeeder())->run();
 
     // Prom FAQs
     if (\App\Models\PromFaq::count() === 0) {
@@ -42,10 +44,26 @@ Route::get('/seed-ads', function () {
         }
     }
 
+    // Baptism FAQs
+    if (\App\Models\BaptismFaq::count() === 0) {
+        $baptismFaqs = [
+            ['question' => 'Колко време трае самото кръщене?', 'answer' => 'Самият църковен ритуал обикновено трае около 40-50 минути. Ние винаги сме там 15-20 минути по-рано, за да снимаме детайлите и гостите. След ритуала отделяме време за семейна фотосесия пред църквата. Общо ангажиментът е около 1.5 часа (за пакет "Само Църква").', 'sort_order' => 1],
+            ['question' => 'Кога получаваме готовите снимки и видео?', 'answer' => 'Стандартният срок за предаване на обработените кадри и видеото е до 30 работни дни. Ако имате нужда от материалите по-бързо, предлагаме услуга "Експресна обработка" (до 3 дни).', 'sort_order' => 2],
+            ['question' => 'Снимате ли в ресторанта?', 'answer' => 'Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта (посрещане, разрязване на питата, торта и весели моменти с гостите).', 'sort_order' => 3],
+        ];
+        foreach ($baptismFaqs as $faq) {
+            \App\Models\BaptismFaq::create($faq);
+        }
+    }
+
     return 'Seed complete – ads: ' . \App\Models\CommercialPortfolioPhoto::count()
          . ', grad FAQ: ' . \App\Models\GraduationFaq::count()
          . ', grad packages: ' . \App\Models\GraduationPackage::count()
-         . ', prom FAQ: ' . \App\Models\PromFaq::count();
+         . ', prom FAQ: ' . \App\Models\PromFaq::count()
+         . ', prom packages: ' . \App\Models\PromPackage::count()
+         . ', baptism FAQ: ' . \App\Models\BaptismFaq::count()
+         . ', baptism packages: ' . \App\Models\BaptismPackage::count();
+         
 });
 
 Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);
