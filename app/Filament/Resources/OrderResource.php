@@ -110,9 +110,9 @@ class OrderResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Получена на')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновена на')
                     ->dateTime()
