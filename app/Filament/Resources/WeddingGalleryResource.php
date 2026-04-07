@@ -68,7 +68,7 @@ class WeddingGalleryResource extends Resource
                     ])->columns(2),
 
                 Forms\Components\Section::make('Снимки в Галерията')
-                    ->description('Можете да добавите до 15 снимки.')
+                    ->description('Може да добавиш до 25 снимки. ( Повече не ти трябват Симо _|_)')
                     ->schema([
                         Forms\Components\Repeater::make('photos')
                             ->label('Снимки')
@@ -86,7 +86,7 @@ class WeddingGalleryResource extends Resource
                             ])
                             ->orderColumn('sort_order')
                             ->defaultItems(1)
-                            ->maxItems(15)
+                            ->maxItems(25)
                             ->grid(3)
                             ->collapsible()
                             ->columnSpanFull(),
