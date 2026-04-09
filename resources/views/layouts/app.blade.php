@@ -146,16 +146,16 @@
                                 Услуги
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/weddings">Сватби</a></li>
-                                <li><a class="dropdown-item" href="/proms">Абитуриентски балове</a></li>
-                                <li><a class="dropdown-item" href="/baptism">Кръщенета</a></li>
-                                <li><a class="dropdown-item" href="/events">Събитийна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/commercial">Реклама и Бизнес</a></li>
-                                <li><a class="dropdown-item" href="/architectural">Архитектурна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/graduation">Пред-бална фотосесия</a></li>
-                                <li><a class="dropdown-item" href="/family">Семейна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/portrait">Портретна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/automotive">Автомобилна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/weddings"><i class="fas fa-heart"></i> Сватби</a></li>
+                                <li><a class="dropdown-item" href="/proms"><i class="fas fa-graduation-cap"></i> Абитуриентски балове</a></li>
+                                <li><a class="dropdown-item" href="/baptism"><i class="fas fa-child"></i> Кръщенета</a></li>
+                                <li><a class="dropdown-item" href="/events"><i class="fas fa-calendar-alt"></i> Събитийна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/commercial"><i class="fas fa-briefcase"></i> Реклама и Бизнес</a></li>
+                                <li><a class="dropdown-item" href="/architectural"><i class="fas fa-building"></i> Архитектурна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/graduation"><i class="fas fa-graduation-cap"></i> Пред-бална фотосесия</a></li>
+                                <li><a class="dropdown-item" href="/family"><i class="fas fa-family"></i> Семейна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/portrait"><i class="fas fa-portrait"></i> Портретна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/automotive"><i class="fas fa-car"></i> Автомобилна Фотография</a></li>
                             </ul>
                         </li>
                         {{-- <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li> --}}
