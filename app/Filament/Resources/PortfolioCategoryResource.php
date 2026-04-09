@@ -81,6 +81,8 @@ class PortfolioCategoryResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('display_order')
+            ->reorderable('display_order')
             ->filters([
                 //
             ])
