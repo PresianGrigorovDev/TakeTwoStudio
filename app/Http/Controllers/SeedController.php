@@ -11,6 +11,10 @@ class SeedController extends Controller
 
         $this->seedPromFaqs();
         $this->seedBaptismFaqs();
+        $this->seedWeddingPackages();
+        $this->seedPromPackages();
+        $this->seedBaptismPackages();
+        $this->seedCommercialPackages();
         $this->seedFamilyPackages();
         $this->seedPortraitPackages();
         $this->seedAutomotivePackages();
@@ -19,18 +23,15 @@ class SeedController extends Controller
         $this->seedExtras();
 
         return 'Seed complete'
-            . ' – ads: ' . \App\Models\CommercialPortfolioPhoto::count()
-            . ', grad FAQ: ' . \App\Models\GraduationFaq::count()
-            . ', grad packages: ' . \App\Models\GraduationPackage::count()
-            . ', prom FAQ: ' . \App\Models\PromFaq::count()
-            . ', prom packages: ' . \App\Models\PromPackage::count()
-            . ', baptism FAQ: ' . \App\Models\BaptismFaq::count()
-            . ', baptism packages: ' . \App\Models\BaptismPackage::count()
-            . ', family packages: ' . \App\Models\FamilyPackage::count()
-            . ', portrait packages: ' . \App\Models\PortraitPackage::count()
-            . ', automotive packages: ' . \App\Models\AutomotivePackage::count()
-            . ', architectural packages: ' . \App\Models\ArchitecturalPackage::count()
-            . ', event packages: ' . \App\Models\EventPackage::count()
+            . ' – wedding pkg: ' . \App\Models\WeddingPackage::count()
+            . ', prom pkg: ' . \App\Models\PromPackage::count()
+            . ', baptism pkg: ' . \App\Models\BaptismPackage::count()
+            . ', commercial pkg: ' . \App\Models\CommercialPackage::count()
+            . ', family pkg: ' . \App\Models\FamilyPackage::count()
+            . ', portrait pkg: ' . \App\Models\PortraitPackage::count()
+            . ', automotive pkg: ' . \App\Models\AutomotivePackage::count()
+            . ', architectural pkg: ' . \App\Models\ArchitecturalPackage::count()
+            . ', event pkg: ' . \App\Models\EventPackage::count()
             . ', service extras: ' . \App\Models\ServiceExtra::count();
     }
 
@@ -57,6 +58,58 @@ class SeedController extends Controller
                 ['question' => 'Снимате ли в ресторанта?', 'answer' => 'Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта (посрещане, разрязване на питата, торта и весели моменти с гостите).', 'sort_order' => 3],
             ] as $faq) {
                 \App\Models\BaptismFaq::create($faq);
+            }
+        }
+    }
+
+    private function seedWeddingPackages()
+    {
+        if (\App\Models\WeddingPackage::count() === 0) {
+            foreach ([
+                ['name' => 'Видео: Един оператор', 'price' => 1740.67, 'price_eur' => 890, 'description' => 'Един видеооператор за целия ден', 'features' => ['Един видеооператор', 'Заснемане на целия сватбен ден', 'Филм до 90 мин. (4K)', 'Облак + флашка в кутийка'], 'sort_order' => 1, 'is_featured' => false, 'is_visible' => true],
+                ['name' => 'Видео: Двама оператори', 'price' => 2239.39, 'price_eur' => 1145, 'description' => 'Двама оператори за по-пълно покритие', 'features' => ['Двама видеооператори', 'Мулти-ъгълно заснемане', 'Филм до 90 мин. (4K)', 'Облак + флашка в кутийка'], 'sort_order' => 2, 'is_featured' => true, 'is_visible' => true],
+                ['name' => 'Фото: Един фотограф', 'price' => 1740.67, 'price_eur' => 890, 'description' => 'Един фотограф за целия ден', 'features' => ['Един фотограф', 'Заснемане на целия сватбен ден', 'Всички обработени снимки', 'Онлайн галерия за сваляне'], 'sort_order' => 3, 'is_featured' => false, 'is_visible' => true],
+                ['name' => 'Фото: Двама фотографи', 'price' => 2239.39, 'price_eur' => 1145, 'description' => 'Двама фотографи за пълно покритие', 'features' => ['Двама фотографи', 'Мулти-ъгълно заснемане', 'Всички обработени снимки', 'Онлайн галерия за сваляне'], 'sort_order' => 4, 'is_featured' => false, 'is_visible' => true],
+            ] as $pkg) {
+                \App\Models\WeddingPackage::create($pkg);
+            }
+        }
+    }
+
+    private function seedPromPackages()
+    {
+        if (\App\Models\PromPackage::count() === 0) {
+            foreach ([
+                ['name' => 'Парти Пакет', 'price' => 195.58, 'price_eur' => 100, 'description' => 'Основен пакет за бала', 'features' => ['Фотозаснемане на бала', 'Видеозаснемане на каненето', 'Обработени снимки', 'Онлайн галерия'], 'sort_order' => 1, 'is_featured' => true, 'is_visible' => true],
+                ['name' => 'Лукс Пакет', 'price' => 254.26, 'price_eur' => 130, 'description' => 'Разширен пакет с повече екстри', 'features' => ['Фотозаснемане на бала', 'Видеозаснемане на каненото и бала', 'Обработени снимки', 'Кратко видео', 'Онлайн галерия', 'Дрон кадри'], 'sort_order' => 2, 'is_featured' => false, 'is_visible' => true],
+            ] as $pkg) {
+                \App\Models\PromPackage::create($pkg);
+            }
+        }
+    }
+
+    private function seedBaptismPackages()
+    {
+        if (\App\Models\BaptismPackage::count() === 0) {
+            foreach ([
+                ['name' => 'Фотография', 'price' => 234.70, 'price_eur' => 120, 'description' => 'Фото заснемане на кръщенето', 'features' => ['Фотозаснемане на ритуала', 'Семейна фотосесия', 'Обработени снимки', 'Онлайн галерия'], 'sort_order' => 1, 'is_featured' => true, 'is_visible' => true],
+                ['name' => 'Видеозаснемане', 'price' => 254.26, 'price_eur' => 130, 'description' => 'Видео заснемане на кръщенето', 'features' => ['Видеозаснемане на ритуала', 'Монтиран филм', 'Облак за сваляне'], 'sort_order' => 2, 'is_featured' => false, 'is_visible' => true],
+                ['name' => 'Комбо (Фото + Видео)', 'price' => 430.28, 'price_eur' => 220, 'description' => 'Фото и видео в един пакет', 'features' => ['Фотозаснемане на ритуала', 'Видеозаснемане на ритуала', 'Семейна фотосесия', 'Монтиран филм', 'Обработени снимки', 'Онлайн галерия'], 'sort_order' => 3, 'is_featured' => false, 'is_visible' => true],
+            ] as $pkg) {
+                \App\Models\BaptismPackage::create($pkg);
+            }
+        }
+    }
+
+    private function seedCommercialPackages()
+    {
+        if (\App\Models\CommercialPackage::count() === 0) {
+            foreach ([
+                ['name' => 'Стартов', 'price' => 291.32, 'price_eur' => 149, 'description' => '1 час, продуктова или бизнес фотосесия', 'features' => ['1 час заснемане', 'До 10 продукта или 1 локация', '15 обработени снимки', 'Цветова корекция', 'Онлайн галерия'], 'sort_order' => 1, 'is_featured' => false, 'is_visible' => true],
+                ['name' => 'Бизнес', 'price' => 584.75, 'price_eur' => 299, 'description' => '3 часа, разширено заснемане', 'features' => ['3 часа заснемане', 'До 30 продукта или 3 локации', '40 обработени снимки', 'Професионален ретуш', 'Онлайн галерия'], 'sort_order' => 2, 'is_featured' => true, 'is_visible' => true],
+                ['name' => 'Корпоративен', 'price' => 975.79, 'price_eur' => 499, 'description' => 'Целодневно, фото + видео', 'features' => ['Целодневно заснемане', 'Неограничен брой продукти/локации', '80+ обработени снимки', 'Кратко рекламно видео 30 сек.', 'Професионален ретуш', 'Експресно предаване'], 'sort_order' => 3, 'is_featured' => false, 'is_visible' => true],
+            ] as $pkg) {
+                \App\Models\CommercialPackage::create($pkg);
             }
         }
     }
