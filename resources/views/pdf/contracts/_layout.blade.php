@@ -112,19 +112,13 @@
             margin-top: 50px;
             page-break-inside: avoid;
         }
-        .signatures table {
-            border: none;
-        }
-        .signatures table td {
-            border: none;
-            width: 45%;
-            text-align: center;
-            vertical-align: top;
-            padding-top: 10px;
+        .signature-block {
+            margin-bottom: 30px;
         }
         .signature-line {
             border-top: 1px solid #333;
-            margin-top: 50px;
+            width: 300px;
+            margin-top: 40px;
             padding-top: 5px;
             font-size: 10pt;
         }
