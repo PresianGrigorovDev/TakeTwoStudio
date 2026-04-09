@@ -71,10 +71,8 @@ class ContractPdfService
     public function getFilename(array $data): string
     {
         $type = ContractType::from($data['contract_type']);
-        $client = $data['client1_name'] ?? 'contract';
-        $client = str_replace(' ', '_', $client);
         $date = $data['contract_date'] ?? now()->format('Y-m-d');
 
-        return "Dogovor-{$type->value}-{$client}-{$date}.pdf";
+        return 'TTS-' . strtoupper($type->value) . "-{$date}.pdf";
     }
 }

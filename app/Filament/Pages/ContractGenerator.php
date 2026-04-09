@@ -94,7 +94,7 @@ class ContractGenerator extends Page implements HasForms
                 TextInput::make('contract_number')
                     ->label('Номер на договора')
                     ->placeholder('Оставете празно за автоматично генериране')
-                    ->helperText('Пример: TTS-W-2026-0410'),
+                    ->helperText('Пример: TTS-W-2026-04-10'),
 
                 DatePicker::make('contract_date')
                     ->label('Дата на договора')

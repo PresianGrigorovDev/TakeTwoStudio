@@ -15,7 +15,7 @@
     @endif
 
     <br>
-    <strong>ИЗПЪЛНИТЕЛ:</strong>
+    <strong>{{ count($executors) > 1 ? 'ИЗПЪЛНИТЕЛИ' : 'ИЗПЪЛНИТЕЛ' }}:</strong>
     <br><br>
 
     @foreach($executors as $executor)

@@ -20,7 +20,7 @@
 
     {{-- ИЗПЪЛНИТЕЛ --}}
     <div class="party-info">
-        <strong>ИЗПЪЛНИТЕЛ:</strong>
+        <strong>{{ count($executors) > 1 ? 'ИЗПЪЛНИТЕЛИ' : 'ИЗПЪЛНИТЕЛ' }}:</strong>
         {{ $data['studio_name'] ?? 'Take Two Studio 1603' }}
         @if(!empty($data['studio_bulstat'])), БУЛСТАТ: {{ $data['studio_bulstat'] }}@endif
         @if(!empty($data['studio_address'])), Адрес: {{ $data['studio_address'] }}@endif
