@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Сватбен Фотограф Варна | Балове, Кръщенета и Реклама | Take Two Studio 1603')
-@section('meta_description', 'Take Two Studio 1603 — професионален фотограф и видеооператор във Варна. Сватби, абитуриентски балове, кръщенета и рекламна фотография. 4K качество, дрон услуги, онлайн калкулатор за цени.')
-@section('meta_keywords', 'сватбен фотограф варна, видеозаснемане сватба, фотограф за бал варна, заснемане кръщене варна, рекламна фотография варна, продуктова фотография, дрон заснемане, Take Two Studio 1603')
-@section('og_title', 'Take Two Studio 1603 — Фотограф и Видеооператор Варна')
-@section('og_description', 'Запечатайте най-важните мигове! Сватби, балове, кръщенета и корпоративна фотография в цялата страна. Разгледайте портфолиото ни.')
+@section('title', 'Фотограф Варна | Сватби, Абитуриентски Балове, Събития и Портрети | Take Two Studio 1603')
+@section('meta_description', 'Take Two Studio 1603 — професионален фотограф и видеооператор във Варна. Сватби, абитуриентски балове, събитийна, семейна, портретна, автомобилна и архитектурна фотография. 4K видео, дрон услуги и онлайн калкулатор за цени.')
+@section('meta_keywords', 'фотограф варна, сватбен фотограф варна, фотограф за бал варна, заснемане на събития варна, семейна фотосесия, портретен фотограф, автомобилна фотография, архитектурна фотография, видеозаснемане варна, дрон заснемане, Take Two Studio 1603')
+@section('og_title', 'Take Two Studio 1603 — Професионален Фотограф и Видеооператор Варна')
+@section('og_description', 'Запечатайте най-важните мигове! Сватби, абитуриентски балове, събития, портрети, семейни сесии и още. Разгледайте портфолиото ни.')
 @section('og_image', asset('css/img/social-share-cover.jpg'))
 
 @section('content')
@@ -13,7 +13,7 @@
         <div class="hero-overlay"></div>
         <div class="hero-content" data-aos="fade-up">
             <h1>Професионална фотография и видеозаснемане</h1>
-            <span class="hero-subtitle">Сватбена, събитийна и рекламна фотография във Варна и цялата страна.</span>
+            <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
             <a href="#portfolio" class="btn-custom-full">Портфолио</a>
             <a href="#contact" class="btn-custom">Свържи се с нас</a>
         </div>
@@ -163,22 +163,24 @@
         </div>
     </section>
 
-    <section id="services" class="py-5">
+    <section id="services" class="py-5" aria-label="Фотографски услуги във Варна">
         <div class="container py-5">
             <div class="text-center mb-5">
                 <h2>Нашите Услуги</h2>
                 <div class="section-divider"></div>
-                <p class="text-muted">Пълно фотографско и видео обслужване</p>
+                <p class="text-muted">Професионална фотография и видеозаснемане за всеки повод — сватби, балове, събития, портрети и още</p>
             </div>
 
             <div class="row g-4">
                 @foreach($services as $index => $service)
                 <div class="col-md-3 col-sm-6 mx-auto" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
-                    <div class="service-card bg-white {{ $service->slug }} falling-item">
-                        <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
-                        <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
-                        <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
-                    </div>
+                    <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark">
+                        <div class="service-card bg-white {{ $service->slug }} falling-item">
+                            <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
+                            <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
+                            <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
+                        </div>
+                    </a>
                 </div>
                 @endforeach
             </div>
@@ -265,3 +267,45 @@
         </div>
     @endforeach
 @endsection
+
+@push('schema')
+@php
+$homeSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'LocalBusiness',
+    'name' => 'Take Two Studio 1603',
+    'url' => 'https://taketwostudio1603.com',
+    'logo' => 'https://taketwostudio1603.com/css/img/logo-tts-white.webp',
+    'image' => 'https://taketwostudio1603.com/css/img/social-share-cover.jpg',
+    'description' => 'Професионален фотограф и видеооператор във Варна. Сватбена, семейна, портретна, автомобилна, архитектурна и събитийна фотография.',
+    'address' => [
+        '@type' => 'PostalAddress',
+        'streetAddress' => 'ж.к. Възраждане IV 1603',
+        'addressLocality' => 'Варна',
+        'addressCountry' => 'BG',
+    ],
+    'geo' => [
+        '@type' => 'GeoCoordinates',
+        'latitude' => '43.2141',
+        'longitude' => '27.9147',
+    ],
+    'telephone' => $siteSettings->find(4)->setting_value ?? '',
+    'email' => $siteSettings->find(5)->setting_value ?? '',
+    'priceRange' => '€€',
+    'hasOfferCatalog' => [
+        '@type' => 'OfferCatalog',
+        'name' => 'Фотографски услуги',
+        'itemListElement' => $services->map(fn($s) => [
+            '@type' => 'Offer',
+            'itemOffered' => [
+                '@type' => 'Service',
+                'name' => $s->name_bg,
+                'description' => $s->description_bg,
+                'url' => url($s->slug),
+            ],
+        ])->toArray(),
+    ],
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($homeSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
