@@ -182,7 +182,7 @@
     </script>
 
     <!-- CALCULATOR -->
-    @if($service && $service->packages->count() > 0)
+    @if($categoryPackages->count() > 0)
     <section class="calc-section" id="calculator">
         <div class="container">
             <h2 class="text-center mb-4">Калкулатор Семейна Фотография</h2>
@@ -199,15 +199,15 @@
                         <div class="calc-card h-100">
                             <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
                             <div class="row g-3 mb-5">
-                                @foreach($service->packages as $package)
+                                @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
                                     <input type="radio" name="pkg_service" id="pkg_{{ $package->id }}" class="package-option"
-                                        value="{{ (int)$package->price_eur }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculateGenericTotal()">
+                                        value="{{ (int)$package->price_eur }}" data-label="{{ $package->name }}" {{ $package->is_featured ? 'checked' : ($loop->first ? 'checked' : '') }} onchange="calculateGenericTotal()">
                                     <label for="pkg_{{ $package->id }}" class="package-label">
-                                        <i class="fas {{ str_contains(strtolower($package->name_bg), 'фото') && str_contains(strtolower($package->name_bg), 'видео') ? 'fa-star' : (str_contains(strtolower($package->name_bg), 'видео') ? 'fa-video' : 'fa-camera') }} package-icon"></i>
-                                        <strong>{{ $package->name_bg }}</strong>
-                                        @if($package->description_bg)
-                                        <span class="d-block small text-muted mt-2">{!! $package->description_bg !!}</span>
+                                        <i class="fas {{ $package->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
+                                        <strong>{{ $package->name }}</strong>
+                                        @if($package->description)
+                                        <span class="d-block small text-muted mt-2">{!! $package->description !!}</span>
                                         @endif
                                         <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">€ {{ number_format($package->price_eur, 0) }} / {{ number_format($package->price_eur * 1.9558, 2) }} лв.</span>
                                     </label>
@@ -215,7 +215,7 @@
                                 @endforeach
                             </div>
 
-                            @php $groupedExtras = $service->extras->groupBy('group_name_bg'); @endphp
+                            @php $groupedExtras = ($service && $service->extras) ? $service->extras->groupBy('group_name_bg') : collect(); @endphp
 
                             @foreach($groupedExtras as $groupName => $extras)
                                 @if($groupName)

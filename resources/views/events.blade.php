@@ -173,7 +173,7 @@
         });
     </script>
 
-    @if($service && $service->packages->count() > 0)
+    @if($categoryPackages->count() > 0)
     <section class="calc-section" id="calculator">
         <div class="container">
             <h2 class="text-center mb-4">Калкулатор Събитийна Фотография</h2>
@@ -190,7 +190,7 @@
                         <div class="calc-card h-100">
                             <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
                             <div class="row g-3 mb-5">
-                                @foreach($service->packages as $package)
+                                @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
                                     <input type="radio" name="pkg_service" id="pkg_{{ $package->id }}" class="package-option" value="{{ (int)$package->price_eur }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculateGenericTotal()">
                                     <label for="pkg_{{ $package->id }}" class="package-label">
@@ -202,7 +202,7 @@
                                 </div>
                                 @endforeach
                             </div>
-                            @php $groupedExtras = $service->extras->groupBy('group_name_bg'); @endphp
+                            @php $groupedExtras = ($service && $service->extras) ? $service->extras->groupBy('group_name_bg') : collect(); @endphp
                             @foreach($groupedExtras as $groupName => $extras)
                                 @if($groupName)<h4 class="mb-4"><i class="fas fa-plus-circle me-2 text-warning"></i> {{ $groupName }}</h4>@endif
                                 <div class="row g-3 mb-5">
