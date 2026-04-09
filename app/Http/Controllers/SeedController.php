@@ -249,4 +249,44 @@ class SeedController extends Controller
             }
         }
     }
+
+    private function seedPageContents()
+    {
+        $pages = [
+            'family' => [
+                ['section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Семейна Фотография'],
+                ['section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Запечатайте най-ценните моменти със семейството си'],
+                ['section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор Семейна Фотография'],
+            ],
+            'portrait' => [
+                ['section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Портретна Фотография'],
+                ['section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Артистични портрети, които разкриват вашата уникалност'],
+                ['section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор Портретна Фотография'],
+            ],
+            'automotive' => [
+                ['section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Автомобилна Фотография'],
+                ['section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Заснемане на автомобили с внимание към всеки детайл'],
+                ['section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор Автомобилна Фотография'],
+            ],
+            'architectural' => [
+                ['section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Архитектурна Фотография'],
+                ['section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Сгради, интериори и екстериори с перфектна композиция'],
+                ['section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор Архитектурна Фотография'],
+            ],
+            'events' => [
+                ['section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Събитийна Фотография'],
+                ['section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Заснемане на фирмени, корпоративни и частни събития'],
+                ['section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор Събитийна Фотография'],
+            ],
+        ];
+
+        foreach ($pages as $pageSlug => $contents) {
+            foreach ($contents as $content) {
+                \App\Models\PageContent::firstOrCreate(
+                    ['page_slug' => $pageSlug, 'section_slug' => $content['section_slug'], 'field_key' => $content['field_key']],
+                    ['content_bg' => $content['content_bg']]
+                );
+            }
+        }
+    }
 }
