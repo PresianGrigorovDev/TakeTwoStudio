@@ -52,30 +52,30 @@
             <div class="row g-4">
                 <div class="col-md-3">
                     <div class="moment-card">
-                        <i class="fas fa-handshake moment-icon"></i>
+                        <i class="fas fa-briefcase moment-icon"></i>
                         <h5>Корпоративни</h5>
-                        <p class="small text-muted mb-0">Конференции, семинари, тийм билдинг и фирмени тържества.</p>
+                        <p class="small text-muted mb-0">Конференции, семинари и фирмени тържества, представени професионално.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
-                        <i class="fas fa-birthday-cake moment-icon"></i>
+                        <i class="fas fa-cake-candles moment-icon"></i>
                         <h5>Частни</h5>
-                        <p class="small text-muted mb-0">Рождени дни, юбилеи, годишнини и семейни празненства.</p>
+                        <p class="small text-muted mb-0">Рождени дни, юбилеи и празненства, уловени с емоция.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
-                        <i class="fas fa-bullhorn moment-icon"></i>
+                        <i class="fas fa-rocket moment-icon"></i>
                         <h5>Лансирания</h5>
-                        <p class="small text-muted mb-0">Продуктови презентации, откриване на магазини и PR събития.</p>
+                        <p class="small text-muted mb-0">Продуктови премиери, откриване на магазини и PR събития.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
-                        <i class="fas fa-bolt moment-icon"></i>
-                        <h5>Бързо Предаване</h5>
-                        <p class="small text-muted mb-0">Обработени кадри в кратък срок, готови за социални мрежи и PR.</p>
+                        <i class="fas fa-music moment-icon"></i>
+                        <h5>Концерти и фестивали</h5>
+                        <p class="small text-muted mb-0">Сцената, публиката и атмосферата, уловени в кадър.</p>
                     </div>
                 </div>
             </div>
