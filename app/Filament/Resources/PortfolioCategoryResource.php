@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PortfolioCategoryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Портфолио';
+    protected static ?string $navigationGroup = 'Настройки на сайта';
     protected static ?string $navigationLabel = 'Категории';
     protected static ?string $pluralModelLabel = 'Категории портфолио';
     protected static ?string $modelLabel = 'Категория';

@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PortfolioItemResource extends Resource
 {
+    // Hide this page
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationGroup = 'Портфолио';
     protected static ?string $navigationLabel = 'Елементи';
     protected static ?string $pluralModelLabel = 'Елементи на портфолиото';
