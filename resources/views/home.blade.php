@@ -173,7 +173,7 @@
 
             <div class="row g-4">
                 @foreach($services as $index => $service)
-                <div class="col-md-3 col-sm-6 mx-auto" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
+                <div class="col-md-4 col-sm-6 mx-auto" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
                     <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark">
                         <div class="service-card bg-white {{ $service->slug }} falling-item">
                             <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
