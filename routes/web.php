@@ -14,6 +14,12 @@ Route::get('/baptism', [App\Http\Controllers\PageController::class, 'baptism']);
 Route::get('/commercial', [App\Http\Controllers\PageController::class, 'commercial']);
 Route::get('/graduation', [App\Http\Controllers\PageController::class, 'graduation']);
 
+Route::get('/family', [App\Http\Controllers\PageController::class, 'family']);
+Route::get('/portrait', [App\Http\Controllers\PageController::class, 'portrait']);
+Route::get('/automotive', [App\Http\Controllers\PageController::class, 'automotive']);
+Route::get('/architectural', [App\Http\Controllers\PageController::class, 'architectural']);
+Route::get('/events', [App\Http\Controllers\PageController::class, 'events']);
+
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
 Route::get('/clear-cache', function () {

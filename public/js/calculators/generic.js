@@ -1,0 +1,103 @@
+function calculateGenericTotal() {
+    let total = 0;
+
+    let serviceText = "—";
+    let scopeText = "—";
+    let extrasText = [];
+
+    // SERVICE (Package)
+    const svc = document.querySelector('.package-option:checked');
+    if (svc) {
+        total += parseInt(svc.value) || 0;
+        serviceText = svc.getAttribute('data-label');
+    }
+
+    // ALL OTHER EXTRAS (Radios and Checkboxes)
+    const selectedExtras = document.querySelectorAll('.extra-option:checked');
+    selectedExtras.forEach(extra => {
+        const price = parseInt(extra.value) || 0;
+        const label = extra.getAttribute('data-label');
+        total += price;
+
+        if (extra.name.includes('обхват') || (extra.closest('.mb-5') && extra.closest('.mb-5').previousElementSibling && extra.closest('.mb-5').previousElementSibling.innerText.includes('Локация'))) {
+             scopeText = label;
+        } else {
+             if (price > 0 || extra.type === 'checkbox') {
+                 extrasText.push(label);
+             }
+        }
+    });
+
+    // Update UI elements
+    const finalPriceElem = document.getElementById('finalPrice');
+    if (finalPriceElem) {
+        let startVal = parseInt(finalPriceElem.innerText) || 0;
+        animateValue("finalPrice", startVal, total, 300);
+    }
+
+    const sumSvcElem = document.getElementById('sumService');
+    if (sumSvcElem) sumSvcElem.innerText = serviceText;
+
+    const sumScopeElem = document.getElementById('sumScope');
+    if (sumScopeElem) sumScopeElem.innerText = scopeText;
+
+    const sumExtrasElem = document.getElementById('sumExtras');
+    if (sumExtrasElem) {
+        sumExtrasElem.innerText = extrasText.length > 0 ? extrasText.join(", ") : "—";
+    }
+
+    // Hidden fields for form submission
+    const hiddenPrice = document.getElementById('hiddenPrice');
+    if (hiddenPrice) hiddenPrice.value = total;
+
+    const hiddenDetails = document.getElementById('hiddenDetails');
+    if (hiddenDetails) {
+        let fullDetails = `УСЛУГА: ${serviceText}\nОБХВАТ: ${scopeText}`;
+        if (extrasText.length > 0) {
+            fullDetails += `\nЕКСТРИ: ${extrasText.join(", ")}`;
+        } else {
+            fullDetails += `\nЕКСТРИ: Няма`;
+        }
+        hiddenDetails.value = fullDetails;
+    }
+}
+
+let priceInterval = null;
+
+function animateValue(id, start, end, duration) {
+    if (start === end) return;
+    if (priceInterval) clearInterval(priceInterval);
+
+    const range = end - start;
+    const minTimer = 10;
+    const steps = duration / minTimer;
+
+    let count = 0;
+    const obj = document.getElementById(id);
+    const objBgn = document.getElementById(id + "Bgn");
+
+    priceInterval = setInterval(function () {
+        count++;
+        const progress = count / steps;
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const current = start + (range * easedProgress);
+
+        if (count >= steps) {
+            obj.innerText = Math.round(end);
+            if (objBgn) objBgn.innerText = (end * 1.95583).toFixed(2);
+            clearInterval(priceInterval);
+        } else {
+            obj.innerText = Math.round(current);
+            if (objBgn) objBgn.innerText = (current * 1.95583).toFixed(2);
+        }
+    }, minTimer);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    calculateGenericTotal();
+
+    const inputs = document.querySelectorAll('.package-option, .extra-option');
+    inputs.forEach(input => {
+        input.addEventListener('change', calculateGenericTotal);
+    });
+});

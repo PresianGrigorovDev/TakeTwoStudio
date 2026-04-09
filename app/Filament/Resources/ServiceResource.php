@@ -41,9 +41,16 @@ class ServiceResource extends Resource
                         'baptism' => '/baptism — Кръщенета',
                         'graduation' => '/graduation — Изпращане',
                         'commercial' => '/commercial — Реклама и Бизнес',
-                        'events' => '/events — Събитийна фотография',
+                        'family' => '/family — Семейна Фотография',
+                        'portrait' => '/portrait — Портретна Фотография',
+                        'automotive' => '/automotive — Автомобилна Фотография',
+                        'architectural' => '/architectural — Архитектурна Фотография',
+                        'events' => '/events — Събитийна Фотография',
                     ])
                     ->searchable(),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Активна (видима на сайта)')
+                    ->default(true),
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
@@ -99,6 +106,9 @@ class ServiceResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->label('Слъг')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Активна')
+                    ->boolean(),
                 Tables\Columns\ImageColumn::make('hero_image')
                     ->label('Hero снимка')
                     ->disk('public')

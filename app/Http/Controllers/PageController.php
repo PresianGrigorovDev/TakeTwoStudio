@@ -43,6 +43,31 @@ class PageController extends Controller
         return $this->showService('commercial');
     }
 
+    public function family()
+    {
+        return $this->showService('family');
+    }
+
+    public function portrait()
+    {
+        return $this->showService('portrait');
+    }
+
+    public function automotive()
+    {
+        return $this->showService('automotive');
+    }
+
+    public function architectural()
+    {
+        return $this->showService('architectural');
+    }
+
+    public function events()
+    {
+        return $this->showService('events');
+    }
+
     public function graduation()
     {
         $graduationPhotos = \App\Models\GraduationPortfolioPhoto::where('is_visible', true)
@@ -117,6 +142,20 @@ class PageController extends Controller
             $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
+        // New category galleries
+        $galleryModelMap = [
+            'family' => \App\Models\FamilyGallery::class,
+            'portrait' => \App\Models\PortraitGallery::class,
+            'automotive' => \App\Models\AutomotiveGallery::class,
+            'architectural' => \App\Models\ArchitecturalGallery::class,
+            'events' => \App\Models\EventGallery::class,
+        ];
+
+        $galleries = collect();
+        if (isset($galleryModelMap[$slug])) {
+            $galleries = $galleryModelMap[$slug]::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+        }
+
         return view($slug, [
             'service' => $service,
             'portfolioItems' => $portfolioItems,
@@ -126,6 +165,7 @@ class PageController extends Controller
             'promFaqs' => $promFaqs,
             'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
+            'galleries' => $galleries,
             'pageContent' => $pageContent,
         ]);
     }
