@@ -29,6 +29,7 @@
         <strong>Изпълняващи:</strong>
         @foreach($executors as $executor)
             {{ $executor->name }}<br>
+            @if($executor->egn)ЕГН: {{ $executor->egn }}<br>@endif
             @if($executor->phone)Тел.: {{ $executor->phone }}<br>@endif
             @if($executor->email)Имейл: {{ $executor->email }}<br>@endif
             @if($executor->address)Адрес: {{ $executor->address }}<br>@endif
@@ -45,7 +46,6 @@
         ЕГН: {!! pdfBlank($data['client1_egn'] ?? '', 'blank-short') !!}<br>
         Адрес: {!! pdfBlank($data['client1_address'] ?? '', 'blank-long') !!}<br>
         Тел.: {!! pdfBlank($data['client1_phone'] ?? '') !!}
-        Имейл: {!! pdfBlank($data['client1_email'] ?? '') !!}
     </div>
 
     {{-- ВЪЗЛОЖИТЕЛ 2 --}}
@@ -55,7 +55,6 @@
         ЕГН: {!! pdfBlank($data['client2_egn'] ?? '', 'blank-short') !!}<br>
         Адрес: {!! pdfBlank($data['client2_address'] ?? '', 'blank-long') !!}<br>
         Тел.: {!! pdfBlank($data['client2_phone'] ?? '') !!}
-        Имейл: {!! pdfBlank($data['client2_email'] ?? '') !!}
     </div>
 
     <p>се сключи настоящият договор за следното:</p>
@@ -124,6 +123,11 @@
         <div class="section-text">{{ $sections['payment'] }}</div>
     @endif
 
+    @if(!empty($sections['transport']))
+        <div class="section-title">{{ $sectionNum++ }}. Транспорт и пътни разходи</div>
+        <div class="section-text">{{ $sections['transport'] }}</div>
+    @endif
+
     @if(!empty($sections['overtime']))
         <div class="section-title">{{ $sectionNum++ }}. Овъртайм</div>
         <div class="section-text">{{ $sections['overtime'] }}</div>
@@ -170,11 +174,15 @@
     @endif
 
     {{-- Банкови данни --}}
+    @if(!empty($data['studio_iban']))
     <div class="section-title">Банкови данни на Изпълнителя</div>
     <table>
-        <tr><th style="width:180px;">IBAN</th><td>{!! pdfBlank($data['studio_iban'] ?? '', 'blank-long') !!}</td></tr>
-        <tr><th>Банка</th><td>{!! pdfBlank($data['studio_bank'] ?? '', 'blank-long') !!}</td></tr>
+        <tr><th style="width:180px;">IBAN</th><td>{{ $data['studio_iban'] }}</td></tr>
+        @if(!empty($data['studio_bank']))
+        <tr><th>Банка</th><td>{{ $data['studio_bank'] }}</td></tr>
+        @endif
     </table>
+    @endif
 
     @if(!empty($data['event_notes']))
     <div class="section-title">Допълнителни бележки</div>

@@ -26,7 +26,10 @@
         <strong>Изпълняващи:</strong>
         @foreach($executors as $executor)
             {{ $executor->name }}<br>
+            @if($executor->egn)ЕГН: {{ $executor->egn }}<br>@endif
             @if($executor->phone)Тел.: {{ $executor->phone }}<br>@endif
+            @if($executor->email)Имейл: {{ $executor->email }}<br>@endif
+            @if($executor->address)Адрес: {{ $executor->address }}<br>@endif
             @if(!$loop->last)<br>@endif
         @endforeach
     </div>
@@ -40,7 +43,6 @@
         ЕГН: {!! pdfBlank($data['client1_egn'] ?? '', 'blank-short') !!}<br>
         Адрес: {!! pdfBlank($data['client1_address'] ?? '', 'blank-long') !!}<br>
         Тел.: {!! pdfBlank($data['client1_phone'] ?? '') !!}
-        Имейл: {!! pdfBlank($data['client1_email'] ?? '') !!}
     </div>
 
     {{-- Фирмени данни (ако има) --}}
@@ -90,37 +92,37 @@
         <tr><th>Остатък</th><td>{!! pdfBlank($data['remaining_amount'] ?? '') !!} {{ $data['currency'] ?? 'EUR' }}</td></tr>
     </table>
 
-    @if(!empty($sections['payment']))
-        <div class="section-title">{{ $sectionNum++ }}. Условия за плащане</div>
-        <div class="section-text">{{ $sections['payment'] }}</div>
-    @endif
-
-    @if(!empty($sections['cancellation']))
-        <div class="section-title">{{ $sectionNum++ }}. Отказ и неустойки</div>
-        <div class="section-text">{{ $sections['cancellation'] }}</div>
-    @endif
-
-    @if(!empty($sections['copyright']))
-        <div class="section-title">{{ $sectionNum++ }}. Права и авторство</div>
-        <div class="section-text">{{ $sections['copyright'] }}</div>
-    @endif
-
-    @if(!empty($sections['limitations']))
-        <div class="section-title">{{ $sectionNum++ }}. Ограничения</div>
-        <div class="section-text">{{ $sections['limitations'] }}</div>
-    @endif
-
-    @if(!empty($sections['general']))
-        <div class="section-title">{{ $sectionNum++ }}. Общи клаузи</div>
-        <div class="section-text">{{ $sections['general'] }}</div>
-    @endif
+    @php
+        $customSectionLabels = [
+            'payment' => 'Условия за плащане',
+            'transport' => 'Транспорт и пътни разходи',
+            'overtime' => 'Овъртайм',
+            'obligations_executor' => 'Задължения на Изпълнителя',
+            'obligations_client' => 'Задължения на Възложителя',
+            'cancellation' => 'Отказ и неустойки',
+            'copyright' => 'Права и авторство',
+            'limitations' => 'Ограничения на отговорността',
+            'force_majeure' => 'Форсмажорни обстоятелства',
+            'general' => 'Общи клаузи',
+        ];
+    @endphp
+    @foreach($customSectionLabels as $sKey => $sLabel)
+        @if(!empty($sections[$sKey]))
+            <div class="section-title">{{ $sectionNum++ }}. {{ $sLabel }}</div>
+            <div class="section-text">{{ $sections[$sKey] }}</div>
+        @endif
+    @endforeach
 
     {{-- Банкови данни --}}
+    @if(!empty($data['studio_iban']))
     <div class="section-title">Банкови данни на Изпълнителя</div>
     <table>
-        <tr><th style="width:180px;">IBAN</th><td>{!! pdfBlank($data['studio_iban'] ?? '', 'blank-long') !!}</td></tr>
-        <tr><th>Банка</th><td>{!! pdfBlank($data['studio_bank'] ?? '', 'blank-long') !!}</td></tr>
+        <tr><th style="width:180px;">IBAN</th><td>{{ $data['studio_iban'] }}</td></tr>
+        @if(!empty($data['studio_bank']))
+        <tr><th>Банка</th><td>{{ $data['studio_bank'] }}</td></tr>
+        @endif
     </table>
+    @endif
 
     @if(!empty($data['event_notes']))
     <div class="section-title">Допълнителни бележки</div>

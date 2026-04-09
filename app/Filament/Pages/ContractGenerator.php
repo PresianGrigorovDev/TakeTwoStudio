@@ -29,7 +29,7 @@ class ContractGenerator extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Генератор на Договори';
     protected static ?string $title = 'Генератор на Договори';
-    protected static ?string $navigationGroup = 'Инструменти';
+    protected static ?string $navigationGroup = 'Настройки на сайта';
     protected static ?int $navigationSort = 100;
 
     protected static string $view = 'filament.pages.contract-generator';
@@ -254,13 +254,21 @@ class ContractGenerator extends Page implements HasForms
                             ->label('Локация на подготовка')
                             ->visible(fn (Get $get) => $get('contract_type') === ContractType::Wedding->value),
 
-                        // Общо: церемония / начало
+                        // Prom: единствено поле за хотел/локация
+                        TextInput::make('prom_venue')
+                            ->label('Хотел / Локация на бала')
+                            ->columnSpanFull()
+                            ->visible(fn (Get $get) => $get('contract_type') === ContractType::Prom->value),
+
+                        // Wedding / Event / Custom: церемония / начало
                         Select::make('ceremony_time')
                             ->label('Час на церемония / начало')
                             ->options(self::getTimeOptions())
-                            ->searchable(),
+                            ->searchable()
+                            ->visible(fn (Get $get) => $get('contract_type') !== ContractType::Prom->value),
                         TextInput::make('ceremony_location')
-                            ->label('Локация на церемония / събитие'),
+                            ->label('Локация на церемония / събитие')
+                            ->visible(fn (Get $get) => $get('contract_type') !== ContractType::Prom->value),
 
                         // Wedding: фотосесия
                         Select::make('photoshoot_time')
@@ -346,7 +354,7 @@ class ContractGenerator extends Page implements HasForms
                         TextInput::make('total_price')
                             ->label('Обща цена')
                             ->numeric()
-                            ->required()
+                            ->required(fn (Get $get) => $get('contract_type') !== ContractType::Prom->value)
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
                                 if ($state) {
@@ -420,14 +428,17 @@ class ContractGenerator extends Page implements HasForms
                     'scope' => 'Обхват на услугата',
                     'deadlines' => 'Срокове за предаване',
                     'payment' => 'Условия за плащане',
+                    'transport' => 'Транспорт и пътни разходи',
                     'overtime' => 'Овъртайм',
                     'cancellation' => 'Отказ и неустойки',
                     'delays' => 'Закъснения',
                     'raw_materials' => 'RAW материали',
                     'copyright' => 'Права и авторство',
-                    'limitations' => 'Ограничения',
+                    'limitations' => 'Ограничения на отговорността',
                     'work_conditions' => 'Условия на работа',
-                    'force_majeure' => 'Форсмажор',
+                    'force_majeure' => 'Форсмажорни обстоятелства',
+                    'obligations_executor' => 'Задължения на Изпълнителя',
+                    'obligations_client' => 'Задължения на Възложителя',
                     'obligations' => 'Права и задължения',
                     'general' => 'Общи клаузи',
                 ];

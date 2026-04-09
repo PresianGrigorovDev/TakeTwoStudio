@@ -25,7 +25,10 @@
         <strong>Изпълняващи:</strong>
         @foreach($executors as $executor)
             {{ $executor->name }}<br>
+            @if($executor->egn)ЕГН: {{ $executor->egn }}<br>@endif
             @if($executor->phone)Тел.: {{ $executor->phone }}<br>@endif
+            @if($executor->email)Имейл: {{ $executor->email }}<br>@endif
+            @if($executor->address)Адрес: {{ $executor->address }}<br>@endif
             @if(!$loop->last)<br>@endif
         @endforeach
     </div>
@@ -39,7 +42,6 @@
         ЕГН: {!! pdfBlank($data['client1_egn'] ?? '', 'blank-short') !!}<br>
         Адрес: {!! pdfBlank($data['client1_address'] ?? '', 'blank-long') !!}<br>
         Тел.: {!! pdfBlank($data['client1_phone'] ?? '') !!}
-        Имейл: {!! pdfBlank($data['client1_email'] ?? '') !!}
     </div>
 
     <p>се сключи настоящият договор за следното:</p>
@@ -55,9 +57,7 @@
     <div class="section-title">{{ $sectionNum++ }}. Дата и локация</div>
     <table>
         <tr><th style="width:180px;">Дата на бала</th><td>{!! !empty($data['event_date']) ? \Carbon\Carbon::parse($data['event_date'])->format('d.m.Y') : pdfBlank('', 'blank') !!}</td></tr>
-        <tr><th>Хотел / Локация</th><td>{!! pdfBlank($data['ceremony_location'] ?? '', 'blank-long') !!}</td></tr>
-        <tr><th>Начален час</th><td>{!! pdfBlank($data['ceremony_time'] ?? '') !!}</td></tr>
-        <tr><th>Краен час</th><td>{!! pdfBlank($data['end_time'] ?? '') !!}</td></tr>
+        <tr><th>Хотел / Локация</th><td>{!! pdfBlank($data['prom_venue'] ?? '', 'blank-long') !!}</td></tr>
     </table>
 
     @if(!empty($sections['scope_photo']))
@@ -83,14 +83,39 @@
         <div class="section-text">{{ $sections['payment'] }}</div>
     @endif
 
-    @if(!empty($sections['obligations']))
-        <div class="section-title">{{ $sectionNum++ }}. Права и задължения</div>
-        <div class="section-text">{{ $sections['obligations'] }}</div>
+    @if(!empty($sections['transport']))
+        <div class="section-title">{{ $sectionNum++ }}. Транспорт и пътни разходи</div>
+        <div class="section-text">{{ $sections['transport'] }}</div>
+    @endif
+
+    @if(!empty($sections['obligations_executor']))
+        <div class="section-title">{{ $sectionNum++ }}. Задължения на Изпълнителя</div>
+        <div class="section-text">{{ $sections['obligations_executor'] }}</div>
+    @endif
+
+    @if(!empty($sections['obligations_client']))
+        <div class="section-title">{{ $sectionNum++ }}. Задължения на Възложителя</div>
+        <div class="section-text">{{ $sections['obligations_client'] }}</div>
     @endif
 
     @if(!empty($sections['cancellation']))
-        <div class="section-title">{{ $sectionNum++ }}. Отговорност и санкции</div>
+        <div class="section-title">{{ $sectionNum++ }}. Отказ и неустойки</div>
         <div class="section-text">{{ $sections['cancellation'] }}</div>
+    @endif
+
+    @if(!empty($sections['limitations']))
+        <div class="section-title">{{ $sectionNum++ }}. Ограничения на отговорността</div>
+        <div class="section-text">{{ $sections['limitations'] }}</div>
+    @endif
+
+    @if(!empty($sections['copyright']))
+        <div class="section-title">{{ $sectionNum++ }}. Права и авторство</div>
+        <div class="section-text">{{ $sections['copyright'] }}</div>
+    @endif
+
+    @if(!empty($sections['force_majeure']))
+        <div class="section-title">{{ $sectionNum++ }}. Форсмажорни обстоятелства</div>
+        <div class="section-text">{{ $sections['force_majeure'] }}</div>
     @endif
 
     @if(!empty($sections['general']))
@@ -99,11 +124,15 @@
     @endif
 
     {{-- Банкови данни --}}
+    @if(!empty($data['studio_iban']))
     <div class="section-title">Банкови данни на Изпълнителя</div>
     <table>
-        <tr><th style="width:180px;">IBAN</th><td>{!! pdfBlank($data['studio_iban'] ?? '', 'blank-long') !!}</td></tr>
-        <tr><th>Банка</th><td>{!! pdfBlank($data['studio_bank'] ?? '', 'blank-long') !!}</td></tr>
+        <tr><th style="width:180px;">IBAN</th><td>{{ $data['studio_iban'] }}</td></tr>
+        @if(!empty($data['studio_bank']))
+        <tr><th>Банка</th><td>{{ $data['studio_bank'] }}</td></tr>
+        @endif
     </table>
+    @endif
 
     @if(!empty($data['event_notes']))
     <div class="section-title">Допълнителни бележки</div>
