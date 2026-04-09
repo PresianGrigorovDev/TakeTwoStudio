@@ -21,6 +21,7 @@ class SeedController extends Controller
         $this->seedArchitecturalPackages();
         $this->seedEventPackages();
         $this->seedExtras();
+        $this->seedPageContents();
 
         return 'Seed complete'
             . ' – wedding pkg: ' . \App\Models\WeddingPackage::count()
@@ -225,6 +226,14 @@ class SeedController extends Controller
                 ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Втори фотограф', 'price_eur' => 80, 'icon_class' => 'fas fa-user-plus', 'description_bg' => null, 'display_order' => 4],
                 ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Фотостена / Backdrop', 'price_eur' => 45, 'icon_class' => 'fas fa-th-large', 'description_bg' => null, 'display_order' => 5],
                 ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Експресно предаване (24ч)', 'price_eur' => 60, 'icon_class' => 'fas fa-shipping-fast', 'description_bg' => null, 'display_order' => 6],
+            ],
+            'commercial' => [
+                ['input_type' => 'radio', 'group_name_bg' => 'Тип заснемане', 'label_bg' => 'Продуктова фотография', 'price_eur' => 0, 'icon_class' => 'fas fa-box-open', 'description_bg' => null, 'display_order' => 1],
+                ['input_type' => 'radio', 'group_name_bg' => 'Тип заснемане', 'label_bg' => 'Бизнес портрети (екип)', 'price_eur' => 0, 'icon_class' => 'fas fa-users', 'description_bg' => null, 'display_order' => 2],
+                ['input_type' => 'radio', 'group_name_bg' => 'Тип заснемане', 'label_bg' => 'Интериор / Екстериор', 'price_eur' => 0, 'icon_class' => 'fas fa-building', 'description_bg' => null, 'display_order' => 3],
+                ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Рекламно видео 30 сек.', 'price_eur' => 80, 'icon_class' => 'fas fa-video', 'description_bg' => null, 'display_order' => 4],
+                ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Дрон кадри', 'price_eur' => 50, 'icon_class' => 'fas fa-helicopter', 'description_bg' => null, 'display_order' => 5],
+                ['input_type' => 'checkbox', 'group_name_bg' => 'Допълнителни услуги', 'label_bg' => 'Експресна обработка (до 3 дни)', 'price_eur' => 45, 'icon_class' => 'fas fa-bolt', 'description_bg' => null, 'display_order' => 6],
             ],
         ];
 
