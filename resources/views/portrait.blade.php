@@ -199,7 +199,7 @@
                                 <div class="row g-3 mb-5">
                                     @foreach($extras as $extra)
                                     <div class="{{ $extra->input_type === 'checkbox' ? 'col-md-4' : 'col-md-6' }}">
-                                        <input class="extra-option" type="{{ $extra->input_type }}" name="extra_{{ $extra->id }}{{ $extra->input_type === 'radio' ? '_' . Str::slug($groupName) : '' }}" id="extra_{{ $extra->id }}"
+                                        <input class="extra-option" type="{{ $extra->input_type }}" name="{{ $extra->input_type === 'radio' ? 'extra_group_' . Str::slug($groupName) : 'extra_' . $extra->id }}" id="extra_{{ $extra->id }}"
                                             value="{{ (int)$extra->price_eur }}" data-label="{{ $extra->label_bg }}" {{ $extra->input_type === 'radio' && $loop->first ? 'checked' : '' }} onchange="calculateGenericTotal()">
                                         <label class="extra-card-label" for="extra_{{ $extra->id }}">
                                             <i class="fas {{ $extra->icon_class ?? ($extra->input_type === 'checkbox' ? 'fa-gift' : 'fa-map-marker-alt') }} extra-card-icon"></i>
