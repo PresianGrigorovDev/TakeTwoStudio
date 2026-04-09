@@ -7,7 +7,9 @@
 @section('og_description', 'Артистични индивидуални портрети за лична марка, социални мрежи или подарък. Професионално студийно осветление и ретуш.')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/proms.css') }}">
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
 
@@ -87,69 +89,35 @@
     <section class="py-5 bg-white" id="portfolio">
         <div class="container mt-1">
             <div class="row mb-5">
-                <h2 class="text-center text-uppercase fw-bold">Портретни Галерии</h2>
+                <h2 class="text-center text-uppercase fw-bold">Портфолио</h2>
                 <div class="section-divider"></div>
-                <h3 class="text-center h5 fw-light text-muted">Разгледайте нашите любими моменти</h3>
+                <h3 class="text-center h5 fw-light text-muted">Вижте част от нашите артистични портрети</h3>
             </div>
 
-            <div class="row g-4">
-                @foreach($galleries as $gallery)
-                    <div class="col-md-6 col-lg-4">
-                        <div class="baptism-gallery-card border-0 rounded position-relative" data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}" style="cursor: pointer;">
-                            <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm" style="height: 320px;">
-                                <img src="{{ asset('storage/' . $gallery->cover_image) }}" alt="{{ $gallery->title }}" loading="lazy" class="img-fluid w-100 h-100 object-fit-cover" style="transition: transform 0.4s ease;">
-                            </div>
-                            <div class="text-center mt-3 p-2">
-                                <h4 class="fw-bold mb-2">{{ $gallery->title }}</h4>
-                                <span class="btn btn-sm btn-outline-dark rounded-pill px-4 mt-2">Виж Галерията</span>
-                            </div>
-                        </div>
-
-                        <div class="modal fade" id="galleryModal{{ $gallery->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-xl modal-dialog-centered">
-                                <div class="modal-content border-0" style="background: #111;">
-                                    <div class="modal-header border-0 py-2 bg-white">
-                                        <h5 class="modal-title text-dark fw-bold">{{ $gallery->title }}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body p-0">
-                                        <div id="carouselGallery{{ $gallery->id }}" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Cover">
-                                                </div>
-                                                @foreach($gallery->photos as $photo)
-                                                <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Photo">
-                                                </div>
-                                                @endforeach
-                                            </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.8));"></span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.8));"></span>
-                                            </button>
-                                        </div>
-                                        <div class="d-flex overflow-auto p-3 custom-scrollbar" style="background: #1a1a1a; gap: 10px;">
-                                            <img src="{{ asset('storage/' . $gallery->cover_image) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0">
-                                            @foreach($gallery->photos as $index => $photo)
-                                            <img src="{{ asset('storage/' . $photo->image_path) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}">
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            @php $galleryLimit = 12; @endphp
+            <div class="masonry" id="portraitGallery" data-aos="fade-up">
+                @foreach($portraitPortfolioPhotos as $i => $photo)
+                    <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
+                        <div class="portfolio-item">
+                            <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
+                                <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Портретна Фотография Варна">
+                            </a>
                         </div>
                     </div>
                 @endforeach
-
-                @if($galleries->isEmpty())
-                    <div class="col-12 text-center text-muted mb-5">
-                        <p>Очаквайте скоро нашите нови галерии!</p>
-                    </div>
-                @endif
             </div>
+
+            @if($portraitPortfolioPhotos->count() > $galleryLimit)
+                <div class="text-center mt-4">
+                    <button type="button" class="btn-custom" id="loadMoreBtn" onclick="loadMorePhotos()">Виж още</button>
+                </div>
+            @endif
+
+            @if($portraitPortfolioPhotos->isEmpty())
+                <div class="col-12 text-center text-muted mb-5">
+                    <p>Очаквайте скоро нашите нови портрети!</p>
+                </div>
+            @endif
         </div>
     </section>
 
@@ -163,23 +131,30 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #f39c12; }
     </style>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                    const openModal = document.querySelector('.modal.show');
-                    if (openModal) {
-                        const carouselElement = openModal.querySelector('.carousel');
-                        if (carouselElement) {
-                            const carousel = bootstrap.Carousel.getInstance(carouselElement) || new bootstrap.Carousel(carouselElement);
-                            if (e.key === 'ArrowLeft') carousel.prev();
-                            else if (e.key === 'ArrowRight') carousel.next();
-                        }
-                    }
-                }
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+        <script src="{{ asset('js/calculators/generic.js') }}"></script>
+        <script>
+            const lightbox = GLightbox({
+                selector: '.glightbox'
             });
-        });
-    </script>
+
+            function loadMorePhotos() {
+                var hidden = document.querySelectorAll('#portraitGallery .gallery-hidden');
+                var step = {{ $galleryLimit }};
+
+                for (var i = 0; i < step && i < hidden.length; i++) {
+                    hidden[i].classList.remove('gallery-hidden');
+                }
+
+                if (document.querySelectorAll('#portraitGallery .gallery-hidden').length === 0) {
+                    document.getElementById('loadMoreBtn').style.display = 'none';
+                }
+
+                GLightbox({ selector: '.glightbox' });
+            }
+        </script>
+    @endpush
 
     <!-- CALCULATOR -->
     @if($categoryPackages->count() > 0)
@@ -320,5 +295,5 @@ $portraitServiceSchema = [
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/calculators/generic.js') }}"></script>
+    {{-- Scripts already pushed above --}}
 @endpush

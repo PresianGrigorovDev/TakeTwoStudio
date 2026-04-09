@@ -142,10 +142,14 @@ class PageController extends Controller
             $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
+        $portraitPortfolioPhotos = collect();
+        if ($slug === 'portrait') {
+            $portraitPortfolioPhotos = \App\Models\PortraitPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
         // New category galleries and packages
         $galleryModelMap = [
             'family' => \App\Models\FamilyGallery::class,
-            'portrait' => \App\Models\PortraitGallery::class,
             'automotive' => \App\Models\AutomotiveGallery::class,
             'architectural' => \App\Models\ArchitecturalGallery::class,
             'events' => \App\Models\EventGallery::class,
@@ -178,6 +182,7 @@ class PageController extends Controller
             'promFaqs' => $promFaqs,
             'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
+            'portraitPortfolioPhotos' => $portraitPortfolioPhotos,
             'galleries' => $galleries,
             'categoryPackages' => $categoryPackages,
             'pageContent' => $pageContent,
