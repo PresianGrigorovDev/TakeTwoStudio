@@ -16,10 +16,10 @@ class PortraitPortfolioPhotoResource extends Resource
     protected static ?string $model = PortraitPortfolioPhoto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
-    protected static ?string $navigationGroup = 'Услуги - Портрети';
-    protected static ?int $navigationSort = 4;
-    protected static ?string $modelLabel = 'Снимка - Портрети';
-    protected static ?string $pluralModelLabel = 'Снимки - Портрети';
+    protected static ?string $navigationGroup = 'Портретна Фотография';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $modelLabel = 'Портретна Галерия';
+    protected static ?string $pluralModelLabel = 'Портретни Галерии';
 
     public static function form(Form $form): Form
     {

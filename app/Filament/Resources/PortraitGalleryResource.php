@@ -20,6 +20,7 @@ class PortraitGalleryResource extends Resource
     protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Портретна Галерия';
     protected static ?string $pluralModelLabel = 'Портретни Галерии';
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {
