@@ -49,6 +49,27 @@ class TeamMemberResource extends Resource
                 Forms\Components\Textarea::make('bio_en')
                     ->label('Биография (EN)')
                     ->columnSpanFull(),
+                Forms\Components\Section::make('Данни за договори')
+                    ->description('Тези данни се използват при генериране на договори')
+                    ->schema([
+                        Forms\Components\TextInput::make('address')
+                            ->label('Адрес')
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Телефон')
+                            ->tel()
+                            ->maxLength(30),
+                        Forms\Components\TextInput::make('email')
+                            ->label('Имейл')
+                            ->email()
+                            ->maxLength(100),
+                        Forms\Components\TextInput::make('egn')
+                            ->label('ЕГН')
+                            ->maxLength(10),
+                    ])
+                    ->columns(2)
+                    ->collapsible()
+                    ->collapsed(),
                 Forms\Components\TextInput::make('display_order')
                     ->label('Поредност')
                     ->numeric()
