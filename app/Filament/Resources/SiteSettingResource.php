@@ -17,7 +17,7 @@ class SiteSettingResource extends Resource
 {
     protected static ?string $navigationGroup = 'Настройки на сайта';
     protected static ?string $navigationLabel = 'SEO текстове';
-    protected static ?string $pluralModelLabel = 'Общи настройки ( Само Пресо пипа тук )';
+    protected static ?string $pluralModelLabel = 'SEO текстове ( Само Пресо пипа тук )';
     protected static ?string $modelLabel = 'Настройка';
 
     protected static ?string $model = SiteSetting::class;
