@@ -192,11 +192,11 @@
                             <div class="row g-3 mb-5">
                                 @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
-                                    <input type="radio" name="pkg_service" id="pkg_{{ $package->id }}" class="package-option" value="{{ (int)$package->price_eur }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculateGenericTotal()">
+                                    <input type="radio" name="pkg_service" id="pkg_{{ $package->id }}" class="package-option" value="{{ (int)$package->price_eur }}" data-label="{{ $package->name }}" {{ $package->is_featured ? 'checked' : ($loop->first ? 'checked' : '') }} onchange="calculateGenericTotal()">
                                     <label for="pkg_{{ $package->id }}" class="package-label">
-                                        <i class="fas {{ str_contains(strtolower($package->name_bg), 'фото') && str_contains(strtolower($package->name_bg), 'видео') ? 'fa-star' : (str_contains(strtolower($package->name_bg), 'видео') ? 'fa-video' : 'fa-camera') }} package-icon"></i>
-                                        <strong>{{ $package->name_bg }}</strong>
-                                        @if($package->description_bg)<span class="d-block small text-muted mt-2">{!! $package->description_bg !!}</span>@endif
+                                        <i class="fas {{ $package->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
+                                        <strong>{{ $package->name }}</strong>
+                                        @if($package->description)<span class="d-block small text-muted mt-2">{!! $package->description !!}</span>@endif
                                         <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">€ {{ number_format($package->price_eur, 0) }} / {{ number_format($package->price_eur * 1.9558, 2) }} лв.</span>
                                     </label>
                                 </div>
