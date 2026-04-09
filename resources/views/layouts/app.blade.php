@@ -151,7 +151,7 @@
                                 <li><a class="dropdown-item" href="/baptism">Кръщенета</a></li>
                                 <li><a class="dropdown-item" href="/graduation">Пред-бална фотосесия</a></li>
                                 <li><a class="dropdown-item" href="/commercial">Реклама и Бизнес</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                {{-- <li><hr class="dropdown-divider"></li> --}}
                                 <li><a class="dropdown-item" href="/family">Семейна Фотография</a></li>
                                 <li><a class="dropdown-item" href="/portrait">Портретна Фотография</a></li>
                                 <li><a class="dropdown-item" href="/automotive">Автомобилна Фотография</a></li>
