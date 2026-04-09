@@ -19,7 +19,11 @@ function calculateGenericTotal() {
         const label = extra.getAttribute('data-label');
         total += price;
 
-        if (extra.name.includes('обхват') || (extra.closest('.mb-5') && extra.closest('.mb-5').previousElementSibling && extra.closest('.mb-5').previousElementSibling.innerText.includes('Локация'))) {
+        if (extra.name.includes('обхват') || 
+            extra.name.includes('lokacija') || 
+            (extra.closest('.mb-5') && extra.closest('.mb-5').previousElementSibling && 
+             (extra.closest('.mb-5').previousElementSibling.innerText.includes('Локация') || 
+              extra.closest('.mb-5').previousElementSibling.innerText.includes('обхват')))) {
              scopeText = label;
         } else {
              if (price > 0 || extra.type === 'checkbox') {
