@@ -60,7 +60,8 @@ class ServiceResource extends Resource
                     ->directory('hero-images')
                     ->disk('public')
                     ->imageEditor()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->maxSize(30720),
                 Forms\Components\Select::make('icon_class')
                     ->label('Икона')
                     ->searchable()
