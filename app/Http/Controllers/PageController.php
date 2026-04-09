@@ -142,7 +142,7 @@ class PageController extends Controller
             $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
-        // New category galleries
+        // New category galleries and packages
         $galleryModelMap = [
             'family' => \App\Models\FamilyGallery::class,
             'portrait' => \App\Models\PortraitGallery::class,
@@ -151,9 +151,22 @@ class PageController extends Controller
             'events' => \App\Models\EventGallery::class,
         ];
 
+        $packageModelMap = [
+            'family' => \App\Models\FamilyPackage::class,
+            'portrait' => \App\Models\PortraitPackage::class,
+            'automotive' => \App\Models\AutomotivePackage::class,
+            'architectural' => \App\Models\ArchitecturalPackage::class,
+            'events' => \App\Models\EventPackage::class,
+        ];
+
         $galleries = collect();
         if (isset($galleryModelMap[$slug])) {
             $galleries = $galleryModelMap[$slug]::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+        }
+
+        $categoryPackages = collect();
+        if (isset($packageModelMap[$slug])) {
+            $categoryPackages = $packageModelMap[$slug]::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         return view($slug, [
@@ -166,6 +179,7 @@ class PageController extends Controller
             'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
             'galleries' => $galleries,
+            'categoryPackages' => $categoryPackages,
             'pageContent' => $pageContent,
         ]);
     }
