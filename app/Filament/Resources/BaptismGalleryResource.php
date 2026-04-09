@@ -68,7 +68,7 @@ class BaptismGalleryResource extends Resource
                     ])->columns(2),
 
                 Forms\Components\Section::make('Снимки в Галерията')
-                    ->description('Можете да добавите до 25 снимки.')
+                    ->description('Може да добавиш до 25 снимки. ( Повече не ти трябват Симо _|_).')
                     ->schema([
                         Forms\Components\Repeater::make('photos')
                             ->label('Снимки')

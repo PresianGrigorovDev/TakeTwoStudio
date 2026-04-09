@@ -40,12 +40,6 @@ class BaptismPackageResource extends Resource
                 ->required()
                 ->suffix('€'),
 
-            TextInput::make('price')
-                ->label('Цена (лв.) — за справка')
-                ->numeric()
-                ->required()
-                ->suffix('лв.'),
-
             TextInput::make('description')
                 ->label('Кратко описание')
                 ->placeholder('напр. Пълна сесия с повече локации')
