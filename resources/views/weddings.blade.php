@@ -98,22 +98,22 @@
                         <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
                             <i class="fas fa-user-tie fa-3x mb-3"></i>
                             <h3>Професионализъм</h3>
-                            <p class="text-muted small">Разбираме значението на този ден и се стремим да надхвърлим очакванията ви.</p>
+                            <p class="text-muted small">Разбираме значението на сватбения ви ден и се стремим да надхвърлим очакванията ви с всеки кадър.</p>
                         </div>
                         <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
                             <i class="fas fa-camera-retro fa-3x mb-3"></i>
                             <h3>Модерна техника</h3>
-                            <p class="text-muted small">Работим с най-добрите фото и видео технологии за перфектно качество.</p>
+                            <p class="text-muted small">Работим с най-добрите фото и видео технологии за перфектно качество на сватбеното заснемане.</p>
                         </div>
                         <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
                             <i class="fas fa-lightbulb fa-3x mb-3"></i>
                             <h3>Креативност</h3>
-                            <p class="text-muted small">Всеки проект е уникален. Създаваме истории, които ще помните завинаги.</p>
+                            <p class="text-muted small">Всяка сватба е уникална. Създаваме сватбени истории, които ще помните завинаги.</p>
                         </div>
                         <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
                             <i class="fas fa-tags fa-3x mb-3"></i>
                             <h3>Достъпни пакети</h3>
-                            <p class="text-muted small">Предлагаме гъвкави ценови опции, без компромис с качеството.</p>
+                            <p class="text-muted small">Предлагаме гъвкави сватбени пакети на достъпни цени, без компромис с качеството.</p>
                         </div>
                     </div>
                 </div>
