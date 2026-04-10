@@ -560,4 +560,8 @@ footer ul li a:hover {
     .price-display {
         font-size: 1.6rem !important;  /* Scale down huge total price */
     }
+
+    .modal-body .d-flex {
+        flex-direction: row;
+    }
 }
