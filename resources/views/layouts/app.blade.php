@@ -187,13 +187,20 @@
                 </div>
                 <div class="col-md-4">
                     <h3>Нашите Услуги</h3>
+
                     <ul>
-                        <li><a href="{{ url('weddings') }}">Сватбена фотография и видео</a></li>
+                        @php
+                            $portfolioCategories = \App\Models\PortfolioCategory::where('is_visible', true)->get();
+                            foreach ($portfolioCategories as $category) {
+                                echo '<li><a href="' . url($category->slug) . '">' . $category->name_bg . '</a></li>';
+                            }
+                        @endphp
+                        {{-- <li><a href="{{ url('weddings') }}">Сватбена фотография и видео</a></li>
                         <li><a href="{{ url('proms') }}">Абитуриентски балове и фотосесии</a></li>
                         <li><a href="{{ url('baptism') }}">Детска фотография и Кръщенета</a></li>
                         <li><a href="{{ url('commercial') }}">Рекламна и продуктова фотография</a></li>
                         <li><a href="{{ url('commercial') }}">Корпоративно видеозаснемане и дрон</a></li>
-                        <li><a href="{{ url('graduation') }}">Пред-бална фотосесия</a></li>
+                        <li><a href="{{ url('graduation') }}">Пред-бална фотосесия</a></li> --}}
                     </ul>
                 </div>
                 <div class="col-md-4">
