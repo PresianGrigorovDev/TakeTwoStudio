@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Collection;
 
 class PortfolioCategoryResource extends Resource
 {
@@ -83,9 +84,8 @@ class PortfolioCategoryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Видим')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('is_visible')
+                    ->label('Видим'),
             ])
             ->defaultSort('display_order')
             ->reorderable('display_order')
@@ -98,6 +98,16 @@ class PortfolioCategoryResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('makeVisible')
+                        ->label('Направи видими')
+                        ->icon('heroicon-o-eye')
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => true]))
+                        ->deselectRecordsAfterCompletion(),
+                    Tables\Actions\BulkAction::make('makeHidden')
+                        ->label('Скрий')
+                        ->icon('heroicon-o-eye-slash')
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => false]))
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }
