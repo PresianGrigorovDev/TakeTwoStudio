@@ -75,6 +75,11 @@ h4 {
     .row {
         --bs-gutter-x: 0;
     }
+
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 /* NAVBAR */
