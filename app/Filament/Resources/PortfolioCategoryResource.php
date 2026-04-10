@@ -41,9 +41,6 @@ class PortfolioCategoryResource extends Resource
                 Forms\Components\TextInput::make('subtitle_bg')
                     ->label('Подзаглавие (БГ)')
                     ->maxLength(100),
-                Forms\Components\Textarea::make('description_bg')
-                    ->label('Описание (БГ)')
-                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Корица')
                     ->image()
