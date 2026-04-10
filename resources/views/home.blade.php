@@ -125,21 +125,23 @@
 
             <div class="row g-4">
                 @foreach($portfolioCategories as $index => $category)
-                    <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
-                        <a href="{{ url($category->slug) }}" class="text-decoration-none">
-                            <div class="portfolio-item falling-item">
-                                <img src="{{ $category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg') }}"
-                                    class="portfolio-img" alt="{{ $category->name_bg }}" loading="lazy">
-                                <div class="portfolio-overlay">
-                                    <div class="portfolio-info">
-                                        <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
-                                        <p class="portfolio-subtitle">{{ $category->subtitle_bg }}</p>
+                    @if ($category->is_visible)
+                        <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
+                            <a href="{{ url($category->slug) }}" class="text-decoration-none">
+                                <div class="portfolio-item falling-item">
+                                    <img src="{{ $category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg') }}"
+                                        class="portfolio-img" alt="{{ $category->name_bg }}" loading="lazy">
+                                    <div class="portfolio-overlay">
+                                        <div class="portfolio-info">
+                                            <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
+                                            <p class="portfolio-subtitle">{{ $category->subtitle_bg }}</p>
+                                        </div>
+                                        <div class="view-more-btn">Виж Още</div>
                                     </div>
-                                    <div class="view-more-btn">Виж Още</div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         </div>

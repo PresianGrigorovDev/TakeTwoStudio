@@ -51,6 +51,9 @@ class PortfolioCategoryResource extends Resource
                     ->label('Поредност')
                     ->numeric()
                     ->default(0),
+                Forms\Components\Toggle::make('is_visible')
+                ->label('Видим')
+                ->default(true),
             ]);
     }
 
@@ -80,6 +83,9 @@ class PortfolioCategoryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\IconColumn::make('is_visible')
+                    ->label('Видим')
+                    ->boolean(),
             ])
             ->defaultSort('display_order')
             ->reorderable('display_order')
