@@ -153,7 +153,7 @@
                                 <li><a class="dropdown-item" href="/commercial"><i class="fas fa-briefcase"></i> Реклама и Бизнес</a></li>
                                 <li><a class="dropdown-item" href="/architectural"><i class="fas fa-building"></i> Архитектурна Фотография</a></li>
                                 <li><a class="dropdown-item" href="/graduation"><i class="fas fa-graduation-cap"></i> Пред-бална фотосесия</a></li>
-                                <li><a class="dropdown-item" href="/family"><i class="fas fa-family"></i> Семейна Фотография</a></li>
+                                <li><a class="dropdown-item" href="/family"><i class="fas fa-users"></i> Семейна Фотография</a></li>
                                 <li><a class="dropdown-item" href="/portrait"><i class="fas fa-portrait"></i> Портретна Фотография</a></li>
                                 <li><a class="dropdown-item" href="/automotive"><i class="fas fa-car"></i> Автомобилна Фотография</a></li>
                             </ul>
