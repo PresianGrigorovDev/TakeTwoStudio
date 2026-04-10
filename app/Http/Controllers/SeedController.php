@@ -22,6 +22,7 @@ class SeedController extends Controller
         $this->seedEventPackages();
         $this->seedExtras();
         $this->seedPageContents();
+        $this->seedPortfolioCategoriesIsVisible();
 
         return 'Seed complete'
             . ' – wedding pkg: ' . \App\Models\WeddingPackage::count()
@@ -288,5 +289,17 @@ class SeedController extends Controller
                 );
             }
         }
+    }
+
+    private function seedPortfolioCategoriesIsVisible()
+    {
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('portfolio_categories', 'is_visible')) {
+            \Illuminate\Support\Facades\Schema::table('portfolio_categories', function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->boolean('is_visible')->default(true)->after('display_order');
+            });
+        }
+
+        // Ensure existing categories are visible
+        \App\Models\PortfolioCategory::where('is_visible', null)->update(['is_visible' => true]);
     }
 }
