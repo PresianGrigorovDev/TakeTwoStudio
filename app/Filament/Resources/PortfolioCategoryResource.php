@@ -40,9 +40,14 @@ class PortfolioCategoryResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('subtitle_bg')
                     ->label('Подзаглавие (БГ)')
+                    ->required()
                     ->maxLength(100),
+                Forms\Components\Textarea::make('description_bg')
+                    ->label('Описание (БГ)')
+                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Корица')
+                    ->required()
                     ->image()
                     ->directory('portfolio/categories'),
                 Forms\Components\TextInput::make('display_order')
