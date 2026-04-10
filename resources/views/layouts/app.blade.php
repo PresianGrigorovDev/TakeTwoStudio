@@ -146,16 +146,12 @@
                                 Услуги
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/weddings"><i class="fas fa-heart"></i> Сватби</a></li>
-                                <li><a class="dropdown-item" href="/proms"><i class="fas fa-graduation-cap"></i> Абитуриентски балове</a></li>
-                                <li><a class="dropdown-item" href="/baptism"><i class="fas fa-child"></i> Кръщенета</a></li>
-                                <li><a class="dropdown-item" href="/events"><i class="fas fa-calendar-alt"></i> Събитийна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/commercial"><i class="fas fa-briefcase"></i> Реклама и Бизнес</a></li>
-                                <li><a class="dropdown-item" href="/architectural"><i class="fas fa-building"></i> Архитектурна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/graduation"><i class="fas fa-graduation-cap"></i> Пред-бална фотосесия</a></li>
-                                <li><a class="dropdown-item" href="/family"><i class="fas fa-users"></i> Семейна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/portrait"><i class="fas fa-portrait"></i> Портретна Фотография</a></li>
-                                <li><a class="dropdown-item" href="/automotive"><i class="fas fa-car"></i> Автомобилна Фотография</a></li>
+                                @php
+                                $portfolioCategories = \App\Models\PortfolioCategory::where('is_visible', true)->get();
+                                    foreach ($portfolioCategories as $portfolioCategory)
+                                       if($portfolioCategory->is_visible)
+                                            echo '<li><a class="dropdown-item" href="' . url($portfolioCategory->slug) . '"><i class="fas fa-' . $portfolioCategory->icon . '"></i> ' . $portfolioCategory->name_bg . '</a></li>';
+                                @endphp
                             </ul>
                         </li>
                         {{-- <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li> --}}
