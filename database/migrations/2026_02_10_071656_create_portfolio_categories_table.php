@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description_bg')->nullable();
             $table->string('cover_image', 255)->nullable();
             $table->integer('display_order')->default(0);
+            $table->boolean('is_visible')->default(true);
             $table->timestamps();
         });
     }
