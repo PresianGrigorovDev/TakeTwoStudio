@@ -44,10 +44,7 @@ class TeamMemberResource extends Resource
                     ->image()
                     ->directory('team'),
                 Forms\Components\Textarea::make('bio_bg')
-                    ->label('Биография (БГ)')
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('bio_en')
-                    ->label('Биография (EN)')
+                    ->label('Биография')
                     ->columnSpanFull(),
                 Forms\Components\Section::make('Данни за договори')
                     ->description('Тези данни се използват при генериране на договори')
