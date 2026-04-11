@@ -11,14 +11,10 @@ class BlogPostSeeder extends Seeder
 {
     public function run(): void
     {
-        if (BlogPost::count() > 0) {
-            return;
-        }
-
         $categoryIds = BlogCategory::pluck('id', 'slug')->all();
 
-        // First post goes live on the next business day at 10:00
-        $startDate = Carbon::now()->addWeekday()->setTime(10, 0, 0);
+        // First post goes live in the past to be visible immediately
+        $startDate = Carbon::now()->subDays(40)->setTime(10, 0, 0);
 
         $posts = array_merge(
             $this->eventPosts($categoryIds),
@@ -27,10 +23,13 @@ class BlogPostSeeder extends Seeder
         foreach ($posts as $index => $data) {
             $publishedAt = $startDate->copy()->addWeekdays($index * 4);
 
-            BlogPost::create(array_merge($data, [
-                'is_published' => true,
-                'published_at' => $publishedAt,
-            ]));
+            BlogPost::updateOrCreate(
+                ['slug' => $data['slug']],
+                array_merge($data, [
+                    'is_published' => true,
+                    'published_at' => $publishedAt,
+                ])
+            );
         }
     }
 

@@ -9,10 +9,6 @@ class BlogCategorySeeder extends Seeder
 {
     public function run(): void
     {
-        if (BlogCategory::count() > 0) {
-            return;
-        }
-
         $categories = [
             [
                 'name' => 'Сватбени съвети',
@@ -54,10 +50,18 @@ class BlogCategorySeeder extends Seeder
                 'display_order' => 5,
                 'is_visible' => true,
             ],
+            [
+                'name' => 'Бизнес и събития',
+                'slug' => 'event-tips',
+                'description' => 'Как да подготвите вашето събитие за заснемане и защо професионалните кадри са важни за вашия бизнес.',
+                'color' => '#2c3e50',
+                'display_order' => 6,
+                'is_visible' => true,
+            ],
         ];
 
         foreach ($categories as $data) {
-            BlogCategory::create($data);
+            BlogCategory::updateOrCreate(['slug' => $data['slug']], $data);
         }
     }
 }
