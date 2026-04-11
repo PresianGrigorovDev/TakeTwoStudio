@@ -84,14 +84,52 @@
                         {!! $post->body !!}
                     </div>
 
+                    @php
+                        $categoryCtaMap = [
+                            'wedding-tips' => [
+                                'url' => url('/weddings'),
+                                'heading' => 'Планирате сватба?',
+                                'text' => 'Разгледайте нашите сватбени пакети и вижте как можем да заснемем вашия ден.',
+                                'label' => 'Към сватбена фотография',
+                            ],
+                            'baptism-tips' => [
+                                'url' => url('/baptism'),
+                                'heading' => 'Предстои ви кръщене?',
+                                'text' => 'Вижте как заснемаме кръщенета и какво включват нашите пакети.',
+                                'label' => 'Към фотография на кръщенета',
+                            ],
+                            'prom-tips' => [
+                                'url' => url('/proms'),
+                                'heading' => 'Абитуриент сте?',
+                                'text' => 'Разгледайте нашите предложения за бал и пред-балните фотосесии.',
+                                'label' => 'Към балните фотосесии',
+                            ],
+                            'photoshoot-style' => [
+                                'url' => url('/portrait'),
+                                'heading' => 'Искате своя фотосесия?',
+                                'text' => 'Запазете индивидуална портретна сесия и създайте своите кадри с нас.',
+                                'label' => 'Към портретни фотосесии',
+                            ],
+                        ];
+
+                        $categoryCta = $post->category ? ($categoryCtaMap[$post->category->slug] ?? null) : null;
+                    @endphp
+
                     <div class="blog-post__cta" data-aos="fade-up">
                         <div class="blog-post__cta-content">
-                            <h3>Хареса ви статията?</h3>
-                            <p>Ако планирате специален момент, ние сме тук да го заснемем. Свържете се с нас за запитване или резервация.</p>
-                            <div class="blog-post__cta-buttons">
-                                <a href="{{ url('/booking') }}" class="btn btn-primary">Запази сесия</a>
-                                <a href="{{ url('/#contact') }}" class="btn btn-outline">Запитване</a>
-                            </div>
+                            @if($categoryCta)
+                                <h3>{{ $categoryCta['heading'] }}</h3>
+                                <p>{{ $categoryCta['text'] }}</p>
+                                <div class="blog-post__cta-buttons">
+                                    <a href="{{ $categoryCta['url'] }}" class="btn btn-primary">{{ $categoryCta['label'] }}</a>
+                                </div>
+                            @else
+                                <h3>Хареса ви статията?</h3>
+                                <p>Ако планирате специален момент, ние сме тук да го заснемем. Разгледайте нашите услуги и резервирайте своята сесия.</p>
+                                <div class="blog-post__cta-buttons">
+                                    <a href="{{ url('/booking') }}" class="btn btn-primary">Запази сесия</a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
