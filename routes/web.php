@@ -20,6 +20,10 @@ Route::get('/automotive', [App\Http\Controllers\PageController::class, 'automoti
 Route::get('/architectural', [App\Http\Controllers\PageController::class, 'architectural']);
 Route::get('/events', [App\Http\Controllers\PageController::class, 'events']);
 
+Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/category/{slug}', [App\Http\Controllers\BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
 Route::get('/privacy', fn () => app(App\Http\Controllers\LegalPageController::class)->show('privacy'))->name('legal.privacy');

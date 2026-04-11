@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogCategory;
+use App\Models\BlogPost;
+
 class SitemapController extends Controller
 {
     public function index()
@@ -19,7 +22,26 @@ class SitemapController extends Controller
             ['loc' => url('/architectural'), 'priority' => '0.80', 'changefreq' => 'monthly', 'lastmod' => now()->format('Y-m-d')],
             ['loc' => url('/events'),        'priority' => '0.80', 'changefreq' => 'monthly', 'lastmod' => now()->format('Y-m-d')],
             ['loc' => url('/booking'),       'priority' => '0.70', 'changefreq' => 'monthly', 'lastmod' => now()->format('Y-m-d')],
+            ['loc' => url('/blog'),          'priority' => '0.85', 'changefreq' => 'weekly',  'lastmod' => now()->format('Y-m-d')],
         ];
+
+        foreach (BlogCategory::where('is_visible', true)->get() as $category) {
+            $pages[] = [
+                'loc' => route('blog.category', $category->slug),
+                'priority' => '0.70',
+                'changefreq' => 'weekly',
+                'lastmod' => $category->updated_at->format('Y-m-d'),
+            ];
+        }
+
+        foreach (BlogPost::published()->get() as $post) {
+            $pages[] = [
+                'loc' => route('blog.show', $post->slug),
+                'priority' => '0.75',
+                'changefreq' => 'monthly',
+                'lastmod' => $post->updated_at->format('Y-m-d'),
+            ];
+        }
 
         return response()
             ->view('sitemap', ['pages' => $pages])

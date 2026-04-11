@@ -9,6 +9,8 @@ class SeedController extends Controller
         (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
         (new \Database\Seeders\GraduationContentSeeder())->run();
         (new \Database\Seeders\LegalPageSeeder())->run();
+        (new \Database\Seeders\BlogCategorySeeder())->run();
+        (new \Database\Seeders\BlogPostSeeder())->run();
 
         $this->seedPromFaqs();
         $this->seedBaptismFaqs();
@@ -35,7 +37,9 @@ class SeedController extends Controller
             . ', automotive pkg: ' . \App\Models\AutomotivePackage::count()
             . ', architectural pkg: ' . \App\Models\ArchitecturalPackage::count()
             . ', event pkg: ' . \App\Models\EventPackage::count()
-            . ', service extras: ' . \App\Models\ServiceExtra::count();
+            . ', service extras: ' . \App\Models\ServiceExtra::count()
+            . ', blog categories: ' . \App\Models\BlogCategory::count()
+            . ', blog posts: ' . \App\Models\BlogPost::count();
     }
 
     private function seedPromFaqs()

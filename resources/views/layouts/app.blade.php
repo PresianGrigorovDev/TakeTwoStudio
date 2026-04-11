@@ -132,6 +132,7 @@
                     <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
                         <li class="nav-item"><a class="nav-link" href="/#about">За нас</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#portfolio">Портфолио</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('blog.index') }}">Блог</a></li>
                     </div>
 
                     <li class="nav-item d-none d-lg-flex align-items-center mx-auto">
@@ -206,6 +207,7 @@
                         <li><span>📞</span> <a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a></li>
                         <li><span>✉️</span> <a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></li>
                         <li><span>🕒</span> Понеделник - Неделя</li>
+                        <li><span>📝</span> <a href="{{ route('blog.index') }}">Блог</a></li>
                     </ul>
                 </div>
             </div>
