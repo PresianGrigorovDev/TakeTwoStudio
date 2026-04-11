@@ -193,7 +193,7 @@ class BlogPostResource extends Resource
                     ->label('Показвания')
                     ->numeric()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Създаден')
                     ->dateTime('d.m.Y')
