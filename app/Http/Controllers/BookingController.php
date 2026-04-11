@@ -193,6 +193,10 @@ class BookingController extends Controller
             'end_time' => 'required|string|size:5',
             'service_type' => 'required|string',
             'message' => 'nullable|string',
+            'gdpr_consent' => 'required|accepted',
+        ], [
+            'gdpr_consent.required' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
+            'gdpr_consent.accepted' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
         ]);
 
         // Validate start < end and within working hours

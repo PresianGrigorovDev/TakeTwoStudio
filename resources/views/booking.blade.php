@@ -110,6 +110,8 @@
                                 <textarea name="message" id="message" class="form-control" rows="3">{{ old('message') }}</textarea>
                             </div>
 
+                            @include('partials.gdpr-consent', ['consentId' => 'booking'])
+
                             @if($errors->any())
                                 <div class="alert alert-danger">
                                     @foreach($errors->all() as $error)

@@ -323,6 +323,7 @@
                                     placeholder="Телефон" required>
                                 <input type="date" name="date" class="form-control mb-2 rounded-0"
                                     placeholder="Дата на събитието" required onclick="this.showPicker()">
+                                @include('partials.gdpr-consent', ['consentId' => 'baptism'])
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>
                             </div>
                         </div>

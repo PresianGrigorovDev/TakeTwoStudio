@@ -247,6 +247,7 @@
                                     placeholder="Телефон" required>
                                 <input type="text" name="school" class="form-control mb-2 rounded-0"
                                     placeholder="Училище / Клас" required>
+                                @include('partials.gdpr-consent', ['consentId' => 'prom'])
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>
                             </div>
 

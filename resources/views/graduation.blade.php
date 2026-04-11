@@ -314,6 +314,7 @@
                                 <div id="graduationHoursGrid" class="graduation-hours-grid"></div>
                                 <div id="graduationTimeDisplay" class="graduation-time-display" style="display:none"></div>
                             </div>
+                            @include('partials.gdpr-consent', ['consentId' => 'graduation'])
                             <button type="submit" class="btn-custom">Изпрати Запитване</button>
                         </div>
 

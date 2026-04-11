@@ -213,6 +213,13 @@
         <div class="footer-bottom">
             <div class="row">
                 <div class="col-md-12 text-center m-auto">
+                    <p class="mb-2">
+                        <a href="{{ route('legal.privacy') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Политика за поверителност</a>
+                        &bull;
+                        <a href="{{ route('legal.terms') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Общи условия</a>
+                        &bull;
+                        <a href="{{ route('legal.cookies') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Политика за бисквитки</a>
+                    </p>
                     <p>
                         © {{ date('Y') }} Take Two Studio 1603. Всички права запазени.
                         @auth
@@ -225,6 +232,8 @@
             </div>
         </div>
     </footer>
+
+    @include('partials.cookie-banner')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>

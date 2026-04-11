@@ -8,6 +8,7 @@ class SeedController extends Controller
     {
         (new \Database\Seeders\CommercialPortfolioPhotoSeeder())->run();
         (new \Database\Seeders\GraduationContentSeeder())->run();
+        (new \Database\Seeders\LegalPageSeeder())->run();
 
         $this->seedPromFaqs();
         $this->seedBaptismFaqs();

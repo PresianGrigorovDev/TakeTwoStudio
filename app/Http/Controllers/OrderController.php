@@ -20,7 +20,11 @@ class OrderController extends Controller
             'graduation_date' => 'nullable|date',
             'graduation_start_time' => 'nullable|string|size:5',
             'graduation_end_time' => 'nullable|string|size:5',
-            'orderType' => 'nullable|string'
+            'orderType' => 'nullable|string',
+            'gdpr_consent' => 'required|accepted',
+        ], [
+            'gdpr_consent.required' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
+            'gdpr_consent.accepted' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
         ]);
 
         $orderType = $validated['orderType'] ?? null;
@@ -96,7 +100,11 @@ class OrderController extends Controller
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
             'message' => 'required|string',
-            'orderType' => 'nullable|string' // Commercial page uses this
+            'orderType' => 'nullable|string', // Commercial page uses this
+            'gdpr_consent' => 'required|accepted',
+        ], [
+            'gdpr_consent.required' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
+            'gdpr_consent.accepted' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
         ]);
 
         $orderType = $validated['orderType'] ?? 'General Inquiry';

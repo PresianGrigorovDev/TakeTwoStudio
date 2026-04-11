@@ -22,6 +22,10 @@ Route::get('/events', [App\Http\Controllers\PageController::class, 'events']);
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
+Route::get('/privacy', fn () => app(App\Http\Controllers\LegalPageController::class)->show('privacy'))->name('legal.privacy');
+Route::get('/terms', fn () => app(App\Http\Controllers\LegalPageController::class)->show('terms'))->name('legal.terms');
+Route::get('/cookies', fn () => app(App\Http\Controllers\LegalPageController::class)->show('cookies'))->name('legal.cookies');
+
 Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
     Artisan::call('view:clear');

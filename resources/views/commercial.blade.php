@@ -229,6 +229,9 @@
                                     <textarea class="form-control rounded-0 p-3 bg-light border-0" rows="5" name="message"
                                         placeholder="Какъв тип заснемане ви трябва? Дата, локация, специфични изисквания..."></textarea>
                                 </div>
+                                <div class="col-12">
+                                    @include('partials.gdpr-consent', ['consentId' => 'commercial'])
+                                </div>
                                 <div class="col-12 text-center mt-4">
                                     <button type="submit" class="btn btn-submit px-5 py-3 fs-5">Изпрати
                                         Запитване</button>
