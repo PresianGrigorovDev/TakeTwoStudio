@@ -123,7 +123,7 @@
                 <p>Разгледайте избрани моменти от нашите проекти.</p>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 justify-content-center">
                 @foreach($portfolioCategories as $index => $category)
                     @if ($category->is_visible)
                         <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
