@@ -438,6 +438,10 @@
     font-size: 1.05rem;
     line-height: 1.8;
     color: #333;
+
+    @media (max-width: 768px) {
+        padding: 0 10px;
+    }
 }
 
 .blog-post__body h2 {
@@ -591,11 +595,11 @@
 
 @media (max-width: 768px) {
     .blog-hero {
-        padding: 110px 0 45px;
+        padding: 30px 0 20px;
     }
 
     .blog-hero__title {
-        font-size: 2rem;
+        font-size: 1.3rem;
     }
 
     .blog-hero__subtitle {
@@ -612,11 +616,12 @@
     }
 
     .blog-post__hero {
-        padding: 120px 0 50px;
+        /* padding: 120px 0 50px; */
+        padding: 20px 0;
     }
 
     .blog-post__title {
-        font-size: 1.9rem;
+        font-size: 1.3rem;
     }
 
     .blog-post__excerpt {
