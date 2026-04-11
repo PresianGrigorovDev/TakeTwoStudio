@@ -96,7 +96,7 @@
                 <h3 class="text-center h5 fw-light text-muted">Разгледайте нашите любими събития</h3>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 justify-content-center">
                 @foreach($baptismGalleries as $gallery)
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
