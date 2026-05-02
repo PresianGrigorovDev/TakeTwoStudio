@@ -11,7 +11,8 @@ return new class extends Migration
         Schema::table('orders', function (Blueprint $table) {
             if (! Schema::hasColumn('orders', 'promo_code_id')) {
                 $table->unsignedBigInteger('promo_code_id')->nullable()->after('status');
-                $table->foreign('promo_code_id')->references('id')->on('promo_codes')->nullOnDelete();
+                // Removed foreign key constraint to prevent hosting compatibility issues
+                // $table->foreign('promo_code_id')->references('id')->on('promo_codes')->nullOnDelete();
             }
             if (! Schema::hasColumn('orders', 'promo_code')) {
                 $table->string('promo_code')->nullable()->after('promo_code_id')->comment('Snapshot of the code used');
@@ -26,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             if (Schema::hasColumn('orders', 'promo_code_id')) {
-                $table->dropForeign(['promo_code_id']);
+                // $table->dropForeign(['promo_code_id']);
                 $table->dropColumn('promo_code_id');
             }
             if (Schema::hasColumn('orders', 'promo_code')) {
