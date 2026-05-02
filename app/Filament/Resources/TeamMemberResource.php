@@ -42,6 +42,7 @@ class TeamMemberResource extends Resource
                 Forms\Components\FileUpload::make('image_path')
                     ->label('Снимка')
                     ->image()
+                    ->imageEditor()
                     ->directory('team'),
                 Forms\Components\Textarea::make('bio_bg')
                     ->label('Биография')
