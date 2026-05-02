@@ -50,6 +50,11 @@ class PromotionResource extends Resource
 
                 Forms\Components\Section::make('Таймер и Промо Код')
                     ->schema([
+                        Forms\Components\DateTimePicker::make('starts_at')
+                            ->label('Промоцията започва на')
+                            ->nullable()
+                            ->helperText('Ако е зададено, няма да се показва преди тази дата.'),
+
                         Forms\Components\DateTimePicker::make('expires_at')
                             ->label('Промоцията изтича на')
                             ->nullable()
@@ -63,7 +68,7 @@ class PromotionResource extends Resource
                             ->preload()
                             ->helperText('Промо кодът ще се показва под банера с бутон "Копирай".'),
                     ])
-                    ->columns(2),
+                    ->columns(3),
 
                 Forms\Components\Section::make('Настройки')
                     ->schema([
