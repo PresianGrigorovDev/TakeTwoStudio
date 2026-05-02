@@ -234,11 +234,17 @@
                             <div class="text-start mt-4 mb-4">
                                 <div class="summary-item"><span>Пакет:</span> <span id="sumPackage">Парти</span></div>
                                 <div class="summary-item"><span>Добавки:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
+                                    <span>Промо Намаление:</span>
+                                    <span class="discount-amount" style="font-weight:700;"></span>
+                                </div>
                             </div>
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">
                             <input type="hidden" name="orderType" value="Prom">
+
+                            @include('partials.promo-code-input')
 
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"

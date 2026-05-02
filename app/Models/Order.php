@@ -27,6 +27,9 @@ class Order extends Model
         'price',
         'details',
         'status',
+        'promo_code_id',
+        'promo_code',
+        'discount_amount',
     ];
 
     protected $casts = [
@@ -36,6 +39,11 @@ class Order extends Model
     public function teamMembers()
     {
         return $this->belongsToMany(TeamMember::class, 'order_team_member');
+    }
+
+    public function promoCode()
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 
     public function booking()

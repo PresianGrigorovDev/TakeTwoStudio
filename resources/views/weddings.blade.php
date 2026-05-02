@@ -450,11 +450,17 @@
                                 <div class="summary-item"><span>Екип:</span> <span id="sumTeam">-</span></div>
                                 <div class="summary-item"><span>Фото Добавки:</span> <span id="sumPhoto">-</span></div>
                                 <div class="summary-item"><span>Видео Добавки:</span> <span id="sumVideo">-</span></div>
+                                <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
+                                    <span>Промо Намаление:</span>
+                                    <span class="discount-amount" style="font-weight:700;"></span>
+                                </div>
                             </div>
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">
                             <input type="hidden" name="orderType" value="Wedding">
+
+                            @include('partials.promo-code-input')
 
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"

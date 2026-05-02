@@ -1,5 +1,7 @@
 function calculateGenericTotal() {
     let total = 0;
+    let packagePrice = 0;
+    let extrasPrice = 0;
 
     let serviceText = "—";
     let scopeText = "—";
@@ -8,7 +10,8 @@ function calculateGenericTotal() {
     // SERVICE (Package)
     const svc = document.querySelector('.package-option:checked');
     if (svc) {
-        total += parseInt(svc.value) || 0;
+        packagePrice = parseInt(svc.value) || 0;
+        total += packagePrice;
         serviceText = svc.getAttribute('data-label');
     }
 
@@ -17,6 +20,7 @@ function calculateGenericTotal() {
     selectedExtras.forEach(extra => {
         const price = parseInt(extra.value) || 0;
         const label = extra.getAttribute('data-label');
+        extrasPrice += price;
         total += price;
 
         if (extra.name.includes('обхват') || 
@@ -32,11 +36,23 @@ function calculateGenericTotal() {
         }
     });
 
+    // Apply promo discount
+    var finalPrice = (typeof applyPromoDiscount === 'function') ? applyPromoDiscount(packagePrice, extrasPrice) : total;
+
     // Update UI elements
     const finalPriceElem = document.getElementById('finalPrice');
     if (finalPriceElem) {
         let startVal = parseInt(finalPriceElem.innerText) || 0;
-        animateValue("finalPrice", startVal, total, 300);
+        animateValue("finalPrice", startVal, finalPrice, 300);
+    }
+
+    // Show discount line
+    var discountEl = document.getElementById('promo-discount-line');
+    if (discountEl) {
+        if (finalPrice < total) {
+            discountEl.style.display = 'flex';
+            discountEl.querySelector('.discount-amount').textContent = '-€' + Math.round(total - finalPrice);
+        } else { discountEl.style.display = 'none'; }
     }
 
     const sumSvcElem = document.getElementById('sumService');
@@ -52,7 +68,7 @@ function calculateGenericTotal() {
 
     // Hidden fields for form submission
     const hiddenPrice = document.getElementById('hiddenPrice');
-    if (hiddenPrice) hiddenPrice.value = total;
+    if (hiddenPrice) hiddenPrice.value = Math.round(finalPrice);
 
     const hiddenDetails = document.getElementById('hiddenDetails');
     if (hiddenDetails) {

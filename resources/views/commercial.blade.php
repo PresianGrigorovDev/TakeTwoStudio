@@ -208,6 +208,8 @@
                         <form action="{{ url('/submit-order') }}" method="post">
                             @csrf
                             <input type="hidden" name="orderType" value="Commercial">
+
+                            @include('partials.promo-code-input')
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Име / Фирма</label>

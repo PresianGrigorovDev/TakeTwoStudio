@@ -1,5 +1,7 @@
 function calculateGraduationTotal() {
     let total = 0;
+    let packagePrice = 0;
+    let extrasPrice = 0;
     let pkgName = '—';
     let extrasNames = [];
     let detailsArr = [];
@@ -7,7 +9,8 @@ function calculateGraduationTotal() {
     // 1. Package
     const selectedPackage = document.querySelector('.package-option:checked');
     if (selectedPackage) {
-        total += parseInt(selectedPackage.value) || 0;
+        packagePrice = parseInt(selectedPackage.value) || 0;
+        total += packagePrice;
         pkgName = selectedPackage.getAttribute('data-label') || 'Пакет';
         detailsArr.push(pkgName);
     }
@@ -16,6 +19,7 @@ function calculateGraduationTotal() {
     document.querySelectorAll('.extra-option:checked').forEach(extra => {
         const price = parseInt(extra.value) || 0;
         const label = extra.getAttribute('data-label');
+        extrasPrice += price;
         total += price;
         if (label) {
             if (price > 0) {
@@ -50,13 +54,25 @@ function calculateGraduationTotal() {
         }
     }
 
+    // Apply promo discount
+    var finalPrice = (typeof applyPromoDiscount === 'function') ? applyPromoDiscount(packagePrice, extrasPrice) : total;
+
     const finalPriceElem = document.getElementById('finalPrice');
     if (finalPriceElem) {
-        animateGradValue('finalPrice', parseInt(finalPriceElem.innerText) || 0, total, 300);
+        animateGradValue('finalPrice', parseInt(finalPriceElem.innerText) || 0, finalPrice, 300);
+    }
+
+    // Show discount line
+    var discountEl = document.getElementById('promo-discount-line');
+    if (discountEl) {
+        if (finalPrice < total) {
+            discountEl.style.display = 'flex';
+            discountEl.querySelector('.discount-amount').textContent = '-€' + Math.round(total - finalPrice);
+        } else { discountEl.style.display = 'none'; }
     }
 
     const hiddenPrice = document.getElementById('hiddenPrice');
-    if (hiddenPrice) hiddenPrice.value = total;
+    if (hiddenPrice) hiddenPrice.value = Math.round(finalPrice);
 
     const hiddenDetails = document.getElementById('hiddenDetails');
     if (hiddenDetails) hiddenDetails.value = detailsArr.join(', ');

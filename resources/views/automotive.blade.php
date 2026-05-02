@@ -234,6 +234,8 @@
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">
                             <input type="hidden" name="orderType" value="Automotive">
+
+                            @include('partials.promo-code-input')
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0" placeholder="Вашето име" required>
                                 <input type="text" name="phone" class="form-control mb-2 rounded-0" placeholder="Телефон" required>
