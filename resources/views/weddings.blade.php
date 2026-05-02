@@ -34,7 +34,7 @@
     </section>
 
     <!-- INTRO -->
-    <div class="desc desc1 bg-gray py-5">
+    <div class="desc desc1 pt-4 pb-0">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-lg-10 m-auto text-center">
