@@ -109,7 +109,7 @@
     background: #111;
     border-radius: 16px;
     overflow: hidden;
-    max-width: 540px;
+    max-width: 580px;
     width: 100%;
     box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
     animation: promo-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -122,14 +122,14 @@
 
 .promo-popup-close {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 2px;
+    right: 8px;
     z-index: 10;
     background: rgba(0,0,0,0.6);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,8 +149,8 @@
 .promo-popup-image {
     width: 100%;
     display: block;
-    object-fit: cover;
-    max-height: 320px;
+    object-fit: contain;
+    max-height: 420px;
     transition: opacity 0.2s;
 }
 .promo-popup-image-link:hover .promo-popup-image {
