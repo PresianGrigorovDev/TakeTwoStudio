@@ -13,6 +13,7 @@ class Promotion extends Model
         'title',
         'image_path',
         'redirect_url',
+        'starts_at',
         'expires_at',
         'is_active',
         'popup_days_interval',
@@ -20,6 +21,7 @@ class Promotion extends Model
     ];
 
     protected $casts = [
+        'starts_at'  => 'datetime',
         'expires_at' => 'datetime',
         'is_active'  => 'boolean',
     ];
@@ -37,6 +39,12 @@ class Promotion extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true)->latest()->limit(1);
+        return $query->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('starts_at')
+                  ->orWhere('starts_at', '<=', now());
+            })
+            ->latest()
+            ->limit(1);
     }
 }
