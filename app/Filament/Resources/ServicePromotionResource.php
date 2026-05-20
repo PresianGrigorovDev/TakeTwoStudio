@@ -41,17 +41,17 @@ class ServicePromotionResource extends Resource
                             ->label('Вид намаление')
                             ->options([
                                 'percent' => 'Процент (%)',
-                                'fixed'   => 'Фиксирана цена (лв)',
+                                'fixed'   => 'Фиксирана цена (€)',
                             ])
                             ->default('percent')
                             ->required()
                             ->live()
                             ->columnSpanFull(),
                         Forms\Components\TextInput::make('original_price')
-                            ->label('Оригинална цена (лв)')
+                            ->label('Оригинална цена (€)')
                             ->numeric()
                             ->minValue(0)
-                            ->suffix('лв')
+                            ->suffix('€')
                             ->live()
                             ->visible(fn ($get) => $get('discount_type') === 'percent')
                             ->required(fn ($get) => $get('discount_type') === 'percent'),
@@ -73,14 +73,14 @@ class ServicePromotionResource extends Resource
                                     return '—';
                                 }
                                 $discounted = $original - ($original * $percent / 100);
-                                return number_format($discounted, 2, '.', ' ') . ' лв';
+                                return number_format($discounted, 2, '.', ' ') . ' €';
                             })
                             ->visible(fn ($get) => $get('discount_type') === 'percent'),
                         Forms\Components\TextInput::make('discount_amount')
-                            ->label('Намалена цена (лв)')
+                            ->label('Намалена цена (€)')
                             ->numeric()
                             ->minValue(0)
-                            ->suffix('лв')
+                            ->suffix('€')
                             ->visible(fn ($get) => $get('discount_type') === 'fixed')
                             ->required(fn ($get) => $get('discount_type') === 'fixed'),
                         Forms\Components\Toggle::make('is_active')
@@ -214,7 +214,7 @@ class ServicePromotionResource extends Resource
                     ->label('Намаление')
                     ->formatStateUsing(fn ($record) => $record->discount_type === 'percent'
                         ? ($record->discount_percent . '%')
-                        : number_format((float)$record->discount_amount, 2, '.', ' ') . ' лв')
+                        : number_format((float)$record->discount_amount, 2, '.', ' ') . ' €')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('starts_at')
                     ->label('Начало')
