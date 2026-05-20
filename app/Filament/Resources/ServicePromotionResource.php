@@ -31,7 +31,27 @@ class ServicePromotionResource extends Resource
                             ->label('Услуга')
                             ->required()
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(fn ($set) => $set('service_package_id', null)),
+                        Forms\Components\Select::make('service_package_id')
+                            ->label('Пакет / Цена')
+                            ->options(function ($get) {
+                                $serviceId = $get('service_id');
+                                if (!$serviceId) return [];
+                                return \App\Models\ServicePackage::where('service_id', $serviceId)
+                                    ->get()
+                                    ->mapWithKeys(fn ($p) => [$p->id => $p->name_bg . ' — ' . number_format($p->price_eur, 2) . ' €']);
+                            })
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(function ($state, $set) {
+                                if ($state) {
+                                    $pkg = \App\Models\ServicePackage::find($state);
+                                    $set('original_price', $pkg?->price_eur);
+                                }
+                            })
+                            ->placeholder('Първо избери услуга'),
                         Forms\Components\TextInput::make('name')
                             ->label('Име на промоцията')
                             ->placeholder('напр. Пролетна Промоция')
@@ -53,6 +73,8 @@ class ServicePromotionResource extends Resource
                             ->minValue(0)
                             ->suffix('€')
                             ->live()
+                            ->readOnly()
+                            ->helperText('Автоматично от избрания пакет')
                             ->visible(fn ($get) => $get('discount_type') === 'percent')
                             ->required(fn ($get) => $get('discount_type') === 'percent'),
                         Forms\Components\TextInput::make('discount_percent')

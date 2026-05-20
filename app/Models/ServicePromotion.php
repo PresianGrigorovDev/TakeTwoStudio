@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\ServicePackage;
 
 class ServicePromotion extends Model
 {
@@ -21,5 +22,10 @@ class ServicePromotion extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function package(): BelongsTo
+    {
+        return $this->belongsTo(ServicePackage::class, 'service_package_id');
     }
 }
