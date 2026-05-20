@@ -593,7 +593,8 @@ footer ul li a:hover {
     }
 
     h2.mb-4.h2.text-black.fw-normal.lh-base {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        padding: 0 5px;
     }
 
     .price-display {
