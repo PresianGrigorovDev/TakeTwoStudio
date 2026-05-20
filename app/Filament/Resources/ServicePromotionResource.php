@@ -192,7 +192,7 @@ class ServicePromotionResource extends Resource
                 Tables\Filters\SelectFilter::make('service')
                     ->relationship('service', 'name_bg')
                     ->label('Филтър по Услуга'),
-                Tables\Filters\ToggledFilter::make('is_active')
+                Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Само активни'),
             ])
             ->actions([
