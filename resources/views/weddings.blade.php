@@ -296,6 +296,13 @@
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
 
+                            @if($service && $service->activePromotion)
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                    <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                </div>
+                            @endif
+
                             <!-- ЕКИП -->
                             <h4 class="mb-4"><i class="fas fa-users me-2 text-warning"></i> Екип</h4>
 
@@ -314,14 +321,28 @@
                                 </div>
                                 @foreach($videoPackages as $pkg)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $pkg->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input type="radio" name="operators" id="op{{ $pkg->id }}" class="package-option calc-input" value="{{ $pkg->id }}"
-                                        data-price="{{ $pkg->price_eur }}" data-label="{{ $pkg->name_bg }}" data-category="team" 
+                                        data-price="{{ (int)$price }}" data-label="{{ $pkg->name_bg }}" data-category="team" 
                                         {{ $pkg->is_default ? 'checked' : '' }} onchange="calculateWeddingTotal()">
                                     <label for="op{{ $pkg->id }}" class="package-label">
                                         <i class="fas fa-video package-icon"></i>
                                         <strong>{{ $pkg->price_eur == 890 ? 'Един' : ($pkg->price_eur == 1145 ? 'Двама' : 'Екип') }}</strong>
                                         <p class="extra-description">{{ $pkg->name_bg }}</p>
-                                        <span class="d-block small text-muted mt-1">€ {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.</span>
+                                        <span class="d-block small text-muted mt-1">
+                                            @if($service && $service->activePromotion)
+                                                <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                            @else
+                                                € {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -342,14 +363,28 @@
                                 </div>
                                 @foreach($photoPackages as $pkg)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $pkg->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input type="radio" name="photographers" id="ph{{ $pkg->id }}" class="package-option calc-input" value="{{ $pkg->id }}"
-                                        data-price="{{ $pkg->price_eur }}" data-label="{{ $pkg->name_bg }}" data-category="team"
+                                        data-price="{{ (int)$price }}" data-label="{{ $pkg->name_bg }}" data-category="team"
                                         {{ $pkg->is_default ? 'checked' : '' }} onchange="calculateWeddingTotal()">
                                     <label for="ph{{ $pkg->id }}" class="package-label">
                                         <i class="fas fa-camera package-icon"></i>
                                         <strong>{{ $pkg->price_eur == 890 ? 'Един' : ($pkg->price_eur == 1145 ? 'Двама' : 'Екип') }}</strong>
                                         <p class="extra-description">{{ $pkg->name_bg }}</p>
-                                        <span class="d-block small text-muted mt-1">€ {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.</span>
+                                        <span class="d-block small text-muted mt-1">
+                                            @if($service && $service->activePromotion)
+                                                <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                            @else
+                                                € {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -360,13 +395,31 @@
                             <div class="row g-3">
                                 @foreach($photoExtras as $extra)
                                 <div class="col-md-6">
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input class="extra-option calc-input" type="checkbox" id="ex{{ $extra->id }}" value="{{ $extra->id }}"
-                                        data-price="{{ $extra->price_eur }}" data-label="{{ $extra->label_bg }}" data-category="photo_extra" onchange="calculateWeddingTotal()">
+                                        data-price="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" data-category="photo_extra" onchange="calculateWeddingTotal()">
                                     <label class="extra-card-label" for="ex{{ $extra->id }}">
                                         <i class="fas fa-star extra-card-icon"></i>
                                         <span>{{ $extra->label_bg }}</span>
                                         <p class="extra-description"></p>
-                                        <span class="extra-price">+€ {{ $extra->price_eur }} / {{ number_format($extra->price_eur * 1.95583, 2) }} лв.</span>
+                                        <span class="extra-price">
+                                            @if($originalPrice > 0)
+                                                @if($service && $service->activePromotion)
+                                                    <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                                @else
+                                                    +€ {{ $extra->price_eur }} / {{ number_format($extra->price_eur * 1.95583, 2) }} лв.
+                                                @endif
+                                            @else
+                                                Безплатно
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -379,13 +432,31 @@
                                 <div class="col-12"><h6 class="calc-sub-header">Дължина на филма</h6></div>
                                 @foreach($filmLength as $extra)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input class="extra-option calc-input" type="radio" name="film_length" id="ex{{ $extra->id }}" value="{{ $extra->id }}"
-                                        data-price="{{ $extra->price_eur }}" data-label="{{ $extra->label_bg }}" data-category="video_extra" 
+                                        data-price="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" data-category="video_extra" 
                                         {{ $extra->price_eur == 0 ? 'checked' : '' }} onchange="calculateWeddingTotal()">
                                     <label class="extra-card-label" for="ex{{ $extra->id }}">
                                         <i class="fas fa-hourglass-half extra-card-icon"></i>
                                         <span>{{ $extra->label_bg }}</span>
-                                        <span class="extra-price">{{ $extra->price_eur == 0 ? 'Стандарт' : ($extra->price_eur > 0 ? '+' : '') . '€ ' . $extra->price_eur }}</span>
+                                        <span class="extra-price">
+                                            @if($originalPrice > 0)
+                                                @if($service && $service->activePromotion)
+                                                    <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
+                                                @else
+                                                    +€ {{ $extra->price_eur }}
+                                                @endif
+                                            @else
+                                                Стандарт
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -394,13 +465,31 @@
                                 <div class="col-12 mt-4"><h6 class="calc-sub-header">Резолюция на Видеото</h6></div>
                                 @foreach($resolution as $extra)
                                 <div class="col-md-6">
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input class="extra-option calc-input" type="radio" name="film_resolution" id="ex{{ $extra->id }}" value="{{ $extra->id }}"
-                                        data-price="{{ $extra->price_eur }}" data-label="{{ $extra->label_bg }}" data-category="video_extra"
+                                        data-price="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" data-category="video_extra"
                                         {{ $extra->price_eur == 0 ? 'checked' : '' }} onchange="calculateWeddingTotal()">
                                     <label class="extra-card-label" for="ex{{ $extra->id }}">
                                         <i class="fas fa-tv extra-card-icon"></i>
                                         <span>{{ $extra->label_bg }}</span>
-                                        <span class="extra-price">{{ $extra->price_eur == 0 ? 'Стандарт' : '+€ ' . $extra->price_eur }}</span>
+                                        <span class="extra-price">
+                                            @if($originalPrice > 0)
+                                                @if($service && $service->activePromotion)
+                                                    <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
+                                                @else
+                                                    +€ {{ $extra->price_eur }}
+                                                @endif
+                                            @else
+                                                Стандарт
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -409,12 +498,30 @@
                                 <div class="col-12 mt-4"><h6 class="calc-sub-header">Допълнителни Видео Екстри</h6></div>
                                 @foreach($videoExtras as $extra)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input class="extra-option calc-input" type="checkbox" id="ex{{ $extra->id }}" value="{{ $extra->id }}"
-                                        data-price="{{ $extra->price_eur }}" data-label="{{ $extra->label_bg }}" data-category="video_extra" onchange="calculateWeddingTotal()">
+                                        data-price="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" data-category="video_extra" onchange="calculateWeddingTotal()">
                                     <label class="extra-card-label" for="ex{{ $extra->id }}">
                                         <i class="fas fa-plus extra-card-icon"></i>
                                         <span>{{ $extra->label_bg }}</span>
-                                        <span class="extra-price">+€ {{ $extra->price_eur }}</span>
+                                        <span class="extra-price">
+                                            @if($originalPrice > 0)
+                                                @if($service && $service->activePromotion)
+                                                    <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
+                                                @else
+                                                    +€ {{ $extra->price_eur }}
+                                                @endif
+                                            @else
+                                                Стандарт
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -425,13 +532,31 @@
                             <div class="row g-3">
                                 @foreach($delivery as $extra)
                                 <div class="@if($loop->first) col-md-12 @else col-md-6 @endif">
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input class="extra-option calc-input" type="radio" name="recording" id="ex{{ $extra->id }}" value="{{ $extra->id }}"
-                                        data-price="{{ $extra->price_eur }}" data-label="{{ $extra->label_bg }}" data-category="delivery"
+                                        data-price="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" data-category="delivery"
                                         {{ $extra->price_eur == 0 ? 'checked' : '' }} onchange="calculateWeddingTotal()">
                                     <label class="extra-card-label" for="ex{{ $extra->id }}">
                                         <i class="fas fa-box-open extra-card-icon"></i>
                                         <span>{{ $extra->label_bg }}</span>
-                                        <span class="extra-price">{{ $extra->price_eur == 0 ? 'Безплатно' : '+€ ' . $extra->price_eur }}</span>
+                                        <span class="extra-price">
+                                            @if($originalPrice > 0)
+                                                @if($service && $service->activePromotion)
+                                                    <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
+                                                @else
+                                                    +€ {{ $extra->price_eur }}
+                                                @endif
+                                            @else
+                                                Безплатно
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach

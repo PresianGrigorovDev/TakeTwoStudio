@@ -197,6 +197,13 @@
                 <div class="col-lg-8">
                     <div class="calc-card h-100">
 
+                        @if($service && $service->activePromotion)
+                            <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                            </div>
+                        @endif
+
                         {{-- 1. Пакети --}}
                         <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет</h4>
 
@@ -214,11 +221,18 @@
                         @endphp
                         <div class="row g-4 mb-5 justify-content-center">
                             @foreach($graduationPackages as $i => $pkg)
+                            @php
+                                $originalPrice = $pkg->price_eur;
+                                $price = $originalPrice;
+                                if ($service && $service->activePromotion) {
+                                    $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                }
+                            @endphp
                             <div class="{{ $pkgCol }}">
                                 <input type="radio" name="grad_package"
                                        id="pkg_{{ $pkg->id }}"
                                        class="package-option"
-                                       value="{{ (int)$pkg->price_eur }}"
+                                       value="{{ (int)$price }}"
                                        data-label="{{ $pkg->name }}"
                                        {{ $i === 0 ? 'checked' : '' }}
                                        onchange="calculateGraduationTotal()">
@@ -226,7 +240,14 @@
                                        class="package-label {{ $pkg->is_featured ? 'lux-pack' : '' }}">
                                     <i class="fas {{ $pkg->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
                                     <strong>{{ $pkg->name }}</strong>
-                                    <span class="price-tag">€ {{ number_format($pkg->price_eur, 0) }} / {{ number_format($pkg->price_eur * 1.9558, 2) }} лв.</span>
+                                    <span class="price-tag">
+                                        @if($service && $service->activePromotion)
+                                            <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                            <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                        @else
+                                            € {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                        @endif
+                                    </span>
                                     @if($pkg->description)
                                         <p style="font-size:.8rem; color:#777; margin:8px 0 0; text-align:center;">{{ $pkg->description }}</p>
                                     @endif
@@ -245,38 +266,73 @@
 
                         {{-- 2. Екстри --}}
                         <h4 class="mb-4 text-center"><i class="fas fa-book-open me-2 text-warning"></i> Добавки</h4>
+                        @php
+                            $extraVideoOriginal = 62;
+                            $extraVideoPrice = $extraVideoOriginal;
+                            $extraExpressOriginal = 26;
+                            $extraExpressPrice = $extraExpressOriginal;
+                            $extraAlbumOriginal = 41;
+                            $extraAlbumPrice = $extraAlbumOriginal;
+
+                            if ($service && $service->activePromotion) {
+                                $extraVideoPrice = $extraVideoOriginal * (1 - ($service->activePromotion->discount_percent / 100));
+                                $extraExpressPrice = $extraExpressOriginal * (1 - ($service->activePromotion->discount_percent / 100));
+                                $extraAlbumPrice = $extraAlbumOriginal * (1 - ($service->activePromotion->discount_percent / 100));
+                            }
+                        @endphp
                         <div class="row g-3 justify-content-center">
 
                             <div class="col-md-4">
                                 <input type="checkbox" class="extra-option" id="extra_video"
-                                       value="62" data-label="Кратко видео (1–2 мин.)"
+                                       value="{{ (int)$extraVideoPrice }}" data-label="Кратко видео (1–2 мин.)"
                                        onchange="calculateGraduationTotal()">
                                 <label class="extra-card-label" for="extra_video">
                                     <i class="fas fa-video extra-card-icon"></i>
                                     <span class="fw-bold">Кратко видео</span>
-                                    <span class="extra-price">+€ 62 / {{ number_format(62 * 1.9558, 2) }} лв.</span>
+                                    <span class="extra-price">
+                                        @if($service && $service->activePromotion)
+                                            <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraVideoOriginal }}</span>
+                                            <span class="text-warning">+€ {{ number_format($extraVideoPrice, 0) }} / {{ number_format($extraVideoPrice * 1.9558, 2) }} лв.</span>
+                                        @else
+                                            +€ 62 / {{ number_format(62 * 1.9558, 2) }} лв.
+                                        @endif
+                                    </span>
                                 </label>
                             </div>
 
                             <div class="col-md-4">
                                 <input type="checkbox" class="extra-option" id="extra_express"
-                                       value="26" data-label="Express обработка (до 2 дни)"
+                                       value="{{ (int)$extraExpressPrice }}" data-label="Express обработка (до 2 дни)"
                                        onchange="calculateGraduationTotal()">
                                 <label class="extra-card-label" for="extra_express">
                                     <i class="fas fa-bolt extra-card-icon"></i>
                                     <span class="fw-bold">Express обработка</span>
-                                    <span class="extra-price">+€ 26 / {{ number_format(26 * 1.9558, 2) }} лв.</span>
+                                    <span class="extra-price">
+                                        @if($service && $service->activePromotion)
+                                            <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraExpressOriginal }}</span>
+                                            <span class="text-warning">+€ {{ number_format($extraExpressPrice, 0) }} / {{ number_format($extraExpressPrice * 1.9558, 2) }} лв.</span>
+                                        @else
+                                            +€ 26 / {{ number_format(26 * 1.9558, 2) }} лв.
+                                        @endif
+                                    </span>
                                 </label>
                             </div>
 
                             <div class="col-md-4">
                                 <input type="checkbox" class="extra-option" id="extra_album"
-                                       value="41" data-label="Семеен фотоалбум"
+                                       value="{{ (int)$extraAlbumPrice }}" data-label="Семеен фотоалбум"
                                        onchange="calculateGraduationTotal()">
                                 <label class="extra-card-label" for="extra_album">
                                     <i class="fas fa-book-open extra-card-icon"></i>
                                     <span class="fw-bold">Семеен фотоалбум</span>
-                                    <span class="extra-price">+€ 41 / {{ number_format(41 * 1.9558, 2) }} лв.</span>
+                                    <span class="extra-price">
+                                        @if($service && $service->activePromotion)
+                                            <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraAlbumOriginal }}</span>
+                                            <span class="text-warning">+€ {{ number_format($extraAlbumPrice, 0) }} / {{ number_format($extraAlbumPrice * 1.9558, 2) }} лв.</span>
+                                        @else
+                                            +€ 41 / {{ number_format(41 * 1.9558, 2) }} лв.
+                                        @endif
+                                    </span>
                                 </label>
                             </div>
 
@@ -289,7 +345,13 @@
                 <div class="col-lg-4">
                     <div class="total-price-box">
                         <h5 class="text-uppercase text-white-50">Цена</h5>
-                        <div class="price-display">€ <span id="finalPrice">{{ (int)($graduationPackages->first()?->price_eur ?? 0) }}</span> / <span id="finalPriceBgn">{{ number_format(($graduationPackages->first()?->price_eur ?? 0) * 1.9558, 2) }}</span> лв.</div>
+                        @php
+                            $firstPkgPrice = $graduationPackages->first()?->price_eur ?? 0;
+                            if ($service && $service->activePromotion) {
+                                $firstPkgPrice = $firstPkgPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                            }
+                        @endphp
+                        <div class="price-display">€ <span id="finalPrice">{{ (int)$firstPkgPrice }}</span> / <span id="finalPriceBgn">{{ number_format($firstPkgPrice * 1.9558, 2) }}</span> лв.</div>
                         <div class="section-divider" style="background:#444; width:100%;"></div>
 
                         <div class="text-start mt-4 mb-4">

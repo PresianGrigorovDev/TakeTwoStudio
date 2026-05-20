@@ -172,19 +172,40 @@
                 <div class="row g-5">
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
+                            @if($service && $service->activePromotion)
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                    <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                </div>
+                            @endif
+
                             <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
                             <div class="row g-3 mb-5">
                                 @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $package->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input type="radio" name="pkg_service" id="pkg_{{ $package->id }}" class="package-option"
-                                        value="{{ (int)$package->price_eur }}" data-label="{{ $package->name }}" {{ $package->is_featured ? 'checked' : ($loop->first ? 'checked' : '') }} onchange="calculateGenericTotal()">
+                                        value="{{ (int)$price }}" data-label="{{ $package->name }}" {{ $package->is_featured ? 'checked' : ($loop->first ? 'checked' : '') }} onchange="calculateGenericTotal()">
                                     <label for="pkg_{{ $package->id }}" class="package-label">
                                         <i class="fas {{ $package->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
                                         <strong>{{ $package->name }}</strong>
                                         @if($package->description)
                                         <span class="d-block small text-muted mt-2">{!! $package->description !!}</span>
                                         @endif
-                                        <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">€ {{ number_format($package->price_eur, 0) }} / {{ number_format($package->price_eur * 1.9558, 2) }} лв.</span>
+                                        <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">
+                                            @if($service && $service->activePromotion)
+                                                <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                            @else
+                                                € {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -198,16 +219,34 @@
                                 @endif
                                 <div class="row g-3 mb-5">
                                     @foreach($extras as $extra)
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <div class="{{ $extra->input_type === 'checkbox' ? 'col-md-4' : 'col-md-6' }}">
                                         <input class="extra-option" type="{{ $extra->input_type }}" name="{{ $extra->input_type === 'radio' ? 'extra_group_' . Str::slug($groupName) : 'extra_' . $extra->id }}" id="extra_{{ $extra->id }}"
-                                            value="{{ (int)$extra->price_eur }}" data-label="{{ $extra->label_bg }}" {{ $extra->input_type === 'radio' && $loop->first ? 'checked' : '' }} onchange="calculateGenericTotal()">
+                                            value="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" {{ $extra->input_type === 'radio' && $loop->first ? 'checked' : '' }} onchange="calculateGenericTotal()">
                                         <label class="extra-card-label" for="extra_{{ $extra->id }}">
                                             <i class="fas {{ $extra->icon_class ?? ($extra->input_type === 'checkbox' ? 'fa-gift' : 'fa-map-marker-alt') }} extra-card-icon"></i>
                                             <span>{{ $extra->label_bg }}</span>
                                             @if($extra->description_bg)
                                             <span class="extra-price">{!! $extra->description_bg !!}</span>
                                             @endif
-                                            <span class="extra-price">@if($extra->price_eur > 0)+€ {{ number_format($extra->price_eur, 0) }} / {{ number_format($extra->price_eur * 1.9558, 2) }} лв. @else Стандарт @endif</span>
+                                            <span class="extra-price">
+                                                @if($originalPrice > 0)
+                                                    @if($service && $service->activePromotion)
+                                                        <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                        <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                                    @else
+                                                        +€ {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                                    @endif
+                                                @else
+                                                    Стандарт
+                                                @endif
+                                            </span>
                                         </label>
                                     </div>
                                     @endforeach

@@ -82,7 +82,7 @@ class PageController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $service = Service::where('slug', 'graduation')->first();
+        $service = Service::where('slug', 'graduation')->with('activePromotion')->first();
 
         return view('graduation', [
             'service'            => $service,
@@ -94,7 +94,7 @@ class PageController extends Controller
 
     private function showService($slug)
     {
-        $service = Service::where('slug', $slug)->first();
+        $service = Service::where('slug', $slug)->with('activePromotion')->first();
 
         $portfolioItems = PortfolioItem::whereHas('category', function ($query) use ($slug) {
             $query->where('slug', $slug);
@@ -132,9 +132,11 @@ class PageController extends Controller
 
         $promPortfolioPhotos = collect();
         $promFaqs = collect();
+        $promPackages = collect();
         if ($slug === 'proms') {
             $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
             $promFaqs = \App\Models\PromFaq::where('is_visible', true)->orderBy('sort_order')->get();
+            $promPackages = \App\Models\PromPackage::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $commercialPhotos = collect();
@@ -147,12 +149,16 @@ class PageController extends Controller
             $portraitPortfolioPhotos = \App\Models\PortraitPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
+        $eventPortfolioPhotos = collect();
+        if ($slug === 'events') {
+            $eventPortfolioPhotos = \App\Models\EventPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
         // New category galleries and packages
         $galleryModelMap = [
             'family' => \App\Models\FamilyGallery::class,
             'automotive' => \App\Models\AutomotiveGallery::class,
             'architectural' => \App\Models\ArchitecturalGallery::class,
-            'events' => \App\Models\EventGallery::class,
         ];
 
         $packageModelMap = [
@@ -180,9 +186,11 @@ class PageController extends Controller
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
             'promFaqs' => $promFaqs,
+            'promPackages' => $promPackages,
             'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
             'portraitPortfolioPhotos' => $portraitPortfolioPhotos,
+            'eventPortfolioPhotos' => $eventPortfolioPhotos,
             'galleries' => $galleries,
             'categoryPackages' => $categoryPackages,
             'pageContent' => $pageContent,

@@ -194,6 +194,12 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-box">
+                        @if($service && $service->activePromotion)
+                            <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички стандартни цени за всички запитвания до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                            </div>
+                        @endif
                         <h2 class="text-center mb-4">Поискайте Оферта</h2>
                         <p class="text-center text-muted mb-5">
                             Всеки бизнес проект е уникален. Опишете ни вашите нужди, а ние ще изготвим индивидуално

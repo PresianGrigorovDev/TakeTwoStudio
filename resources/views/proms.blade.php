@@ -154,39 +154,56 @@
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
 
+                            @if($service && $service->activePromotion)
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                    <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                </div>
+                            @endif
+
                             <!-- 1. PACKAGES -->
                             <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет
                             </h4>
 
                             <div class="row g-4 mb-5 justify-content-center">
-                                @foreach($service->packages as $index => $package)
+                                @foreach($promPackages as $index => $package)
                                 <div class="col-md-6">
+                                    @php
+                                        $originalPrice = $package->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input type="radio" name="prom_package" id="pkg_{{ $package->id }}" class="package-option"
-                                        value="{{ (int)$package->price_eur }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculatePromTotal()">
-                                    <label for="pkg_{{ $package->id }}" class="package-label {{ Str::contains(Str::lower($package->name_bg), 'лукс') ? 'lux-pack' : '' }}">
+                                        value="{{ (int)$price }}" data-label="{{ $package->name }}" {{ $package->is_featured ? 'checked' : ($index === 0 ? 'checked' : '') }} onchange="calculatePromTotal()">
+                                    <label for="pkg_{{ $package->id }}" class="package-label {{ Str::contains(Str::lower($package->name), 'лукс') ? 'lux-pack' : '' }}">
                                         <i class="fas {{ $package->icon_class ?? 'fa-star' }} package-icon"></i>
-                                        <strong>{{ $package->name_bg }}</strong>
-                                        <span class="price-tag">€ {{ number_format($package->price_eur, 0) }} / {{ number_format($package->price_eur * 1.9558, 2) }} лв. / ученик</span>
-                                        @if($package->description_bg)
+                                        <strong>{{ $package->name }}</strong>
+                                        <span class="price-tag">
+                                            @if($service && $service->activePromotion)
+                                                <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                            @else
+                                                € {{ number_format($originalPrice, 0) }} / {{ number_format($package->price ?? ($originalPrice * 1.9558), 2) }} лв.
+                                            @endif
+                                            / ученик
+                                        </span>
+                                        @if($package->description)
+                                            <span class="d-block small text-muted mt-2 text-center" style="font-size: 0.85rem; line-height: 1.4;">{!! $package->description !!}</span>
+                                        @endif
+                                        @if(!empty($package->features))
                                         <!-- <div class="section-divider mt-4 mb-3" style="width: 80%; opacity: 0.1;"></div> -->
                                         <ul class="package-details w-100 px-3">
-                                            @php
-                                                $desc = $package->description_bg;
-                                                $hasHtml = strip_tags($desc) !== $desc;
-                                            @endphp
-                                            @if($hasHtml)
-                                                {!! $desc !!}
-                                            @else
-                                                @foreach(explode("\n", $desc) as $line)
-                                                    @php 
-                                                        $text = trim($line);
-                                                        $isBold = Str::contains(Str::lower($text), ['2 фотосесии', 'флашка']);
-                                                    @endphp
-                                                    @if($text)
-                                                        <li><i class="fas fa-check small"></i> @if($isBold)<b>{{ $text }}</b>@else{{ $text }}@endif</li>
-                                                    @endif
-                                                @endforeach
-                                            @endif
+                                            @foreach($package->features as $feature)
+                                                @php 
+                                                    $text = trim($feature);
+                                                    $isBold = Str::contains(Str::lower($text), ['2 фотосесии', 'флашка']);
+                                                @endphp
+                                                @if($text)
+                                                    <li><i class="fas fa-check small"></i> @if($isBold)<b>{{ $text }}</b>@else{{ $text }}@endif</li>
+                                                @endif
+                                            @endforeach
                                         </ul>
                                         @endif
                                     </label>
@@ -202,6 +219,11 @@
                                 @endphp
                                 @foreach($allExtras as $extra)
                                     @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
                                         // Specific grid matching reference exactly
                                         $colClass = 'col-6 col-md-4';
                                         if (str_contains(strtolower($extra->label_bg), 'студийна') || str_contains(strtolower($extra->label_bg), 'флашка')) {
@@ -210,12 +232,23 @@
                                     @endphp
                                     <div class="{{ $colClass }}">
                                         <input class="extra-option" type="{{ $extra->input_type }}" name="{{ $extra->input_type === 'radio' ? 'extra_group_' . Str::slug($extra->group_name_bg) : 'extra_' . $extra->id }}" 
-                                            id="extra_{{ $extra->id }}" value="{{ (int)$extra->price_eur }}" data-label="{{ $extra->label_bg }}" 
+                                            id="extra_{{ $extra->id }}" value="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" 
                                             {{ $extra->is_default ? 'checked' : '' }} onchange="calculatePromTotal()">
                                         <label class="extra-card-label" for="extra_{{ $extra->id }}">
                                             <i class="fas {{ $extra->icon_class ?? 'fa-plus-circle' }} extra-card-icon mb-2"></i>
                                             <span class="fw-bold">{{ $extra->label_bg }}</span>
-                                            <span class="extra-price mt-1">@if($extra->price_eur > 0)+€ {{ number_format($extra->price_eur, 0) }} / {{ number_format($extra->price_eur * 1.9558, 2) }} лв. @else Стандарт @endif</span>
+                                            <span class="extra-price mt-1">
+                                                @if($originalPrice > 0)
+                                                    @if($service && $service->activePromotion)
+                                                        <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                        <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                                    @else
+                                                        +€ {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                                    @endif
+                                                @else
+                                                    Стандарт
+                                                @endif
+                                            </span>
                                         </label>
                                     </div>
                                 @endforeach
