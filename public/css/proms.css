@@ -675,37 +675,105 @@ footer ul li a:hover {
 
 /* --- MOBILE RESPONSIVE OPTIMIZATION --- */
 @media (max-width: 768px) {
+
+    /* --- INTRO SECTION --- */
+    .pt-4.pb-5.text-center.container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+    .pt-4.pb-5.text-center.container p.text-black {
+        font-size: 0.88rem;
+        padding: 0 8px;
+        line-height: 1.6;
+    }
+
+    /* --- SERVICES SECTION --- */
+    .service-list p {
+        font-size: 0.9rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .service-list b {
+        font-size: 0.95rem !important;
+    }
+
+    /* --- REASON CARDS (2x2 grid) --- */
+    .reason-card {
+        padding: 20px 14px !important;
+    }
+
+    .reason-icon {
+        font-size: 1.6rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .reason-card h5 {
+        font-size: 0.8rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .reason-card p {
+        font-size: 0.72rem !important;
+        line-height: 1.4 !important;
+    }
+
+    #why-choose-us h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    #why-choose-us .section-divider {
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* --- CALCULATOR --- */
+    .calc-section h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .calc-section > .container > p {
+        font-size: 0.85rem !important;
+        padding: 0 5px;
+        margin-bottom: 1.5rem !important;
+    }
+
     .calc-card {
-        padding: 24px 16px !important; /* Premium container breathing room */
+        padding: 24px 16px !important;
         border-radius: 6px;
     }
 
+    .calc-card h4 {
+        font-size: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
     .package-label {
-        padding: 24px 16px !important; /* Compact padding */
+        padding: 24px 16px !important;
     }
 
     .package-icon {
-        font-size: 2.2rem !important; /* Scaled down star/icon */
+        font-size: 2.2rem !important;
         margin-bottom: 12px !important;
     }
 
     .package-label strong {
-        font-size: 1.05rem !important; /* Readable package title */
+        font-size: 1.05rem !important;
         margin-bottom: 4px !important;
     }
 
     .package-label .price-tag {
-        font-size: 0.9rem !important; /* Scaled down price tag */
+        font-size: 0.9rem !important;
     }
 
     .package-details {
         margin-top: 12px !important;
         padding-top: 10px !important;
-        font-size: 0.8rem !important; /* Scaled down feature list font size */
+        font-size: 0.8rem !important;
     }
 
     .package-details li {
-        margin-bottom: 6px !important; /* Closer spacing */
+        margin-bottom: 6px !important;
     }
 
     .package-details li i {
@@ -714,7 +782,7 @@ footer ul li a:hover {
     }
 
     .extra-card-label {
-        padding: 12px 8px !important; /* Compact extra options */
+        padding: 12px 8px !important;
     }
 
     .extra-card-icon {
@@ -731,7 +799,58 @@ footer ul li a:hover {
     }
 
     .price-display {
-        font-size: 1.6rem !important; /* Scaled down total price box main display */
+        font-size: 1.6rem !important;
+    }
+
+    .total-price-box {
+        padding: 28px 20px !important;
+    }
+
+    .total-price-box h5 {
+        font-size: 0.8rem !important;
+    }
+
+    .summary-item {
+        font-size: 0.82rem !important;
+    }
+
+    .price-note {
+        font-size: 0.7rem !important;
+    }
+
+    /* --- FAQ --- */
+    .accordion-button {
+        font-size: 0.85rem !important;
+        padding: 12px 16px !important;
+    }
+
+    .accordion-body {
+        font-size: 0.82rem !important;
+        padding: 12px 16px !important;
+    }
+
+    /* --- PORTFOLIO --- */
+    #portfolio h2 {
+        font-size: 1.2rem !important;
+    }
+
+    .btn-custom {
+        font-size: 0.8rem !important;
+        padding: 10px 20px !important;
+    }
+
+    /* --- CONTACT --- */
+    #contact h2 {
+        font-size: 1.2rem !important;
+    }
+
+    #contact h4 {
+        font-size: 0.95rem !important;
+    }
+
+    #contact h5 {
+        font-size: 0.88rem !important;
     }
 }
+
 

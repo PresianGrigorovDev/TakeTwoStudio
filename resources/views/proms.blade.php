@@ -74,28 +74,28 @@
             <h2 class="text-center mb-5">Защо да избереш нас?</h2>
             <div class="section-divider start mx-auto mb-5 mt-0"></div>
             <div class="row g-4">
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="reason-card">
                         <i class="fas fa-graduation-cap reason-icon"></i>
                         <h5>Опит с абитуриенти</h5>
                         <p>Всяка година работим с десетки випуски. Знаем точно кога и как да уловим най-доброто от абитуриентския бал, каненето и изпращането.</p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="reason-card">
                         <i class="fas fa-film reason-icon"></i>
                         <h5>Кино визия</h5>
                         <p>Използваме професионални камери, дрон и модерна обработка, за да направим абитуриентското ви видео като от филм.</p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="reason-card">
                         <i class="fas fa-user-friends reason-icon"></i>
                         <h5>Персонален подход</h5>
                         <p>Ние слушаме твоите идеи, от мястото за абитуриентска фотосесия до стила на снимките. Всичко е съобразено с теб.</p>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-6 col-md-3">
                     <div class="reason-card">
                         <i class="fas fa-tag reason-icon"></i>
                         <h5>Изгодни пакети</h5>
