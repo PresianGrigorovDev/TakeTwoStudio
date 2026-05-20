@@ -11,6 +11,8 @@ class ServicePromotion extends Model
 
     protected $casts = [
         'discount_percent' => 'integer',
+        'original_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
         'starts_at' => 'datetime',
         'expires_at' => 'datetime',
         'is_active' => 'boolean',

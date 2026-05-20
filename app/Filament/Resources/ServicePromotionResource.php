@@ -37,13 +37,52 @@ class ServicePromotionResource extends Resource
                             ->placeholder('напр. Пролетна Промоция')
                             ->required()
                             ->maxLength(255),
+                        Forms\Components\Radio::make('discount_type')
+                            ->label('Вид намаление')
+                            ->options([
+                                'percent' => 'Процент (%)',
+                                'fixed'   => 'Фиксирана цена (лв)',
+                            ])
+                            ->default('percent')
+                            ->required()
+                            ->live()
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('original_price')
+                            ->label('Оригинална цена (лв)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->suffix('лв')
+                            ->live()
+                            ->visible(fn ($get) => $get('discount_type') === 'percent')
+                            ->required(fn ($get) => $get('discount_type') === 'percent'),
                         Forms\Components\TextInput::make('discount_percent')
                             ->label('Намаление (%)')
                             ->numeric()
                             ->minValue(1)
                             ->maxValue(99)
                             ->suffix('%')
-                            ->required(),
+                            ->live()
+                            ->visible(fn ($get) => $get('discount_type') === 'percent')
+                            ->required(fn ($get) => $get('discount_type') === 'percent'),
+                        Forms\Components\Placeholder::make('discounted_price_preview')
+                            ->label('Нова цена след намалението')
+                            ->content(function ($get) {
+                                $original = (float) $get('original_price');
+                                $percent  = (float) $get('discount_percent');
+                                if ($original <= 0 || $percent <= 0) {
+                                    return '—';
+                                }
+                                $discounted = $original - ($original * $percent / 100);
+                                return number_format($discounted, 2, '.', ' ') . ' лв';
+                            })
+                            ->visible(fn ($get) => $get('discount_type') === 'percent'),
+                        Forms\Components\TextInput::make('discount_amount')
+                            ->label('Намалена цена (лв)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->suffix('лв')
+                            ->visible(fn ($get) => $get('discount_type') === 'fixed')
+                            ->required(fn ($get) => $get('discount_type') === 'fixed'),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Активна')
                             ->default(true)
@@ -172,8 +211,10 @@ class ServicePromotionResource extends Resource
                     ->label('Промоция')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('discount_percent')
-                    ->label('Процент')
-                    ->suffix('%')
+                    ->label('Намаление')
+                    ->formatStateUsing(fn ($record) => $record->discount_type === 'percent'
+                        ? ($record->discount_percent . '%')
+                        : number_format((float)$record->discount_amount, 2, '.', ' ') . ' лв')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('starts_at')
                     ->label('Начало')
