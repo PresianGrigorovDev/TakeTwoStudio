@@ -790,3 +790,66 @@ footer ul li a:hover { color: var(--accent); }
     font-size: 0.95rem;
     cursor: pointer;
 }
+
+/* --- MOBILE RESPONSIVE OPTIMIZATION --- */
+@media (max-width: 768px) {
+    .calc-card {
+        padding: 24px 16px !important; /* Premium container breathing room */
+        border-radius: 6px;
+    }
+
+    .package-label {
+        padding: 24px 16px !important; /* Compact padding */
+    }
+
+    .package-icon {
+        font-size: 2.2rem !important; /* Scaled down star/icon */
+        margin-bottom: 12px !important;
+    }
+
+    .package-label strong {
+        font-size: 1.05rem !important; /* Readable package title */
+        margin-bottom: 4px !important;
+    }
+
+    .package-label .price-tag {
+        font-size: 0.9rem !important; /* Scaled down price tag */
+    }
+
+    .package-details {
+        margin-top: 12px !important;
+        padding-top: 10px !important;
+        font-size: 0.8rem !important; /* Scaled down feature list font size */
+    }
+
+    .package-details li {
+        margin-bottom: 6px !important; /* Closer spacing */
+    }
+
+    .package-details li i {
+        margin-right: 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .extra-card-label {
+        padding: 12px 8px !important; /* Compact extra options */
+    }
+
+    .extra-card-icon {
+        font-size: 1.3rem !important;
+        margin-bottom: 6px !important;
+    }
+
+    .extra-card-label span.fw-bold {
+        font-size: 0.8rem !important;
+    }
+
+    .extra-price {
+        font-size: 0.72rem !important;
+    }
+
+    .price-display {
+        font-size: 1.6rem !important; /* Scaled down total price box main display */
+    }
+}
+
