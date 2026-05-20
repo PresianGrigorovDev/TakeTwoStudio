@@ -198,9 +198,14 @@
                     <div class="calc-card h-100">
 
                         @if($service && $service->activePromotion)
+                            @php $promo = $service->activePromotion; @endphp
                             <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
                                 <i class="fas fa-percentage me-2 animate-pulse"></i>
-                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                @if($promo->discount_type === 'fixed')
+                                    <strong>ПРОМОЦИЯ:</strong> Специална цена {{ number_format($promo->discount_amount, 0) }}€ на пакет до {{ $promo->expires_at->format('d.m.Y') }}!
+                                @else
+                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $promo->discount_percent }}% от всички цени до {{ $promo->expires_at->format('d.m.Y') }}!
+                                @endif
                             </div>
                         @endif
 
@@ -225,7 +230,12 @@
                                 $originalPrice = $pkg->price_eur;
                                 $price = $originalPrice;
                                 if ($service && $service->activePromotion) {
-                                    $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                    $promo = $service->activePromotion;
+                                    if ($promo->discount_type === 'fixed' && $promo->service_package_id == $pkg->id) {
+                                        $price = (float) $promo->discount_amount;
+                                    } elseif ($promo->discount_type === 'percent') {
+                                        $price = $originalPrice * (1 - ($promo->discount_percent / 100));
+                                    }
                                 }
                             @endphp
                             <div class="{{ $pkgCol }}">
@@ -241,7 +251,7 @@
                                     <i class="fas {{ $pkg->is_featured ? 'fa-star' : 'fa-camera' }} package-icon"></i>
                                     <strong>{{ $pkg->name }}</strong>
                                     <span class="price-tag">
-                                        @if($service && $service->activePromotion)
+                                        @if($price != $originalPrice)
                                             <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
                                             <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
                                         @else
@@ -274,7 +284,7 @@
                             $extraAlbumOriginal = 41;
                             $extraAlbumPrice = $extraAlbumOriginal;
 
-                            if ($service && $service->activePromotion) {
+                            if ($service && $service->activePromotion && $service->activePromotion->discount_type === 'percent') {
                                 $extraVideoPrice = $extraVideoOriginal * (1 - ($service->activePromotion->discount_percent / 100));
                                 $extraExpressPrice = $extraExpressOriginal * (1 - ($service->activePromotion->discount_percent / 100));
                                 $extraAlbumPrice = $extraAlbumOriginal * (1 - ($service->activePromotion->discount_percent / 100));
@@ -290,7 +300,7 @@
                                     <i class="fas fa-video extra-card-icon"></i>
                                     <span class="fw-bold">Кратко видео</span>
                                     <span class="extra-price">
-                                        @if($service && $service->activePromotion)
+                                        @if($extraVideoPrice != $extraVideoOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraVideoOriginal }}</span>
                                             <span class="text-warning">+€ {{ number_format($extraVideoPrice, 0) }} / {{ number_format($extraVideoPrice * 1.9558, 2) }} лв.</span>
                                         @else
@@ -308,7 +318,7 @@
                                     <i class="fas fa-bolt extra-card-icon"></i>
                                     <span class="fw-bold">Express обработка</span>
                                     <span class="extra-price">
-                                        @if($service && $service->activePromotion)
+                                        @if($extraExpressPrice != $extraExpressOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraExpressOriginal }}</span>
                                             <span class="text-warning">+€ {{ number_format($extraExpressPrice, 0) }} / {{ number_format($extraExpressPrice * 1.9558, 2) }} лв.</span>
                                         @else
@@ -326,7 +336,7 @@
                                     <i class="fas fa-book-open extra-card-icon"></i>
                                     <span class="fw-bold">Семеен фотоалбум</span>
                                     <span class="extra-price">
-                                        @if($service && $service->activePromotion)
+                                        @if($extraAlbumPrice != $extraAlbumOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraAlbumOriginal }}</span>
                                             <span class="text-warning">+€ {{ number_format($extraAlbumPrice, 0) }} / {{ number_format($extraAlbumPrice * 1.9558, 2) }} лв.</span>
                                         @else
@@ -346,9 +356,15 @@
                     <div class="total-price-box">
                         <h5 class="text-uppercase text-white-50">Цена</h5>
                         @php
-                            $firstPkgPrice = $graduationPackages->first()?->price_eur ?? 0;
+                            $firstPkg = $graduationPackages->first();
+                            $firstPkgPrice = $firstPkg?->price_eur ?? 0;
                             if ($service && $service->activePromotion) {
-                                $firstPkgPrice = $firstPkgPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                $promo = $service->activePromotion;
+                                if ($promo->discount_type === 'fixed' && $promo->service_package_id == $firstPkg?->id) {
+                                    $firstPkgPrice = (float) $promo->discount_amount;
+                                } elseif ($promo->discount_type === 'percent') {
+                                    $firstPkgPrice = $firstPkgPrice * (1 - ($promo->discount_percent / 100));
+                                }
                             }
                         @endphp
                         <div class="price-display">€ <span id="finalPrice">{{ (int)$firstPkgPrice }}</span> / <span id="finalPriceBgn">{{ number_format($firstPkgPrice * 1.9558, 2) }}</span> лв.</div>
