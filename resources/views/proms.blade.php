@@ -184,9 +184,14 @@
                         <div class="calc-card h-100">
 
                             @if($service && $service->activePromotion)
+                                @php $promo = $service->activePromotion; @endphp
                                 <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
                                     <i class="fas fa-percentage me-2 animate-pulse"></i>
-                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                    @if($promo->discount_type === 'fixed')
+                                        <strong>ПРОМОЦИЯ:</strong> Специална цена {{ number_format($promo->discount_amount, 0) }}€ на пакет до {{ $promo->expires_at->format('d.m.Y') }}!
+                                    @else
+                                        <strong>ПРОМОЦИЯ:</strong> Спестете {{ $promo->discount_percent }}% от всички цени до {{ $promo->expires_at->format('d.m.Y') }}!
+                                    @endif
                                 </div>
                             @endif
 
@@ -201,7 +206,12 @@
                                         $originalPrice = $package->price_eur;
                                         $price = $originalPrice;
                                         if ($service && $service->activePromotion) {
-                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                            $promo = $service->activePromotion;
+                                            if ($promo->discount_type === 'fixed' && $promo->service_package_id == $package->id) {
+                                                $price = (float) $promo->discount_amount;
+                                            } elseif ($promo->discount_type === 'percent') {
+                                                $price = $originalPrice * (1 - ($promo->discount_percent / 100));
+                                            }
                                         }
                                     @endphp
                                     <input type="radio" name="prom_package" id="pkg_{{ $package->id }}" class="package-option"
@@ -210,7 +220,7 @@
                                         <i class="fas {{ $package->icon_class ?? 'fa-star' }} package-icon"></i>
                                         <strong>{{ $package->name }}</strong>
                                         <span class="price-tag">
-                                            @if($service && $service->activePromotion)
+                                            @if($price != $originalPrice)
                                                 <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
                                                 <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
                                             @else
@@ -250,7 +260,7 @@
                                     @php
                                         $originalPrice = $extra->price_eur;
                                         $price = $originalPrice;
-                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                        if ($service && $service->activePromotion && $originalPrice > 0 && $service->activePromotion->discount_type === 'percent') {
                                             $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
                                         }
                                         // Specific grid matching reference exactly
@@ -268,7 +278,7 @@
                                             <span class="fw-bold">{{ $extra->label_bg }}</span>
                                             <span class="extra-price mt-1">
                                                 @if($originalPrice > 0)
-                                                    @if($service && $service->activePromotion)
+                                                    @if($price != $originalPrice)
                                                         <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
                                                         <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
                                                     @else
