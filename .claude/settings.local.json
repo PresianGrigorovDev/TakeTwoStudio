@@ -6,7 +6,9 @@
       "Bash(grep -l \"axios\\\\|fetch\" /Users/pgg/Documents/GitHub/TakeTwoStudio/public/js/calculators/*.js)",
       "Bash(php -r 'define\\('\\\\''LARAVEL_START'\\\\'', microtime\\(true\\)\\); require '\\\\''vendor/autoload.php'\\\\''; $app = require '\\\\''bootstrap/app.php'\\\\''; $app->make\\('\\\\''Illuminate\\\\Contracts\\\\Console\\\\Kernel'\\\\''\\)->bootstrap\\(\\); echo '\\\\''OK'\\\\'';')",
       "Bash(xargs cat)",
-      "Bash(mysql -u root TakeTwo -e \"SELECT id, slug, name_bg FROM services; SELECT id, service_id, discount_type, discount_amount, discount_percent, is_active, starts_at, expires_at FROM service_promotions;\")"
+      "Bash(mysql -u root TakeTwo -e \"SELECT id, slug, name_bg FROM services; SELECT id, service_id, discount_type, discount_amount, discount_percent, is_active, starts_at, expires_at FROM service_promotions;\")",
+      "Bash(mysql -u root TakeTwo -e \"SELECT COUNT\\(*\\) as cnt FROM service_promotions; SELECT id, service_id, discount_type, original_price, discount_amount, is_active, starts_at, expires_at FROM service_promotions;\")",
+      "Bash(mysql -u root -e \"SELECT COUNT\\(*\\) as cnt FROM TakeTwo.service_promotions; SELECT id, service_id, discount_type, original_price, discount_amount, is_active FROM TakeTwo.service_promotions;\")"
     ]
   }
 }
