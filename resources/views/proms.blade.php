@@ -195,6 +195,13 @@
                                 </div>
                             @endif
 
+                            @if(config('app.debug') && $service && $service->activePromotion)
+                                @php $dp = $service->activePromotion; @endphp
+                                <div class="small text-muted mb-2" style="font-size:11px">
+                                    DEBUG: type={{ $dp->discount_type }} | orig={{ $dp->original_price }} | amount={{ $dp->discount_amount }} | pkgs={{ $promPackages->count() }}
+                                    @foreach($promPackages as $dpkg) | pkg{{ $dpkg->id }}={{ $dpkg->price_eur }} @endforeach
+                                </div>
+                            @endif
                             <!-- 1. PACKAGES -->
                             <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет
                             </h4>
