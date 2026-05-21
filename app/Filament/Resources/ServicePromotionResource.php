@@ -75,6 +75,7 @@ class ServicePromotionResource extends Resource
                             ->live()
                             ->readOnly()
                             ->helperText('Автоматично от избрания пакет')
+                            ->dehydrated(true)
                             ->visible(fn ($get) => $get('discount_type') === 'percent')
                             ->required(fn ($get) => $get('discount_type') === 'percent'),
                         Forms\Components\TextInput::make('discount_percent')

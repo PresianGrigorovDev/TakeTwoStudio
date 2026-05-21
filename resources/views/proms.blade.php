@@ -195,17 +195,25 @@
                                 </div>
                             @endif
 
-                            @if(config('app.debug') && $service && $service->activePromotion)
-                                @php $dp = $service->activePromotion; @endphp
-                                <div class="small text-muted mb-2" style="font-size:11px">
-                                    DEBUG: type={{ $dp->discount_type }} | orig={{ $dp->original_price }} | amount={{ $dp->discount_amount }} | pkgs={{ $promPackages->count() }}
-                                    @foreach($promPackages as $dpkg) | pkg{{ $dpkg->id }}={{ $dpkg->price_eur }} @endforeach
-                                </div>
-                            @endif
                             <!-- 1. PACKAGES -->
                             <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет
                             </h4>
 
+                            @php
+                                $fixedTargetPkgId = null;
+                                if ($service && $service->activePromotion && $service->activePromotion->discount_type === 'fixed') {
+                                    $fp = $service->activePromotion;
+                                    $fpOriginal = (float) $fp->original_price;
+                                    if ($fpOriginal > 0) {
+                                        $matchPkg = $promPackages->firstWhere('price_eur', $fpOriginal);
+                                        $fixedTargetPkgId = $matchPkg?->id;
+                                    } else {
+                                        // fallback: package with smallest price above discount_amount
+                                        $matchPkg = $promPackages->filter(fn($p) => (float)$p->price_eur > (float)$fp->discount_amount)->sortBy('price_eur')->first();
+                                        $fixedTargetPkgId = $matchPkg?->id;
+                                    }
+                                }
+                            @endphp
                             <div class="row g-4 mb-5 justify-content-center">
                                 @foreach($promPackages as $index => $package)
                                 <div class="col-md-6">
@@ -214,7 +222,7 @@
                                         $price = $originalPrice;
                                         if ($service && $service->activePromotion) {
                                             $promo = $service->activePromotion;
-                                            if ($promo->discount_type === 'fixed' && (float)$promo->original_price == (float)$originalPrice) {
+                                            if ($promo->discount_type === 'fixed' && $fixedTargetPkgId === $package->id) {
                                                 $price = (float) $promo->discount_amount;
                                             } elseif ($promo->discount_type === 'percent') {
                                                 $price = $originalPrice * (1 - ($promo->discount_percent / 100));
