@@ -207,7 +207,7 @@
                                         $price = $originalPrice;
                                         if ($service && $service->activePromotion) {
                                             $promo = $service->activePromotion;
-                                            if ($promo->discount_type === 'fixed' && $promo->service_package_id == $package->id) {
+                                            if ($promo->discount_type === 'fixed' && (float)$promo->original_price == (float)$originalPrice) {
                                                 $price = (float) $promo->discount_amount;
                                             } elseif ($promo->discount_type === 'percent') {
                                                 $price = $originalPrice * (1 - ($promo->discount_percent / 100));
