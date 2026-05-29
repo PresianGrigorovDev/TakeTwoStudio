@@ -363,7 +363,7 @@
             <h4>Запази своето място още сега!</h4>
             <div class="mt-4">
                 <h5 class="mb-2"><strong>Instagram:</strong> <a href="https://instagram.com/taketwostudio1603" target="_blank" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h5>
-                <h5><strong>Телефон:</strong> <a href="tel:+359886190124" class="text-dark text-decoration-none hover-gold">088 619 0124</a></h5>
+                <h5><strong>Телефон:</strong> <a href="tel:+359894200634" class="text-dark text-decoration-none hover-gold">089 420 0634</a></h5>
             </div>
         </div>
     </section>
