@@ -260,6 +260,13 @@ class ContractGenerator extends Page implements HasForms
                             ->columnSpanFull()
                             ->visible(fn (Get $get) => $get('contract_type') === ContractType::Prom->value),
 
+                        // Prom: начален час на бала
+                        Select::make('start_time')
+                            ->label('Начален час')
+                            ->options(self::getTimeOptions())
+                            ->searchable()
+                            ->visible(fn (Get $get) => $get('contract_type') === ContractType::Prom->value),
+
                         // Wedding / Event / Custom: церемония / начало
                         Select::make('ceremony_time')
                             ->label('Час на церемония / начало')

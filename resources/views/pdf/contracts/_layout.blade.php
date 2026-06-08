@@ -144,5 +144,7 @@
     @yield('content')
 
     @include('pdf.contracts._signatures')
+
+    @yield('annex')
 </body>
 </html>
