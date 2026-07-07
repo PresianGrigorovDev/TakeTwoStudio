@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'admin_email' => env('ADMIN_EMAIL', 'info@taketwostudio1603.com'),
+    'admin_email' => env('ADMIN_EMAIL', 'taketwostudiobg@gmail.com'),
 
     /*
     |--------------------------------------------------------------------------

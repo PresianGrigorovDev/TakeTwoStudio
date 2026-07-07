@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SiteSettingResource extends Resource
 {
     protected static ?string $navigationGroup = 'Настройки на сайта';
-    protected static ?string $navigationLabel = 'Общи настройки';
-    protected static ?string $pluralModelLabel = 'Общи настройки';
+    protected static ?string $navigationLabel = 'SEO текстове';
+    protected static ?string $pluralModelLabel = 'SEO текстове ( Само Пресо пипа тук )';
     protected static ?string $modelLabel = 'Настройка';
 
     protected static ?string $model = SiteSetting::class;
@@ -74,7 +74,6 @@ class SiteSettingResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

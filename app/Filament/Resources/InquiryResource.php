@@ -24,6 +24,17 @@ class InquiryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::where('status', 'new')->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'danger';
+    }
+
     public static function form(Form $form): Form
     {
         return $form

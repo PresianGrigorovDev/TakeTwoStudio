@@ -3,36 +3,48 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromPortfolioPhotoResource\Pages;
-use App\Filament\Resources\PromPortfolioPhotoResource\RelationManagers;
 use App\Models\PromPortfolioPhoto;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class PromPortfolioPhotoResource extends Resource
 {
     protected static ?string $model = PromPortfolioPhoto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
-    protected static ?string $navigationGroup = 'Балове';
-    protected static ?string $modelLabel = 'Снимка - Портфолио';
-    protected static ?string $pluralModelLabel = 'Снимки - Портфолио';
+    protected static ?string $navigationGroup = 'Абитуриенти';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $modelLabel = 'Снимка - Балове';
+    protected static ?string $pluralModelLabel = 'Снимки - Балове';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Placeholder::make('current_image_preview')
+                    ->label('Текуща снимка')
+                    ->content(fn (?PromPortfolioPhoto $record): \Illuminate\Support\HtmlString =>
+                        $record
+                            ? new \Illuminate\Support\HtmlString(
+                                '<img src="' . Storage::url($record->image_path) . '" style="max-height:240px; border-radius:6px; border:2px solid #374151; object-fit:contain;">'
+                            )
+                            : new \Illuminate\Support\HtmlString('')
+                    )
+                    ->visibleOn('edit')
+                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_path')
-                    ->label('Снимка')
+                    ->label('Качи нова снимка (оставете празно за да запазите текущата)')
                     ->image()
                     ->imageResizeMode('contain')
                     ->imageResizeTargetWidth('1920')
                     ->imageResizeTargetHeight('1080')
                     ->directory('prom_portfolio_photos')
-                    ->required()
+                    ->disk('public')
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn ($state): bool => filled($state))
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('sort_order')
                     ->label('Подредба')

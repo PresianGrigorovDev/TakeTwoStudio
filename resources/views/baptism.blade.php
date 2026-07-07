@@ -14,12 +14,21 @@
 @endpush
 
 @section('content')
+
+    {{-- Get page content --}}
+    @php
+        $pageContent = \App\Models\PageContent::where('page_slug', 'baptism')->get();
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Свето Кръщение';
+        $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Запечатайте първия празник на вашето дете';
+        $calculator = $pageContent->where('section_slug', 'calculator')->first()?->content_bg ?? 'Калкулатор Свето Кръщение';
+    @endphp
+
     <!-- HEADER -->
-    <section class="baptism-hero">
+    <section class="baptism-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>Свето Кръщение</h1>
-            <p>Запечатайте първия празник на вашето дете</p>
+            <h1>{{ $heroTitle }}</h1>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 
@@ -87,7 +96,7 @@
                 <h3 class="text-center h5 fw-light text-muted">Разгледайте нашите любими събития</h3>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 justify-content-center">
                 @foreach($baptismGalleries as $gallery)
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
@@ -239,21 +248,41 @@
                     <!-- LEFT: CONTROLS -->
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
+                            @if($service && $service->activePromotion)
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                    <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                    <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                </div>
+                            @endif
 
                             <!-- SERVICE -->
                             <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
                             <div class="row g-3 mb-5">
                                 @foreach($service->packages as $package)
                                 <div class="col-md-4">
+                                    @php
+                                        $originalPrice = $package->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <input type="radio" name="bap_service" id="pkg_{{ $package->id }}" class="package-option"
-                                        value="{{ (int)$package->price_eur }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculateBaptismTotal()">
+                                        value="{{ (int)$price }}" data-label="{{ $package->name_bg }}" {{ $package->is_default ? 'checked' : '' }} onchange="calculateBaptismTotal()">
                                     <label for="pkg_{{ $package->id }}" class="package-label">
                                         <i class="fas {{ str_contains(strtolower($package->name_bg), 'фото') && str_contains(strtolower($package->name_bg), 'видео') ? 'fa-star' : (str_contains(strtolower($package->name_bg), 'видео') ? 'fa-video' : 'fa-camera') }} package-icon"></i>
                                         <strong>{{ $package->name_bg }}</strong>
                                         @if($package->description_bg)
                                         <span class="d-block small text-muted mt-2">{!! $package->description_bg !!}</span>
                                         @endif
-                                        <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">€ {{ number_format($package->price_eur, 0) }} / {{ number_format($package->price_eur * 1.9558, 2) }} лв.</span>
+                                        <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">
+                                            @if($service && $service->activePromotion)
+                                                <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                            @else
+                                                € {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                            @endif
+                                        </span>
                                     </label>
                                 </div>
                                 @endforeach
@@ -269,16 +298,34 @@
                                 @endif
                                 <div class="row g-3 mb-5">
                                     @foreach($extras as $extra)
+                                    @php
+                                        $originalPrice = $extra->price_eur;
+                                        $price = $originalPrice;
+                                        if ($service && $service->activePromotion && $originalPrice > 0) {
+                                            $price = $originalPrice * (1 - ($service->activePromotion->discount_percent / 100));
+                                        }
+                                    @endphp
                                     <div class="{{ $extra->input_type === 'checkbox' ? 'col-md-4' : 'col-md-6' }}">
-                                        <input class="extra-option" type="{{ $extra->input_type }}" name="extra_{{ $extra->id }}{{ $extra->input_type === 'radio' ? '_' . Str::slug($groupName) : '' }}" id="extra_{{ $extra->id }}"
-                                            value="{{ (int)$extra->price_eur }}" data-label="{{ $extra->label_bg }}" {{ $extra->input_type === 'radio' && $loop->first ? 'checked' : '' }} onchange="calculateBaptismTotal()">
+                                        <input class="extra-option" type="{{ $extra->input_type }}" name="{{ $extra->input_type === 'radio' ? 'extra_group_' . Str::slug($groupName) : 'extra_' . $extra->id }}" id="extra_{{ $extra->id }}"
+                                            value="{{ (int)$price }}" data-label="{{ $extra->label_bg }}" {{ $extra->input_type === 'radio' && $loop->first ? 'checked' : '' }} onchange="calculateBaptismTotal()">
                                         <label class="extra-card-label" for="extra_{{ $extra->id }}">
                                             <i class="fas {{ $extra->icon_class ?? ($extra->input_type === 'checkbox' ? 'fa-gift' : 'fa-map-marker-alt') }} extra-card-icon"></i>
                                             <span>{{ $extra->label_bg }}</span>
                                             @if($extra->description_bg)
                                             <span class="extra-price">{!! $extra->description_bg !!}</span>
                                             @endif
-                                            <span class="extra-price">@if($extra->price_eur > 0)+€ {{ number_format($extra->price_eur, 0) }} / {{ number_format($extra->price_eur * 1.9558, 2) }} лв. @else Стандарт @endif</span>
+                                            <span class="extra-price">
+                                                @if($originalPrice > 0)
+                                                    @if($service && $service->activePromotion)
+                                                        <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
+                                                        <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                                    @else
+                                                        +€ {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                                    @endif
+                                                @else
+                                                    Стандарт
+                                                @endif
+                                            </span>
                                         </label>
                                     </div>
                                     @endforeach
@@ -301,18 +348,26 @@
                                 <div class="summary-item"><span>Обхват:</span> <span id="sumScope">Само Църква</span>
                                 </div>
                                 <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
+                                    <span>Промо Намаление:</span>
+                                    <span class="discount-amount" style="font-weight:700;"></span>
+                                </div>
                             </div>
 
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">
+                            <input type="hidden" name="orderType" value="Baptism">
+
+                            @include('partials.promo-code-input')
 
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"
                                     placeholder="Вашето име" required>
                                 <input type="text" name="phone" class="form-control mb-2 rounded-0"
                                     placeholder="Телефон" required>
-                                <input type="text" name="date" class="form-control mb-2 rounded-0"
-                                    placeholder="Дата на събитието" required>
+                                <input type="date" name="date" class="form-control mb-2 rounded-0"
+                                    placeholder="Дата на събитието" required onclick="this.showPicker()">
+                                @include('partials.gdpr-consent', ['consentId' => 'baptism'])
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>
                             </div>
                         </div>
@@ -323,6 +378,7 @@
         </div>
     </section>
 
+
     <!-- FAQ -->
     <section class="py-5 bg-white">
         <div class="container">
@@ -330,55 +386,22 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="accordion" id="faqAccordion">
-                        <!-- Q1 -->
+                        @foreach($baptismFaqs as $i => $faq)
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOne">
-                                    Колко време трае ритуалът и снимките?
+                            <h2 class="accordion-header">
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#bfaq{{ $i }}">
+                                    {{ $faq->question }}
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show"
+                            <div id="bfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}"
                                 data-bs-parent="#faqAccordion">
                                 <div class="accordion-body text-muted">
-                                    Самият църковен ритуал обикновено трае около 40-50 минути. Ние винаги сме там 15-20
-                                    минути по-рано, за да снимаме детайлите и гостите. След ритуала отделяме време за
-                                    семейна фотосесия пред църквата. Общо ангажиментът е около 1.5 часа (за пакет "Само
-                                    Църква").
+                                    {{ $faq->answer }}
                                 </div>
                             </div>
                         </div>
-                        <!-- Q2 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseTwo">
-                                    Кога получаваме снимките и видеото?
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body text-muted">
-                                    Стандартният срок за предаване на обработените кадри и видеото е до 30 работни дни.
-                                    Ако имате нужда от материалите по-бързо, предлагаме услуга "Експресна обработка" (до
-                                    3 дни).
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Q3 -->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseThree">
-                                    Снимате ли в ресторанта?
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body text-muted">
-                                    Да, предлагаме разширен пакет, който включва и заснемане на тържеството в ресторанта
-                                    (посрещане, разрязване на питата, торта и весели моменти с гостите).
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -394,11 +417,14 @@
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4">
                     <i class="fas fa-phone mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">088 619 0124</h5>
+                    <h5 class="fs-6 fw-bold">
+                        <a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a>
+                    </h5>
                 </div>
                 <div class="col-md-4">
                     <i class="far fa-envelope mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">info@taketwostudio1603.com</h5>
+                    <h5 class="fs-6 fw-bold">
+                        <a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></h5>
                 </div>
                 <div class="col-md-4">
                     <i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i>
@@ -419,6 +445,35 @@
         </div>
     </section>
 @endsection
+
+@push('schema')
+@php
+$baptismServiceSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => 'Заснемане на кръщенета',
+    'provider' => [
+        '@type' => 'LocalBusiness',
+        'name' => 'Take Two Studio 1603',
+        '@id' => 'https://taketwostudio1603.com',
+    ],
+    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+    'description' => 'Дискретно и професионално заснемане на свято кръщение — ритуалът в църква, семейна фотосесия и тържеството в ресторанта.',
+    'url' => 'https://taketwostudio1603.com/baptism',
+];
+$baptismFaqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => $baptismFaqs->map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq->question,
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+    ])->toArray(),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($baptismServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($baptismFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

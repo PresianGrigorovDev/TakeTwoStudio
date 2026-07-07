@@ -102,6 +102,9 @@ function calculateWeddingTotal() {
     if (hasVideo) prevVideoId = videoOp.id;
     if (hasPhoto) prevPhotoId = photoOp.id;
 
+    let packagePrice = 0;
+    let extrasPrice = 0;
+
     // Select all checked calc inputs
     const inputs = document.querySelectorAll('#calcForm input:checked');
 
@@ -110,6 +113,12 @@ function calculateWeddingTotal() {
         const category = input.getAttribute('data-category');
         const label = input.getAttribute('data-label') || '';
         const val = parseInt(input.value);
+
+        if (category === 'team') {
+             packagePrice += price;
+        } else {
+             extrasPrice += price;
+        }
 
         // Add price
         total += price;
@@ -132,10 +141,24 @@ function calculateWeddingTotal() {
         }
     });
 
+    // --- Apply promo discount (if code was applied) ---
+    var finalPrice = (typeof applyPromoDiscount === 'function') ? applyPromoDiscount(packagePrice, extrasPrice) : total;
+
     // --- ВИЗУАЛИЗАЦИЯ ---
     const finalPriceEl = document.getElementById('finalPrice');
     let startVal = parseInt(finalPriceEl.innerText) || 0;
-    animateValue("finalPrice", startVal, total, 300);
+    animateValue("finalPrice", startVal, finalPrice, 300);
+
+    // Show discount line if active
+    var discountEl = document.getElementById('promo-discount-line');
+    if (discountEl) {
+        if (finalPrice < total) {
+            discountEl.style.display = 'flex';
+            discountEl.querySelector('.discount-amount').textContent = '-€' + Math.round(total - finalPrice);
+        } else {
+            discountEl.style.display = 'none';
+        }
+    }
 
     // Text updates
     let teamHtml = teamText.length > 0 ? teamText.join(", ") : "-";
@@ -150,8 +173,8 @@ function calculateWeddingTotal() {
     document.getElementById('sumVideo').innerHTML =
         `<span style="text-align:right; font-size:13px; max-width:160px; line-height:1.2;">${videoHtml}</span>`;
 
-    // Hidden inputs
-    document.getElementById('hiddenPrice').value = total;
+    // Hidden inputs – send discounted final price
+    document.getElementById('hiddenPrice').value = Math.round(finalPrice);
     
     let fullDescription = "";
     if (teamText.length > 0) fullDescription += "ЕКИП: " + teamText.join(" + ") + "\n";

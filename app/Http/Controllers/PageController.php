@@ -12,11 +12,14 @@ class PageController extends Controller
     public function home()
     {
         return view('home', [
-            'services' => Service::where('is_active', true)->get(),
+            'services' => Service::where('is_active', true)->orderBy('sort_order')->get(),
             'teamMembers' => \App\Models\TeamMember::where('is_active', true)->orderBy('display_order')->get(),
             'testimonials' => \App\Models\Testimonial::where('is_active', true)->latest()->get(),
             'partners' => \App\Models\Partner::orderBy('display_order')->get(),
             'portfolioCategories' => \App\Models\PortfolioCategory::orderBy('display_order')->get(),
+            'workStart' => BookingController::WORK_START,
+            'workEnd' => BookingController::WORK_END,
+            'siteSettings' => \App\Models\SiteSetting::all(),
         ]);
     }
 
@@ -40,12 +43,58 @@ class PageController extends Controller
         return $this->showService('commercial');
     }
 
+    public function family()
+    {
+        return $this->showService('family');
+    }
+
+    public function portrait()
+    {
+        return $this->showService('portrait');
+    }
+
+    public function automotive()
+    {
+        return $this->showService('automotive');
+    }
+
+    public function architectural()
+    {
+        return $this->showService('architectural');
+    }
+
+    public function events()
+    {
+        return $this->showService('events');
+    }
+
+    public function graduation()
+    {
+        $graduationPhotos = \App\Models\GraduationPortfolioPhoto::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $graduationFaqs = \App\Models\GraduationFaq::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $graduationPackages = \App\Models\GraduationPackage::where('is_visible', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        $service = Service::where('slug', 'graduation')->with('activePromotion')->first();
+
+        return view('graduation', [
+            'service'            => $service,
+            'graduationPhotos'   => $graduationPhotos,
+            'graduationFaqs'     => $graduationFaqs,
+            'graduationPackages' => $graduationPackages,
+        ]);
+    }
+
     private function showService($slug)
     {
-        $service = Service::where('slug', $slug)->first();
-
-        // If service doesn't exist in DB yet, we might want to fail gracefully or just pass null
-        // But for now, we assume seed data exists or will exist.
+        $service = Service::where('slug', $slug)->with('activePromotion')->first();
 
         $portfolioItems = PortfolioItem::whereHas('category', function ($query) use ($slug) {
             $query->where('slug', $slug);
@@ -68,19 +117,66 @@ class PageController extends Controller
                 return $section->pluck('content_bg', 'field_key');
             });
 
+        // Get galleries
         $weddingGalleries = collect();
         if ($slug === 'weddings') {
             $weddingGalleries = \App\Models\WeddingGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
         }
 
         $baptismGalleries = collect();
+        $baptismFaqs = collect();
         if ($slug === 'baptism') {
             $baptismGalleries = \App\Models\BaptismGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+            $baptismFaqs = \App\Models\BaptismFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $promPortfolioPhotos = collect();
+        $promFaqs = collect();
+        $promPackages = collect();
         if ($slug === 'proms') {
             $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+            $promFaqs = \App\Models\PromFaq::where('is_visible', true)->orderBy('sort_order')->get();
+            $promPackages = \App\Models\PromPackage::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
+        $commercialPhotos = collect();
+        if ($slug === 'commercial') {
+            $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
+        $portraitPortfolioPhotos = collect();
+        if ($slug === 'portrait') {
+            $portraitPortfolioPhotos = \App\Models\PortraitPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
+        $eventPortfolioPhotos = collect();
+        if ($slug === 'events') {
+            $eventPortfolioPhotos = \App\Models\EventPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+        }
+
+        // New category galleries and packages
+        $galleryModelMap = [
+            'family' => \App\Models\FamilyGallery::class,
+            'automotive' => \App\Models\AutomotiveGallery::class,
+            'architectural' => \App\Models\ArchitecturalGallery::class,
+        ];
+
+        $packageModelMap = [
+            'family' => \App\Models\FamilyPackage::class,
+            'portrait' => \App\Models\PortraitPackage::class,
+            'automotive' => \App\Models\AutomotivePackage::class,
+            'architectural' => \App\Models\ArchitecturalPackage::class,
+            'events' => \App\Models\EventPackage::class,
+        ];
+
+        $galleries = collect();
+        if (isset($galleryModelMap[$slug])) {
+            $galleries = $galleryModelMap[$slug]::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+        }
+
+        $categoryPackages = collect();
+        if (isset($packageModelMap[$slug])) {
+            $categoryPackages = $packageModelMap[$slug]::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         return view($slug, [
@@ -89,6 +185,14 @@ class PageController extends Controller
             'weddingGalleries' => $weddingGalleries,
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
+            'promFaqs' => $promFaqs,
+            'promPackages' => $promPackages,
+            'baptismFaqs' => $baptismFaqs,
+            'commercialPhotos' => $commercialPhotos,
+            'portraitPortfolioPhotos' => $portraitPortfolioPhotos,
+            'eventPortfolioPhotos' => $eventPortfolioPhotos,
+            'galleries' => $galleries,
+            'categoryPackages' => $categoryPackages,
             'pageContent' => $pageContent,
         ]);
     }

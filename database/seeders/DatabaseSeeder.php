@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(LegacyDataSeeder::class);
+        $this->call(CommercialPortfolioPhotoSeeder::class);
+        $this->call(LegalPageSeeder::class);
     }
 }

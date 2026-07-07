@@ -14,12 +14,19 @@
 @endpush
 
 @section('content')
+
+    @php
+        $pageContent = \App\Models\PageContent::where('page_slug', 'commercial')->get();
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Реклама и Бизнес';
+        $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Визуална идентичност, която продава';
+    @endphp
+
     <!-- Header / Hero -->
-    <section class="commercial-hero">
+    <section class="commercial-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
-            <h1>Реклама и Бизнес</h1>
-            <p>Визуална идентичност, която продава</p>
+            <h1>{{ $heroTitle }}</h1>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 
@@ -101,41 +108,82 @@
             </div>
 
             <div class="masonry" data-aos="fade-up">
-                @foreach($portfolioItems as $item)
+                @foreach($commercialPhotos as $item)
                     @php
                         $categoryMap = [
-                            'ads' => 'Рекламна Фотография',
+                            'ads'     => 'Рекламна Фотография',
                             'product' => 'Продуктова Фотография',
-                            'imoti' => 'Интериорна фотография',
-                            'events' => 'Бизнес събитие',
-                            'drone' => 'Въздушни Кадри',
+                            'imoti'   => 'Интериорна фотография',
+                            'events'  => 'Събития',
+                            'drone'   => 'Въздушни Кадри',
                         ];
                         $displayCategory = $categoryMap[$item->sub_category] ?? $item->sub_category;
                     @endphp
                     <div class="masonry-item {{ $item->sub_category }}">
                         <div class="portfolio-item" onclick="openLightbox(this)">
-                            <img src="{{ str_starts_with($item->file_path, 'http') ? $item->file_path : asset($item->file_path) }}"
-                                class="portfolio-img" alt="{{ $item->alt_text_bg }}">
+                            <img src="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}"
+                                class="portfolio-img" alt="{{ $item->alt_text ?? $displayCategory }}" loading="lazy">
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
-                                    <h4 class="portfolio-title">{{ $item->alt_text_bg }}</h4>
+                                    @if($item->alt_text)
+                                        <h4 class="portfolio-title">{{ $item->alt_text }}</h4>
+                                    @endif
                                     <span class="portfolio-subtitle">{{ $displayCategory }}</span>
-                                    @if($item->description_bg)
-                                        <p class="portfolio-desc">{{ $item->description_bg }}</p>
+                                    @if($item->description)
+                                        <div class="portfolio-desc-wrapper">
+                                            <p class="portfolio-desc">{{ $item->description }}</p>
+                                        </div>
                                     @endif
                                 </div>
                             </div>
-                            <a href="{{ str_starts_with($item->file_path, 'http') ? $item->file_path : asset($item->file_path) }}"
-                                class="glightbox d-none"></a>
+                            <a href="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}" class="glightbox d-none"
+                               data-title="{{ $item->alt_text ?? $displayCategory }}"
+                               data-description="{{ $item->description ?? '' }}"></a>
                         </div>
                     </div>
                 @endforeach
 
-                @if($portfolioItems->isEmpty())
+                @if($commercialPhotos->isEmpty())
                     <div class="col-12 text-center text-muted">
                         <p>Очаквайте скоро нашите нови кадри!</p>
                     </div>
                 @endif
+            </div>
+        </div>
+    </section>
+
+    @php
+    $commercialFaqs = [
+        ['q' => 'Каква е цената за продуктова фотография?', 'a' => 'Цената зависи от броя продукти, вида обработка и специфичните изисквания на проекта. Изпратете ни запитване с детайли и ще изготвим индивидуална оферта за вас.'],
+        ['q' => 'Правите ли рекламни видеа за социалните мрежи?', 'a' => 'Да, създаваме кратко и динамично видео съдържание, оптимизирано за Instagram, Facebook, TikTok и YouTube. Работим с дрон, студийно осветление и модерна постпродукция.'],
+        ['q' => 'Снимате ли хотели, ресторанти и имоти?', 'a' => 'Да, предлагаме интериорна и екстериорна фотография за хотели, ресторанти, фитнес зали и имоти. Дроните ни добавят въздушна перспектива, която се откроява.'],
+        ['q' => 'Работите ли с малък и среден бизнес?', 'a' => 'Разбира се! Работим с бизнеси от всякакъв мащаб — от малки онлайн магазини до корпоративни компании. Всеки проект получава индивидуално внимание и подход.'],
+    ];
+    @endphp
+
+    <!-- FAQ -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="commercialFaqAccordion">
+                        @foreach($commercialFaqs as $i => $faq)
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#cfaq{{ $i }}">
+                                    {{ $faq['q'] }}
+                                </button>
+                            </h2>
+                            <div id="cfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#commercialFaqAccordion">
+                                <div class="accordion-body text-muted">
+                                    {{ $faq['a'] }}
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -146,6 +194,12 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-box">
+                        @if($service && $service->activePromotion)
+                            <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <i class="fas fa-percentage me-2 animate-pulse"></i>
+                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички стандартни цени за всички запитвания до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                            </div>
+                        @endif
                         <h2 class="text-center mb-4">Поискайте Оферта</h2>
                         <p class="text-center text-muted mb-5">
                             Всеки бизнес проект е уникален. Опишете ни вашите нужди, а ние ще изготвим индивидуално
@@ -160,6 +214,8 @@
                         <form action="{{ url('/submit-order') }}" method="post">
                             @csrf
                             <input type="hidden" name="orderType" value="Commercial">
+
+                            @include('partials.promo-code-input')
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Име / Фирма</label>
@@ -181,6 +237,9 @@
                                     <textarea class="form-control rounded-0 p-3 bg-light border-0" rows="5" name="message"
                                         placeholder="Какъв тип заснемане ви трябва? Дата, локация, специфични изисквания..."></textarea>
                                 </div>
+                                <div class="col-12">
+                                    @include('partials.gdpr-consent', ['consentId' => 'commercial'])
+                                </div>
                                 <div class="col-12 text-center mt-4">
                                     <button type="submit" class="btn btn-submit px-5 py-3 fs-5">Изпрати
                                         Запитване</button>
@@ -193,6 +252,35 @@
         </div>
     </section>
 @endsection
+
+@push('schema')
+@php
+$commercialServiceSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => 'Рекламна и продуктова фотография',
+    'provider' => [
+        '@type' => 'LocalBusiness',
+        'name' => 'Take Two Studio 1603',
+        '@id' => 'https://taketwostudio1603.com',
+    ],
+    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+    'description' => 'Рекламна фотография, продуктови кадри, корпоративни видеа и дрон заснемане за бизнеси във Варна и цяла България.',
+    'url' => 'https://taketwostudio1603.com/commercial',
+];
+$commercialFaqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => array_map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq['q'],
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
+    ], $commercialFaqs),
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($commercialServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($commercialFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

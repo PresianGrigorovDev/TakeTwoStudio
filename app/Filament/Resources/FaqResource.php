@@ -17,6 +17,7 @@ class FaqResource extends Resource
 {
     protected static ?string $navigationGroup = 'Настройки на сайта';
     protected static ?string $navigationLabel = 'Често задавани въпроси';
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $pluralModelLabel = 'Въпроси и отговори';
     protected static ?string $modelLabel = 'Въпрос и отговор';
 

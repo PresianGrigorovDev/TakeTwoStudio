@@ -129,6 +129,11 @@ h5 {
     align-items: center;
     justify-content: center;
     margin-top: -1px;
+
+    @media (max-width: 991px) {
+        min-height: 30vh;
+        background-position: bottom;
+    }
 }
 
 .hero-overlay {
@@ -519,6 +524,10 @@ h5 {
     }
 }
 
+.gallery-hidden {
+    display: none !important;
+}
+
 /* --- FOOTER --- */
 footer {
     background: #111;
@@ -584,7 +593,8 @@ footer ul li a:hover {
     }
 
     h2.mb-4.h2.text-black.fw-normal.lh-base {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        padding: 0 5px;
     }
 
     .price-display {
@@ -661,4 +671,241 @@ footer ul li a:hover {
 
 .extra-option:checked + .extra-card-label .extra-price {
     color: #444;
+}
+
+/* --- MOBILE RESPONSIVE OPTIMIZATION --- */
+@media (max-width: 768px) {
+
+    /* --- GLOBAL SECTION SPACING --- */
+    section.py-5 {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    section.pt-4.pb-2 {
+        padding-top: 2rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+
+    /* --- INTRO SECTION --- */
+    .pt-4.pb-5.text-center.container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    .pt-4.pb-5.text-center.container p.text-black {
+        font-size: 0.88rem;
+        padding: 0 10px;
+        line-height: 1.7;
+    }
+
+    /* --- SERVICES SECTION --- */
+    .service-list {
+        padding: 0 8px;
+    }
+
+    .service-list h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .service-list p {
+        font-size: 0.9rem !important;
+        margin-bottom: 14px !important;
+        line-height: 1.6;
+    }
+
+    .service-list b {
+        font-size: 0.95rem !important;
+    }
+
+    /* --- REASON CARDS (2x2 grid) --- */
+    #why-choose-us {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    #why-choose-us h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+
+    #why-choose-us .section-divider {
+        margin-bottom: 1.5rem !important;
+    }
+
+    #why-choose-us .row.g-4 {
+        --bs-gutter-y: 1rem;
+        --bs-gutter-x: 0.75rem;
+    }
+
+    .reason-card {
+        padding: 22px 14px !important;
+    }
+
+    .reason-icon {
+        font-size: 1.6rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .reason-card h5 {
+        font-size: 0.78rem !important;
+        margin-bottom: 8px !important;
+        line-height: 1.3;
+    }
+
+    .reason-card p {
+        font-size: 0.72rem !important;
+        line-height: 1.45 !important;
+    }
+
+    /* --- PORTFOLIO --- */
+    #portfolio {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    #portfolio h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* --- FAQ --- */
+    .accordion-button {
+        font-size: 0.85rem !important;
+        padding: 14px 16px !important;
+    }
+
+    .accordion-body {
+        font-size: 0.84rem !important;
+        padding: 14px 16px !important;
+        line-height: 1.7;
+    }
+
+    .accordion-item {
+        margin-bottom: 6px;
+    }
+
+    /* --- CALCULATOR --- */
+    .calc-section {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    .calc-section h2 {
+        font-size: 1.2rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .calc-section > .container > p {
+        font-size: 0.85rem !important;
+        padding: 0 8px;
+        margin-bottom: 1.5rem !important;
+        line-height: 1.6;
+    }
+
+    .calc-card {
+        padding: 24px 16px !important;
+        border-radius: 6px;
+    }
+
+    .calc-card h4 {
+        font-size: 1rem !important;
+        margin-bottom: 1.2rem !important;
+    }
+
+    .package-label {
+        padding: 24px 16px !important;
+    }
+
+    .package-icon {
+        font-size: 2.2rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .package-label strong {
+        font-size: 1.05rem !important;
+        margin-bottom: 4px !important;
+    }
+
+    .package-label .price-tag {
+        font-size: 0.9rem !important;
+    }
+
+    .package-details {
+        margin-top: 14px !important;
+        padding-top: 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .package-details li {
+        margin-bottom: 7px !important;
+    }
+
+    .package-details li i {
+        margin-right: 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .extra-card-label {
+        padding: 14px 10px !important;
+    }
+
+    .extra-card-icon {
+        font-size: 1.3rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .extra-card-label span.fw-bold {
+        font-size: 0.8rem !important;
+    }
+
+    .extra-price {
+        font-size: 0.72rem !important;
+    }
+
+    .price-display {
+        font-size: 1.6rem !important;
+    }
+
+    .total-price-box {
+        padding: 30px 22px !important;
+    }
+
+    .total-price-box h5 {
+        font-size: 0.82rem !important;
+    }
+
+    .summary-item {
+        font-size: 0.84rem !important;
+        padding: 10px 0 !important;
+    }
+
+    .price-note {
+        font-size: 0.72rem !important;
+    }
+
+    .btn-custom {
+        font-size: 0.82rem !important;
+        padding: 11px 22px !important;
+    }
+
+    /* --- CONTACT --- */
+    #contact {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    #contact h2 {
+        font-size: 1.2rem !important;
+    }
+
+    #contact h4 {
+        font-size: 0.95rem !important;
+        margin-top: 0.5rem;
+    }
+
+    #contact h5 {
+        font-size: 0.88rem !important;
+    }
 }

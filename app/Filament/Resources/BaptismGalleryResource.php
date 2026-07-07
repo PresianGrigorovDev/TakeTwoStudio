@@ -3,22 +3,21 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BaptismGalleryResource\Pages;
-use App\Filament\Resources\BaptismGalleryResource\RelationManagers;
 use App\Models\BaptismGallery;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class BaptismGalleryResource extends Resource
 {
     protected static ?string $model = BaptismGallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
-    protected static ?string $navigationGroup = 'Кръщенета';
+    protected static ?string $navigationGroup = 'Кръщения';
+    protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Галерия за Кръщене';
     protected static ?string $pluralModelLabel = 'Галерии за Кръщене';
 
@@ -31,18 +30,37 @@ class BaptismGalleryResource extends Resource
                         Forms\Components\TextInput::make('title')
                             ->label('Заглавие (напр. Иван и семейство)')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', \App\Support\Transliteration::slug($state))),
+                        Forms\Components\TextInput::make('slug')
+                            ->label('Slug (URL)')
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
                         Forms\Components\DatePicker::make('event_date')
                             ->label('Дата на събитието')
                             ->native(false),
+                        Forms\Components\Placeholder::make('cover_image_preview')
+                            ->label('Текуща корица')
+                            ->content(fn (?BaptismGallery $record): \Illuminate\Support\HtmlString =>
+                                $record && $record->cover_image
+                                    ? new \Illuminate\Support\HtmlString(
+                                        '<img src="' . Storage::url($record->cover_image) . '" style="max-height:200px; border-radius:6px; border:2px solid #374151; object-fit:contain;">'
+                                    )
+                                    : new \Illuminate\Support\HtmlString('')
+                            )
+                            ->visibleOn('edit'),
                         Forms\Components\FileUpload::make('cover_image')
-                            ->label('Главна снимка (Корица)')
+                            ->label('Качи нова корица (оставете празно за да запазите текущата)')
                             ->image()
                             ->imageResizeMode('contain')
                             ->imageResizeTargetWidth('1920')
                             ->imageResizeTargetHeight('1080')
                             ->directory('baptism_galleries/covers')
-                            ->required(),
+                            ->disk('public')
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrated(fn ($state): bool => filled($state)),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Активна')
                             ->default(true)
@@ -50,7 +68,7 @@ class BaptismGalleryResource extends Resource
                     ])->columns(2),
 
                 Forms\Components\Section::make('Снимки в Галерията')
-                    ->description('Можете да добавите до 15 снимки.')
+                    ->description('Може да добавиш до 25 снимки. ( Повече не ти трябват Симо _|_).')
                     ->schema([
                         Forms\Components\Repeater::make('photos')
                             ->label('Снимки')
@@ -63,11 +81,12 @@ class BaptismGalleryResource extends Resource
                                     ->imageResizeTargetWidth('1920')
                                     ->imageResizeTargetHeight('1080')
                                     ->directory('baptism_galleries/photos')
+                                    ->disk('public')
                                     ->required(),
                             ])
                             ->orderColumn('sort_order')
                             ->defaultItems(1)
-                            ->maxItems(15)
+                            ->maxItems(25)
                             ->grid(3)
                             ->collapsible()
                             ->columnSpanFull(),

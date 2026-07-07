@@ -12,10 +12,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Collection;
 
 class PortfolioCategoryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Портфолио';
+    protected static ?string $navigationGroup = 'Настройки на сайта';
     protected static ?string $navigationLabel = 'Категории';
     protected static ?string $pluralModelLabel = 'Категории портфолио';
     protected static ?string $modelLabel = 'Категория';
@@ -39,18 +40,23 @@ class PortfolioCategoryResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('subtitle_bg')
                     ->label('Подзаглавие (БГ)')
+                    ->required()
                     ->maxLength(100),
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Корица')
+                    ->required()
                     ->image()
                     ->directory('portfolio/categories'),
                 Forms\Components\TextInput::make('display_order')
                     ->label('Поредност')
                     ->numeric()
                     ->default(0),
+                Forms\Components\Toggle::make('is_visible')
+                ->label('Видим')
+                ->default(true),
             ]);
     }
 
@@ -80,7 +86,11 @@ class PortfolioCategoryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('is_visible')
+                    ->label('Видим'),
             ])
+            ->defaultSort('display_order')
+            ->reorderable('display_order')
             ->filters([
                 //
             ])
@@ -90,6 +100,16 @@ class PortfolioCategoryResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('makeVisible')
+                        ->label('Направи видими')
+                        ->icon('heroicon-o-eye')
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => true]))
+                        ->deselectRecordsAfterCompletion(),
+                    Tables\Actions\BulkAction::make('makeHidden')
+                        ->label('Скрий')
+                        ->icon('heroicon-o-eye-slash')
+                        ->action(fn (Collection $records) => $records->each->update(['is_visible' => false]))
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

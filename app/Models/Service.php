@@ -17,4 +17,17 @@ class Service extends Model
     {
         return $this->hasMany(ServiceExtra::class);
     }
+
+    public function promotions()
+    {
+        return $this->hasMany(ServicePromotion::class);
+    }
+
+    public function activePromotion()
+    {
+        return $this->hasOne(ServicePromotion::class)
+            ->where('is_active', true)
+            ->where('starts_at', '<=', now())
+            ->where('expires_at', '>=', now());
+    }
 }

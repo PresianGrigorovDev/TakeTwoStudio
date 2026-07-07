@@ -32,22 +32,65 @@ class ServiceResource extends Resource
                     ->label('Име (БГ)')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('slug')
+                Forms\Components\Select::make('slug')
                     ->label('Слъг (URL)')
                     ->required()
-                    ->disabled()
-                    ->maxLength(255),
+                    ->options([
+                        'weddings' => '/weddings — Сватби',
+                        'proms' => '/proms — Балове',
+                        'baptism' => '/baptism — Кръщенета',
+                        'graduation' => '/graduation — Изпращане',
+                        'commercial' => '/commercial — Реклама и Бизнес',
+                        'family' => '/family — Семейна Фотография',
+                        'portrait' => '/portrait — Портретна Фотография',
+                        'automotive' => '/automotive — Автомобилна Фотография',
+                        'architectural' => '/architectural — Архитектурна Фотография',
+                        'events' => '/events — Събитийна Фотография',
+                    ])
+                    ->searchable(),
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Активна (видима на сайта)')
+                    ->default(true),
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
-                    ->label('Изображение')
+                Forms\Components\FileUpload::make('hero_image')
+                    ->label('Hero снимка (фон)')
                     ->image()
-                    ->directory('services'),
-                // Forms\Components\FileUpload::make('icon')
-                //     ->label('Икона')
-                //     ->image()
-                //     ->directory('services/icons'),
+                    ->directory('hero-images')
+                    ->disk('public')
+                    ->imageEditor()
+                    ->columnSpanFull()
+                    ->maxSize(30720),
+                Forms\Components\Select::make('icon_class')
+                    ->label('Икона')
+                    ->searchable()
+                    ->options([
+                        'fas fa-heart' => '❤️ Сърце',
+                        'fas fa-star' => '⭐ Звезда',
+                        'fas fa-camera' => '📷 Камера',
+                        'fas fa-video' => '🎥 Видеокамера',
+                        'fas fa-user-graduate' => '🎓 Абитуриент',
+                        'fas fa-briefcase' => '💼 Куфарче',
+                        'fas fa-baby' => '👶 Бебе',
+                        'fas fa-church' => '⛪ Църква',
+                        'fas fa-ring' => '💍 Пръстен',
+                        'fas fa-gift' => '🎁 Подарък',
+                        'fas fa-music' => '🎵 Музика',
+                        'fas fa-glass-cheers' => '🥂 Наздраве',
+                        'fas fa-birthday-cake' => '🎂 Торта',
+                        'fas fa-users' => '👥 Хора',
+                        'fas fa-image' => '🖼️ Снимка',
+                        'fas fa-film' => '🎞️ Филм',
+                        'fas fa-magic' => '✨ Магия',
+                        'fas fa-gem' => '💎 Диамант',
+                        'fas fa-crown' => '👑 Корона',
+                        'fas fa-dove' => '🕊️ Гълъб',
+                        'fas fa-hand-holding-heart' => '🤲 Грижа',
+                        'fas fa-palette' => '🎨 Палитра',
+                        'fas fa-shopping-bag' => '🛍️ Пазаруване',
+                        'fas fa-building' => '🏢 Сграда',
+                    ]),
             ]);
     }
 
@@ -55,14 +98,22 @@ class ServiceResource extends Resource
     {
         return $table
             ->columns([
-                // Tables\Columns\ImageColumn::make('icon')
-                //     ->label('Икона'),
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->label('#')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name_bg')
                     ->label('Име')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label('Слъг (Пресо му разбира)')
+                    ->label('Слъг')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Активна')
+                    ->boolean(),
+                Tables\Columns\ImageColumn::make('hero_image')
+                    ->label('Hero снимка')
+                    ->disk('public')
+                    ->circular(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Създадено на')
                     ->dateTime()
@@ -74,6 +125,8 @@ class ServiceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('sort_order')
+            ->reorderable('sort_order')
             ->filters([
                 //
             ])
