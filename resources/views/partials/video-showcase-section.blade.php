@@ -1,6 +1,9 @@
 @php
     $finalVideoUrl = null;
     $videoType = 'local';
+    $videoId = '';
+    $loopUrl = '';
+    $fullUrl = '';
     
     if (!empty($service->video_url)) {
         $finalVideoUrl = $service->video_url;
@@ -13,12 +16,28 @@
             }
         } elseif (str_contains($finalVideoUrl, 'youtube.com') || str_contains($finalVideoUrl, 'youtu.be')) {
             $videoType = 'youtube';
+            if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/||user/.+/|embed/)|youtu\.be/)([^"&?/ ]{11})%i', $finalVideoUrl, $match)) {
+                $videoId = $match[1];
+            }
+            $loopUrl = "https://www.youtube.com/embed/{$videoId}?autoplay=1&mute=1&loop=1&playlist={$videoId}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1";
+            $fullUrl = "https://www.youtube.com/embed/{$videoId}?autoplay=1&mute=0&controls=1&rel=0";
         } elseif (str_contains($finalVideoUrl, 'vimeo.com')) {
             $videoType = 'vimeo';
+            $parts = explode('/', parse_url($finalVideoUrl, PHP_URL_PATH));
+            $videoId = end($parts);
+            $loopUrl = "https://player.vimeo.com/video/{$videoId}?autoplay=1&muted=1&loop=1&background=1";
+            $fullUrl = "https://player.vimeo.com/video/{$videoId}?autoplay=1&muted=0&controls=1";
         }
     } elseif (!empty($service->video_path)) {
         $finalVideoUrl = asset('storage/' . $service->video_path);
         $videoType = 'local';
+    }
+
+    // Determine card sizing style depending on format (landscape vs portrait Instagram Reel)
+    if ($videoType === 'instagram') {
+        $cardStyle = 'max-width: 420px; aspect-ratio: 9/16; background: #000; transition: all 0.5s ease;';
+    } else {
+        $cardStyle = 'max-width: 800px; aspect-ratio: 16/9; background: #000; transition: all 0.5s ease;';
     }
 
     // SEO-optimized headings map (incorporating high-value search keywords per service)
@@ -65,25 +84,54 @@
             </p>
             <div class="video-cover-card mx-auto position-relative rounded shadow-lg overflow-hidden" 
                  id="video-container-{{ $service->id }}" 
-                 style="max-width: 800px; aspect-ratio: 16/9; background: #000; transition: all 0.5s ease;">
+                 style="{{ $cardStyle }}">
                 
-                <!-- Cover Image -->
-                <img src="{{ !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : asset('css/img/about.webp') }}" 
-                     class="w-100 h-100 object-fit-cover" 
-                     id="video-cover-{{ $service->id }}" 
-                     alt="{{ $displayTitle }}">
-                
-                <!-- Play Button Overlay -->
-                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
-                     id="video-overlay-{{ $service->id }}" 
-                     style="background: rgba(0, 0, 0, 0.45);">
-                    <button type="button" 
-                            class="video-play-btn-large border-0 bg-transparent" 
-                            onclick="playVideoInline('{{ $service->id }}', '{{ $finalVideoUrl }}', '{{ $videoType }}')">
-                        <span class="play-btn-ring"></span>
-                        <span class="play-btn-icon"><i class="fas fa-play"></i></span>
-                    </button>
-                </div>
+                @if($videoType === 'local')
+                    <video id="video-player-{{ $service->id }}" 
+                           src="{{ $finalVideoUrl }}" 
+                           autoplay loop muted playsinline 
+                           class="w-100 h-100 object-fit-cover"
+                           style="cursor: pointer;"
+                           onclick="enableFullVideoLocal('{{ $service->id }}')">
+                    </video>
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                         id="video-overlay-{{ $service->id }}" 
+                         style="background: rgba(0, 0, 0, 0.15); transition: all 0.3s ease; pointer-events: none;">
+                        <button type="button" class="video-play-btn-large border-0 bg-transparent" style="pointer-events: auto;" onclick="enableFullVideoLocal('{{ $service->id }}')">
+                            <span class="play-btn-ring"></span>
+                            <span class="play-btn-icon"><i class="fas fa-volume-up"></i></span>
+                        </button>
+                    </div>
+                @elseif($videoType === 'youtube' || $videoType === 'vimeo')
+                    <iframe id="video-iframe-{{ $service->id }}" 
+                            src="{{ $loopUrl }}" 
+                            class="w-100 h-100" 
+                            frameborder="0" 
+                            allow="autoplay; fullscreen" 
+                            allowfullscreen 
+                            style="pointer-events: none; border: none; width: 100%; height: 100%;">
+                    </iframe>
+                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                         id="video-overlay-{{ $service->id }}" 
+                         style="background: rgba(0, 0, 0, 0.15); cursor: pointer; transition: all 0.3s ease;"
+                         onclick="enableFullVideoIframe('{{ $service->id }}', '{{ $fullUrl }}')">
+                        <button type="button" class="video-play-btn-large border-0 bg-transparent">
+                            <span class="play-btn-ring"></span>
+                            <span class="play-btn-icon"><i class="fas fa-volume-up"></i></span>
+                        </button>
+                    </div>
+                @elseif($videoType === 'instagram')
+                    <iframe id="video-iframe-{{ $service->id }}" 
+                            src="{{ $finalVideoUrl }}" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            allowtransparency="true" 
+                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
+                            style="border: none; overflow: hidden; width: 100%; height: 100%;">
+                    </iframe>
+                @endif
             </div>
         </div>
     </section>
@@ -91,43 +139,30 @@
     <!-- Inline Player JavaScript -->
     @once
     <script>
-    function playVideoInline(serviceId, videoUrl, type) {
-        const container = document.getElementById('video-container-' + serviceId);
-        let html = '';
-        
-        if (type === 'instagram') {
-            // Apply portrait layout for vertical reels
-            container.style.maxWidth = '420px';
-            container.style.aspectRatio = '9/16';
-            html = `<iframe src="${videoUrl}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="border: none; overflow: hidden; width: 100%; height: 100%;"></iframe>`;
-        } else if (type === 'youtube') {
-            let embedUrl = videoUrl;
-            if (videoUrl.includes('watch?v=')) {
-                embedUrl = videoUrl.replace('watch?v=', 'embed/') + '?autoplay=1&rel=0';
-            } else if (videoUrl.includes('youtu.be/')) {
-                const parts = videoUrl.split('/');
-                const id = parts[parts.length - 1].split('?')[0];
-                embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
-            } else {
-                embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
-            }
-            html = `<iframe src="${embedUrl}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border: none; width: 100%; height: 100%;"></iframe>`;
-        } else if (type === 'vimeo') {
-            let embedUrl = videoUrl;
-            if (!videoUrl.includes('player.vimeo.com')) {
-                const parts = videoUrl.split('/');
-                const id = parts[parts.length - 1].split('?')[0];
-                embedUrl = `https://player.vimeo.com/video/${id}?autoplay=1`;
-            } else {
-                embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'autoplay=1';
-            }
-            html = `<iframe src="${embedUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="border: none; width: 100%; height: 100%;"></iframe>`;
-        } else {
-            // Local file
-            html = `<video src="${videoUrl}" width="100%" height="100%" controls autoplay style="object-fit: contain; background: #000; width: 100%; height: 100%;"></video>`;
+    function enableFullVideoLocal(serviceId) {
+        const video = document.getElementById('video-player-' + serviceId);
+        const overlay = document.getElementById('video-overlay-' + serviceId);
+        if (video) {
+            video.muted = false;
+            video.controls = true;
         }
-        
-        container.innerHTML = html;
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+        }
+    }
+
+    function enableFullVideoIframe(serviceId, fullUrl) {
+        const iframe = document.getElementById('video-iframe-' + serviceId);
+        const overlay = document.getElementById('video-overlay-' + serviceId);
+        if (iframe) {
+            iframe.src = fullUrl;
+            iframe.style.pointerEvents = 'auto';
+        }
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+        }
     }
     </script>
     @endonce
