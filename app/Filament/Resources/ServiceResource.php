@@ -63,10 +63,18 @@ class ServiceResource extends Resource
                     ->columnSpanFull()
                     ->maxSize(30720),
                 Forms\Components\TextInput::make('video_url')
-                    ->label('Линк към видео (YouTube / Vimeo / MP4)')
-                    ->helperText('Въведете линк към видео, което да се показва в страницата на услугата (например от YouTube, Vimeo или директен MP4 файл).')
+                    ->label('Линк към видео (YouTube / Vimeo / Instagram / MP4)')
+                    ->helperText('Въведете линк към видео, което да се показва в страницата на услугата (от YouTube, Vimeo, Instagram Reels или външен MP4 файл).')
                     ->url()
                     ->maxLength(255)
+                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('video_path')
+                    ->label('Или качете локално видео (MP4 / WebM)')
+                    ->helperText('Ако нямате линк, качете кратък видео клип директно тук (максимум 100MB).')
+                    ->acceptedFileTypes(['video/mp4', 'video/webm'])
+                    ->directory('service-videos')
+                    ->disk('public')
+                    ->maxSize(102400)
                     ->columnSpanFull(),
                 Forms\Components\Select::make('icon_class')
                     ->label('Икона')
