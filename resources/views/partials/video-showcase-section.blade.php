@@ -11,7 +11,8 @@
                 $cleanUrl = strtok($finalVideoUrl, '?');
                 $finalVideoUrl = rtrim($cleanUrl, '/') . '/embed/';
             }
-            $lightboxAttrs = 'data-glightbox="type: iframe; width: 480px; height: 80vh;"';
+            // Explicitly set type to iframe and specify portrait sizing for Reels
+            $lightboxAttrs = 'data-type="iframe" data-width="480px" data-height="80vh" data-glightbox="type: iframe; width: 480px; height: 80vh;"';
         }
     } elseif (!empty($service->video_path)) {
         $finalVideoUrl = asset('storage/' . $service->video_path);
@@ -22,7 +23,7 @@
     <!-- Section - Behind the scenes Video -->
     <section class="video-showcase-section py-5 text-white text-center">
         <div class="container py-4">
-            <h2 class="mb-3 text-uppercase fw-bold">Как работим зад кулисите</h2>
+            <h2 class="mb-3 text-uppercase fw-bold text-white">Как работим зад кулисите</h2>
             <div class="section-divider"></div>
             <p class="text-muted col-lg-8 mx-auto mb-5">
                 Всеки детайл има значение. Вижте нашето кратко видео, което показва нашия подход, динамика и професионализъм на терен.

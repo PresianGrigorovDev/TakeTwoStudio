@@ -11,8 +11,8 @@
                 $cleanUrl = strtok($finalVideoUrl, '?');
                 $finalVideoUrl = rtrim($cleanUrl, '/') . '/embed/';
             }
-            // Instagram requires iframe mode in Glightbox
-            $lightboxAttrs = 'data-glightbox="type: iframe; width: 480px; height: 80vh;"';
+            // Explicitly set type to iframe and specify portrait sizing for Reels
+            $lightboxAttrs = 'data-type="iframe" data-width="480px" data-height="80vh" data-glightbox="type: iframe; width: 480px; height: 80vh;"';
         }
     } elseif (!empty($service->video_path)) {
         $finalVideoUrl = asset('storage/' . $service->video_path);
