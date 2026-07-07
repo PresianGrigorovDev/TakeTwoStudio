@@ -62,6 +62,12 @@ class ServiceResource extends Resource
                     ->imageEditor()
                     ->columnSpanFull()
                     ->maxSize(30720),
+                Forms\Components\TextInput::make('video_url')
+                    ->label('Линк към видео (YouTube / Vimeo / MP4)')
+                    ->helperText('Въведете линк към видео, което да се показва в страницата на услугата (например от YouTube, Vimeo или директен MP4 файл).')
+                    ->url()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\Select::make('icon_class')
                     ->label('Икона')
                     ->searchable()

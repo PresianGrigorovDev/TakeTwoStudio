@@ -25,6 +25,7 @@
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
             <p>{{ $heroSubtitle }}</p>
+            @include('partials.video-hero-button')
         </div>
     </section>
 
@@ -82,6 +83,8 @@
             </div>
         </div>
     </section>
+
+    @include('partials.video-showcase-section')
 
     <section class="py-5 bg-white" id="portfolio">
         <div class="container mt-1">

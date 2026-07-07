@@ -7,6 +7,7 @@
 @section('og_description', 'Професионално заснемане на автомобили — динамични кадри, детайли и интериор. За автосалони, обяви и лични проекти.')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
@@ -24,6 +25,7 @@
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
             <p>{{ $heroSubtitle }}</p>
+            @include('partials.video-hero-button')
         </div>
     </section>
 
@@ -81,6 +83,8 @@
             </div>
         </div>
     </section>
+
+    @include('partials.video-showcase-section')
 
     <section class="py-5 bg-white" id="portfolio">
         <div class="container mt-1">
@@ -332,5 +336,11 @@ $automotiveServiceSchema = [
 @endpush
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        const lightbox = GLightbox({
+            selector: '.glightbox'
+        });
+    </script>
     <script src="{{ asset('js/calculators/generic.js') }}"></script>
 @endpush

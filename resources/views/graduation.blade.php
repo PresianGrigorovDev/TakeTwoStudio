@@ -33,6 +33,7 @@
             <a href="#contact" class="btn-grad-primary">Резервирай дата</a>
             <a href="#gallery" class="btn-grad-outline">Виж портфолиото</a>
         </div>
+        @include('partials.video-hero-button')
     </div>
 </section>
 
@@ -145,6 +146,8 @@
 {{-- ══════════════════════════════════════════════════════════
      GALLERY
 ══════════════════════════════════════════════════════════ --}}
+    @include('partials.video-showcase-section')
+
 <section class="py-5 bg-white" id="portfolio">
     <div class="container">
         <h2 class="text-center mb-5">Разгледайте нашите любими кадри от семейни изпращания</h2>

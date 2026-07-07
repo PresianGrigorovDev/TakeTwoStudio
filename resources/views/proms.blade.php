@@ -29,6 +29,7 @@
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
             <p>Създаваме вечни спомени от вашия специален ден</p>
+            @include('partials.video-hero-button')
         </div>
     </section>
 
@@ -107,6 +108,8 @@
     </section>
 
     <!-- PORTFOLIO -->
+    @include('partials.video-showcase-section')
+
     <section class="py-5 bg-white" id="portfolio">
         <div class="container">
             <h2 class="text-center mb-5">Нашето Портфолио</h2>

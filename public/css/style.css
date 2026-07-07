@@ -705,3 +705,126 @@ footer ul li a:hover {
 .fs-5 {
     font-size: 1rem !important;
 }
+
+/* VIDEO PLAY BUTTONS & SECTIONS */
+.btn-video-play {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 50px;
+    padding: 10px 24px 10px 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-video-play:hover {
+    background: var(--accent, #D4AF37);
+    border-color: var(--accent, #D4AF37);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+}
+
+.video-play-btn-circle {
+    width: 44px;
+    height: 44px;
+    background: var(--accent, #D4AF37);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-video-play:hover .video-play-btn-circle {
+    background: #fff;
+}
+
+.btn-video-play:hover .video-play-btn-circle i {
+    color: var(--accent, #D4AF37) !important;
+}
+
+.video-play-text {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+/* Video Showcase Section Style (Variant B) */
+.video-showcase-section {
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.video-cover-card {
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 850px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    background: #000;
+}
+
+.video-cover-card img {
+    transition: transform 0.8s ease;
+}
+
+.video-cover-card:hover img {
+    transform: scale(1.03);
+}
+
+.video-play-btn-large {
+    position: relative;
+    width: 85px;
+    height: 85px;
+    background: var(--accent, #D4AF37);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 26px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.6);
+    z-index: 2;
+}
+
+.video-play-btn-large i {
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+}
+
+.video-play-btn-large:hover {
+    transform: scale(1.12);
+    background: #fff;
+    color: var(--accent, #D4AF37);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.9);
+}
+
+.video-play-btn-large:hover i {
+    transform: scale(1.15);
+}
+
+.play-btn-ring {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border: 2px solid var(--accent, #D4AF37);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: play-pulse 2.2s infinite;
+}
+
+@keyframes play-pulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(1.35);
+        opacity: 0;
+    }
+}
