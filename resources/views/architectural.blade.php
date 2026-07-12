@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Архитектурен Фотограф Варна | Интериорна и Екстериорна Фотография | Take Two Studio 1603')
-@section('meta_description', 'Професионална архитектурна фотография във Варна. Заснемане на имоти за продажба, хотели, ресторанти, офиси и строителни проекти. Перфектна геометрия, HDR обработка и дрон кадри.')
-@section('meta_keywords', 'архитектурен фотограф варна, интериорна фотография варна, снимки на имоти, фотография за Airbnb, хотелска фотография, екстериорна фотография, real estate photography варна, Take Two Studio')
-@section('og_title', 'Архитектурна Фотография Варна — Имоти, Хотели и Интериори | Take Two Studio')
-@section('og_description', 'Професионално заснемане на сгради, интериори и екстериори. За агенции за недвижими имоти, хотели, ресторанти и архитектурни бюра.')
+@section('title', 'Архитектурно и Интериорно Заснемане Варна | Take Two Studio')
+@section('meta_description', 'Професионално интериорно, екстериорно и дрон видеозаснемане на имоти, хотели, ресторанти и офиси във Варна от Take Two Studio.')
+@section('meta_keywords', 'архитектурен фотограф варна, интериорно видеозаснемане, снимки на имоти, видео за Airbnb, хотелско видео, real estate video варна, Take Two Studio')
+@section('og_title', 'Архитектурно и Интериорно Заснемане Варна | Take Two Studio')
+@section('og_description', 'Професионално фото и видеозаснемане на сгради, интериори и екстериори във Варна. За агенции, хотели, ресторанти и бюра.')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -116,11 +116,11 @@
                                         <div id="carouselGallery{{ $gallery->id }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Cover">
+                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Интериорна снимка на {{ $gallery->title }} - Take Two Studio">
                                                 </div>
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Photo">
+                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Архитектурна фотография Варна - {{ $gallery->title }} - интериорен фотограф">
                                                 </div>
                                                 @endforeach
                                             </div>

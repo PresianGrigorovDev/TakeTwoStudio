@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Семеен Фотограф Варна | Семейна Фотосесия на Открито и в Студио | Take Two Studio 1603')
-@section('meta_description', 'Търсите семеен фотограф във Варна? Професионални семейни фотосесии на открито, в парка, на плажа или в студио. Естествени кадри с деца и бебета. Вижте портфолиото и цените!')
-@section('meta_keywords', 'семеен фотограф варна, семейна фотосесия варна, семейни снимки на открито, фотосесия с деца варна, семейни портрети, фотограф за семейства варна, Take Two Studio')
-@section('og_title', 'Семейна Фотография Варна — Естествени Кадри с Емоция | Take Two Studio')
-@section('og_description', 'Запечатайте най-ценните моменти със семейството си. Професионални семейни фотосесии на открито и в студио във Варна.')
+@section('title', 'Семеен Фотограф и Видео Варна | Take Two Studio')
+@section('meta_description', 'Търсите семеен фотограф или видеозаснемане във Варна? Професионални семейни фотосесии на открито и в студио. Разгледайте портфолиото и цените ни.')
+@section('meta_keywords', 'семеен фотограф варна, семейно видеозаснемане, семейна фотосесия варна, семейни снимки на открито, видео за семейства, Take Two Studio')
+@section('og_title', 'Семеен Фотограф и Видео Варна | Take Two Studio')
+@section('og_description', 'Запечатайте най-ценните моменти със семейството си. Професионално фото и видеозаснемане на семейства на открито и в студио във Варна.')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -120,11 +120,11 @@
                                         <div id="carouselGallery{{ $gallery->id }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Cover">
+                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Семейна снимка на {{ $gallery->title }} - Take Two Studio">
                                                 </div>
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Photo">
+                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Семейна фотосесия на {{ $gallery->title }} във Варна - семеен фотограф">
                                                 </div>
                                                 @endforeach
                                             </div>

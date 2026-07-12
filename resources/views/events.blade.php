@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Фотограф за Събития Варна | Корпоративни, Фирмени и Частни Събития | Take Two Studio 1603')
-@section('meta_description', 'Професионално заснемане на събития във Варна — корпоративни партита, конференции, продуктови лансирания, рождени дни и частни тържества. Бързо предаване на обработени кадри.')
-@section('meta_keywords', 'фотограф за събития варна, заснемане на корпоративни събития, фирмени партита фотография, конференция фотограф, рожден ден фотосесия, събитийна фотография варна, Take Two Studio')
-@section('og_title', 'Събитийна Фотография Варна — Корпоративни и Частни Събития | Take Two Studio')
-@section('og_description', 'Професионално заснемане на корпоративни, фирмени и частни събития. Конференции, партита, лансирания и тържества във Варна.')
+@section('title', 'Фотограф и Видео за Събития Варна | Take Two Studio')
+@section('meta_description', 'Професионално фото и видеозаснемане на събития във Варна – фирмени партита, конференции, рождени дни и частни празненства от Take Two Studio.')
+@section('meta_keywords', 'фотограф за събития варна, видеозаснемане на събития, фирмени партита видео, заснемане на конференции, събитиен фотограф варна, Take Two Studio')
+@section('og_title', 'Фотограф и Видео за Събития Варна | Take Two Studio')
+@section('og_description', 'Професионално фото и видеозаснемане на корпоративни, фирмени и частни събития във Варна. Бързо предаване на кадрите.')
 
 @push('styles')
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -100,7 +100,7 @@
                 <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
                     <div class="portfolio-item">
                         <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
-                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Събитийна Фотография Варна">
+                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Събитийна Фотография Варна - Снимка {{ $i + 1 }} - Take Two Studio">
                         </a>
                     </div>
                 </div>

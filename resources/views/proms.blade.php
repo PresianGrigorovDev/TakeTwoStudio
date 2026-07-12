@@ -121,7 +121,7 @@
                 <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
                     <div class="portfolio-item">
                         <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
-                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна">
+                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна - Фотосесия {{ $i + 1 }} - Take Two Studio">
                         </a>
                     </div>
                 </div>
