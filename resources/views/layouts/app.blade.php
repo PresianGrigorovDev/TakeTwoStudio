@@ -58,17 +58,17 @@
 
     <script type="application/ld+json">
     {
-      "@@context": "https://schema.org",
+      "@context": "https://schema.org",
       "@type": ["LocalBusiness", "ProfessionalService"],
       "name": "Take Two Studio 1603",
       "image": "{{ asset('css/img/about.webp') }}",
       "@id": "https://taketwostudio1603.com",
       "url": "https://taketwostudio1603.com",
-      "telephone": "{{ \App\Models\SiteSetting::find(4)->setting_value }}",
+      "telephone": "{{ \App\Models\SiteSetting::where('setting_key', 'site_phone')->orWhere('setting_key', 'contact_phone')->first()?->setting_value }}",
       "priceRange": "€€",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "{{ \App\Models\SiteSetting::find(6)->setting_value }}",
+        "streetAddress": "{{ \App\Models\SiteSetting::where('setting_key', 'site_address')->orWhere('setting_key', 'contact_address')->first()?->setting_value }}",
         "addressLocality": "Варна",
         "postalCode": "9000",
         "addressCountry": "BG"
@@ -86,12 +86,12 @@
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-        "opens": "{{ \App\Models\SiteSetting::find(7)->setting_value }}:00",
-        "closes": "{{ \App\Models\SiteSetting::find(8)->setting_value }}:00"
+        "opens": "09:00",
+        "closes": "18:00"
       },
       "sameAs": [
-        "{{ \App\Models\SiteSetting::find(7)->setting_value }}",
-        "{{ \App\Models\SiteSetting::find(8)->setting_value }}"
+        "{{ \App\Models\SiteSetting::where('setting_key', 'site_facebook')->orWhere('setting_key', 'social_facebook')->first()?->setting_value }}",
+        "{{ \App\Models\SiteSetting::where('setting_key', 'site_instagram')->orWhere('setting_key', 'social_instagram')->first()?->setting_value }}"
       ],
       "description": "Професионално сватбено фото и видеозаснемане във Варна. Услуги за балове, кръщенета и корпоративни събития.",
       "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"],

@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 Route::get('/', [App\Http\Controllers\PageController::class, 'home']);
 
@@ -31,12 +34,15 @@ Route::get('/terms', fn () => app(App\Http\Controllers\LegalPageController::clas
 Route::get('/cookies', fn () => app(App\Http\Controllers\LegalPageController::class)->show('cookies'))->name('legal.cookies');
 
 Route::get('/clear-cache', function () {
-    Artisan::call('cache:clear');
-    Artisan::call('view:clear');
-    Artisan::call('route:clear');
-    Artisan::call('config:clear');
-    Artisan::call('filament:cache-components');
-    return redirect('/')->with('success', 'Cache cleared!');
+    if (Auth::check() && Auth::user()->isAdmin()) {
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
+        Artisan::call('filament:cache-components');
+        return redirect('/')->with('success', 'Cache cleared!');
+    }
+    abort(403);
 });
 
 Route::get('/seed-all', [App\Http\Controllers\SeedController::class, 'run']);
@@ -54,20 +60,18 @@ Route::get('/api/booking-hours', [App\Http\Controllers\BookingController::class,
 // Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 // Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
-Route::get('/force-login', function () {
-    $user = User::updateOrCreate(
-        ['email' => 'presiangrigorovdev@gmail.com'],
-        [
-            'name' => 'Presian',
-            'password' => Hash::make('12345678'),
-            'is_admin' => true,
-        ]
-    );
-    
-    Auth::login($user);
-    return redirect('/admin');
-});
+if (app()->environment('local')) {
+    Route::get('/force-login', function () {
+        $user = User::updateOrCreate(
+            ['email' => 'presiangrigorovdev@gmail.com'],
+            [
+                'name' => 'Presian',
+                'password' => Hash::make('12345678'),
+                'is_admin' => true,
+            ]
+        );
+        
+        Auth::login($user);
+        return redirect('/admin');
+    });
+}
