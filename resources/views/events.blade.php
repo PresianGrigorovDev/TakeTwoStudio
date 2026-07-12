@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
 @endpush
 
+@section('preload')
+    @if(!empty($service->hero_image))
+        <link rel="preload" href="{{ asset('storage/' . $service->hero_image) }}" as="image" fetchpriority="high">
+    @endif
+@endsection
+
 @section('content')
 
     @php
