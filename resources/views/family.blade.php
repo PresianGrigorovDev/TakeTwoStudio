@@ -5,6 +5,7 @@
 @section('meta_keywords', 'семеен фотограф варна, семейно видеозаснемане, семейна фотосесия варна, семейни снимки на открито, видео за семейства, Take Two Studio')
 @section('og_title', 'Семеен Фотограф и Видео Варна | Take Two Studio')
 @section('og_description', 'Запечатайте най-ценните моменти със семейството си. Професионално фото и видеозаснемане на семейства на открито и в студио във Варна.')
+@section('og_image', asset('css/img/about.webp'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">

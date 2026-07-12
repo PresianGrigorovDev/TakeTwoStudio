@@ -5,6 +5,7 @@
 @section('meta_keywords', 'фотограф за събития варна, видеозаснемане на събития, фирмени партита видео, заснемане на конференции, събитиен фотограф варна, Take Two Studio')
 @section('og_title', 'Фотограф и Видео за Събития Варна | Take Two Studio')
 @section('og_description', 'Професионално фото и видеозаснемане на корпоративни, фирмени и частни събития във Варна. Бързо предаване на кадрите.')
+@section('og_image', asset('css/img/header.jpg'))
 
 @push('styles')
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">

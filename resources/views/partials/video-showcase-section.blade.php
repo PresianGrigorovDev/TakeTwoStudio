@@ -109,6 +109,7 @@
                             frameborder="0" 
                             allow="autoplay; fullscreen" 
                             allowfullscreen 
+                            loading="lazy"
                             style="pointer-events: none; border: none; width: 100%; height: 100%;">
                     </iframe>
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 

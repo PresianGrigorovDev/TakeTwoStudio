@@ -5,6 +5,7 @@
 @section('meta_keywords', 'портретен фотограф варна, портретна фотосесия варна, бизнес портрет, headshot фотография, лична фотосесия, портрет в студио варна, Take Two Studio')
 @section('og_title', 'Портретна Фотография Варна — Разкрийте Своята Уникалност | Take Two Studio')
 @section('og_description', 'Артистични индивидуални портрети за лична марка, социални мрежи или подарък. Професионално студийно осветление и ретуш.')
+@section('og_image', asset('css/img/about.webp'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">

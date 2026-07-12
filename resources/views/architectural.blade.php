@@ -5,6 +5,7 @@
 @section('meta_keywords', 'архитектурен фотограф варна, интериорно видеозаснемане, снимки на имоти, видео за Airbnb, хотелско видео, real estate video варна, Take Two Studio')
 @section('og_title', 'Архитектурно и Интериорно Заснемане Варна | Take Two Studio')
 @section('og_description', 'Професионално фото и видеозаснемане на сгради, интериори и екстериори във Варна. За агенции, хотели, ресторанти и бюра.')
+@section('og_image', asset('css/img/Edited_IMG_9630.jpg'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">

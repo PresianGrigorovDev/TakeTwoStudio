@@ -5,6 +5,7 @@
 @section('meta_keywords', 'автомобилен фотограф варна, автомобилно видеозаснемане, car photography варна, видео за коли, тунинг видео, заснемане на автомобили, Take Two Studio')
 @section('og_title', 'Автомобилна Фотография и Видео Варна | Take Two Studio')
 @section('og_description', 'Професионално заснемане на автомобили — динамични видео клипове, снимки, детайли и интериор. За автосалони, обяви и реклама.')
+@section('og_image', asset('css/img/Коли.jpeg'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
