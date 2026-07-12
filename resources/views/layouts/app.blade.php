@@ -58,7 +58,7 @@
 
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": ["LocalBusiness", "ProfessionalService"],
       "name": "Take Two Studio 1603",
       "image": "{{ asset('css/img/about.webp') }}",
