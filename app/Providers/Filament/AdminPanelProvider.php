@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName('Take Two Studio 1603')
+            ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Amber,
             ])

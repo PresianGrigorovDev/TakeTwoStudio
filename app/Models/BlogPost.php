@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
+use App\Traits\LogsActivity;
+
 class BlogPost extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'title',
         'slug',
