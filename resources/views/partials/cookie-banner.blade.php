@@ -89,10 +89,25 @@
     }
     @endif
 
+    @if(config('services.google_analytics.measurement_id'))
+    function grantAnalyticsConsent() {
+        if (typeof gtag !== 'function') return;
+        gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted',
+            'analytics_storage': 'granted'
+        });
+    }
+    @endif
+
     const consent = getConsent();
     if (consent === 'all') {
         @if(config('services.clarity.project_id'))
         loadClarity();
+        @endif
+        @if(config('services.google_analytics.measurement_id'))
+        grantAnalyticsConsent();
         @endif
     } else if (!consent) {
         banner.style.display = 'block';
@@ -103,6 +118,9 @@
         banner.style.display = 'none';
         @if(config('services.clarity.project_id'))
         loadClarity();
+        @endif
+        @if(config('services.google_analytics.measurement_id'))
+        grantAnalyticsConsent();
         @endif
     });
 
