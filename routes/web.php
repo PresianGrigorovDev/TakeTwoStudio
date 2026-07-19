@@ -29,6 +29,9 @@ Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
+Route::get('/llms.txt', [App\Http\Controllers\LLMController::class, 'index']);
+Route::get('/llms-full.txt', [App\Http\Controllers\LLMController::class, 'full']);
+
 Route::get('/privacy', fn () => app(App\Http\Controllers\LegalPageController::class)->show('privacy'))->name('legal.privacy');
 Route::get('/terms', fn () => app(App\Http\Controllers\LegalPageController::class)->show('terms'))->name('legal.terms');
 Route::get('/cookies', fn () => app(App\Http\Controllers\LegalPageController::class)->show('cookies'))->name('legal.cookies');

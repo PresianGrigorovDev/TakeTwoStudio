@@ -1,3 +1,54 @@
+# For AI Agents (Welcome to Take Two Studio 1603)
+User-agent: GPTBot
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: Claude-Web
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: ClaudeBot
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: PerplexityBot
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: Google-Extended
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+User-agent: Applebot-Extended
+Disallow: /admin/
+Disallow: /filament/
+Disallow: /clear-cache
+Disallow: /force-login
+Disallow: /api/
+
+# General search engines
 User-agent: *
 Disallow: /admin/
 Disallow: /filament/
@@ -6,3 +57,5 @@ Disallow: /force-login
 Disallow: /api/
 
 Sitemap: https://taketwostudio1603.com/sitemap.xml
+# AI Index Sitemap
+# Sitemap: https://taketwostudio1603.com/llms.txt
