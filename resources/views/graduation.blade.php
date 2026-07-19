@@ -32,7 +32,7 @@
 <section class="graduation-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
     <div class="hero-overlay"></div>
     <div class="hero-content" data-aos="fade-up">
-        <span class="hero-badge">Take Two Studio 1603</span>
+        {{-- <span class="hero-badge">Take Two Studio 1603</span> --}}
         <h1>{{ $pageContent[0]->content_bg }}</h1>
         <span class="hero-subtitle">{{ $pageContent[1]->content_bg }}</span>
         <div>
