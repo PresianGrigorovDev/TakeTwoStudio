@@ -76,13 +76,34 @@
         document.cookie = COOKIE_NAME + '=' + value + '; max-age=' + oneYear + '; path=/; SameSite=Lax';
     }
 
-    if (!getConsent()) {
+    @if(config('services.clarity.project_id'))
+    function loadClarity() {
+        if (window.clarityLoaded) return;
+        window.clarityLoaded = true;
+
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "{{ config('services.clarity.project_id') }}");
+    }
+    @endif
+
+    const consent = getConsent();
+    if (consent === 'all') {
+        @if(config('services.clarity.project_id'))
+        loadClarity();
+        @endif
+    } else if (!consent) {
         banner.style.display = 'block';
     }
 
     document.getElementById('cookieAcceptAll').addEventListener('click', function () {
         setConsent('all');
         banner.style.display = 'none';
+        @if(config('services.clarity.project_id'))
+        loadClarity();
+        @endif
     });
 
     document.getElementById('cookieRejectOptional').addEventListener('click', function () {

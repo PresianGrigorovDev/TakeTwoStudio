@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'clarity' => [
+        'project_id' => env('CLARITY_PROJECT_ID'),
+    ],
+
 ];
