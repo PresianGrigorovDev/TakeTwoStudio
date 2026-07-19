@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+use App\Traits\LogsActivity;
+
 class BlogCategory extends Model
 {
+    use LogsActivity;
     protected $fillable = [
         'name',
         'slug',
