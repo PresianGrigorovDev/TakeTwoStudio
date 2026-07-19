@@ -40,15 +40,26 @@ class ActivityLogResource extends Resource
                     ->label('Описание')
                     ->disabled()
                     ->columnSpanFull(),
-                Forms\Components\KeyValue::make('properties')
-                    ->label('Променени полета (Старо -> Ново)')
-                    ->valueSerializer(function ($value) {
-                        if (is_array($value) && isset($value['old']) && isset($value['new'])) {
-                            return 'От: "' . (is_array($value['old']) ? json_encode($value['old'], JSON_UNESCAPED_UNICODE) : $value['old']) . '" ➜ Към: "' . (is_array($value['new']) ? json_encode($value['new'], JSON_UNESCAPED_UNICODE) : $value['new']) . '"';
+                Forms\Components\Placeholder::make('properties')
+                    ->label('Променени полета (Старо ➜ Ново)')
+                    ->content(function ($record) {
+                        if (!$record || empty($record->properties)) {
+                            return 'Няма променени полета.';
                         }
-                        return is_array($value) ? json_encode($value, JSON_UNESCAPED_UNICODE) : $value;
+
+                        $html = '<div style="display: flex; flex-direction: column; gap: 0.5rem; font-family: monospace;">';
+                        foreach ($record->properties as $field => $change) {
+                            $old = is_array($change['old']) ? json_encode($change['old'], JSON_UNESCAPED_UNICODE) : $change['old'];
+                            $new = is_array($change['new']) ? json_encode($change['new'], JSON_UNESCAPED_UNICODE) : $change['new'];
+
+                            $fieldName = ucwords(str_replace('_', ' ', $field));
+
+                            $html .= "<div><strong>{$fieldName}</strong>: <span style='color: #ef4444; text-decoration: line-through;'>\"{$old}\"</span> <span style='color: #9ca3af;'>➜</span> <span style='color: #22c55e;'>\"{$new}\"</span></div>";
+                        }
+                        $html .= '</div>';
+
+                        return new \Illuminate\Support\HtmlString($html);
                     })
-                    ->disabled()
                     ->columnSpanFull()
                     ->visible(fn ($record) => $record && !empty($record->properties)),
             ]);
