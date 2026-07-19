@@ -47,16 +47,24 @@ class TeamMemberResource extends Resource
                 Forms\Components\Textarea::make('bio_bg')
                     ->label('Биография')
                     ->columnSpanFull(),
+                Forms\Components\Section::make('Контакти и Социални мрежи')
+                    ->schema([
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Телефон')
+                            ->tel()
+                            ->maxLength(30),
+                        Forms\Components\TextInput::make('instagram_url')
+                            ->label('Instagram URL')
+                            ->url()
+                            ->maxLength(255),
+                    ])
+                    ->columns(2),
                 Forms\Components\Section::make('Данни за договори')
                     ->description('Тези данни се използват при генериране на договори')
                     ->schema([
                         Forms\Components\TextInput::make('address')
                             ->label('Адрес')
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('phone')
-                            ->label('Телефон')
-                            ->tel()
-                            ->maxLength(30),
                         Forms\Components\TextInput::make('email')
                             ->label('Имейл')
                             ->email()

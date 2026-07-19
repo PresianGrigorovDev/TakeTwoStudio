@@ -269,9 +269,23 @@
                         <img src="{{ $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png') }}"
                             alt="{{ $member->name }}" class="team-img mb-3" style="width: 120px; height: 120px;" loading="lazy">
                         <p class="role-text mb-3">{{ $member->role_bg }}</p>
-                        <p class="text-muted">
+                        <p class="text-muted mb-3">
                             {{ $member->bio_bg }}
                         </p>
+                        @if($member->phone || $member->instagram_url)
+                            <div class="mt-3 pt-3 border-top d-flex justify-content-center gap-3 flex-wrap">
+                                @if($member->phone)
+                                    <a href="tel:{{ $member->phone }}" class="btn btn-outline-dark btn-sm rounded-0">
+                                        <i class="fas fa-phone me-1"></i> {{ $member->phone }}
+                                    </a>
+                                @endif
+                                @if($member->instagram_url)
+                                    <a href="{{ $member->instagram_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-0">
+                                        <i class="fab fa-instagram me-1"></i> Instagram
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

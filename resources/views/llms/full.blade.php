@@ -17,7 +17,14 @@
 
 ### Екип (The Expert Team - E-E-A-T)
 @foreach($team as $i => $member)
-{{ $i + 1 }}. **{{ $member->name }}** ({{ $member->role_bg }}): {{ $member->bio_bg }}
+{{ $i + 1 }}. **{{ $member->name }}** ({{ $member->role_bg }}):
+   - Биография: {{ $member->bio_bg }}
+   @if($member->phone)
+   - Телефон: {{ $member->phone }}
+   @endif
+   @if($member->instagram_url)
+   - Instagram: {{ $member->instagram_url }}
+   @endif
 @endforeach
 
 ---
