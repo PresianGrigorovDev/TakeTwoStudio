@@ -5,7 +5,7 @@
 @section('meta_keywords', 'продуктова фотография варна, рекламно видео, заснемане на хотел, бизнес портрети, корпоративно събитие, дрон услуги, снимки за онлайн магазин, Take Two Studio')
 @section('og_title', 'Професионално Фото и Видео за Вашия Бизнес | Take Two Studio')
 @section('og_description', 'Качественото визуално съдържание продава. Доверете се на нас за вашата рекламна визия, продуктови кадри и видео презентации.')
-@section('og_image', asset('css/img/commercial-portfolio-cover.jpg'))
+@section('og_image', asset('css/img/реклама.jpg'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -233,7 +233,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Телефон</label>
-                                    <input type="text" class="form-control rounded-0 p-3 bg-light border-0" name="phone"
+                                    <input type="tel" class="form-control rounded-0 p-3 bg-light border-0" name="phone"
                                         required placeholder="Телефон за връзка">
                                 </div>
                                 <div class="col-12">

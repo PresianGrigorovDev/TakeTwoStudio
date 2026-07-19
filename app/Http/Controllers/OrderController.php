@@ -14,6 +14,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'name'                  => 'required|string|max:255',
             'phone'                 => 'required|string|max:20',
+            'email'                 => 'nullable|email|max:255',
             'final_price'           => 'required|numeric',
             'details'               => 'required|string',
             'school'                => 'nullable|string|max:255',
@@ -76,6 +77,7 @@ class OrderController extends Controller
         $order = \App\Models\Order::create([
             'name'            => $validated['name'],
             'phone'           => $validated['phone'],
+            'email'           => $validated['email'] ?? null,
             'service_type'    => $typeOfService,
             'price'           => $finalPrice,
             'details'         => $validated['details'],

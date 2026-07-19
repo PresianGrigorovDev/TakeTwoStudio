@@ -229,7 +229,8 @@
                             @include('partials.promo-code-input')
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0" placeholder="Вашето име" required>
-                                <input type="text" name="phone" class="form-control mb-2 rounded-0" placeholder="Телефон" required>
+                                <input type="tel" name="phone" class="form-control mb-2 rounded-0" placeholder="Телефон" required>
+                                <input type="email" name="email" class="form-control mb-2 rounded-0" placeholder="Имейл">
                                 <input type="date" name="date" class="form-control mb-2 rounded-0" placeholder="Дата на събитието" required onclick="this.showPicker()">
                                 @include('partials.gdpr-consent', ['consentId' => 'event'])
                                 <button type="submit" class="btn btn-custom">Изпрати Запитване</button>

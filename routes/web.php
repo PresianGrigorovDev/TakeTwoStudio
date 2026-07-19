@@ -47,12 +47,12 @@ Route::get('/clear-cache', function () {
 
 Route::get('/seed-all', [App\Http\Controllers\SeedController::class, 'run']);
 
-Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder']);
-Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact']);
-Route::post('/api/validate-promo-code', [App\Http\Controllers\OrderController::class, 'validatePromoCode'])->name('promo.validate');
+Route::post('/submit-order', [App\Http\Controllers\OrderController::class, 'submitOrder'])->middleware('throttle:6,1');
+Route::post('/submit-contact', [App\Http\Controllers\OrderController::class, 'submitContact'])->middleware('throttle:6,1');
+Route::post('/api/validate-promo-code', [App\Http\Controllers\OrderController::class, 'validatePromoCode'])->name('promo.validate')->middleware('throttle:20,1');
 
 Route::get('/booking', [App\Http\Controllers\BookingController::class, 'showCalendar']);
-Route::post('/submit-booking', [App\Http\Controllers\BookingController::class, 'submitBooking']);
+Route::post('/submit-booking', [App\Http\Controllers\BookingController::class, 'submitBooking'])->middleware('throttle:6,1');
 Route::get('/api/booking-availability', [App\Http\Controllers\BookingController::class, 'getAvailability']);
 Route::get('/api/booking-hours', [App\Http\Controllers\BookingController::class, 'getAvailableHours']);
 

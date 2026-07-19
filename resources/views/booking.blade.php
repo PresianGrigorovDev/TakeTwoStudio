@@ -54,18 +54,25 @@
                         </div>
                     </div>
 
-                    <!-- Booking Form (hidden until date selected) -->
-                    <div class="booking-form-wrapper" id="bookingFormWrapper" style="display:none" data-aos="fade-up">
+                    <!-- Booking Form (hidden until date selected, or shown again if a previous submit had errors) -->
+                    <div class="booking-form-wrapper" id="bookingFormWrapper" style="{{ $errors->any() ? '' : 'display:none' }}" data-aos="fade-up">
                         <h3 class="text-center mb-4">Заявка за резервация</h3>
+
+                        @if($errors->any() && (! old('event_date') || ! old('start_time') || ! old('end_time')))
+                            <div class="alert alert-warning text-center">
+                                Моля, изберете отново дата и часове от календара по-горе.
+                            </div>
+                        @endif
+
                         <div class="selected-date-display text-center mb-4">
-                            Избрана дата: <strong id="selectedDateDisplay"></strong>
+                            Избрана дата: <strong id="selectedDateDisplay">{{ old('event_date') }}</strong>
                         </div>
 
                         <form action="/submit-booking" method="POST" id="bookingForm">
                             @csrf
-                            <input type="hidden" name="event_date" id="eventDateInput">
-                            <input type="hidden" name="start_time" id="startTimeInput">
-                            <input type="hidden" name="end_time" id="endTimeInput">
+                            <input type="hidden" name="event_date" id="eventDateInput" value="{{ old('event_date') }}">
+                            <input type="hidden" name="start_time" id="startTimeInput" value="{{ old('start_time') }}">
+                            <input type="hidden" name="end_time" id="endTimeInput" value="{{ old('end_time') }}">
 
                             <!-- Time Slots -->
                             <div class="mb-4">

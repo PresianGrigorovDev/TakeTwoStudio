@@ -5,7 +5,7 @@
 @section('meta_keywords', 'фотограф за бал варна, абитуриентска фотосесия, видеозаснемане бал, фотосесия морска градина, снимки абитуриенти, Take Two Studio')
 @section('og_title', 'Фотосесия за Абитуриентски Бал | Take Two Studio Варна')
 @section('og_description', 'Искате уникални кадри от бала? Вижте портфолиото ни с абитуриенти и запазете дата за вашата фотосесия.')
-@section('og_image', asset('css/img/prom-photoshoot-varna.jpg'))
+@section('og_image', asset('css/img/Бал.jpeg'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -345,8 +345,10 @@
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"
                                     placeholder="Твоето име" required>
-                                <input type="text" name="phone" class="form-control mb-2 rounded-0"
+                                <input type="tel" name="phone" class="form-control mb-2 rounded-0"
                                     placeholder="Телефон" required>
+                                <input type="email" name="email" class="form-control mb-2 rounded-0"
+                                    placeholder="Имейл">
                                 <input type="text" name="school" class="form-control mb-2 rounded-0"
                                     placeholder="Училище / Клас" required>
                                 @include('partials.gdpr-consent', ['consentId' => 'prom'])

@@ -20,7 +20,7 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta property="og:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България. Вижте портфолиото ни.')">
-    <meta property="og:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
+    <meta property="og:image" content="@yield('og_image', asset('css/img/header.jpg'))">
     <meta property="og:locale" content="bg_BG">
     <meta property="og:site_name" content="Take Two Studio 1603">
 
@@ -28,7 +28,7 @@
     <meta name="twitter:site" content="@@taketwostudio1603">
     <meta name="twitter:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta name="twitter:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България.')">
-    <meta name="twitter:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
+    <meta name="twitter:image" content="@yield('og_image', asset('css/img/header.jpg'))">
 
     <meta name="geo.region" content="BG-03">
     <meta name="geo.placename" content="Varna">
@@ -38,6 +38,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     
     @yield('preload')
     
@@ -51,6 +52,11 @@
     <link rel="manifest" href="/site.webmanifest">
     <link rel="icon" href="{{ asset('css/img/favicon_io/favicon-16x16.png') }}" sizes="any">
 
+    @php
+        $testimonialStats = \App\Models\Testimonial::where('is_active', true)
+            ->selectRaw('COUNT(*) as cnt, AVG(rating) as avg_rating')
+            ->first();
+    @endphp
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
@@ -88,6 +94,13 @@
         "{{ \App\Models\SiteSetting::where('setting_key', 'site_facebook')->orWhere('setting_key', 'social_facebook')->first()?->setting_value }}",
         "{{ \App\Models\SiteSetting::where('setting_key', 'site_instagram')->orWhere('setting_key', 'social_instagram')->first()?->setting_value }}"
       ],
+@if($testimonialStats && $testimonialStats->cnt > 0)
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "{{ number_format((float) $testimonialStats->avg_rating, 1) }}",
+        "reviewCount": "{{ (int) $testimonialStats->cnt }}"
+      },
+@endif
       "description": "Професионално сватбено фото и видеозаснемане във Варна. Услуги за балове, кръщенета и корпоративни събития.",
       "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"],
       "hasOfferCatalog": {
@@ -150,7 +163,7 @@
                                 @endphp
                             </ul>
                         </li>
-                        {{-- <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li> --}}
+                        <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#contact">Контакти</a></li>
                     </div>
                 </ul>

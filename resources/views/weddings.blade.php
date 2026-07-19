@@ -5,7 +5,7 @@
 @section('meta_keywords', 'сватбен фотограф варна, сватбен калкулатор, видеозаснемане сватба, сватбени пакети цени, дрон за сватба, сватбена фотосесия морето')
 @section('og_title', 'Сватбена Фотография и Видеозаснемане | Изчислете своя пакет')
 @section('og_description', 'Планирате сватба във Варна? Вижте портфолиото ни и разберете цените веднага с нашия калкулатор. Емоция и качество от Take Two Studio.')
-@section('og_image', asset('css/img/best-wedding-cover.jpg'))
+@section('og_image', asset('css/img/Сватба.jpg'))
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
@@ -628,8 +628,10 @@
                             <div class="mt-4">
                                 <input type="text" name="name" class="form-control mb-2 rounded-0"
                                     placeholder="Вашето име" required>
-                                <input type="text" name="phone" class="form-control mb-2 rounded-0"
+                                <input type="tel" name="phone" class="form-control mb-2 rounded-0"
                                     placeholder="Телефон" required>
+                                <input type="email" name="email" class="form-control mb-2 rounded-0"
+                                    placeholder="Имейл">
                                 <input type="date" name="date" class="form-control mb-2 rounded-0"
                                     placeholder="Дата на сватбата" required onclick="this.showPicker()">
                                 @include('partials.gdpr-consent', ['consentId' => 'wedding'])

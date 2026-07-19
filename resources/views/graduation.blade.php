@@ -398,6 +398,8 @@
                                    placeholder="Вашето име" required>
                             <input type="tel" name="phone" class="form-control mb-2 rounded-0"
                                    placeholder="Телефон" required>
+                            <input type="email" name="email" class="form-control mb-2 rounded-0"
+                                   placeholder="Имейл">
                             <input type="date" name="graduation_date" id="graduationDate" class="form-control mb-2 rounded-0"
                                    placeholder="Дата на изпращането" required onclick="this.showPicker()">
                             <input type="hidden" name="graduation_start_time" id="graduationStartTime">

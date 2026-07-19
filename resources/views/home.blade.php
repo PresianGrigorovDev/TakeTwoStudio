@@ -5,7 +5,7 @@
 @section('meta_keywords', 'фотограф варна, сватбен фотограф варна, фотограф за бал варна, заснемане на събития варна, семейна фотосесия, портретен фотограф, автомобилна фотография, архитектурна фотография, видеозаснемане варна, дрон заснемане, Take Two Studio 1603')
 @section('og_title', 'Take Two Studio 1603 - Фотограф и Видеозаснемане Варна')
 @section('og_description', 'Професионален фотограф и видеооператор във Варна от Take Two Studio 1603. Сватби, балове, събития, портрети, семейна и дрон фотография.')
-@section('og_image', asset('css/img/social-share-cover.jpg'))
+@section('og_image', asset('css/img/header.jpg'))
 
 @section('preload')
     <link rel="preload" href="{{ asset('css/img/header.webp') }}" as="image" type="image/webp" fetchpriority="high">
@@ -160,6 +160,11 @@
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                         <div class="testimonial-card falling-item">
                             <i class="fas fa-quote-left quote-icon"></i>
+                            <div class="testimonial-stars text-warning mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fa-star {{ $i <= ($testimonial->rating ?? 5) ? 'fas' : 'far' }}"></i>
+                                @endfor
+                            </div>
                             <p>"{{ $testimonial->content_bg }}"</p>
                             <div class="mt-3 fw-bold h6">- {{ $testimonial->client_name_bg ?? $testimonial->client_name }}</div>
                         </div>
