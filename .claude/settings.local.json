@@ -12,7 +12,11 @@
       "Bash(php -l config/contracts.php)",
       "Read(//opt/homebrew/opt/**)",
       "Bash(brew list *)",
-      "Bash('/Users/pgg/Library/Application Support/Herd/bin/php84' artisan tinker '--execute= *)"
+      "Bash('/Users/pgg/Library/Application Support/Herd/bin/php84' artisan tinker '--execute= *)",
+      "Bash(awk -F: '{print $1\": \"substr\\($0,length\\($1\\)+2\\)}')",
+      "Bash('/Users/pgg/Library/Application Support/Herd/bin/php84' -r ' *)",
+      "Bash(\"/Users/pgg/Library/Application Support/Herd/bin/php84\" -l /Users/pgg/Documents/GitHub/TakeTwoStudio/database/seeders/BlogPostSeeder.php)",
+      "Bash(\"/Users/pgg/Library/Application Support/Herd/bin/php84\" \"/private/tmp/claude-501/-Users-pgg-Documents-GitHub-TakeTwoStudio/7101812c-bf18-4621-9fe1-021f79210778/scratchpad/sync_blog_posts.php\")"
     ]
   }
 }

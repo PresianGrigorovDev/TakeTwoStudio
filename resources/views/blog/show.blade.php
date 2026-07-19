@@ -110,9 +110,26 @@
                                 'text' => 'Запазете индивидуална портретна сесия и създайте своите кадри с нас.',
                                 'label' => 'Към портретни фотосесии',
                             ],
+                            'event-tips' => [
+                                'url' => url('/events'),
+                                'heading' => 'Организирате събитие?',
+                                'text' => 'Разгледайте нашите услуги за фото и видеозаснемане на фирмени и лични събития.',
+                                'label' => 'Към фото и видео за събития',
+                            ],
                         ];
 
-                        $categoryCta = $post->category ? ($categoryCtaMap[$post->category->slug] ?? null) : null;
+                        // Some posts fit a more specific landing page than their category's default CTA.
+                        $postSlugCtaOverrides = [
+                            'uchilishtno-izprashtane-zasnemane-varna' => [
+                                'url' => url('/graduation'),
+                                'heading' => 'Предстои изпращане на випуска?',
+                                'text' => 'Вижте нашите пред-бални фотосесии и пакети за изпращане на абитуриенти.',
+                                'label' => 'Към пред-балните фотосесии',
+                            ],
+                        ];
+
+                        $categoryCta = $postSlugCtaOverrides[$post->slug]
+                            ?? ($post->category ? ($categoryCtaMap[$post->category->slug] ?? null) : null);
                     @endphp
 
                     <div class="blog-post__cta" data-aos="fade-up">
