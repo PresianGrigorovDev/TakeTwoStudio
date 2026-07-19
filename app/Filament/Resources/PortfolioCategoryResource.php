@@ -67,7 +67,7 @@ class PortfolioCategoryResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('cover_image')
                     ->label('Корица')
-                    ->editable(true),
+                    ->editable(),
                 Tables\Columns\TextColumn::make('name_bg')
                     ->label('Име')
                     ->searchable(),
