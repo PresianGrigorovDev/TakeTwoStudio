@@ -66,8 +66,7 @@ class PortfolioCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover_image')
-                    ->label('Корица')
-                    ->editable(),
+                    ->label('Корица'),
                 Tables\Columns\TextColumn::make('name_bg')
                     ->label('Име')
                     ->searchable(),
@@ -97,6 +96,22 @@ class PortfolioCategoryResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('change_cover')
+                    ->label('Снимка')
+                    ->icon('heroicon-o-camera')
+                    ->form([
+                        Forms\Components\FileUpload::make('cover_image')
+                            ->label('Корица')
+                            ->required()
+                            ->image()
+                            ->directory('portfolio/categories'),
+                    ])
+                    ->mountUsing(fn ($form, $record) => $form->fill([
+                        'cover_image' => $record->cover_image,
+                    ]))
+                    ->action(function (PortfolioCategory $record, array $data): void {
+                        $record->update($data);
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
