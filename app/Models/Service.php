@@ -5,11 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Traits\LogsActivity;
+use App\Support\ImageOptimizer;
 
 class Service extends Model
 {
     use LogsActivity;
     protected $guarded = [];
+
+    protected static function booted(): void
+    {
+        static::saved(function (Service $service) {
+            if ($service->wasChanged('hero_image') && ! empty($service->hero_image)) {
+                ImageOptimizer::optimize('public', $service->hero_image);
+            }
+        });
+    }
 
     public function packages()
     {

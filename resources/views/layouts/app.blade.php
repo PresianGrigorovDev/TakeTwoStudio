@@ -33,10 +33,14 @@
     <meta name="author" content="Take Two Studio 1603">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
 
-    <link rel="canonical" href="{{ url()->current() }}">
+    @php
+        $canonicalPath = preg_replace('#^public/#', '', request()->path());
+        $canonicalUrl = 'https://taketwostudio1603.com' . ($canonicalPath === '/' ? '' : '/' . ltrim($canonicalPath, '/'));
+    @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta property="og:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България. Вижте портфолиото ни.')">
     <meta property="og:image" content="@yield('og_image', asset('css/img/header.jpg'))">

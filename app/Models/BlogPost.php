@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 use App\Traits\LogsActivity;
+use App\Support\ImageOptimizer;
 
 class BlogPost extends Model
 {
@@ -43,6 +44,12 @@ class BlogPost extends Model
 
             if (empty($post->meta_keywords)) {
                 $post->meta_keywords = $post->generateMetaKeywords();
+            }
+        });
+
+        static::saved(function (BlogPost $post) {
+            if ($post->wasChanged('cover_image') && ! empty($post->cover_image)) {
+                ImageOptimizer::optimize('public', $post->cover_image);
             }
         });
     }
@@ -150,6 +157,14 @@ class BlogPost extends Model
         return $query->where('is_published', true)
             ->whereNotNull('published_at')
             ->where('published_at', '>', now());
+    }
+
+    public function scopeDraft(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->where('is_published', false)
+                ->orWhereNull('published_at');
+        });
     }
 
     public function getUrlAttribute(): string

@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
@@ -202,11 +203,24 @@ class BlogPostResource extends Resource
             ])
             ->defaultSort('published_at', 'desc')
             ->filters([
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Статус')
+                    ->options([
+                        'published' => 'Публикувани (активни)',
+                        'scheduled' => 'Насрочени',
+                        'draft' => 'Чернови',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return match ($data['value'] ?? null) {
+                            'published' => $query->published(),
+                            'scheduled' => $query->scheduled(),
+                            'draft' => $query->draft(),
+                            default => $query,
+                        };
+                    }),
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('Категория')
                     ->relationship('category', 'name'),
-                Tables\Filters\TernaryFilter::make('is_published')
-                    ->label('Публикуван'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
