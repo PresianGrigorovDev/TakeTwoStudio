@@ -18,7 +18,13 @@
       "Bash(\"/Users/pgg/Library/Application Support/Herd/bin/php84\" -l /Users/pgg/Documents/GitHub/TakeTwoStudio/database/seeders/BlogPostSeeder.php)",
       "Bash(\"/Users/pgg/Library/Application Support/Herd/bin/php84\" \"/private/tmp/claude-501/-Users-pgg-Documents-GitHub-TakeTwoStudio/7101812c-bf18-4621-9fe1-021f79210778/scratchpad/sync_blog_posts.php\")",
       "Bash(xargs -I{} basename {})",
-      "Bash(git log *)"
+      "Bash(git log *)",
+      "Bash(ls -la \"/Users/pgg/Downloads/\" | grep -i \"taketwostudio\" )",
+      "Read(//Users/pgg/Downloads/**)",
+      "Bash(curl -sIL \"https://taketwostudio1603.com/public/weddings\")",
+      "Bash(curl -sIL \"https://www.taketwostudio1603.com/\")",
+      "Bash(curl -sIL \"http://taketwostudio1603.com/blog/podgotovka-firmeno-sabitie-snimki-video\")",
+      "Bash(curl -sIL \"https://taketwostudio1603.com/weddings\")"
     ]
   }
 }
