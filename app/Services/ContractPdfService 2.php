@@ -27,7 +27,15 @@ class ContractPdfService
             'contractDate' => $data['contract_date'],
         ];
 
-        return Pdf::loadView($contractType->pdfView(), $viewData)
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($contractType->pdfView(), $viewData);
+        } elseif (class_exists('Barryvdh\DomPDF\Facade')) {
+            $pdf = \Barryvdh\DomPDF\Facade::loadView($contractType->pdfView(), $viewData);
+        } else {
+            $pdf = app('dompdf.wrapper')->loadView($contractType->pdfView(), $viewData);
+        }
+
+        return $pdf
             ->setPaper('a4')
             ->setOption('defaultFont', 'DejaVu Sans')
             ->setOption('isRemoteEnabled', true)
