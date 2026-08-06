@@ -262,9 +262,9 @@
                                     <span class="price-tag">
                                         @if($price != $originalPrice)
                                             <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
-                                            <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                            <span class="text-warning">€ {{ number_format($price, 0) }}</span>
                                         @else
-                                            € {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                            € {{ number_format($originalPrice, 0) }}
                                         @endif
                                     </span>
                                     @if($pkg->description)
@@ -311,9 +311,9 @@
                                     <span class="extra-price">
                                         @if($extraVideoPrice != $extraVideoOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraVideoOriginal }}</span>
-                                            <span class="text-warning">+€ {{ number_format($extraVideoPrice, 0) }} / {{ number_format($extraVideoPrice * 1.9558, 2) }} лв.</span>
+                                            <span class="text-warning">+€ {{ number_format($extraVideoPrice, 0) }}</span>
                                         @else
-                                            +€ 62 / {{ number_format(62 * 1.9558, 2) }} лв.
+                                            +€ 62
                                         @endif
                                     </span>
                                 </label>
@@ -329,9 +329,9 @@
                                     <span class="extra-price">
                                         @if($extraExpressPrice != $extraExpressOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraExpressOriginal }}</span>
-                                            <span class="text-warning">+€ {{ number_format($extraExpressPrice, 0) }} / {{ number_format($extraExpressPrice * 1.9558, 2) }} лв.</span>
+                                            <span class="text-warning">+€ {{ number_format($extraExpressPrice, 0) }}</span>
                                         @else
-                                            +€ 26 / {{ number_format(26 * 1.9558, 2) }} лв.
+                                            +€ 26
                                         @endif
                                     </span>
                                 </label>
@@ -347,9 +347,9 @@
                                     <span class="extra-price">
                                         @if($extraAlbumPrice != $extraAlbumOriginal)
                                             <span class="text-decoration-line-through text-muted small me-2">+€ {{ $extraAlbumOriginal }}</span>
-                                            <span class="text-warning">+€ {{ number_format($extraAlbumPrice, 0) }} / {{ number_format($extraAlbumPrice * 1.9558, 2) }} лв.</span>
+                                            <span class="text-warning">+€ {{ number_format($extraAlbumPrice, 0) }}</span>
                                         @else
-                                            +€ 41 / {{ number_format(41 * 1.9558, 2) }} лв.
+                                            +€ 41
                                         @endif
                                     </span>
                                 </label>
@@ -376,7 +376,7 @@
                                 }
                             }
                         @endphp
-                        <div class="price-display">€ <span id="finalPrice">{{ (int)$firstPkgPrice }}</span> / <span id="finalPriceBgn">{{ number_format($firstPkgPrice * 1.9558, 2) }}</span> лв.</div>
+                        <div class="price-display">€ <span id="finalPrice">{{ (int)$firstPkgPrice }}</span></div>
                         <div class="section-divider" style="background:#444; width:100%;"></div>
 
                         <div class="text-start mt-4 mb-4">

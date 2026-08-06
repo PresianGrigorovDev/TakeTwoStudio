@@ -6,13 +6,9 @@
         return $val !== '' ? e($val) : '<span class="' . $class . '">&nbsp;</span>';
     } }
 
-    $bnbRate    = 1.95583;
     $totalEur   = (float) ($data['total_price'] ?? 0);
     $depositEur = (float) ($data['deposit_amount'] ?? 0);
     $remainEur  = (float) ($data['remaining_amount'] ?? 0);
-    $totalBgn   = round($totalEur   * $bnbRate, 2);
-    $depositBgn = round($depositEur * $bnbRate, 2);
-    $remainBgn  = round($remainEur  * $bnbRate, 2);
 
     function fmtAmt(float $val): string {
         return $val > 0 ? number_format($val, 2, '.', '') : '';
@@ -92,33 +88,26 @@
         <div class="section-text">{{ $sections['deadlines'] }}</div>
     @endif
 
-    {{-- Възнаграждение: EUR + BGN side-by-side --}}
+    {{-- Възнаграждение: EUR --}}
     <div class="section-title">{{ $sectionNum++ }}. Възнаграждение и условия за плащане</div>
     <table>
         <tr>
-            <th style="width:180px;">Показател</th>
-            <th style="width:110px; text-align:center;">EUR (Евро)</th>
-            <th style="width:110px; text-align:center;">BGN (Лева)</th>
+            <th style="width:220px;">Показател</th>
+            <th style="width:140px; text-align:center;">EUR (Евро)</th>
         </tr>
         <tr>
             <th>Обща цена на пакета</th>
             <td class="text-bold text-center">{!! $totalEur > 0 ? fmtAmt($totalEur) : pdfBlank('', 'blank') !!}</td>
-            <td class="text-bold text-center">{!! $totalEur > 0 ? fmtAmt($totalBgn) : pdfBlank('', 'blank') !!}</td>
         </tr>
         <tr>
             <th>Капаро (50%)</th>
             <td class="text-center">{!! $depositEur > 0 ? fmtAmt($depositEur) : pdfBlank('', 'blank') !!}</td>
-            <td class="text-center">{!! $depositEur > 0 ? fmtAmt($depositBgn) : pdfBlank('', 'blank') !!}</td>
         </tr>
         <tr>
             <th>Остатък</th>
             <td class="text-center">{!! $remainEur > 0 ? fmtAmt($remainEur) : pdfBlank('', 'blank') !!}</td>
-            <td class="text-center">{!! $remainEur > 0 ? fmtAmt($remainBgn) : pdfBlank('', 'blank') !!}</td>
         </tr>
     </table>
-    <p style="font-size:9pt; color:#666; margin-top:3px;">
-        * Курс БНБ: 1 EUR = 1.95583 BGN
-    </p>
 
     @if(!empty($sections['payment']))
         <div class="section-text">{{ $sections['payment'] }}</div>
@@ -211,26 +200,22 @@
 {{-- Pricing table --}}
 <table>
     <tr>
-        <th style="width:240px;">Описание</th>
-        <th style="width:100px; text-align:center;">EUR (Евро)</th>
-        <th style="width:100px; text-align:center;">BGN (Лева)</th>
+        <th style="width:280px;">Описание</th>
+        <th style="width:120px; text-align:center;">EUR (Евро)</th>
         <th>Бележки</th>
     </tr>
     <tr>
         <th>Капаро (50% от цената на пакета)</th>
         <td class="text-center">{!! $depositEur > 0 ? fmtAmt($depositEur) : pdfBlank('', 'blank') !!}</td>
-        <td class="text-center">{!! $depositEur > 0 ? fmtAmt($depositBgn) : pdfBlank('', 'blank') !!}</td>
         <td style="font-size:9pt;">платено при подписване</td>
     </tr>
     <tr>
         <th>Базова цена на фотоалбум</th>
         <td class="text-center">&nbsp;</td>
-        <td class="text-center">&nbsp;</td>
         <td>&nbsp;</td>
     </tr>
     <tr>
-        <th>Разходи за гориво (0.50 EUR / 0.98 лв. на км)</th>
-        <td class="text-center">&nbsp;</td>
+        <th>Разходи за гориво (0.50 EUR на км)</th>
         <td class="text-center">&nbsp;</td>
         <td style="font-size:9pt;">изчислява се след събитието</td>
     </tr>
@@ -239,15 +224,10 @@
     <tr>
         <td>&nbsp;</td>
         <td class="text-center">&nbsp;</td>
-        <td class="text-center">&nbsp;</td>
         <td>&nbsp;</td>
     </tr>
     @endfor
 </table>
-
-<p style="font-size:9pt; color:#666; margin-top:3px;">
-    * Курс БНБ: 1 EUR = 1.95583 BGN
-</p>
 
 {{-- Compact signatures for annex --}}
 <table style="width: 100%; margin-top: 40px; border: none; border-collapse: collapse;">

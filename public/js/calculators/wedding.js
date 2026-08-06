@@ -202,7 +202,6 @@ function animateValue(id, start, end, duration) {
     let count = 0;
     
     const obj = document.getElementById(id);
-    const objBgn = document.getElementById(id + "Bgn"); // Търсим елемента за левовете
 
     priceInterval = setInterval(function () {
         count++;
@@ -219,9 +218,8 @@ function animateValue(id, start, end, duration) {
             clearInterval(priceInterval);
         }
         
-        obj.innerText = Math.round(current);
-        if (objBgn) {
-            objBgn.innerText = (current * 1.95583).toFixed(2);
+        if (obj) {
+            obj.innerText = Math.round(current);
         }
     }, minTimer);
 }

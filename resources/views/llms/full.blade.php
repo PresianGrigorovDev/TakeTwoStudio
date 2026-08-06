@@ -48,7 +48,7 @@
 Специализирано заснемане на абитуриенти, групови фотосесии и балове.
 @if(count($promPackages) > 0)
 @foreach($promPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -63,7 +63,7 @@
 ### Пред-бални и Абсолвентски Фотосесии (Graduation)
 Снимане на завършващи ученици и студенти.
 @foreach($graduationPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -85,7 +85,7 @@
 
 ### Семейна Фотография (Family)
 @foreach($familyPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -95,7 +95,7 @@
 
 ### Портретна Фотография (Portrait)
 @foreach($portraitPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -105,7 +105,7 @@
 
 ### Автомобилна Фотография (Automotive)
 @foreach($automotivePackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -115,7 +115,7 @@
 
 ### Архитектурна Фотография (Architectural)
 @foreach($architecturalPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}
@@ -125,7 +125,7 @@
 
 ### Събитийна Фотография (Events)
 @foreach($eventPackages as $pkg)
-* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): {{ number_format($pkg->price, 2) }} BGN / {{ number_format($pkg->price_eur, 2) }} EUR
+* **Пакет "{{ $pkg->name }}"** ({{ $pkg->description }}): € {{ number_format($pkg->price_eur, 0) }}
 @if(!empty($pkg->features))
 @foreach($pkg->features as $feat)
   - {{ $feat }}

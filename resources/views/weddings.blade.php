@@ -376,9 +376,9 @@
                                         <span class="d-block small text-muted mt-1">
                                             @if($service && $service->activePromotion)
                                                 <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
-                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }}</span>
                                             @else
-                                                € {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.
+                                                € {{ $pkg->price_eur }}
                                             @endif
                                         </span>
                                     </label>
@@ -418,9 +418,9 @@
                                         <span class="d-block small text-muted mt-1">
                                             @if($service && $service->activePromotion)
                                                 <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
-                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }}</span>
                                             @else
-                                                € {{ $pkg->price_eur }} / {{ number_format($pkg->price_eur * 1.95583, 2) }} лв.
+                                                € {{ $pkg->price_eur }}
                                             @endif
                                         </span>
                                     </label>
@@ -450,9 +450,9 @@
                                             @if($originalPrice > 0)
                                                 @if($service && $service->activePromotion)
                                                     <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
-                                                    <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.95583, 2) }} лв.</span>
+                                                    <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
                                                 @else
-                                                    +€ {{ $extra->price_eur }} / {{ number_format($extra->price_eur * 1.95583, 2) }} лв.
+                                                    +€ {{ $extra->price_eur }}
                                                 @endif
                                             @else
                                                 Безплатно
@@ -606,7 +606,7 @@
                     <div class="col-lg-4">
                         <div class="total-price-box">
                             <h5 class="text-uppercase text-white-50">Обща Сума</h5>
-                            <div class="price-display">€ <span id="finalPrice">0</span> / <span id="finalPriceBgn">0.00</span> лв.</div>
+                            <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">

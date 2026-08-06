@@ -287,9 +287,9 @@
                                         <span class="d-block small text-muted mt-1 fw-bold extra-price-tag">
                                             @if($service && $service->activePromotion)
                                                 <span class="text-decoration-line-through text-muted small me-2">€ {{ number_format($originalPrice, 0) }}</span>
-                                                <span class="text-warning">€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                                <span class="text-warning">€ {{ number_format($price, 0) }}</span>
                                             @else
-                                                € {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                                € {{ number_format($originalPrice, 0) }}
                                             @endif
                                         </span>
                                     </label>
@@ -327,9 +327,9 @@
                                                 @if($originalPrice > 0)
                                                     @if($service && $service->activePromotion)
                                                         <span class="text-decoration-line-through text-muted small me-2">+€ {{ number_format($originalPrice, 0) }}</span>
-                                                        <span class="text-warning">+€ {{ number_format($price, 0) }} / {{ number_format($price * 1.9558, 2) }} лв.</span>
+                                                        <span class="text-warning">+€ {{ number_format($price, 0) }}</span>
                                                     @else
-                                                        +€ {{ number_format($originalPrice, 0) }} / {{ number_format($originalPrice * 1.9558, 2) }} лв.
+                                                        +€ {{ number_format($originalPrice, 0) }}
                                                     @endif
                                                 @else
                                                     Стандарт
@@ -348,7 +348,7 @@
                     <div class="col-lg-4">
                         <div class="total-price-box">
                             <h5 class="text-uppercase text-white-50">Обща Цена</h5>
-                            <div class="price-display">€ <span id="finalPrice">140</span> / <span id="finalPriceBgn">273.82</span> лв.</div>
+                            <div class="price-display">€ <span id="finalPrice">140</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
                             <div class="text-start mt-4 mb-4">

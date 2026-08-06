@@ -94,7 +94,6 @@ function animateValue(id, start, end, duration) {
 
     let count = 0;
     const obj = document.getElementById(id);
-    const objBgn = document.getElementById(id + "Bgn");
 
     priceInterval = setInterval(function () {
         count++;
@@ -103,12 +102,10 @@ function animateValue(id, start, end, duration) {
         const current = start + (range * easedProgress);
 
         if (count >= steps) {
-            obj.innerText = Math.round(end);
-            if (objBgn) objBgn.innerText = (end * 1.95583).toFixed(2);
+            if (obj) obj.innerText = Math.round(end);
             clearInterval(priceInterval);
         } else {
-            obj.innerText = Math.round(current);
-            if (objBgn) objBgn.innerText = (current * 1.95583).toFixed(2);
+            if (obj) obj.innerText = Math.round(current);
         }
     }, minTimer);
 }

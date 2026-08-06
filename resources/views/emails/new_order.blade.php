@@ -31,7 +31,7 @@
             @if($order->price)
             <tr>
                 <td style="padding: 10px; border: 1px solid #eee;"><strong>Калкулирана Цена:</strong></td>
-                <td style="padding: 10px; border: 1px solid #eee;">{{ $order->price }} лв.</td>
+                <td style="padding: 10px; border: 1px solid #eee;">€ {{ $order->price }}</td>
             </tr>
             @endif
             <tr>

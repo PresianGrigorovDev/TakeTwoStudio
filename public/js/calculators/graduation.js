@@ -85,7 +85,6 @@ function animateGradValue(id, start, end, duration) {
     if (gradPriceInterval) clearInterval(gradPriceInterval);
 
     const obj = document.getElementById(id);
-    const objBgn = document.getElementById(id + 'Bgn');
     const steps = duration / 10;
     let count = 0;
 
@@ -96,12 +95,10 @@ function animateGradValue(id, start, end, duration) {
         const current = start + (end - start) * eased;
 
         if (count >= steps) {
-            obj.innerHTML = Math.round(end);
-            if (objBgn) objBgn.innerHTML = (end * 1.9558).toFixed(2);
+            if (obj) obj.innerHTML = Math.round(end);
             clearInterval(gradPriceInterval);
         } else {
-            obj.innerHTML = Math.round(current);
-            if (objBgn) objBgn.innerHTML = (current * 1.9558).toFixed(2);
+            if (obj) obj.innerHTML = Math.round(current);
         }
     }, 10);
 }
