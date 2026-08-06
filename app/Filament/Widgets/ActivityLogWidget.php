@@ -19,7 +19,7 @@ class ActivityLogWidget extends BaseWidget
     {
         return $table
             ->query(
-                ActivityLog::query()->latest()->limit(10)
+                ActivityLog::query()->whereNotNull('user_id')->latest()->limit(10)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')

@@ -117,6 +117,11 @@ class ActivityLogResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereNotNull('user_id');
+    }
+
     public static function getRelations(): array
     {
         return [

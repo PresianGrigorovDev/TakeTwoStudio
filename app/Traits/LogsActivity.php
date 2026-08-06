@@ -42,6 +42,9 @@ trait LogsActivity
     protected static function logActivity($model, $action, $descriptionPrefix, $properties = null)
     {
         $user = Auth::user();
+        if (!$user) {
+            return;
+        }
         
         $subjectName = class_basename($model);
         if (isset($model->name)) {
