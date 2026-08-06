@@ -111,24 +111,24 @@
                 <div class="section-divider"></div>
                 <div class="reasons mt-4">
                     <div class="row text-center">
-                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
-                            <i class="fas fa-user-tie fa-3x mb-3"></i>
-                            <h3>Професионализъм</h3>
-                            <p class="text-muted small">Разбираме значението на сватбения ви ден и се стремим да надхвърлим очакванията ви с всеки кадър.</p>
-                        </div>
-                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
+                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                             <i class="fas fa-camera-retro fa-3x mb-3"></i>
-                            <h3>Модерна техника</h3>
-                            <p class="text-muted small">Работим с най-добрите фото и видео технологии за перфектно качество на сватбеното заснемане.</p>
+                            <h3>Професионализъм</h3>
+                            <p class="text-muted small">Над 5 години опит в сватбената фотография и видеозаснемане с модерни 4K камери и дрон.</p>
                         </div>
-                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
+                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
+                            <i class="fas fa-heart fa-3x mb-3"></i>
+                            <h3>Емоция и детайли</h3>
+                            <p class="text-muted small">Улавяме естествените усмивки, сълзи от щастие и непринудени моменти от вашия специален ден.</p>
+                        </div>
+                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                             <i class="fas fa-lightbulb fa-3x mb-3"></i>
                             <h3>Креативност</h3>
                             <p class="text-muted small">Всяка сватба е уникална. Създаваме сватбени истории, които ще помните завинаги.</p>
                         </div>
-                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3">
+                        <div class="reason col-sm-12 col-md-6 col-lg-3 py-4 px-3" style="cursor: pointer; border: 1px solid var(--accent, #d4af37); border-radius: 8px;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                             <i class="fas fa-tags fa-3x mb-3"></i>
-                            <h3>Достъпни пакети</h3>
+                            <h3>Достъпни пакети <i class="fas fa-arrow-down small ms-1 text-warning"></i></h3>
                             <p class="text-muted small">Предлагаме гъвкави сватбени пакети на достъпни цени, без компромис с качеството.</p>
                         </div>
                     </div>
