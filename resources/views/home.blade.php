@@ -19,17 +19,9 @@
             <h1>Професионална фотография и видеозаснемане</h1>
             <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
             
-            <div class="hero-category-chips my-3 d-flex flex-wrap justify-content-center gap-2">
-                <a href="{{ url('/weddings') }}" class="hero-chip">Сватби</a>
-                <a href="{{ url('/proms') }}" class="hero-chip">Балове</a>
-                <a href="{{ url('/baptism') }}" class="hero-chip">Кръщенета</a>
-                <a href="{{ url('/portrait') }}" class="hero-chip">Портрети</a>
-                <a href="{{ url('/family') }}" class="hero-chip">Семейни</a>
-            </div>
-
-            <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-                <a href="#portfolio" class="btn-custom-full">Портфолио</a>
-                <a href="#contact" class="btn-custom">Свържи се с нас</a>
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                <a href="#services" class="btn-custom-full">Услуги</a>
+                <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#quickLeadModal" style="background: var(--accent, #d4af37); color: #000; font-weight: 700; border: none;">Бърза Оферта</button>
             </div>
         </div>
     </header>
@@ -104,28 +96,6 @@
                 Вярваме, че добрата фотография започва далеч преди натискането на бутона.
             </p>
 
-            <style>
-            @media (max-width: 767.98px) {
-                .process-steps-mobile-slider {
-                    display: flex !important;
-                    flex-wrap: nowrap !important;
-                    overflow-x: auto !important;
-                    scroll-snap-type: x mandatory !important;
-                    -webkit-overflow-scrolling: touch;
-                    padding-bottom: 15px;
-                    gap: 15px;
-                }
-                .process-steps-mobile-slider .process-step-col {
-                    flex: 0 0 85% !important;
-                    max-width: 85% !important;
-                    scroll-snap-align: center;
-                }
-                .process-steps-mobile-slider::-webkit-scrollbar {
-                    display: none;
-                }
-            }
-            </style>
-
             <div class="row g-4 g-md-5 process-steps-mobile-slider">
                 <div class="col-md-4 process-step-col">
                     <div class="process-step falling-item h-100">
@@ -188,10 +158,10 @@
         <div class="container text-center">
             <h2 class="mb-3">Какво казват клиентите</h2>
             <div class="section-divider"></div>
-            <div class="row justify-content-center mt-5">
+            <div class="row justify-content-center mt-5 testimonials-mobile-slider">
                 @foreach($testimonials as $index => $testimonial)
-                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                        <div class="testimonial-card falling-item">
+                    <div class="col-md-4 testimonial-col" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                        <div class="testimonial-card falling-item h-100">
                             <i class="fas fa-quote-left quote-icon"></i>
                             <div class="testimonial-stars text-warning mb-2">
                                 @for($i = 1; $i <= 5; $i++)
@@ -215,11 +185,11 @@
                 <p class="text-muted">Професионална фотография и видеозаснемане за всеки повод - сватби, балове, събития, портрети и още</p>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 services-mobile-slider">
                 @foreach($services as $index => $service)
-                <div class="col-md-4 col-sm-6 mx-auto" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
-                    <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark">
-                        <div class="service-card bg-white {{ $service->slug }} falling-item">
+                <div class="col-md-4 col-sm-6 service-card-col" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
+                    <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark h-100 d-block">
+                        <div class="service-card bg-white {{ $service->slug }} falling-item h-100">
                             <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
                             <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
                             <p class="small text-muted mb-0">{{ $service->description_bg }}</p>

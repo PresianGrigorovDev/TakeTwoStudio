@@ -124,8 +124,8 @@ class OrderController extends Controller
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
             'phone'       => 'required|string|max:20',
-            'email'       => 'required|email|max:255',
-            'message'     => 'required|string',
+            'email'       => 'nullable|email|max:255',
+            'message'     => 'nullable|string',
             'orderType'   => 'nullable|string',
             'gdpr_consent' => 'required|accepted',
         ], [
@@ -133,15 +133,15 @@ class OrderController extends Controller
             'gdpr_consent.accepted' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
         ]);
 
-        $orderType = $validated['orderType'] ?? 'General Inquiry';
+        $orderType = $validated['orderType'] ?? 'Бърза Оферта';
 
         // Save to Database
         $inquiry = \App\Models\Inquiry::create([
             'customer_name'  => $validated['name'],
             'customer_phone' => $validated['phone'],
-            'customer_email' => $validated['email'],
+            'customer_email' => $validated['email'] ?? 'без имейл',
             'service_type'   => $orderType,
-            'message'        => $validated['message'],
+            'message'        => $validated['message'] ?? 'Бързо запитване от Hero модален прозорец.',
             'status'         => 'new',
         ]);
 
