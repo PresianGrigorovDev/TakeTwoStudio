@@ -63,7 +63,7 @@
 
 <div class="mobile-sticky-bar" id="mobileStickyBar">
     <a href="#calculator" onclick="if(document.getElementById('calculator')){ document.getElementById('calculator').scrollIntoView({behavior: 'smooth'}); return false; }" class="mobile-sticky-btn-calc">
-        ⚡ Изчисли Цена & Запази Час
+        Изчисли Цена & Запази Час
     </a>
     @php
         $phone = \App\Models\SiteSetting::find(4)?->setting_value ?? '088 619 0124';

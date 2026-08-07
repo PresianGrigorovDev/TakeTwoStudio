@@ -20,11 +20,11 @@
             <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
             
             <div class="hero-category-chips my-3 d-flex flex-wrap justify-content-center gap-2">
-                <a href="{{ route('services.weddings') }}" class="hero-chip">💍 Сватби</a>
-                <a href="{{ route('services.proms') }}" class="hero-chip">🎓 Балове</a>
-                <a href="{{ route('services.baptism') }}" class="hero-chip">✝️ Кръщенета</a>
-                <a href="{{ route('services.portrait') }}" class="hero-chip">📸 Портрети</a>
-                <a href="{{ route('services.family') }}" class="hero-chip">👨‍👩‍👧 Семейни</a>
+                <a href="{{ url('/weddings') }}" class="hero-chip">Сватби</a>
+                <a href="{{ url('/proms') }}" class="hero-chip">Балове</a>
+                <a href="{{ url('/baptism') }}" class="hero-chip">Кръщенета</a>
+                <a href="{{ url('/portrait') }}" class="hero-chip">Портрети</a>
+                <a href="{{ url('/family') }}" class="hero-chip">Семейни</a>
             </div>
 
             <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
