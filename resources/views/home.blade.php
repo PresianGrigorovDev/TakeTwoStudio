@@ -18,8 +18,19 @@
         <div class="hero-content" data-aos="fade-up">
             <h1>Професионална фотография и видеозаснемане</h1>
             <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
-            <a href="#portfolio" class="btn-custom-full">Портфолио</a>
-            <a href="#contact" class="btn-custom">Свържи се с нас</a>
+            
+            <div class="hero-category-chips my-3 d-flex flex-wrap justify-content-center gap-2">
+                <a href="{{ route('services.weddings') }}" class="hero-chip">💍 Сватби</a>
+                <a href="{{ route('services.proms') }}" class="hero-chip">🎓 Балове</a>
+                <a href="{{ route('services.baptism') }}" class="hero-chip">✝️ Кръщенета</a>
+                <a href="{{ route('services.portrait') }}" class="hero-chip">📸 Портрети</a>
+                <a href="{{ route('services.family') }}" class="hero-chip">👨‍👩‍👧 Семейни</a>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                <a href="#portfolio" class="btn-custom-full">Портфолио</a>
+                <a href="#contact" class="btn-custom">Свържи се с нас</a>
+            </div>
         </div>
     </header>
 
@@ -93,26 +104,48 @@
                 Вярваме, че добрата фотография започва далеч преди натискането на бутона.
             </p>
 
-            <div class="row g-5">
-                <div class="col-md-4">
-                    <div class="process-step falling-item">
+            <style>
+            @media (max-width: 767.98px) {
+                .process-steps-mobile-slider {
+                    display: flex !important;
+                    flex-wrap: nowrap !important;
+                    overflow-x: auto !important;
+                    scroll-snap-type: x mandatory !important;
+                    -webkit-overflow-scrolling: touch;
+                    padding-bottom: 15px;
+                    gap: 15px;
+                }
+                .process-steps-mobile-slider .process-step-col {
+                    flex: 0 0 85% !important;
+                    max-width: 85% !important;
+                    scroll-snap-align: center;
+                }
+                .process-steps-mobile-slider::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+            </style>
+
+            <div class="row g-4 g-md-5 process-steps-mobile-slider">
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
                         <div class="process-icon-wrap"><i class="far fa-comments"></i></div>
-                        <h3 class="fw-bold h5">Опознаване</h3>
-                        <p class="text-muted small">Преди камерата да заработи, искаме да чуем вашата история.</p>
+                        <h3 class="fw-bold h5 mt-3">Опознаване</h3>
+                        <p class="text-muted small mb-0">Преди камерата да заработи, искаме да чуем вашата история.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="process-step falling-item">
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
                         <div class="process-icon-wrap"><i class="fas fa-camera-retro"></i></div>
-                        <h3 class="fw-bold h5">В деня на събитието</h3>
-                        <p class="text-muted small">Улавяме истинските емоции и спонтанни моменти.</p>
+                        <h3 class="fw-bold h5 mt-3">В деня на събитието</h3>
+                        <p class="text-muted small mb-0">Улавяме истинските емоции и спонтанни моменти.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="process-step falling-item">
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
                         <div class="process-icon-wrap"><i class="fas fa-magic"></i></div>
-                        <h3 class="fw-bold h5">Вечният спомен</h3>
-                        <p class="text-muted small">Предаваме ви не просто файлове, а цялостна история.</p>
+                        <h3 class="fw-bold h5 mt-3">Вечният спомен</h3>
+                        <p class="text-muted small mb-0">Предаваме ви не просто файлове, а цялостна история.</p>
                     </div>
                 </div>
             </div>
