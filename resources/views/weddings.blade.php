@@ -345,9 +345,9 @@
                             <h4 class="mb-4"><i class="fas fa-users me-2 text-warning"></i> Екип</h4>
 
                             <h6 class="calc-sub-header">Видео Оператори</h6>
-                            <div class="row g-3 mb-4">
+                            <div class="row g-2 g-md-3 mb-4">
                                 <!-- None Option -->
-                                <div class="col-md-4">
+                                <div class="col-4 col-md-4 px-1 px-md-2">
                                     <input type="radio" name="operators" id="op0" class="package-option calc-input" value="0"
                                         data-price="0" data-label="Видео: Без" data-category="team" onchange="calculateWeddingTotal()">
                                     <label for="op0" class="package-label">
@@ -358,7 +358,7 @@
                                     </label>
                                 </div>
                                 @foreach($videoPackages as $pkg)
-                                <div class="col-md-4">
+                                <div class="col-4 col-md-4 px-1 px-md-2">
                                     @php
                                         $originalPrice = $pkg->price_eur;
                                         $price = $originalPrice;
@@ -387,9 +387,9 @@
                             </div>
 
                             <h6 class="calc-sub-header">Фотографи</h6>
-                            <div class="row g-3 mb-4">
+                            <div class="row g-2 g-md-3 mb-4">
                                 <!-- None Option -->
-                                <div class="col-md-4">
+                                <div class="col-4 col-md-4 px-1 px-md-2">
                                     <input type="radio" name="photographers" id="ph0" class="package-option calc-input" value="0"
                                         data-price="0" data-label="Фото: Без" data-category="team" onchange="calculateWeddingTotal()">
                                     <label for="ph0" class="package-label">
@@ -400,7 +400,7 @@
                                     </label>
                                 </div>
                                 @foreach($photoPackages as $pkg)
-                                <div class="col-md-4">
+                                <div class="col-4 col-md-4 px-1 px-md-2">
                                     @php
                                         $originalPrice = $pkg->price_eur;
                                         $price = $originalPrice;

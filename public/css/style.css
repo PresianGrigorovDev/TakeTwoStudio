@@ -956,4 +956,25 @@ footer ul li a:hover {
     .testimonials-mobile-slider::-webkit-scrollbar {
         display: none;
     }
+
+    /* COMPACT PACKAGE CARDS ON MOBILE */
+    .package-label {
+        padding: 10px 5px !important;
+        text-align: center;
+    }
+    .package-icon {
+        font-size: 1.3rem !important;
+        margin-bottom: 4px !important;
+    }
+    .package-label strong {
+        font-size: 0.85rem !important;
+        display: block;
+    }
+    .package-label .extra-description {
+        display: none !important;
+    }
+    .package-label span.d-block.small.text-muted,
+    .package-label span.text-warning {
+        font-size: 0.75rem !important;
+    }
 }
