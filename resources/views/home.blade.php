@@ -19,8 +19,15 @@
             <h1>Професионална фотография и видеозаснемане</h1>
             <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
             
-            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
-                <a href="#services" class="btn-custom-full">Услуги</a>
+            <!-- Desktop Buttons -->
+            <div class="d-none d-md-flex flex-wrap justify-content-center gap-2 mt-4">
+                <a href="#portfolio" class="btn-custom-full">Портфолио</a>
+                <a href="#contact" class="btn-custom">Свържи се с нас</a>
+            </div>
+
+            <!-- Mobile Buttons -->
+            <div class="d-flex d-md-none flex-wrap justify-content-center gap-2 mt-4">
+                <a href="#portfolio" class="btn-custom-full">Услуги</a>
                 <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#quickLeadModal" style="background: var(--accent, #d4af37); color: #000; font-weight: 700; border: none;">Бърза Оферта</button>
             </div>
         </div>
