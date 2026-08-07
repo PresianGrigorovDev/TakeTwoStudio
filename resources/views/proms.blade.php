@@ -374,8 +374,8 @@
             <h4>Запази своето място още сега!</h4>
             <div class="mt-4">
                 @php
-                    $phone = \App\Models\SiteSetting::find(4)?->setting_value ?? '088 619 0124';
-                    $cleanPhone = preg_replace('/[^0-9+]/', '', $phone);
+                    $phone = '089 420 0634';
+                    $cleanPhone = '0894200634';
                 @endphp
                 <h5 class="mb-2"><strong>Instagram:</strong> <a href="https://instagram.com/taketwostudio1603" target="_blank" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h5>
                 <h5><strong>Телефон:</strong> <a href="tel:{{ $cleanPhone }}" class="text-dark text-decoration-none hover-gold">{{ $phone }}</a></h5>

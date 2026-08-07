@@ -3,7 +3,8 @@
         Изчисли Цена & Запази Час
     </a>
     @php
-        $phone = \App\Models\SiteSetting::find(4)?->setting_value ?? '088 619 0124';
+        $isProm = request()->is('proms*') || request()->is('graduation*');
+        $phone = $isProm ? '089 420 0634' : (\App\Models\SiteSetting::find(4)?->setting_value ?? '088 619 0124');
         $cleanPhone = preg_replace('/[^0-9+]/', '', $phone);
     @endphp
     <a href="tel:{{ $cleanPhone }}" class="mobile-sticky-btn-call" title="Обадете се ({{ $phone }})">
