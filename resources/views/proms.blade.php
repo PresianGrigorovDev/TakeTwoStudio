@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Фотограф за Абитуриентски Бал Варна | Видео и Фотосесии | Take Two Studio 1603')
-@section('meta_description', 'Запечатайте емоцията на завършването! Професионален фотограф за абитуриентски бал във Варна и региона. Индивидуални фотосесии, 4K видео клипове и дрон. Запазете час сега!')
-@section('meta_keywords', 'фотограф за бал варна, абитуриентска фотосесия, видеозаснемане бал, фотосесия морска градина, снимки абитуриенти, Take Two Studio')
-@section('og_title', 'Фотосесия за Абитуриентски Бал | Take Two Studio Варна')
-@section('og_description', 'Искате уникални кадри от бала? Вижте портфолиото ни с абитуриенти и запазете дата за вашата фотосесия.')
+@section('title', 'Фотограф за Абитуриентски Бал Варна | Фото и Видеозаснемане | Take Two Studio 1603')
+@section('meta_description', 'Търсите фотограф за абитуриентски бал във Варна? Take Two Studio предлага индивидуални и пред-бални фотосесии, 4K видеозаснемане, дрон и изгодни пакети с онлайн калкулатор.')
+@section('meta_keywords', 'фотограф за абитуриентски бал варна, фотограф за бал варна цени, абитуриентска фотосесия варна, изпращане абитуриент, видеозаснемане бал, пред-бална фотосесия варна, Take Two Studio 1603')
+@section('og_title', 'Фотограф за Абитуриентски Бал Варна | Take Two Studio 1603')
+@section('og_description', 'Запазете спомените от вашия бал с кинематографично качество! Индивидуални фотосесии, видеозаснемане и изпращане на абитуриенти във Варна.')
 @section('og_image', asset('css/img/Бал.jpeg'))
 
 @push('styles')
@@ -389,19 +389,31 @@
 $promServiceSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'Service',
-    'name' => 'Заснемане на абитуриентски балове',
+    'name' => 'Фотограф и видеозаснемане на абитуриентски балове Варна',
+    'serviceType' => 'Prom Photography & Videography',
     'provider' => [
         '@type' => 'LocalBusiness',
         'name' => 'Take Two Studio 1603',
         '@id' => 'https://taketwostudio1603.com',
+        'telephone' => '089 420 0634',
+        'url' => 'https://taketwostudio1603.com',
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressLocality' => 'Варна',
+            'postalCode' => '9000',
+            'addressCountry' => 'BG',
+        ],
     ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Професионално заснемане на абитуриентски балове — фотосесии, 4K видео, дрон кадри и онлайн галерия.',
+    'areaServed' => [
+        ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+        ['@type' => 'Country', 'name' => 'България'],
+    ],
+    'description' => 'Професионално заснемане на абитуриентски балове във Варна — индивидуални фотосесии, изпращане, 4K видео, дрон кадри и онлайн галерия.',
     'url' => 'https://taketwostudio1603.com/proms',
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($promServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@if($promFaqs->isNotEmpty())
+@if(isset($promFaqs) && $promFaqs->isNotEmpty())
 @php
 $promFaqSchema = [
     '@context' => 'https://schema.org',

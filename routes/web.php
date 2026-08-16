@@ -15,7 +15,7 @@ Route::get('/proms', [App\Http\Controllers\PageController::class, 'proms']);
 Route::get('/baptism', [App\Http\Controllers\PageController::class, 'baptism']);
 
 Route::get('/commercial', [App\Http\Controllers\PageController::class, 'commercial']);
-Route::get('/graduation', [App\Http\Controllers\PageController::class, 'graduation']);
+Route::redirect('/graduation', '/proms', 301);
 
 Route::get('/family', [App\Http\Controllers\PageController::class, 'family']);
 Route::get('/portrait', [App\Http\Controllers\PageController::class, 'portrait']);

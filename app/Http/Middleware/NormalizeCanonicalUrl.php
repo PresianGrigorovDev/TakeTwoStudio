@@ -32,9 +32,13 @@ class NormalizeCanonicalUrl
             $newPath = substr($path, strlen('public/'));
         }
 
-        if ($newHost !== $host || $newPath !== $path || ! $request->secure()) {
+        $isLocal = app()->environment('local');
+        $needsHttps = ! $isLocal && ! $request->secure();
+
+        if ($newHost !== $host || $newPath !== $path || $needsHttps) {
+            $targetScheme = $needsHttps ? 'https' : $request->getScheme();
             $query = $request->getQueryString();
-            $url = 'https://'.$newHost.'/'.ltrim($newPath, '/').($query ? '?'.$query : '');
+            $url = $targetScheme.'://'.$newHost.'/'.ltrim($newPath, '/').($query ? '?'.$query : '');
 
             return redirect()->to($url, 301);
         }

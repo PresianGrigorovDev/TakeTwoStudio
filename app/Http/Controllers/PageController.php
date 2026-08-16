@@ -119,8 +119,10 @@ class PageController extends Controller
 
         // Get galleries
         $weddingGalleries = collect();
+        $weddingFaqs = collect();
         if ($slug === 'weddings') {
             $weddingGalleries = \App\Models\WeddingGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
+            $weddingFaqs = \App\Models\WeddingFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $baptismGalleries = collect();
@@ -183,6 +185,7 @@ class PageController extends Controller
             'service' => $service,
             'portfolioItems' => $portfolioItems,
             'weddingGalleries' => $weddingGalleries,
+            'weddingFaqs' => $weddingFaqs,
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
             'promFaqs' => $promFaqs,

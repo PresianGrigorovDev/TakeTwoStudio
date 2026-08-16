@@ -16,8 +16,8 @@
     <header class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content" data-aos="fade-up">
-            <h1>Професионална фотография и видеозаснемане</h1>
-            <span class="hero-subtitle">Сватбена, абитуриентска, семейна, портретна и събитийна фотография във Варна и цялата страна.</span>
+            <h1>Фотограф и Видеозаснемане Варна</h1>
+            <span class="hero-subtitle">Сватби, абитуриентски балове, кръщенета, семейни и събитийни фотосесии във Варна и цяла България</span>
             
             <!-- Desktop Buttons -->
             <div class="d-none d-md-flex flex-wrap justify-content-center gap-2 mt-4">

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Сватбен Фотограф и Видеозаснемане Варна | Take Two Studio')
-@section('meta_description', 'Търсите сватбен фотограф във Варна? Използвайте нашия сватбен калкулатор за оферта. Предлагаме 4K видео, дрон, фотокниги и цялостно заснемане на сватби.')
-@section('meta_keywords', 'сватбен фотограф варна, сватбен калкулатор, видеозаснемане сватба, сватбени пакети цени, дрон за сватба, сватбена фотосесия морето')
-@section('og_title', 'Сватбена Фотография и Видеозаснемане | Изчислете своя пакет')
-@section('og_description', 'Планирате сватба във Варна? Вижте портфолиото ни и разберете цените веднага с нашия калкулатор. Емоция и качество от Take Two Studio.')
+@section('title', 'Сватбен Фотограф и Видеозаснемане Варна | Take Two Studio 1603')
+@section('meta_description', 'Търсите сватбен фотограф и видеозаснемане във Варна? Кинематографични сватбени филми с 4K качество, дрон кадри и авторска фотография. Изчислете цена с калкулатора!')
+@section('meta_keywords', 'сватбен фотограф варна, сватбено видеозаснемане варна, сватбен калкулатор варна, сватбен фотограф варна цени, дрон за сватба, Take Two Studio 1603')
+@section('og_title', 'Сватбен Фотограф и Видеозаснемане Варна | Take Two Studio 1603')
+@section('og_description', 'Професионално заснемане на сватби във Варна и цяла България. 4K видео, дрон и авторска фотография. Вижте нашите пакети!')
 @section('og_image', asset('css/img/Сватба.jpg'))
 
 @push('styles')
@@ -644,15 +644,7 @@
         </div>
     </section>
 
-    @php
-    $weddingFaqs = [
-        ['q' => 'Колко предварително трябва да резервираме за сватбено заснемане?', 'a' => 'Препоръчваме резервация поне 6–12 месеца предварително, тъй като сезонът е много натоварен. Колкото по-рано запазите датата, толкова по-сигурно ще имате нашия екип на своята сватба.'],
-        ['q' => 'Работите ли извън Варна?', 'a' => 'Да, пътуваме из цяла България. За локации извън Варна може да се приложи такса за транспорт в зависимост от разстоянието. Свържете се с нас за конкретна оферта.'],
-        ['q' => 'Кога получаваме снимките и видеото след сватбата?', 'a' => 'Стандартният срок за предаване на обработените кадри е до 60 работни дни. При нужда от по-бърза доставка предлагаме услуга за експресна обработка.'],
-        ['q' => 'Предлагате ли дрон заснемане на сватби?', 'a' => 'Да, предлагаме дрон кадри като допълнение към всеки пакет за сватбено заснемане. Дронът добавя кинематографична въздушна перспектива към вашия сватбен филм.'],
-    ];
-    @endphp
-
+    @if(isset($weddingFaqs) && $weddingFaqs->isNotEmpty())
     <!-- FAQ -->
     <section class="py-5 bg-white">
         <div class="container">
@@ -663,13 +655,13 @@
                         @foreach($weddingFaqs as $i => $faq)
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#wfaq{{ $i }}">
-                                    {{ $faq['q'] }}
+                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#wfaq{{ $faq->id }}">
+                                    {{ $faq->question }}
                                 </button>
                             </h2>
-                            <div id="wfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#weddingFaqAccordion">
+                            <div id="wfaq{{ $faq->id }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#weddingFaqAccordion">
                                 <div class="accordion-body text-muted">
-                                    {{ $faq['a'] }}
+                                    {{ $faq->answer }}
                                 </div>
                             </div>
                         </div>
@@ -679,6 +671,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <!-- Validation Modal -->
     <div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true">
@@ -705,28 +698,44 @@
 $weddingServiceSchema = [
     '@context' => 'https://schema.org',
     '@type' => 'Service',
-    'name' => 'Сватбена фотография и видеозаснемане',
+    'name' => 'Сватбен фотограф и видеозаснемане Варна',
+    'serviceType' => 'Wedding Photography & Videography',
     'provider' => [
         '@type' => 'LocalBusiness',
         'name' => 'Take Two Studio 1603',
         '@id' => 'https://taketwostudio1603.com',
+        'telephone' => '088 619 0124',
+        'url' => 'https://taketwostudio1603.com',
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressLocality' => 'Варна',
+            'postalCode' => '9000',
+            'addressCountry' => 'BG',
+        ],
     ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Професионална сватбена фотография и видеозаснемане с 4K качество, дрон кадри и фотокниги. Онлайн калкулатор за цени.',
+    'areaServed' => [
+        ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
+        ['@type' => 'Country', 'name' => 'България'],
+    ],
+    'description' => 'Професионална сватбена фотография и видеозаснемане във Варна с 4K качество, дрон кадри, предсватбени сесии и фотокниги. Онлайн калкулатор за сватбени пакети.',
     'url' => 'https://taketwostudio1603.com/weddings',
-];
-$weddingFaqSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'FAQPage',
-    'mainEntity' => array_map(fn($faq) => [
-        '@type' => 'Question',
-        'name' => $faq['q'],
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-    ], $weddingFaqs),
 ];
 @endphp
 <script type="application/ld+json">{!! json_encode($weddingServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@if(isset($weddingFaqs) && $weddingFaqs->isNotEmpty())
+@php
+$weddingFaqSchema = [
+    '@context' => 'https://schema.org',
+    '@type' => 'FAQPage',
+    'mainEntity' => $weddingFaqs->map(fn($faq) => [
+        '@type' => 'Question',
+        'name' => $faq->question,
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
+    ])->values()->toArray(),
+];
+@endphp
 <script type="application/ld+json">{!! json_encode($weddingFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endif
 @endpush
 
 @push('scripts')
