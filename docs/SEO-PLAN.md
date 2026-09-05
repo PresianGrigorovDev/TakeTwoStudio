@@ -744,7 +744,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 
 ## Изпълнение — статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
 
-Всичко по-долу е commit-нато локално на `laratake` (22 commit-а след `7b5754d`), 80 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
+Всичко по-долу е commit-нато локално на `laratake` (24 commit-а след `7b5754d`), 83 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
 
 | Commit | Какво | Покрива |
 |---|---|---|
@@ -769,8 +769,9 @@ B2B: 16) Кой прави продуктова фотография за онл
 | Карта | Google Maps iframe → click-to-load facade на 8 страници | C.5.2 |
 | Изображения | `loading="lazy" decoding="async"` на всички изображения под fold-а, вкл. галерийните модали | C.5.1 |
 | Заявки | nav/footer категориите кеширани 1 час с инвалидиране при запис | C.5.3 |
+| Изображения (WebP) | `<x-picture>` компонент + `App\Support\Images` (WebP sibling, width/height от файла, lazy/eager), `ImageOptimizer` пише .webp при upload, `php artisan images:webp` за наличните файлове (само файлова система), image-set + preload за hero фоновете; 80 inline стила → utility класове | C.5.1 |
 
-**Не е правено (следващи фази):** остатъкът от performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
+**Не е правено (следващи фази):** Vite bundle/минификация, оставащите ~90 inline `style=""` атрибута, остатъкът от performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
 
 ### Runbook за деплой (в този ред)
 
@@ -800,7 +801,7 @@ B2B: 16) Кой прави продуктова фотография за онл
    ```
    Ако `git pull` изведе нови „would be overwritten“ файлове, повтори за всеки: tracked с промяна → `git checkout -- <файл>`; untracked → `mv <файл> ~/<файл>.bak`. Ако pull-ът мине, а някоя artisan команда падне: `php artisan up` веднага, после виж грешката.
 5. **Провери** матрицата от Част C.1 (curl) + `curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md` → 403.
-6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git.
+6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git. После **веднъж** `php artisan images:webp` (създава .webp до всяка качена снимка; само файлове, без база; може да отнеме няколко минути).
 7. **Filament:** Настройки → попълни `site_youtube` и `site_google_maps`; Услуги → `video_title`/`video_uploaded_at` за showreel-ите; Блог → автор (член на екипа) на постовете; Често задавани въпроси → добави FAQ за family/portrait/automotive/architectural/events.
 8. **GSC:** URL Inspection → Request indexing за услугите; Removals за `https://taketwostudio1603.com/public/`; resubmit `sitemap.xml`. **BWT:** import от GSC, submit sitemap, провери IndexNow „Submitted URLs“.
 9. **Rollback** при проблем: `cd ~/public_html && cp ~/htaccess.pre-fix.bak .htaccess && git checkout HEAD~1 -- public/.htaccess && php artisan optimize:clear`.
