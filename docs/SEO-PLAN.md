@@ -769,7 +769,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 | Карта | Google Maps iframe → click-to-load facade на 8 страници | C.5.2 |
 | Изображения | `loading="lazy" decoding="async"` на всички изображения под fold-а, вкл. галерийните модали | C.5.1 |
 | Заявки | nav/footer категориите кеширани 1 час с инвалидиране при запис | C.5.3 |
-| Изображения (WebP) | `<x-picture>` компонент + `App\Support\Images` (WebP sibling, width/height от файла, lazy/eager), `ImageOptimizer` пише .webp при upload, `php artisan images:webp` за наличните файлове (само файлова система), image-set + preload за hero фоновете; 80 inline стила → utility класове | C.5.1 |
+| Изображения (WebP) | `<x-picture>` компонент + `App\Support\Images` (WebP sibling, lazy/eager; **без** `width`/`height` атрибути по решение на собственика от 2026-09-05 – CSS определя размерите, фиксираните пиксели разтягаха снимките), `ImageOptimizer` пише .webp при upload, `php artisan images:webp` за наличните файлове (само файлова система), image-set + preload за hero фоновете; 80 inline стила → utility класове | C.5.1 |
 
 **Не е правено (следващи фази):** Vite bundle/минификация, оставащите ~90 inline `style=""` атрибута, остатъкът от performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
 

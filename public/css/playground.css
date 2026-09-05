@@ -925,7 +925,7 @@ footer ul li a:hover {
 /* Info Box */
 .info-box {
     background: linear-gradient(135deg, #fff9e6, #fffcf5);
-    border-left: 4px solid var(--accent);
+    
     padding: 15px 20px;
     border-radius: 4px;
     display: flex;

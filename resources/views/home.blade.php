@@ -38,7 +38,7 @@
             <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
                 <div class="col-lg-6">
                     <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two"
-                        class="about-img-main falling-item" width="800" height="600" />
+                        class="about-img-main falling-item" />
                 </div>
                 <div class="col-lg-6 text-center text-lg-start">
                     <h2 class="mb-3">Професионално фото и видео студио</h2>

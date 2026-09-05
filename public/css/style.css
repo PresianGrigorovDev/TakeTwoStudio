@@ -519,7 +519,6 @@ h4 {
 .testimonial-card {
     background: #fff;
     padding: 30px;
-    border-left: 3px solid var(--accent);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     margin: 15px;
     font-style: italic;

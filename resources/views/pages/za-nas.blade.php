@@ -19,7 +19,7 @@
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two Studio 1603 на снимачна площадка" class="about-img-main img-fluid rounded" width="800" height="600" />
+                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two Studio 1603 на снимачна площадка" class="about-img-main img-fluid rounded" />
                 </div>
                 <div class="col-lg-6">
                     <h2 class="mb-3">{{ $text->get('story', 'title', 'Кои сме ние') }}</h2>

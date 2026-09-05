@@ -20,7 +20,7 @@ class PictureComponentTest extends TestCase
         $this->assertStringContainsString('<picture>', $html);
         $this->assertStringContainsString('type="image/webp" srcset="'.asset('css/img/header.webp').'"', $html);
         $this->assertStringContainsString('src="'.asset('css/img/header.jpg').'"', $html);
-        $this->assertStringContainsString('width="3600" height="2395"', $html, 'intrinsic size is read from the file (no CLS)');
+        $this->assertDoesNotMatchRegularExpression('/\s(width|height)="/', $html, 'CSS owns the sizing: no fixed width/height attributes');
         $this->assertStringContainsString('loading="lazy" decoding="async"', $html);
         $this->assertStringContainsString('class="w-100"', $html);
     }
@@ -32,7 +32,7 @@ class PictureComponentTest extends TestCase
         $this->assertStringNotContainsString('<picture>', $html);
         $this->assertStringContainsString('fetchpriority="high"', $html);
         $this->assertStringNotContainsString('loading="lazy"', $html);
-        $this->assertStringContainsString('width="787" height="389"', $html);
+        $this->assertDoesNotMatchRegularExpression('/\s(width|height)="/', $html, 'explicitly passed width/height are dropped too');
 
         $this->assertNull(Images::webpUrl('https://images.pixieset.com/some/photo.jpg'), 'foreign URLs are never rewritten');
         $this->assertNull(Images::localPath('/../.env'));

@@ -272,7 +272,7 @@ h1, h2, h3, h4, h5 {
     margin-top: 12px;
     padding: 10px 16px;
     background: var(--gray-light);
-    border-left: 4px solid var(--accent);
+    
     border-radius: 6px;
     font-size: 1.05rem;
     font-weight: 600;
@@ -302,7 +302,7 @@ h1, h2, h3, h4, h5 {
     padding: 12px;
     background: var(--gray-light);
     border-radius: 6px;
-    border-left: 4px solid var(--accent);
+    
 }
 
 .booking-form-wrapper .form-label {
