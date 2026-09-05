@@ -34,8 +34,10 @@
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
 
     @php
-        $canonicalPath = preg_replace('#^public/#', '', request()->path());
-        $canonicalUrl = 'https://taketwostudio1603.com' . ($canonicalPath === '/' ? '' : '/' . ltrim($canonicalPath, '/'));
+        // url()->current() is safe: URL::forceRootUrl() (AppServiceProvider) and the
+        // root .htaccess guarantee it never carries a /public or /index.php base path.
+        // Paginated listings (?page=2+) are self-canonical so Google indexes each page.
+        $canonicalUrl = request()->integer('page') > 1 ? url()->full() : url()->current();
     @endphp
     <link rel="canonical" href="{{ $canonicalUrl }}">
 

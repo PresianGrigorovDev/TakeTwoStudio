@@ -9,7 +9,7 @@ class SitemapController extends Controller
 {
     public function index()
     {
-        $baseUrl = 'https://taketwostudio1603.com';
+        $baseUrl = rtrim((string) config('app.url'), '/');
 
         $pages = [
             ['loc' => $baseUrl . '/',           'priority' => '1.00', 'changefreq' => 'weekly',  'lastmod' => now()->format('Y-m-d')],

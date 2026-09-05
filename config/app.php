@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Canonical URL enforcement
+    |--------------------------------------------------------------------------
+    |
+    | When true (and APP_URL is https), every GET/HEAD request that arrives on
+    | a non-canonical host/scheme/base path (www., http://, /public/...,
+    | /index.php, trailing slash) is 301-redirected to the canonical URL by
+    | App\Http\Middleware\NormalizeCanonicalUrl, and url()/asset()/route()
+    | are forced to generate APP_URL-based links. Disabled in the "local" env.
+    |
+    */
+
+    'force_canonical' => (bool) env('FORCE_CANONICAL_URL', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

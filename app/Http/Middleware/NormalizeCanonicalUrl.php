@@ -7,42 +7,50 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Collapses the duplicate URL variants Google has indexed
- * (www, http, and the "/public" prefixed paths) onto the one
- * canonical https://non-www URL, independent of any server-level
- * .htaccess/vhost misconfiguration.
+ * Application-level fallback for the canonical-URL rules in the project-root
+ * .htaccess. Collapses every duplicate URL variant (http://, www., a /public
+ * or /index.php base path, trailing slash) onto the single canonical
+ * https://<APP_URL host>/<path> with one 301, for GET/HEAD requests only.
+ *
+ * Detection uses Request::getBaseUrl(), which is exactly the part Symfony
+ * strips before routing (e.g. "/public" when the front controller was reached
+ * as /public/index.php) - $request->path() never contains it.
  */
 class NormalizeCanonicalUrl
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->isMethod('get') && ! $request->isMethod('head')) {
+        if (! config('app.force_canonical') || app()->environment('local')) {
             return $next($request);
         }
 
-        $host = $request->getHost();
-        $path = $request->path();
-
-        $newHost = str_starts_with($host, 'www.') ? substr($host, 4) : $host;
-
-        $newPath = $path;
-        if ($path === 'public') {
-            $newPath = '/';
-        } elseif (str_starts_with($path, 'public/')) {
-            $newPath = substr($path, strlen('public/'));
+        if (! $request->isMethod('GET') && ! $request->isMethod('HEAD')) {
+            return $next($request);
         }
 
-        $isLocal = app()->environment('local');
-        $needsHttps = ! $isLocal && ! $request->secure();
+        $root = rtrim((string) config('app.url'), '/');
 
-        if ($newHost !== $host || $newPath !== $path || $needsHttps) {
-            $targetScheme = $needsHttps ? 'https' : $request->getScheme();
-            $query = $request->getQueryString();
-            $url = $targetScheme.'://'.$newHost.'/'.ltrim($newPath, '/').($query ? '?'.$query : '');
-
-            return redirect()->to($url, 301);
+        if (! str_starts_with($root, 'https://')) {
+            return $next($request);
         }
 
-        return $next($request);
+        $canonicalHost = (string) parse_url($root, PHP_URL_HOST);
+        $pathInfo = $request->getPathInfo();
+
+        $wrongHost = strcasecmp($request->getHost(), $canonicalHost) !== 0;
+        $wrongScheme = ! $request->isSecure();
+        $hasBasePath = $request->getBaseUrl() !== '';
+        $trailingSlash = $pathInfo !== '/' && str_ends_with($pathInfo, '/');
+
+        if (! ($wrongHost || $wrongScheme || $hasBasePath || $trailingSlash)) {
+            return $next($request);
+        }
+
+        $path = '/'.trim($pathInfo, '/');
+        $query = $request->server->get('QUERY_STRING') ?: $request->getQueryString();
+
+        $url = $root.$path.($query !== null && $query !== '' ? '?'.$query : '');
+
+        return redirect()->to($url, 301);
     }
 }
