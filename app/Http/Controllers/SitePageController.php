@@ -155,7 +155,7 @@ class SitePageController extends Controller
     /** Evergreen season guide: /abiturientski-bal-varna ("Абитуриентски бал Варна 2027"). */
     public function promGuide()
     {
-        $season = (int) config('seo.prom_season_year', now()->month >= 7 ? now()->year + 1 : now()->year);
+        $season = \App\Support\Seo\PromSeason::year();
         $packages = PromPackage::where('is_visible', true)->orderBy('price_eur')->get();
         $sessions = GraduationPackage::where('is_visible', true)->orderBy('price_eur')->get();
         $faqs = Faq::forPageVisible('abiturientski-bal-varna');

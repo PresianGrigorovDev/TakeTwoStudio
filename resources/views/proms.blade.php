@@ -47,7 +47,7 @@
                 @php
                     $promText = \App\Support\PageText::for('proms');
                     $promMin = $promPackages->min('price_eur');
-                    $promSeason = (int) config('seo.prom_season_year', now()->month >= 7 ? now()->year + 1 : now()->year);
+                    $promSeason = \App\Support\Seo\PromSeason::year();
                     $promCapsuleDefault = 'Take Two Studio 1603 е фото и видео студио във Варна, което заснема абитуриентски балове за цели класове: канене на класния ръководител, изпращане от училище, балната вечер и фотосесиите на класа. Цената е фиксирана на ученик' . ($promMin ? ' (от ' . number_format($promMin, 0) . ' €)' : '') . ', без скрити такси. Един координиран екип от фотограф, видеооператор и дрон пилот, а готовите снимки и клипът се доставят в онлайн галерия. Работим във Варна, Добрич и целия регион.';
                 @endphp
                 <h2 class="h3 mb-3 text-center">{{ $promText->get('intro', 'title', "Фотограф и видео за абитуриентски бал във Варна, випуск {$promSeason}") }}</h2>

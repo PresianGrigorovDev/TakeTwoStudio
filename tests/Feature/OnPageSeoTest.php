@@ -31,4 +31,14 @@ class OnPageSeoTest extends TestCase
         $this->assertCount(1, $h1[0], "$path must have exactly one <h1>");
         $this->assertStringContainsString('Варна', strip_tags($h1[1][0]), "$path H1 should name the city");
     }
+
+    public function test_prom_guide_title_and_capsule_carry_a_real_season_year(): void
+    {
+        $this->seed();
+        $year = \App\Support\Seo\PromSeason::year();
+
+        $this->assertGreaterThanOrEqual(2026, $year);
+        $this->get('/abiturientski-bal-varna')->assertOk()->assertSee("Абитуриентски бал Варна {$year}")->assertDontSee('Варна 0');
+        $this->get('/proms')->assertOk()->assertSee("випуск {$year}");
+    }
 }
