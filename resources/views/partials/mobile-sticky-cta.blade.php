@@ -4,8 +4,9 @@
     </a>
     @php
         $isProm = request()->is('proms*') || request()->is('graduation*');
-        $phone = $isProm ? '089 420 0634' : (\App\Models\SiteSetting::find(4)?->setting_value ?? '088 619 0124');
-        $cleanPhone = preg_replace('/[^0-9+]/', '', $phone);
+        $phoneE164 = $isProm ? (\App\Support\Settings::phoneSecondary() ?? \App\Support\Settings::phone()) : \App\Support\Settings::phone();
+        $phone = \App\Support\Settings::phoneDisplay($phoneE164);
+        $cleanPhone = \App\Support\Settings::phoneHref($phoneE164);
     @endphp
     <a href="tel:{{ $cleanPhone }}" class="mobile-sticky-btn-call" title="Обадете се ({{ $phone }})">
         <i class="fas fa-phone-alt"></i>

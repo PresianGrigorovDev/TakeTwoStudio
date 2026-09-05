@@ -90,11 +90,11 @@
       "image": "{{ asset('css/img/about.webp') }}",
       "@id": "https://taketwostudio1603.com",
       "url": "https://taketwostudio1603.com",
-      "telephone": "{{ \App\Models\SiteSetting::where('setting_key', 'site_phone')->orWhere('setting_key', 'contact_phone')->first()?->setting_value }}",
+      "telephone": "{{ \App\Support\Settings::phone() }}",
       "priceRange": "€€",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "{{ \App\Models\SiteSetting::where('setting_key', 'site_address')->orWhere('setting_key', 'contact_address')->first()?->setting_value }}",
+        "streetAddress": "{{ \App\Support\Settings::streetAddress() }}",
         "addressLocality": "Варна",
         "postalCode": "9000",
         "addressCountry": "BG"
@@ -115,10 +115,7 @@
         "opens": "09:00",
         "closes": "18:00"
       },
-      "sameAs": [
-        "{{ \App\Models\SiteSetting::where('setting_key', 'site_facebook')->orWhere('setting_key', 'social_facebook')->first()?->setting_value }}",
-        "{{ \App\Models\SiteSetting::where('setting_key', 'site_instagram')->orWhere('setting_key', 'social_instagram')->first()?->setting_value }}"
-      ],
+      "sameAs": {!! json_encode(array_values(\App\Support\Settings::socialLinks()), JSON_UNESCAPED_SLASHES) !!},
 @if($testimonialStats && $testimonialStats->cnt > 0)
       "aggregateRating": {
         "@type": "AggregateRating",
@@ -203,16 +200,12 @@
             <div class="row">
                 <div class="col-md-4">
                     <h3>Take Two Studio 1603</h3>
-                    <p>
-                        @if (\App\Models\SiteSetting::find(14))
-                            {{ \App\Models\SiteSetting::find(14)->setting_value }}
-                        @else
-                            {{ null }}
-                        @endif
-                    </p>
+                    <p>{{ \App\Support\Settings::tagline() }}</p>
                     <div class="social-links">
-                        <a href="{{ \App\Models\SiteSetting::find(7)->setting_value }}" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="{{ \App\Models\SiteSetting::find(8)->setting_value }}" class="social-link"><i class="fab fa-instagram"></i></a>
+                        @foreach (\App\Support\Settings::socialLinks() as $network => $url)
+                            @php $icon = ['facebook' => 'fab fa-facebook-f', 'instagram' => 'fab fa-instagram', 'tiktok' => 'fab fa-tiktok', 'youtube' => 'fab fa-youtube', 'google_maps' => 'fas fa-map-marker-alt'][$network]; @endphp
+                            <a href="{{ $url }}" class="social-link" target="_blank" rel="noopener" aria-label="{{ ucfirst(str_replace('_', ' ', $network)) }}"><i class="{{ $icon }}"></i></a>
+                        @endforeach
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -236,9 +229,9 @@
                 <div class="col-md-4">
                     <h3>Контакти</h3>
                     <ul class="contact-list">
-                        <li><span>📍</span> {{ \App\Models\SiteSetting::find(6)->setting_value }}</li>
-                        <li><span>📞</span> <a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a></li>
-                        <li><span>✉️</span> <a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></li>
+                        <li><span>📍</span> {{ \App\Support\Settings::address() }}</li>
+                        <li><span>📞</span> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></li>
+                        <li><span>✉️</span> <a href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a></li>
                         <li><span>🕒</span> Понеделник - Неделя</li>
                         <li><span>📝</span> <a href="{{ route('blog.index') }}">Блог</a></li>
                     </ul>

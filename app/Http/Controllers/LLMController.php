@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SiteSetting;
+use App\Support\Settings;
 use App\Models\TeamMember;
 use App\Models\Service;
 use App\Models\PromPackage;
@@ -23,17 +23,16 @@ class LLMController extends Controller
 {
     public function index()
     {
-        $settings = SiteSetting::all()->pluck('setting_value', 'setting_key');
-        
-        $phone = $settings->get('site_phone') ?? '088 619 0124';
-        $email = $settings->get('site_email') ?? 'taketwostudio1603@gmail.com';
-        $address = $settings->get('site_address') ?? 'ж.к. Възраждане IV 1603, Варна';
-        $tagline = $settings->get('site_tagline') ?? 'Запечатваме вашите моменти завинаги';
-        $siteName = $settings->get('site_name') ?? 'Take Two Studio 1603';
-        
-        $instagram = $settings->get('site_instagram') ?? 'https://instagram.com/taketwostudio1603';
-        $facebook = $settings->get('site_facebook') ?? 'https://facebook.com/taketwostudio1603';
-        $tiktok = $settings->get('site_tiktok') ?? 'https://tiktok.com/@taketwostudio1603';
+        $phone = Settings::phoneDisplay(Settings::phone());
+        $email = Settings::email();
+        $address = Settings::address();
+        $tagline = Settings::tagline();
+        $siteName = Settings::siteName();
+
+        $social = Settings::socialLinks();
+        $instagram = $social['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
+        $facebook = $social['facebook'] ?? 'https://www.facebook.com/taketwostudio1603';
+        $tiktok = $social['tiktok'] ?? 'https://www.tiktok.com/@taketwostudio1603';
 
         return response()->view('llms.index', compact(
             'siteName', 'tagline', 'phone', 'email', 'address', 
@@ -43,17 +42,16 @@ class LLMController extends Controller
 
     public function full()
     {
-        $settings = SiteSetting::all()->pluck('setting_value', 'setting_key');
-        
-        $phone = $settings->get('site_phone') ?? '088 619 0124';
-        $email = $settings->get('site_email') ?? 'taketwostudio1603@gmail.com';
-        $address = $settings->get('site_address') ?? 'ж.к. Възраждане IV 1603, Варна';
-        $tagline = $settings->get('site_tagline') ?? 'Запечатваме вашите моменти завинаги';
-        $siteName = $settings->get('site_name') ?? 'Take Two Studio 1603';
-        
-        $instagram = $settings->get('site_instagram') ?? 'https://instagram.com/taketwostudio1603';
-        $facebook = $settings->get('site_facebook') ?? 'https://facebook.com/taketwostudio1603';
-        $tiktok = $settings->get('site_tiktok') ?? 'https://tiktok.com/@taketwostudio1603';
+        $phone = Settings::phoneDisplay(Settings::phone());
+        $email = Settings::email();
+        $address = Settings::address();
+        $tagline = Settings::tagline();
+        $siteName = Settings::siteName();
+
+        $social = Settings::socialLinks();
+        $instagram = $social['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
+        $facebook = $social['facebook'] ?? 'https://www.facebook.com/taketwostudio1603';
+        $tiktok = $social['tiktok'] ?? 'https://www.tiktok.com/@taketwostudio1603';
 
         // Load team members
         $team = TeamMember::where('is_active', true)->orderBy('display_order')->get();

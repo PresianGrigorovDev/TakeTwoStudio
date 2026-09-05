@@ -26,7 +26,7 @@
             </tr>
         </table>
 
-        <p style="margin-top: 20px;">Ако имате въпроси, не се колебайте да ни се обадите на <strong>088 619 0124</strong> или да ни пишете на <strong>info@taketwostudio1603.com</strong>.</p>
+        <p style="margin-top: 20px;">Ако имате въпроси, не се колебайте да ни се обадите на <strong>{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</strong> или да ни пишете на <strong>{{ \App\Support\Settings::email() }}</strong>.</p>
 
         <p>Очакваме ви с нетърпение!</p>
 

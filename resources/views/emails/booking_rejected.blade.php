@@ -14,8 +14,8 @@
         <p>Моля, опитайте с друга дата или се свържете директно с нас, за да намерим подходящо решение.</p>
 
         <p style="margin-top: 20px;">
-            Телефон: <strong>088 619 0124</strong><br>
-            Имейл: <strong>info@taketwostudio1603.com</strong>
+            Телефон: <strong>{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</strong><br>
+            Имейл: <strong>{{ \App\Support\Settings::email() }}</strong>
         </p>
 
         <p>Благодарим ви за интереса!</p>

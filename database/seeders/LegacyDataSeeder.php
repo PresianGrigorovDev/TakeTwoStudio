@@ -28,31 +28,8 @@ class LegacyDataSeeder extends Seeder
             'setting_value' => 'сватбен фотограф варна, видеозаснемане сватба, фотограф за бал, заснемане на кръщене, професионална фотосесия варна, дрон услуги, Take Two Studio 1603',
             'description' => 'Primary SEO keywords'
         ]);
-        \App\Models\SiteSetting::create([
-            'setting_key' => 'contact_phone',
-            'setting_value' => '+359886190124',
-            'description' => 'Primary contact phone'
-        ]);
-        \App\Models\SiteSetting::create([
-            'setting_key' => 'contact_email',
-            'setting_value' => 'info@taketwostudio1603.com',
-            'description' => 'Primary contact email'
-        ]);
-        \App\Models\SiteSetting::create([
-            'setting_key' => 'contact_address',
-            'setting_value' => 'ж.к. Възраждане IV 1603, Варна, България',
-            'description' => 'Primary contact address'
-        ]);
-        \App\Models\SiteSetting::create([
-            'setting_key' => 'social_facebook',
-            'setting_value' => 'https://www.facebook.com/taketwostudio1603',
-            'description' => 'Facebook page URL'
-        ]);
-        \App\Models\SiteSetting::create([
-            'setting_key' => 'social_instagram',
-            'setting_value' => 'https://www.instagram.com/taketwostudio1603',
-            'description' => 'Instagram profile URL'
-        ]);
+        $this->call(SiteSettingsSeeder::class);
+
         \App\Models\SiteSetting::create([
             'setting_key' => 'logo_white',
             'setting_value' => 'https://taketwostudio1603.com/css/img/logo-tts-white.webp',

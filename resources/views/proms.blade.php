@@ -374,11 +374,14 @@
             <h4>Запази своето място още сега!</h4>
             <div class="mt-4">
                 @php
-                    $phone = '089 420 0634';
-                    $cleanPhone = '0894200634';
+                    $promPhone = \App\Support\Settings::phoneSecondary() ?? \App\Support\Settings::phone();
+                    $instagramUrl = \App\Support\Settings::socialLinks()['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
                 @endphp
-                <h5 class="mb-2"><strong>Instagram:</strong> <a href="https://instagram.com/taketwostudio1603" target="_blank" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h5>
-                <h5><strong>Телефон:</strong> <a href="tel:{{ $cleanPhone }}" class="text-dark text-decoration-none hover-gold">{{ $phone }}</a></h5>
+                <h5 class="mb-2"><strong>Instagram:</strong> <a href="{{ $instagramUrl }}" target="_blank" rel="noopener" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h5>
+                <h5 class="mb-2"><strong>Телефон{{ \App\Support\Settings::phoneSecondaryLabel() ? ' (' . \App\Support\Settings::phoneSecondaryLabel() . ')' : '' }}:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref($promPhone) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay($promPhone) }}</a></h5>
+                @if ($promPhone !== \App\Support\Settings::phone())
+                <h5><strong>Студио:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h5>
+                @endif
             </div>
         </div>
     </section>

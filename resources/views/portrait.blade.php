@@ -308,15 +308,15 @@
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4">
                     <i class="fas fa-phone mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold"><a href="tel:{{ \App\Models\SiteSetting::find(4)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(4)->setting_value }}</a></h5>
+                    <h5 class="fs-6 fw-bold"><a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h5>
                 </div>
                 <div class="col-md-4">
                     <i class="far fa-envelope mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold"><a href="mailto:{{ \App\Models\SiteSetting::find(5)->setting_value }}" class="text-dark">{{ \App\Models\SiteSetting::find(5)->setting_value }}</a></h5>
+                    <h5 class="fs-6 fw-bold"><a href="mailto:{{ \App\Support\Settings::email() }}" class="text-dark">{{ \App\Support\Settings::email() }}</a></h5>
                 </div>
                 <div class="col-md-4">
                     <i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">ж.к. Възраждане IV 1603, Варна</h5>
+                    <h5 class="fs-6 fw-bold">{{ \App\Support\Settings::address() }}</h5>
                 </div>
             </div>
             <div class="row g-4">

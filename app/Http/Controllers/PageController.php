@@ -19,7 +19,6 @@ class PageController extends Controller
             'portfolioCategories' => \App\Models\PortfolioCategory::orderBy('display_order')->get(),
             'workStart' => BookingController::WORK_START,
             'workEnd' => BookingController::WORK_END,
-            'siteSettings' => \App\Models\SiteSetting::all(),
         ]);
     }
 
