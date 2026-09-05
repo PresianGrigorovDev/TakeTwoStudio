@@ -1,6 +1,6 @@
 <?php
 
-$dir = __DIR__ . '/public/css/img';
+$dir = __DIR__ . '/../public/css/img';
 
 function getImages($path) {
     $images = [];
