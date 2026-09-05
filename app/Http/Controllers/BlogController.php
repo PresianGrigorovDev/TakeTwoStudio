@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
-use Illuminate\Http\Request;
+use App\Support\Seo\Seo;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -25,6 +26,8 @@ class BlogController extends Controller
             ->take(5)
             ->get();
 
+        app(Seo::class)->setPageType('CollectionPage');
+
         return view('blog.index', compact('posts', 'categories', 'recentPosts'));
     }
 
@@ -43,6 +46,8 @@ class BlogController extends Controller
             ->latest('published_at')
             ->take(3)
             ->get();
+
+        $this->registerPostSeo($post);
 
         return view('blog.show', compact('post', 'relatedPosts'));
     }
@@ -69,6 +74,40 @@ class BlogController extends Controller
             ->take(5)
             ->get();
 
+        app(Seo::class)->setPageType('CollectionPage');
+
         return view('blog.category', compact('category', 'posts', 'categories', 'recentPosts'));
+    }
+
+    /** schema.org BlogPosting with a Person author (team member) when one is assigned. */
+    private function registerPostSeo(BlogPost $post): void
+    {
+        $seo = app(Seo::class)->setDates($post->published_at, $post->updated_at);
+        $current = url()->current();
+
+        $author = $post->author;
+        if ($author) {
+            $seo->addNode(PageController::personNode($author));
+        }
+
+        $body = strip_tags((string) $post->body);
+        preg_match_all('/\pL+/u', $body, $words);
+
+        $seo->addNode(array_filter([
+            '@type' => 'BlogPosting',
+            '@id' => $current.'#article',
+            'headline' => $post->title,
+            'description' => $post->meta_description ?: Str::limit(strip_tags((string) $post->excerpt), 160),
+            'image' => $post->cover_image_url ? [$post->cover_image_url] : null,
+            'datePublished' => $post->published_at?->toIso8601String(),
+            'dateModified' => $post->updated_at?->toIso8601String(),
+            'author' => ['@id' => $author ? Seo::rootId('person-'.$author->id) : Seo::rootId('organization')],
+            'publisher' => ['@id' => Seo::rootId('organization')],
+            'mainEntityOfPage' => ['@id' => $current.'#webpage'],
+            'articleSection' => $post->category?->name,
+            'inLanguage' => 'bg',
+            'wordCount' => count($words[0]) ?: null,
+            'url' => $current,
+        ]));
     }
 }

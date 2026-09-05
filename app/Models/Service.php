@@ -12,6 +12,11 @@ class Service extends Model
     use LogsActivity;
     protected $guarded = [];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'video_uploaded_at' => 'date',
+    ];
+
     protected static function booted(): void
     {
         static::saved(function (Service $service) {

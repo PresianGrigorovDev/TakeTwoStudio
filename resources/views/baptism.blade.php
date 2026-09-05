@@ -38,6 +38,7 @@
             @include('partials.video-hero-button')
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- INTRO -->
     <section class="py-5 text-center container">
@@ -457,34 +458,6 @@
     </section>
 @endsection
 
-@push('schema')
-@php
-$baptismServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Заснемане на кръщенета',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-    ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Дискретно и професионално заснемане на свято кръщение — ритуалът в църква, семейна фотосесия и тържеството в ресторанта.',
-    'url' => 'https://taketwostudio1603.com/baptism',
-];
-$baptismFaqSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'FAQPage',
-    'mainEntity' => $baptismFaqs->map(fn($faq) => [
-        '@type' => 'Question',
-        'name' => $faq->question,
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
-    ])->toArray(),
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($baptismServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-<script type="application/ld+json">{!! json_encode($baptismFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

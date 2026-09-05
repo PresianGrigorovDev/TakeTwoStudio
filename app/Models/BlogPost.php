@@ -27,6 +27,7 @@ class BlogPost extends Model
         'meta_keywords',
         'og_image',
         'views_count',
+        'author_team_member_id',
     ];
 
     protected $casts = [
@@ -138,6 +139,11 @@ class BlogPost extends Model
         }
 
         return $keywords;
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(TeamMember::class, 'author_team_member_id');
     }
 
     public function category(): BelongsTo

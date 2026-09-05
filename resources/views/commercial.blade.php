@@ -36,6 +36,7 @@
             @include('partials.video-hero-button')
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- SEO Intro -->
     <section class="py-5 text-center container">
@@ -168,6 +169,7 @@
         ['q' => 'Снимате ли хотели, ресторанти и имоти?', 'a' => 'Да, предлагаме интериорна и екстериорна фотография за хотели, ресторанти, фитнес зали и имоти. Дроните ни добавят въздушна перспектива, която се откроява.'],
         ['q' => 'Работите ли с малък и среден бизнес?', 'a' => 'Разбира се! Работим с бизнеси от всякакъв мащаб — от малки онлайн магазини до корпоративни компании. Всеки проект получава индивидуално внимание и подход.'],
     ];
+    app(\App\Support\Seo\Seo::class)->setFaqs($commercialFaqs);
     @endphp
 
     <!-- FAQ -->
@@ -262,34 +264,6 @@
     </section>
 @endsection
 
-@push('schema')
-@php
-$commercialServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Рекламна и продуктова фотография',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-    ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Рекламна фотография, продуктови кадри, корпоративни видеа и дрон заснемане за бизнеси във Варна и цяла България.',
-    'url' => 'https://taketwostudio1603.com/commercial',
-];
-$commercialFaqSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'FAQPage',
-    'mainEntity' => array_map(fn($faq) => [
-        '@type' => 'Question',
-        'name' => $faq['q'],
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq['a']],
-    ], $commercialFaqs),
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($commercialServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-<script type="application/ld+json">{!! json_encode($commercialFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

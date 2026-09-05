@@ -37,6 +37,7 @@
             @include('partials.video-hero-button')
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- INTRO -->
     <section class="py-5 text-center container">
@@ -330,26 +331,6 @@
     </section>
 @endsection
 
-@push('schema')
-@php
-$portraitServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Портретна фотография Варна',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-        'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Варна', 'addressCountry' => 'BG'],
-    ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Професионални портретни фотосесии — бизнес headshot, артистични портрети, лична марка. Студийно осветление и ретуш.',
-    'url' => 'https://taketwostudio1603.com/portrait',
-    'serviceType' => 'Портретна фотография',
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($portraitServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endpush
 
 @push('scripts')
     {{-- Scripts already pushed above --}}

@@ -77,69 +77,7 @@
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
 
-    @php
-        $testimonialStats = \App\Models\Testimonial::where('is_active', true)
-            ->selectRaw('COUNT(*) as cnt, AVG(rating) as avg_rating')
-            ->first();
-    @endphp
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@type": ["LocalBusiness", "ProfessionalService"],
-      "name": "Take Two Studio 1603",
-      "image": "{{ asset('css/img/about.webp') }}",
-      "@id": "https://taketwostudio1603.com",
-      "url": "https://taketwostudio1603.com",
-      "telephone": "{{ \App\Support\Settings::phone() }}",
-      "priceRange": "€€",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "{{ \App\Support\Settings::streetAddress() }}",
-        "addressLocality": "Варна",
-        "postalCode": "9000",
-        "addressCountry": "BG"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 43.21405,
-        "longitude": 27.914733
-      },
-      "areaServed": {
-        "@type": "City",
-        "name": "Варна",
-        "addressCountry": "BG"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-        "opens": "09:00",
-        "closes": "18:00"
-      },
-      "sameAs": {!! json_encode(array_values(\App\Support\Settings::socialLinks()), JSON_UNESCAPED_SLASHES) !!},
-@if($testimonialStats && $testimonialStats->cnt > 0)
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "{{ number_format((float) $testimonialStats->avg_rating, 1) }}",
-        "reviewCount": "{{ (int) $testimonialStats->cnt }}"
-      },
-@endif
-      "description": "Професионално сватбено фото и видеозаснемане във Варна. Услуги за балове, кръщенета и корпоративни събития.",
-      "knowsAbout": ["Сватбена фотография", "Видеозаснемане с дрон", "Абитуриентски балове", "Кръщенета"],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Фотографски и видео услуги",
-        "itemListElement": [
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Сватбена фотография и видеозаснемане"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Абитуриентски балове и фотосесии"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Заснемане на кръщенета"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Рекламна и продуктова фотография"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Дрон заснемане"}},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Пред-бална фотосесия"}}
-        ]
-      }
-    }
-    </script>
-    @stack('schema')
+    @include('partials.schema-graph')
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @stack('styles')

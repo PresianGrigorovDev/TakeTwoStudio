@@ -983,3 +983,20 @@ footer ul li a:hover {
         font-size: 0.75rem !important;
     }
 }
+/* Breadcrumb bar (SEO: mirrors the BreadcrumbList schema) */
+.breadcrumb-bar {
+    background: #f8f9fa;
+    border-bottom: 1px solid #eeeeee;
+    padding: 0.55rem 0;
+    font-size: 0.85rem;
+}
+.breadcrumb-bar .breadcrumb-item a {
+    color: #555;
+    text-decoration: none;
+}
+.breadcrumb-bar .breadcrumb-item a:hover {
+    color: #D4AF37;
+}
+.breadcrumb-bar .breadcrumb-item.active {
+    color: #222;
+}

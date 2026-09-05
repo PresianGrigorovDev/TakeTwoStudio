@@ -18,6 +18,7 @@
             <p>Изберете свободна дата за вашето събитие</p>
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- CALENDAR -->
     <section class="py-5">

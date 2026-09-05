@@ -38,6 +38,7 @@
             @include('partials.video-hero-button')
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- INTRO -->
     <section class="pt-4 pb-5 text-center container">
@@ -387,50 +388,6 @@
     </section>
 @endsection
 
-@push('schema')
-@php
-$promServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Фотограф и видеозаснемане на абитуриентски балове Варна',
-    'serviceType' => 'Prom Photography & Videography',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-        'telephone' => '089 420 0634',
-        'url' => 'https://taketwostudio1603.com',
-        'address' => [
-            '@type' => 'PostalAddress',
-            'addressLocality' => 'Варна',
-            'postalCode' => '9000',
-            'addressCountry' => 'BG',
-        ],
-    ],
-    'areaServed' => [
-        ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-        ['@type' => 'Country', 'name' => 'България'],
-    ],
-    'description' => 'Професионално заснемане на абитуриентски балове във Варна — индивидуални фотосесии, изпращане, 4K видео, дрон кадри и онлайн галерия.',
-    'url' => 'https://taketwostudio1603.com/proms',
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($promServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@if(isset($promFaqs) && $promFaqs->isNotEmpty())
-@php
-$promFaqSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'FAQPage',
-    'mainEntity' => $promFaqs->map(fn($faq) => [
-        '@type' => 'Question',
-        'name' => $faq->question,
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
-    ])->values()->toArray(),
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($promFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endif
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

@@ -48,6 +48,7 @@
             @endif
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- INTRO -->
     <div class="desc desc1 pt-4 pb-0">
@@ -693,50 +694,6 @@
     </div>
 @endsection
 
-@push('schema')
-@php
-$weddingServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Сватбен фотограф и видеозаснемане Варна',
-    'serviceType' => 'Wedding Photography & Videography',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-        'telephone' => '088 619 0124',
-        'url' => 'https://taketwostudio1603.com',
-        'address' => [
-            '@type' => 'PostalAddress',
-            'addressLocality' => 'Варна',
-            'postalCode' => '9000',
-            'addressCountry' => 'BG',
-        ],
-    ],
-    'areaServed' => [
-        ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-        ['@type' => 'Country', 'name' => 'България'],
-    ],
-    'description' => 'Професионална сватбена фотография и видеозаснемане във Варна с 4K качество, дрон кадри, предсватбени сесии и фотокниги. Онлайн калкулатор за сватбени пакети.',
-    'url' => 'https://taketwostudio1603.com/weddings',
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($weddingServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@if(isset($weddingFaqs) && $weddingFaqs->isNotEmpty())
-@php
-$weddingFaqSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'FAQPage',
-    'mainEntity' => $weddingFaqs->map(fn($faq) => [
-        '@type' => 'Question',
-        'name' => $faq->question,
-        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $faq->answer],
-    ])->values()->toArray(),
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($weddingFaqSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endif
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

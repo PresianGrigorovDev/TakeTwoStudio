@@ -36,6 +36,7 @@
             @include('partials.video-hero-button')
         </div>
     </section>
+    @include('partials.breadcrumbs')
 
     <!-- INTRO -->
     <section class="py-5 text-center container">
@@ -351,26 +352,6 @@
     </section>
 @endsection
 
-@push('schema')
-@php
-$familyServiceSchema = [
-    '@context' => 'https://schema.org',
-    '@type' => 'Service',
-    'name' => 'Семейна фотография Варна',
-    'provider' => [
-        '@type' => 'LocalBusiness',
-        'name' => 'Take Two Studio 1603',
-        '@id' => 'https://taketwostudio1603.com',
-        'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Варна', 'addressCountry' => 'BG'],
-    ],
-    'areaServed' => ['@type' => 'City', 'name' => 'Варна', 'addressCountry' => 'BG'],
-    'description' => 'Професионална семейна фотосесия на открито и в студио. Естествени кадри с деца и бебета, семейни портрети и спонтанни моменти.',
-    'url' => 'https://taketwostudio1603.com/family',
-    'serviceType' => 'Семейна фотография',
-];
-@endphp
-<script type="application/ld+json">{!! json_encode($familyServiceSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

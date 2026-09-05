@@ -8,36 +8,6 @@
 @section('og_description', $post->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($post->excerpt), 160))
 @section('og_image', $post->og_image_url ?: asset('css/img/social-share-cover.jpg'))
 
-@push('schema')
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": {!! json_encode($post->title) !!},
-        "image": {!! json_encode($post->cover_image_url) !!},
-        "datePublished": "{{ $post->published_at?->toIso8601String() }}",
-        "dateModified": "{{ $post->updated_at?->toIso8601String() }}",
-        "author": {
-            "@type": "Organization",
-            "name": "Take Two Studio 1603",
-            "url": "{{ url('/') }}"
-        },
-        "publisher": {
-            "@type": "Organization",
-            "name": "Take Two Studio 1603",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "{{ asset('css/img/logo-tts-white.webp') }}"
-            }
-        },
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "{{ url()->current() }}"
-        },
-        "description": {!! json_encode($post->meta_description ?: strip_tags($post->excerpt)) !!}
-    }
-    </script>
-@endpush
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}">

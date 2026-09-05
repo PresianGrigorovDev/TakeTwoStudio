@@ -68,6 +68,13 @@ class ServiceResource extends Resource
                     ->url()
                     ->maxLength(255)
                     ->columnSpanFull(),
+                Forms\Components\TextInput::make('video_title')
+                    ->label('Заглавие на видеото (за Google / AI търсачки)')
+                    ->helperText('Показва се като VideoObject.name в schema.org. Пример: „Сватбен филм 4K – Евксиноград, Варна“.')
+                    ->maxLength(150),
+                Forms\Components\DatePicker::make('video_uploaded_at')
+                    ->label('Дата на публикуване на видеото')
+                    ->helperText('Задължителна за VideoObject schema; ако е празна, се ползва датата на последна промяна на услугата.'),
                 Forms\Components\FileUpload::make('video_path')
                     ->label('Или качете локално видео (MP4 / WebM)')
                     ->helperText('Ако нямате линк, качете кратък видео клип директно тук (максимум 100MB).')
