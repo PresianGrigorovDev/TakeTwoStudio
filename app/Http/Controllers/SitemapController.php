@@ -93,6 +93,12 @@ class SitemapController extends Controller
             $entries[] = ['loc' => url($slug), 'lastmod' => $this->fmt($serviceDates[$slug])];
         }
 
+        $entries[] = ['loc' => url('/ceni'), 'lastmod' => $this->fmt($this->max(array_merge(
+            $serviceDates->values()->all(),
+            [$this->tableMax('faqs', ['page_slug' => 'ceni']), $this->tableMax('page_contents', ['page_slug' => 'ceni'])]
+        )))];
+        $entries[] = ['loc' => url('/za-nas'), 'lastmod' => $this->fmt($this->max([$this->tableMax('team_members'), $this->tableMax('page_contents', ['page_slug' => 'za-nas']), $this->tableMax('testimonials')]))];
+        $entries[] = ['loc' => url('/kontakti'), 'lastmod' => $this->fmt($this->max([$this->tableMax('site_settings'), $this->tableMax('page_contents', ['page_slug' => 'kontakti'])]))];
         $entries[] = ['loc' => url('/booking'), 'lastmod' => $this->fmt($this->max([$this->tableMax('blocked_dates'), $this->tableMax('services')]))];
         $entries[] = ['loc' => url('/blog'), 'lastmod' => $this->fmt($this->max([BlogPost::published()->max('updated_at'), BlogPost::published()->max('published_at')]))];
 

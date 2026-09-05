@@ -80,7 +80,7 @@
             <div class="collapse navbar-collapse justify-content-center h-100" id="navbarNav">
                 <ul class="navbar-nav align-items-center w-100 justify-content-between h-100">
                     <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
-                        <li class="nav-item"><a class="nav-link" href="/#about">За нас</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('pages.about') }}">За нас</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#portfolio">Портфолио</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('blog.index') }}">Блог</a></li>
                     </div>
@@ -105,8 +105,9 @@
                                 @endphp
                             </ul>
                         </li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('pages.prices') }}">Цени</a></li>
                         <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/#contact">Контакти</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ route('pages.contact') }}">Контакти</a></li>
                     </div>
                 </ul>
             </div>
@@ -154,6 +155,8 @@
                         <li><span>✉️</span> <a href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a></li>
                         <li><span>🕒</span> Понеделник - Неделя</li>
                         <li><span>📝</span> <a href="{{ route('blog.index') }}">Блог</a></li>
+                        <li><span>💶</span> <a href="{{ route('pages.prices') }}">Цени</a></li>
+                        <li><span>👥</span> <a href="{{ route('pages.about') }}">За нас</a> &bull; <a href="{{ route('pages.contact') }}">Контакти</a></li>
                     </ul>
                 </div>
             </div>

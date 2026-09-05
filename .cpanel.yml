@@ -8,5 +8,6 @@ deployment:
     - export DEPLOYPATH=/home/mbgsqksf/public_html
     - cd $DEPLOYPATH && php artisan optimize:clear
     - cd $DEPLOYPATH && php artisan migrate --force
+    - cd $DEPLOYPATH && php artisan db:seed --class=SeoContentSeeder --force
     - cd $DEPLOYPATH && php artisan optimize
     - cd $DEPLOYPATH && php artisan seo:indexnow --all || true

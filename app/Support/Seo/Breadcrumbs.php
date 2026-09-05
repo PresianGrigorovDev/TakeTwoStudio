@@ -72,6 +72,10 @@ final class Breadcrumbs
     {
         return match (true) {
             $path === 'booking' => 'Резервация',
+            $path === 'ceni' => 'Цени',
+            $path === 'za-nas' => 'За нас',
+            $path === 'kontakti' => 'Контакти',
+            $path === 'abiturientski-bal-varna' => 'Абитуриентски бал Варна 2027',
             $routeName === 'legal.privacy' => 'Политика за поверителност',
             $routeName === 'legal.terms' => 'Общи условия',
             $routeName === 'legal.cookies' => 'Политика за бисквитки',

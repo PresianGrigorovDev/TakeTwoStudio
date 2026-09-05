@@ -12,7 +12,7 @@ class OnPageSeoTest extends TestCase
 
     public static function servicePages(): array
     {
-        return [['/weddings'], ['/proms'], ['/baptism'], ['/commercial'], ['/family'], ['/portrait'], ['/automotive'], ['/architectural'], ['/events'], ['/']];
+        return [['/weddings'], ['/proms'], ['/baptism'], ['/commercial'], ['/family'], ['/portrait'], ['/automotive'], ['/architectural'], ['/events'], ['/'], ['/ceni'], ['/za-nas'], ['/kontakti']];
     }
 
     #[DataProvider('servicePages')]

@@ -125,4 +125,26 @@ class SchemaGraphTest extends TestCase
         $page = $this->node($graph, 'WebPage');
         $this->assertArrayHasKey('datePublished', $page);
     }
+
+    public function test_prices_page_has_an_offer_catalog_with_eur_offers(): void
+    {
+        $graph = $this->graph('/ceni');
+
+        $catalog = $this->node($graph, 'OfferCatalog');
+        $this->assertNotNull($catalog);
+        $offers = collect($catalog['itemListElement'])->flatMap(fn ($g) => $g['itemListElement']);
+        $this->assertTrue($offers->isNotEmpty(), 'seeded packages must appear as Offers');
+        $this->assertSame('EUR', $offers->first()['priceCurrency']);
+        $this->assertSame(['Начало', 'Цени'], array_column($this->node($graph, 'BreadcrumbList')['itemListElement'], 'name'));
+    }
+
+    public function test_about_and_contact_pages_declare_their_page_types(): void
+    {
+        $about = $this->node($this->graph('/za-nas'), 'AboutPage');
+        $this->assertNotNull($about);
+        $this->assertNotNull($this->node($this->graph('/za-nas'), 'Person'));
+
+        $contact = $this->node($this->graph('/kontakti'), 'ContactPage');
+        $this->assertNotNull($contact);
+    }
 }

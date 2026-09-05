@@ -333,3 +333,24 @@
 /* ---- Footer links ---- */
 .footer-link { color: #ccc; text-decoration: none; }
 .footer-link:hover { color: #fff; }
+
+/* ---- Standalone pages: /ceni, /za-nas, /kontakti, guides ---- */
+.page-hero { background: #111111; color: #ffffff; padding: 140px 0 56px; text-align: center; }
+.page-hero h1 { font-size: clamp(1.6rem, 3.2vw, 2.6rem); font-weight: 700; margin-bottom: 0.75rem; }
+.page-hero__subtitle { color: #cfcfcf; margin: 0; font-size: 1.05rem; }
+.answer-capsule { font-size: 1.1rem; line-height: 1.7; color: #222; }
+.price-anchors { display: flex; flex-wrap: wrap; gap: 8px; }
+.price-anchor { display: inline-block; padding: 6px 12px; border: 1px solid #D4AF37; border-radius: 999px; color: #222; text-decoration: none; font-size: 0.85rem; }
+.price-anchor:hover { background: #D4AF37; color: #111; }
+.price-group { scroll-margin-top: 90px; }
+.price-table th, .price-table td { vertical-align: top; }
+.price-table thead th { border-bottom: 2px solid #D4AF37; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.price-table__featured { background: rgba(212, 175, 55, 0.08); }
+.price-extras summary { cursor: pointer; color: #555; font-size: 0.9rem; }
+.price-note { background: #f8f9fa; border-left: 4px solid #D4AF37; }
+.process-list { padding-left: 1.25rem; }
+.process-list li { margin-bottom: 0.75rem; line-height: 1.6; }
+.trust-list { list-style: none; padding: 0; }
+.trust-list li { padding-left: 1.6rem; position: relative; margin-bottom: 0.75rem; line-height: 1.6; }
+.trust-list li::before { content: "\2713"; position: absolute; left: 0; color: #D4AF37; font-weight: 700; }
+.team-card .team-img { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; }
