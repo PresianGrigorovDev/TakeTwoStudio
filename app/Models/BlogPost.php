@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
@@ -194,6 +195,9 @@ class BlogPost extends Model
         return $this->resolveImageUrl($this->og_image ?: $this->cover_image);
     }
 
+    /** Shown instead of a broken image when a cover file has gone missing on disk. */
+    public const FALLBACK_COVER = 'css/img/default-placeholder.jpg';
+
     private function resolveImageUrl(?string $path): ?string
     {
         if (empty($path)) {
@@ -206,11 +210,11 @@ class BlogPost extends Model
 
         // Static public assets (seeded placeholders)
         if (str_starts_with($path, 'css/') || str_starts_with($path, 'img/')) {
-            return asset($path);
+            return is_file(public_path($path)) ? asset($path) : asset(self::FALLBACK_COVER);
         }
 
         // Filament uploads land in storage/app/public/
-        return asset('storage/' . $path);
+        return Storage::disk('public')->exists($path) ? asset('storage/' . $path) : asset(self::FALLBACK_COVER);
     }
 
     public function getStatusAttribute(): string
