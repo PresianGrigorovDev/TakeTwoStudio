@@ -312,7 +312,7 @@
 
                             <div class="text-start mt-4 mb-4">
                                 <div class="summary-item"><span>Пакет:</span> <span id="sumPackage">Парти</span></div>
-                                <div class="summary-item"><span>Добавки:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item"><span>Добавки:</span> <span id="sumExtras">-</span></div>
                                 <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
                                     <span>Промо Намаление:</span>
                                     <span class="discount-amount" style="font-weight:700;"></span>

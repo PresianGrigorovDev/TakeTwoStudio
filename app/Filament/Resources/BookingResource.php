@@ -119,7 +119,7 @@ class BookingResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('teamMember.name')
                     ->label('Фотограф')
-                    ->default('—')
+                    ->default('-')
                     ->badge()
                     ->color('info'),
                 Tables\Columns\TextColumn::make('status')

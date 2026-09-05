@@ -130,7 +130,7 @@ class PromoCodeResource extends Resource
                     ->label('Канал')
                     ->badge()
                     ->color('gray')
-                    ->placeholder('—'),
+                    ->placeholder('-'),
 
                 Tables\Columns\TextColumn::make('uses_count')
                     ->label('Ползвания')
@@ -145,7 +145,7 @@ class PromoCodeResource extends Resource
                 Tables\Columns\TextColumn::make('valid_until')
                     ->label('Валиден до')
                     ->date('d.m.Y')
-                    ->placeholder('—')
+                    ->placeholder('-')
                     ->sortable(),
 
                 Tables\Columns\ToggleColumn::make('is_active')

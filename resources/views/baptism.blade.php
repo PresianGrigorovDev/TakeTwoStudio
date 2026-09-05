@@ -333,7 +333,7 @@
                                 </div>
                                 <div class="summary-item"><span>Обхват:</span> <span id="sumScope">Само Църква</span>
                                 </div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
                                 <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
                                     <span>Промо Намаление:</span>
                                     <span class="discount-amount" style="font-weight:700;"></span>

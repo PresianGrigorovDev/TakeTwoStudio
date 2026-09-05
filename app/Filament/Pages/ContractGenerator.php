@@ -559,9 +559,9 @@ class ContractGenerator extends Page implements HasForms
             $this->data['executors_preview'] = $executors->map(fn ($e) => [
                 'name' => $e->name,
                 'role' => $e->role_bg,
-                'phone' => $e->phone ?? '—',
-                'email' => $e->email ?? '—',
-                'address' => $e->address ?? '—',
+                'phone' => $e->phone ?? '-',
+                'email' => $e->email ?? '-',
+                'address' => $e->address ?? '-',
             ])->toArray();
         } else {
             $this->data['executors_preview'] = [];

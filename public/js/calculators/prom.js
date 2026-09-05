@@ -2,7 +2,7 @@ function calculatePromTotal() {
     let total = 0;
     let packagePrice = 0;
     let extrasPrice = 0;
-    let pkgName = "—";
+    let pkgName = "-";
     let extrasNames = [];
     let detailsArr = [];
 
@@ -74,7 +74,7 @@ function calculatePromTotal() {
             }
             extrasElement.style.color = "#fff";
         } else {
-            extrasElement.innerText = "—";
+            extrasElement.innerText = "-";
             if (extrasParent) {
                 extrasParent.style.flexDirection = "row";
                 extrasParent.style.alignItems = "center";

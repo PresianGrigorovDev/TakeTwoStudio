@@ -57,7 +57,7 @@ class BlogPostResource extends Resource
                                     ->columnSpanFull(),
                                 Forms\Components\Select::make('author_team_member_id')
                                     ->label('Автор (член на екипа)')
-                                    ->helperText('Показва се като автор (Person) в schema.org — важно за E-E-A-T.')
+                                    ->helperText('Показва се като автор (Person) в schema.org - важно за E-E-A-T.')
                                     ->relationship('author', 'name')
                                     ->searchable()
                                     ->preload()

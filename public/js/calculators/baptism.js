@@ -3,8 +3,8 @@ function calculateBaptismTotal() {
     let packagePrice = 0;
     let extrasPrice = 0;
 
-    let serviceText = "—";
-    let scopeText = "—";
+    let serviceText = "-";
+    let scopeText = "-";
     let extrasText = [];
 
     // SERVICE (Package)
@@ -66,7 +66,7 @@ function calculateBaptismTotal() {
 
     const sumExtrasElem = document.getElementById('sumExtras');
     if (sumExtrasElem) {
-        sumExtrasElem.innerText = extrasText.length > 0 ? extrasText.join(", ") : "—";
+        sumExtrasElem.innerText = extrasText.length > 0 ? extrasText.join(", ") : "-";
     }
 
     // Hidden fields for form submission

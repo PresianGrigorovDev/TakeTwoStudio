@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $category->name . ' | Блог | Take Two Studio 1603')
-@section('meta_title', $category->name . ' — публикации от блога на Take Two Studio')
+@section('meta_title', $category->name . ' - публикации от блога на Take Two Studio')
 @section('meta_description', $category->description ?: 'Публикации в категория ' . $category->name . ' от блога на Take Two Studio 1603.')
 @section('og_title', $category->name . ' | Блог | Take Two Studio')
 

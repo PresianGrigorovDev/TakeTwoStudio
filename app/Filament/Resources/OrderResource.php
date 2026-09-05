@@ -185,18 +185,18 @@ class OrderResource extends Resource
                     ->label('Дата')
                     ->date('d.m.Y')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Час')
                     ->formatStateUsing(fn ($state, $record) => $record->start_time && $record->end_time
                         ? $record->start_time . ' – ' . $record->end_time
-                        : '—')
+                        : '-')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('teamMembers.name')
                     ->label('Фотографи')
                     ->badge()
                     ->color('info')
-                    ->default('—'),
+                    ->default('-'),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Цена (€)')
                     ->money('EUR')

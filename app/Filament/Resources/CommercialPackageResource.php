@@ -41,7 +41,7 @@ class CommercialPackageResource extends Resource
                 ->suffix('€'),
 
             TextInput::make('price')
-                ->label('Цена (лв.) — за справка')
+                ->label('Цена (лв.) - за справка')
                 ->numeric()
                 ->required()
                 ->suffix('лв.'),

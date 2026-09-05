@@ -36,16 +36,16 @@ class ServiceResource extends Resource
                     ->label('Слъг (URL)')
                     ->required()
                     ->options([
-                        'weddings' => '/weddings — Сватби',
-                        'proms' => '/proms — Балове',
-                        'baptism' => '/baptism — Кръщенета',
-                        'graduation' => '/graduation — Изпращане',
-                        'commercial' => '/commercial — Реклама и Бизнес',
-                        'family' => '/family — Семейна Фотография',
-                        'portrait' => '/portrait — Портретна Фотография',
-                        'automotive' => '/automotive — Автомобилна Фотография',
-                        'architectural' => '/architectural — Архитектурна Фотография',
-                        'events' => '/events — Събитийна Фотография',
+                        'weddings' => '/weddings - Сватби',
+                        'proms' => '/proms - Балове',
+                        'baptism' => '/baptism - Кръщенета',
+                        'graduation' => '/graduation - Изпращане',
+                        'commercial' => '/commercial - Реклама и Бизнес',
+                        'family' => '/family - Семейна Фотография',
+                        'portrait' => '/portrait - Портретна Фотография',
+                        'automotive' => '/automotive - Автомобилна Фотография',
+                        'architectural' => '/architectural - Архитектурна Фотография',
+                        'events' => '/events - Събитийна Фотография',
                     ])
                     ->searchable(),
                 Forms\Components\Toggle::make('is_active')

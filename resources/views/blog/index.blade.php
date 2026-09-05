@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Блог | Take Two Studio 1603 — Съвети, истории и вдъхновение')
+@section('title', 'Блог | Take Two Studio 1603 - Съвети, истории и вдъхновение')
 @section('meta_title', 'Блог | Take Two Studio 1603')
 @section('meta_description', 'Статии, съвети и истории от света на фотографията и видеозаснемането. Идеи за сватби, кръщенета, балове и корпоративни събития във Варна и цяла България.')
 @section('meta_keywords', 'блог фотография, съвети сватбен фотограф, идеи фотосесия, Take Two Studio блог')
 @section('og_title', 'Блог | Take Two Studio 1603')
-@section('og_description', 'Съвети, истории и вдъхновение от Take Two Studio — вашият фотограф във Варна.')
+@section('og_description', 'Съвети, истории и вдъхновение от Take Two Studio - вашият фотограф във Варна.')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/blog.css') }}">

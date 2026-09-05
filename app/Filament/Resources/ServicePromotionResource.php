@@ -41,7 +41,7 @@ class ServicePromotionResource extends Resource
                                 if (!$serviceId) return [];
                                 return \App\Models\ServicePackage::where('service_id', $serviceId)
                                     ->get()
-                                    ->mapWithKeys(fn ($p) => [$p->id => $p->name_bg . ' — ' . number_format($p->price_eur, 2) . ' €']);
+                                    ->mapWithKeys(fn ($p) => [$p->id => $p->name_bg . ' - ' . number_format($p->price_eur, 2) . ' €']);
                             })
                             ->required()
                             ->live()
@@ -93,7 +93,7 @@ class ServicePromotionResource extends Resource
                                 $original = (float) $get('original_price');
                                 $percent  = (float) $get('discount_percent');
                                 if ($original <= 0 || $percent <= 0) {
-                                    return '—';
+                                    return '-';
                                 }
                                 $discounted = $original - ($original * $percent / 100);
                                 return number_format($discounted, 2, '.', ' ') . ' €';

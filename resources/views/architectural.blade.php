@@ -45,7 +45,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <h3 class="mb-4 h4 text-muted fw-normal lh-base">
-                    Архитектурата говори чрез форми, светлина и пространство — ние я превръщаме в завладяващи кадри.
+                    Архитектурата говори чрез форми, светлина и пространство - ние я превръщаме в завладяващи кадри.
                 </h3>
                 <div class="section-divider"></div>
                 <p class="text-muted mb-4">
@@ -282,9 +282,9 @@
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
                             <div class="text-start mt-4 mb-4">
-                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">—</span></div>
-                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">—</span></div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">-</span></div>
+                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">-</span></div>
+                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
                             </div>
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">

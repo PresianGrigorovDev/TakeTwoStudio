@@ -108,12 +108,12 @@ class PromotionResource extends Resource
                     ->label('Промо Код')
                     ->badge()
                     ->color('primary')
-                    ->placeholder('—'),
+                    ->placeholder('-'),
 
                 Tables\Columns\TextColumn::make('expires_at')
                     ->label('Изтича на')
                     ->dateTime('d.m.Y H:i')
-                    ->placeholder('—')
+                    ->placeholder('-')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('popup_days_interval')

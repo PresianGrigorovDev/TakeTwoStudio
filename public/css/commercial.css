@@ -316,7 +316,7 @@ h5 {
     will-change: transform;
 }
 
-/* Wrapper — grid trick: 0fr → 1fr анимира реалната височина без freeze */
+/* Wrapper - grid trick: 0fr → 1fr анимира реалната височина без freeze */
 .portfolio-desc-wrapper {
     display: grid;
     grid-template-rows: 0fr;
@@ -329,7 +329,7 @@ h5 {
     margin-top: 8px;
 }
 
-/* Описанието — overflow:hidden е нужно за grid trick-а */
+/* Описанието - overflow:hidden е нужно за grid trick-а */
 .portfolio-desc {
     overflow: hidden;
     color: #fff;
@@ -346,7 +346,7 @@ h5 {
     /* transform: scale(1.1); */
 }
 
-/* 2. Overlay изчезва при hover — снимката се вижда чисто */
+/* 2. Overlay изчезва при hover - снимката се вижда чисто */
 .portfolio-item:hover .portfolio-overlay {
     background: transparent;
 }

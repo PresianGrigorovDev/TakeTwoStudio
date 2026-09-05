@@ -1,5 +1,5 @@
 <!--
-ВЪТРЕШЕН ДОКУМЕНТ — само за екипа на Take Two Studio 1603.
+ВЪТРЕШЕН ДОКУМЕНТ - само за екипа на Take Two Studio 1603.
 Не публикувай, не споделяй линк. Съдържа детайли за хостинга, неотстранени уязвимости и бизнес приоритети.
 
 РЕПОТО ТРЯБВА ДА Е PRIVATE. Към 2026-09-05 GitHub репото PresianGrigorovDev/TakeTwoStudio е публично и този файл
@@ -32,7 +32,7 @@
 
 ---
 
-## Част A — Диагноза: защо URL-ите имат `/public/`
+## Част A - Диагноза: защо URL-ите имат `/public/`
 
 ### A.1 Какво връща живият сайт днес
 
@@ -46,7 +46,7 @@
 | `https://www.taketwostudio1603.com/` | 301 → `https://taketwostudio1603.com/public/` |
 | `https://taketwostudio1603.com/composer.json` | 404 (т.е. root правило пренаписва всичко към `public/`) |
 | `https://taketwostudio1603.com/.env` | 403 |
-| `<link rel="canonical">` и `og:url` на двете версии | чисти (`/weddings`) — само те |
+| `<link rel="canonical">` и `og:url` на двете версии | чисти (`/weddings`) - само те |
 
 Извод: **всеки посетител, който влезе през `http://`, `www.` или с наклонена черта накрая, бива пренасочен към `/public/...`** и оттам нататък цялата навигация е с `/public/`. Това е причината собственикът да „вижда“ `/public/` в адресната лента.
 
@@ -54,12 +54,12 @@
 
 1. **Document root = root на Laravel проекта.** cPanel Git деплойва репото директно в `/home/mbgsqksf/public_html/` (виж [_legacy/.cpanel.yml](../_legacy/.cpanel.yml)). Папката `public/` на Laravel е *под* webroot-а, вместо да *е* webroot.
 2. **Root `.htaccess` съществува само на сървъра.** В репото няма root `.htaccess` (старият е преименуван в commit `b12cb1c` и е в [_legacy/.htaccess_old](../_legacy/.htaccess_old)). `.gitignore` не го игнорира → файлът е създаден ръчно на сървъра и е untracked. Поведението (`/composer.json` → 404, `/index.php` → начална страница) показва правило от типа `RewriteRule ^(.*)$ public/$1 [L]`.
-3. **Redirect правилата живеят в [public/.htaccess](../public/.htaccess#L8-L27) и използват `%{REQUEST_URI}`.** След per-directory rewrite (`RewriteRule ^(.*)$ public/$1 [L]`) mod_rewrite прави вътрешен redirect и на следващия pass `%{REQUEST_URI}` вече е `/public/weddings` — това е класическият бъг „Laravel на shared hosting пренасочва към /public/ при trailing slash“ и се случва **и на Apache, и на LiteSpeed**. Затова трите redirect-а (HTTPS, www, trailing slash) пренасочват към `/public/...`. Само `%{THE_REQUEST}` (суровият request line) никога не се променя — затова той е правилната основа за redirect-и. Потвърдено и с `/css` → `301 → /public/css/` (DirectorySlash на сървъра също изтича вътрешния път).
-4. **Laravel вярва на URL-а.** При заявка `/public/weddings` Symfony изчислява `baseUrl = /public` и всички `url()`, `route()`, `asset()` генерират `/public/...` (78× `url(`, 23× `route(`, 113× `asset(` в blade файловете). При заявка `/weddings` базата е чиста — затова версията без `/public/` изглежда наред.
+3. **Redirect правилата живеят в [public/.htaccess](../public/.htaccess#L8-L27) и използват `%{REQUEST_URI}`.** След per-directory rewrite (`RewriteRule ^(.*)$ public/$1 [L]`) mod_rewrite прави вътрешен redirect и на следващия pass `%{REQUEST_URI}` вече е `/public/weddings` - това е класическият бъг „Laravel на shared hosting пренасочва към /public/ при trailing slash“ и се случва **и на Apache, и на LiteSpeed**. Затова трите redirect-а (HTTPS, www, trailing slash) пренасочват към `/public/...`. Само `%{THE_REQUEST}` (суровият request line) никога не се променя - затова той е правилната основа за redirect-и. Потвърдено и с `/css` → `301 → /public/css/` (DirectorySlash на сървъра също изтича вътрешния път).
+4. **Laravel вярва на URL-а.** При заявка `/public/weddings` Symfony изчислява `baseUrl = /public` и всички `url()`, `route()`, `asset()` генерират `/public/...` (78× `url(`, 23× `route(`, 113× `asset(` в blade файловете). При заявка `/weddings` базата е чиста - затова версията без `/public/` изглежда наред.
 5. **Съществуващите „лепенки“ не решават проблема:**
    - [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php#L28-L33) проверява `$request->path()` за префикс `public/`, но Symfony вече е махнал `/public` от `path()` → клонът никога не се изпълнява (доказано: `/public/weddings` връща 200, не 301). Останалата част дублира HTTPS/www redirect-ите от `.htaccess`.
-   - [resources/views/layouts/app.blade.php](../resources/views/layouts/app.blade.php#L36-L40) „закърпва“ canonical с `preg_replace('#^public/#', ...)` и hardcoded домейн — затова canonical е чист, а линковете не са.
-   - [app/Http/Controllers/SitemapController.php](../app/Http/Controllers/SitemapController.php) е с hardcoded `$baseUrl` (commit `5fe1d05`) — симптоматично решение, което потвърждава, че проблемът е бил забелязан.
+   - [resources/views/layouts/app.blade.php](../resources/views/layouts/app.blade.php#L36-L40) „закърпва“ canonical с `preg_replace('#^public/#', ...)` и hardcoded домейн - затова canonical е чист, а линковете не са.
+   - [app/Http/Controllers/SitemapController.php](../app/Http/Controllers/SitemapController.php) е с hardcoded `$baseUrl` (commit `5fe1d05`) - симптоматично решение, което потвърждава, че проблемът е бил забелязан.
 
 ### A.3 Защо „преди беше директно името на услугата“
 
@@ -67,7 +67,7 @@
 
 ### A.4 Препоръчано решение (резюме; детайли в Част C.1)
 
-Един-единствен източник на истина за канонизацията — **committed root `.htaccess`**, който: (1) прави HTTPS/www/trailing-slash/`/public/`/`index.php`→чист redirect с **един** hop на базата на `%{THE_REQUEST}`, (2) блокира чувствителни пътища (`.env`, `.git`, `composer.*`, `vendor/`, `_legacy/`, `Ardes/`…), (3) накрая пренаписва вътрешно към `public/`. От `public/.htaccess` се махат всички redirect блокове. В Laravel: `URL::forceRootUrl()` + `forceScheme('https')` в production, `APP_URL` в `.env`, пренаписване на middleware-а да ползва `getBaseUrl()`, махане на `preg_replace` хака, `SitemapController` да ползва `config('app.url')`. Алтернативата „смяна на Document Root към `public_html/public`“ за primary домейн е read-only в cPanel (само хостингът през WHM може) — питай веднъж, но не разчитай на нея. Пълните файлове и редът на деплой са в Част C.1.
+Един-единствен източник на истина за канонизацията - **committed root `.htaccess`**, който: (1) прави HTTPS/www/trailing-slash/`/public/`/`index.php`→чист redirect с **един** hop на базата на `%{THE_REQUEST}`, (2) блокира чувствителни пътища (`.env`, `.git`, `composer.*`, `vendor/`, `_legacy/`, `Ardes/`…), (3) накрая пренаписва вътрешно към `public/`. От `public/.htaccess` се махат всички redirect блокове. В Laravel: `URL::forceRootUrl()` + `forceScheme('https')` в production, `APP_URL` в `.env`, пренаписване на middleware-а да ползва `getBaseUrl()`, махане на `preg_replace` хака, `SitemapController` да ползва `config('app.url')`. Алтернативата „смяна на Document Root към `public_html/public`“ за primary домейн е read-only в cPanel (само хостингът през WHM може) - питай веднъж, но не разчитай на нея. Пълните файлове и редът на деплой са в Част C.1.
 
 ---
 
@@ -81,14 +81,14 @@
 | 4 | Един NAP: телефон E.164, един имейл, `sameAs` с TikTok/YouTube/Maps, махни `aggregateRating`, `areaServed` списък | C.4.4, B9/B17/B19 | entity консистентност |
 | 5 | GBP playbook + система за Google отзиви (най-висок ROI) | D.6 | Gemini/AI Overviews/Maps |
 | 6 | Пренаписване на `/proms` по „answer capsule“ + нови `/ceni`, `/za-nas`, `/kontakti` | D.4, D.5 | цитируемо съдържание за AI; сезонът е сега |
-| 7 | GPTBot 429 — диагноза + тикет към хостинга | C.3 | OpenAI training crawler (ChatGPT Search не е засегнат) |
+| 7 | GPTBot 429 - диагноза + тикет към хостинга | C.3 | OpenAI training crawler (ChatGPT Search не е засегнат) |
 | 8 | Един JSON-LD `@graph` (Organization/LocalBusiness/WebSite/WebPage/Breadcrumb/Service+Offer/FAQ/Person/Video/ImageObject), FAQ консолидация, реален `lastmod` + image sitemap | C.4 | чист entity граф |
 | 9 | Скорост: hero WebP/AVIF + `<picture>`/srcset/lazy, Vite bundle вместо 7 CDN стила, без unpkg | C.5 | LCP < 2,5 s |
 | 10 | Цитирания (mywedding.bg, weddingday.bg, starofservice.bg, НАПСФВ, зали-партньори) + YouTube шаблони + месечен AI панел (20 промпта) | D.8, D.10 | консенсус на трети страни, измерване |
 
 ---
 
-## Част B — Инвентаризация на всички находки
+## Част B - Инвентаризация на всички находки
 
 ### B.1 Критични (сигурност / индексиране)
 
@@ -98,7 +98,7 @@
 | B2 | `GET /test-email-send` е публичен → при всяко отваряне създава запис `Inquiry` и праща имейл до админа (спам/DoS вектор, замърсява CRM-а) | live: **HTTP 200** | [routes/web.php:39-63](../routes/web.php#L39-L63) |
 | B3 | Дублирано съдържание `/public/*` + redirect chains към `/public/*` (Част A) | live curl матрица | server root `.htaccess`, [public/.htaccess](../public/.htaccess) |
 | B4 | **GPTBot получава HTTP 429** (празен body, `server: LiteSpeed`) в 9 от 9 мои теста през ~25 минути (08:56 и 09:18 UTC); агентът видя кратък прозорец с 200 → **UA-keyed rate limit с cooldown на ниво хостинг**, не hard block. robots.txt го разрешава. `OAI-SearchBot` (crawler-ът на ChatGPT Search) и `ChatGPT-User` минават с 200 → **видимостта в ChatGPT Search не е засегната**; засегнат е training crawler-ът. `Bytespider`, `Amazonbot`, `meta-externalagent` → 403 (host bot list) | live UA тестове | хостинг JetHosting (`ms.eu108.jethosting.com`): LiteSpeed per-client throttling / Imunify360 / ModSecurity |
-| B4a | `public/optimize.php` е **публичен (200)** и без auth — `?run` стартира GD пренаписване на всички изображения (CPU DoS + променя файлове) | live 200 | [public/optimize.php:13](../public/optimize.php#L13) |
+| B4a | `public/optimize.php` е **публичен (200)** и без auth - `?run` стартира GD пренаписване на всички изображения (CPU DoS + променя файлове) | live 200 | [public/optimize.php:13](../public/optimize.php#L13) |
 | B4b | `BlogPostSeeder` и `LegalPageSeeder` ползват `updateOrCreate` по slug → всяко посещение на `/seed-all` (вкл. HEAD) **презаписва редакции от админа** на seed-натите постове и правни страници | код | [BlogPostSeeder.php:30](../database/seeders/BlogPostSeeder.php#L30), [LegalPageSeeder.php:36](../database/seeders/LegalPageSeeder.php#L36) |
 | B4c | Чужда клиентска страница (Ardes/NVIDIA landing) се сервира и е индексируема на този домейн: `/ardes/nvidia-02.2026/index.html` → 200; архиви в web-достъпни пътища: `/storage.zip` → 200, `storage/app/public/Archive.zip` (97 MB, 403 само заради host конфиг) | live | `public/ardes/`, `Ardes/`, `public/storage.zip` |
 | B4d | `/favicon.ico` е **0 байта** (Google показва favicon в мобилни SERP); `/site.webmanifest` → **404** (линкнат от всяка страница); `home.blade.php:11` preload-ва несъществуващ `css/img/header.webp` (404 при всяко зареждане); липсват `social-share-cover.jpg` (default `og:image` за блога → 404), `best-wedding-cover.jpg`, `default-placeholder.jpg` | live + repo | [layouts/app.blade.php:75](../resources/views/layouts/app.blade.php#L75), [home.blade.php:11](../resources/views/home.blade.php#L11) |
@@ -115,14 +115,14 @@
 | B10 | Липсва `BreadcrumbList`, `VideoObject`, `Person` (екип), `Offer` с цени (има само на мъртвата `/graduation`), няма общ `@id` граф Organization↔WebSite↔WebPage | views |
 | B11 | Sitemap: `lastmod` = днешна дата за всички статични URL (фалшива свежест), `changefreq/priority` (игнорирани), без `/blog/category/*` | [SitemapController.php](../app/Http/Controllers/SitemapController.php) |
 | B12 | robots.txt изброява `/clear-cache` и `/force-login` → рекламира вътрешни endpoints | [public/robots.txt](../public/robots.txt) |
-| B13 | **Сайтът не се появява в Bing** — нито `site:taketwostudio1603.com`, нито брандовата заявка `taketwostudio1603` връщат резултат („Няма резултати“). ChatGPT Search стъпва на индекса на Bing → докато това не се оправи, ChatGPT няма как да цитира сайта | Bing Webmaster Tools (проверка на покритието) |
+| B13 | **Сайтът не се появява в Bing** - нито `site:taketwostudio1603.com`, нито брандовата заявка `taketwostudio1603` връщат резултат („Няма резултати“). ChatGPT Search стъпва на индекса на Bing → докато това не се оправи, ChatGPT няма как да цитира сайта | Bing Webmaster Tools (проверка на покритието) |
 | B14 | Title тагове над 60 знака на 5 от 9 услуги (proms 82, commercial 82, portrait 94, baptism 74, weddings 62); description над 155 знака на 6 страници (commercial 195, portrait 179, proms 172) → отрязват се в SERP | `@section('title')` / `meta_description` във всяка service view |
 | B15 | H1 на услугите е без ключова дума и град („Вашият Сватбен Ден“, „Абитуриентски Балове“, „Реклама и Бизнес“) → H1 ≠ заявка, докато title е правилен | service views |
 | B16 | Началната страница емитира **два** отделни `LocalBusiness` блока (site-wide + собствен) без общ `@id` → две „фирми“ за парсера | [layouts/app.blade.php:83](../resources/views/layouts/app.blade.php#L83), [home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) |
 | B17 | `sameAs` съдържа само Facebook и Instagram; YouTube и TikTok липсват в schema и във footer-а (footer линква 3 лични Instagram профила на екипа) → по-слаба entity връзка към каналите, които Gemini/ChatGPT цитират | [layouts/app.blade.php:116-119](../resources/views/layouts/app.blade.php#L116-L119), footer |
 | B18 | `aggregateRating` е `5.0` от `3` отзива → освен self-serving (B8), малкият брой прави сигнала слаб; реалната стойност е в Google отзивите | Testimonial таблица |
 | B19 | `/proms` показва **друг имейл** (`info@taketwostudio1603.com`) спрямо останалия сайт (`taketwostudio1603@gmail.com`) + втори телефон (B9) → NAP на най-важната страница се разминава с GBP/schema | [proms.blade.php](../resources/views/proms.blade.php) |
-| B20 | Блог постът `/blog/speistete-budjet-balno-zasnemane-varna` рекламира „195 лв. на ученик“ — противоречи на актуалните € цени (100/120 €) на `/proms` и в llms-full.txt → объркващ сигнал за AI и клиенти | [database/seeders/BlogPostSeeder.php:168-175](../database/seeders/BlogPostSeeder.php#L168-L175), production DB |
+| B20 | Блог постът `/blog/speistete-budjet-balno-zasnemane-varna` рекламира „195 лв. на ученик“ - противоречи на актуалните € цени (100/120 €) на `/proms` и в llms-full.txt → объркващ сигнал за AI и клиенти | [database/seeders/BlogPostSeeder.php:168-175](../database/seeders/BlogPostSeeder.php#L168-L175), production DB |
 | B21 | Blog `BlogPosting.author` е `Organization`, не `Person` → няма E-E-A-T авторска връзка | [blog/show.blade.php:20-24](../resources/views/blog/show.blade.php#L20-L24) |
 | B22 | `areaServed` в schema е само „Варна“, докато услугите се предлагат и в Добрич/Шумен/Балчик/Каварна/Бяла | [layouts/app.blade.php:105-109](../resources/views/layouts/app.blade.php#L105-L109) |
 
@@ -137,24 +137,24 @@
 | Референции `.jpg` / `.webp` | **57 / 3** |
 | Vite 7 + Tailwind 4 | инсталирани в `package.json`, но публичните страници не ги ползват |
 
-PageSpeed API квотата беше изчерпана днес — Lighthouse числа трябва да се снемат ръчно (виж Част E).
+PageSpeed API квотата беше изчерпана днес - Lighthouse числа трябва да се снемат ръчно (виж Част E).
 
 ### B.4 Поддръжка / хигиена
 
-- Десетки дублирани файлове с суфикс `" 2"` (macOS copy артефакти) в `app/`, `resources/views/`, `database/` — шум и риск от объркване при деплой.
+- Десетки дублирани файлове с суфикс `" 2"` (macOS copy артефакти) в `app/`, `resources/views/`, `database/` - шум и риск от объркване при деплой.
 - 5 отделни FAQ таблици (`wedding_faqs`, `prom_faqs`, …) + неизползвана обща `faqs`; 10 отделни пакетни таблици → schema/FAQ логиката се копира на ръка във всяка страница и се разминава (B5, B10).
 - `PageController` има по един hardcoded метод за услуга; `PortfolioCategory` slug без route дава мъртъв линк в навигацията.
 - `.env`: `APP_LOCALE=en` при изцяло български сайт (влияе на `Carbon`/дати в blog).
 
 ---
 
-## Част C — Технически план (какво, къде, как)
+## Част C - Технически план (какво, къде, как)
 
 `$ROOT` = `/Users/pgg/Documents/GitHub/TakeTwoStudio`; сървър: `/home/mbgsqksf/public_html` = `$ROOT`. Хост: JetHosting (`ms.eu108.jethosting.com`), cPanel + LiteSpeed, HTTP/2 + HTTP/3 активни.
 
 ### C.0 ⚠️ Странични ефекти от днешния анализ (за проверка още сега)
 
-Проверките бяха HTTP GET/HEAD заявки, но три endpoint-а на сайта имат странични ефекти при GET — точно затова са в „критични“:
+Проверките бяха HTTP GET/HEAD заявки, но три endpoint-а на сайта имат странични ефекти при GET - точно затова са в „критични“:
 
 | Какво | Кой/кога | Ефект | Какво да направиш |
 |---|---|---|---|
@@ -168,7 +168,7 @@ PageSpeed API квотата беше изчерпана днес — Lighthouse
 
 | Опция | Как | Плюс | Минус | Решение |
 |---|---|---|---|---|
-| (a) Document Root → `public_html/public` | cPanel › Domains; за primary домейн полето е read-only — само хостингът (WHM) | най-чисто, stock Laravel | зависи от хоста | питай веднъж (безплатно); ако се съгласят — правилата от блок 2 отиват в `public/.htaccess`, root файлът се маха |
+| (a) Document Root → `public_html/public` | cPanel › Domains; за primary домейн полето е read-only - само хостингът (WHM) | най-чисто, stock Laravel | зависи от хоста | питай веднъж (безплатно); ако се съгласят - правилата от блок 2 отиват в `public/.htaccess`, root файлът се маха |
 | **(b) Committed root `.htaccess`** | този план | работи с cPanel Git in-place checkout, без зависимост от хоста, версиониран, една точка за канонизация | `.env`/`vendor` остават в webroot (смекчено с deny правила) | **основен път** |
 | (c) App над webroot, `public/` копиран/symlink-нат в `public_html` | нов cPanel repo в `~/app`, `.cpanel.yml` копира `public/*`, патч на `index.php` пътища | най-добра сигурност | конфликт с текущия in-place checkout; `storage:link`, Filament uploads, деплой се променят | при следваща смяна на хостинг |
 
@@ -285,7 +285,7 @@ RewriteRule ^(.*)$ public/$1 [L]
 
 | # | Файл | Промяна |
 |---|---|---|
-| 1 | [app/Providers/AppServiceProvider.php](../app/Providers/AppServiceProvider.php) `boot()` | `if (! $this->app->environment('local', 'testing')) { URL::forceRootUrl(config('app.url')); URL::forceScheme('https'); }` — `url()/asset()/route()/Storage::url()` стават имунни на това как е дошла заявката |
+| 1 | [app/Providers/AppServiceProvider.php](../app/Providers/AppServiceProvider.php) `boot()` | `if (! $this->app->environment('local', 'testing')) { URL::forceRootUrl(config('app.url')); URL::forceScheme('https'); }` - `url()/asset()/route()/Storage::url()` стават имунни на това как е дошла заявката |
 | 2 | Production `.env` (cPanel File Manager, `public_html/.env`) | `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://taketwostudio1603.com`. `config/filesystems.php:44` извлича `/storage` URL-ите от `APP_URL` → Filament preview-ите също зависят. После `php artisan config:clear`. Коментар в `.env.example` |
 | 3 | [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php) | Пази се като fallback (ако `.htaccess` се загуби), но пренаписан: GET/HEAD; skip в `local`/`testing`; `$root = rtrim(config('app.url'),'/')`; 301 към `$root.'/'.trim($request->getPathInfo(),'/').($qs?'?'.$qs:'')` при: host ≠ host на `APP_URL`, `! isSecure()`, **`$request->getBaseUrl() !== ''`** (правилният детектор за `/public` и `/index.php`), или trailing slash. Остава `prepend()` |
 | 4 | [layouts/app.blade.php:36-40](../resources/views/layouts/app.blade.php#L36-L40) | `preg_replace` блокът → `$canonicalUrl = url()->current();` (за blog `?page>1` → `url()->full()`, self-canonical) |
@@ -342,7 +342,7 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST https://taketwostudio1603.com/s
 curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostudio1603.com/css   # без loop
 ```
 
-**Google Search Console след деплой:** Domain property; URL Inspection → „Request indexing“ за всяка услуга; търси `site:taketwostudio1603.com inurl:public` и `site:www.taketwostudio1603.com` → при резултат: Removals → „Remove all URLs with this prefix“ `https://taketwostudio1603.com/public/`; resubmit sitemap; следи Pages report — `/public/` и `www` вариантите трябва да станат „Page with redirect“ до 2–6 седмици.
+**Google Search Console след деплой:** Domain property; URL Inspection → „Request indexing“ за всяка услуга; търси `site:taketwostudio1603.com inurl:public` и `site:www.taketwostudio1603.com` → при резултат: Removals → „Remove all URLs with this prefix“ `https://taketwostudio1603.com/public/`; resubmit sitemap; следи Pages report - `/public/` и `www` вариантите трябва да станат „Page with redirect“ до 2–6 седмици.
 
 ### C.2 Сигурност и хигиена
 
@@ -363,7 +363,7 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 | robots.txt | `public/robots.txt` | Махни `/clear-cache`, `/force-login`; **не** добавяй `Disallow: /public/` (пречи на Google да види 301-ите); сгъни 8-те идентични групи в една `User-agent: *`; `Claude-Web` е остарял token | curl |
 | Security headers (няма) | root `.htaccess` | опц.: `X-Content-Type-Options nosniff`, `Referrer-Policy strict-origin-when-cross-origin`, `Permissions-Policy`, HSTS `max-age=31536000` (след зелена redirect матрица) | `curl -sI` |
 
-### C.3 GPTBot 429 — диагноза и отстраняване
+### C.3 GPTBot 429 - диагноза и отстраняване
 
 Известно: UA-keyed throttle с cooldown, само на динамични (PHP) отговори, не на статични файлове; OAI-SearchBot и ChatGPT-User никога не са блокирани → ChatGPT Search не е засегнат. Приоритет: среден.
 
@@ -383,7 +383,7 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 
 ### C.4 Structured data и on-page инфраструктура
 
-**Реалистични очаквания:** Google показва FAQ rich results само за държавни/здравни сайтове (от 08.2023); няма rich result за `Service`/`Offer`; self-serving `aggregateRating` върху `LocalBusiness` е неприемлив за review snippets; видео thumbnail изисква видеото да е основното съдържание. **Какво се отплаща:** чист entity граф (Knowledge Panel/AI Overviews/LLM отговори), `BreadcrumbList` (SERP breadcrumbs), `Organization` logo, `ImageObject` с лиценз (Google Images „Licensable“ бадж — много релевантно за фото студио), `Person` (E-E-A-T), image sitemap, `BlogPosting`.
+**Реалистични очаквания:** Google показва FAQ rich results само за държавни/здравни сайтове (от 08.2023); няма rich result за `Service`/`Offer`; self-serving `aggregateRating` върху `LocalBusiness` е неприемлив за review snippets; видео thumbnail изисква видеото да е основното съдържание. **Какво се отплаща:** чист entity граф (Knowledge Panel/AI Overviews/LLM отговори), `BreadcrumbList` (SERP breadcrumbs), `Organization` logo, `ImageObject` с лиценз (Google Images „Licensable“ бадж - много релевантно за фото студио), `Person` (E-E-A-T), image sitemap, `BlogPosting`.
 
 **C.4.1 Един граф, един `<script>`**
 
@@ -408,9 +408,9 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 | `Person` (E-E-A-T) | `team_members` (name, role_bg, bio_bg, image_path, instagram_url). Възли `url('/').'#person-'.$id`, jobTitle, image, worksFor, `sameAs:[instagram_url]`, knowsAbout. `Organization.employee`. Ново `blog_posts.author_team_member_id` (nullable FK) + Filament select; `BlogPosting.author` → Person (fallback `#organization`) | [home.blade.php](../resources/views/home.blade.php) team секция, [blog/show.blade.php:11-41](../resources/views/blog/show.blade.php#L11-L41) |
 | `ImageObject` | hero + първите N галерийни снимки: contentUrl, width/height, caption (alt), `creator`→`#organization`, `creditText: "Take Two Studio 1603"`, `copyrightNotice`, `license: route('legal.terms')`, `acquireLicensePage: url('/kontakti')` → Google Images licensing бадж | от `<x-picture>` компонента (C.5) с `:schema="true"` |
 | `BlogPosting` | + `author` Person, `publisher`, `mainEntityOfPage`→`#webpage`, `image` ImageObject, `wordCount`, `articleSection`, `inLanguage` | blog/show |
-| Премахване | вторият `LocalBusiness` на home ([home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) — конфликтни geo `43.2141/27.9147` и адрес); всички вложени `provider` копия с различни телефони; `aggregateRating` (layout 120-126) | – |
+| Премахване | вторият `LocalBusiness` на home ([home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) - конфликтни geo `43.2141/27.9147` и адрес); всички вложени `provider` копия с различни телефони; `aggregateRating` (layout 120-126) | – |
 
-**C.4.4 NAP — един източник на истина**
+**C.4.4 NAP - един източник на истина**
 - Нов `app/Support/Settings.php`: `Settings::get('site_phone')` върху `Cache::rememberForever('site_settings', fn () => SiteSetting::pluck('setting_value','setting_key'))`; `SiteSettingObserver` (`saved/deleted`) чисти кеша. Заменя всички `SiteSetting::find(4|5|6|7|8|14)` (layout 205-239, home 218-222/327-328, mobile-sticky-cta:7) и недетерминираното `where('site_phone')->orWhere('contact_phone')->first()` (layout 91,95,117,118).
 - Данни: `site_phone = +359886190124` (E.164); `site_phone_secondary = +359894200634`, `site_phone_secondary_label = "Абитуриентски балове"`; изтрий `contact_phone/contact_email/contact_address` редовете от `LegacyDataSeeder.php:31-45`; `site_email` = реално наблюдаваният адрес (имейл шаблоните hardcode-ват `info@taketwostudio1603.com` в `emails/booking_confirmed.blade.php:29`, `booking_rejected.blade.php:17-18`, докато settings казват `taketwostudio1603@gmail.com`).
 - `Settings::phoneDisplay('+359886190124')` → `088 619 0124`; `tel:` линкове с E.164.
@@ -419,7 +419,7 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 
 **C.4.5 Sitemaps** ([SitemapController.php](../app/Http/Controllers/SitemapController.php))
 - `/sitemap.xml` → `<sitemapindex>` с `/sitemap-pages.xml`, `/sitemap-blog.xml`, `/sitemap-images.xml`.
-- Pages: `lastmod` = max(`services.updated_at`, `page_contents.updated_at`, пакетни таблици, `faqs.updated_at`) чрез `lastmodFor($slug)`; home = max от всички; `/booking` и правните страници (index,follow) се включват. Drop `changefreq`/`priority`. `/blog/category/*` вече е включен — остава.
+- Pages: `lastmod` = max(`services.updated_at`, `page_contents.updated_at`, пакетни таблици, `faqs.updated_at`) чрез `lastmodFor($slug)`; home = max от всички; `/booking` и правните страници (index,follow) се включват. Drop `changefreq`/`priority`. `/blog/category/*` вече е включен - остава.
 - Images: `<image:image><image:loc>` за галерийни снимки по URL на услуга (до 1000), `xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"`.
 - `Cache-Control: public, max-age=3600` за sitemap и `/llms*.txt`.
 
@@ -446,7 +446,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 | Кирилски имена на файлове (`Сватба.jpg`, `Бал.jpeg`, `Индивидуална.jpeg`, `Коли.jpeg`, `РДКР.jpeg`, `реклама.jpg`) → ASCII + update на референциите; изтрий неизползваните гиганти (`graduation-hero 2.jpg` 4,4 MB, `ads/*.png` 8,5 MB, `ads/krustene.jpg` 9 MB) след `grep -rn "ads/" resources` | `public/css/img/` |
 | Създай/поправи липсващите: `social-share-cover.jpg`, `best-wedding-cover.jpg`, `default-placeholder.jpg` | – |
 
-**C.5.2 CSS/JS — self-host + bundle с вече инсталирания Vite**
+**C.5.2 CSS/JS - self-host + bundle с вече инсталирания Vite**
 
 | Стъпка | Файлове |
 |---|---|
@@ -473,12 +473,12 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 3. Тестове: само Laravel `ExampleTest` skeleton-и; нищо не покрива redirect-и, sitemap, schema.
 4. `legal.blade.php:5` слага `index, follow`, но правните страници липсват от sitemap-а → решение в една посока (планът ги включва).
 5. Blog pagination (`?page=N`) канонизира към непагинирания URL → страница 2+ да е self-canonical.
-6. Единствената дефиниция на днешното production URL поведение е untracked, ръчно редактиран файл на сървъра — никой не може да го review-ва или rollback-ва. Планът го решава с commit.
+6. Единствената дефиниция на днешното production URL поведение е untracked, ръчно редактиран файл на сървъра - никой не може да го review-ва или rollback-ва. Планът го решава с commit.
 7. `PageController` с hardcoded метод на услуга; `PortfolioCategory` slug без route → мъртъв линк в навигацията (виж B.4).
 
 ---
 
-## Част D — SEO + GEO стратегия (Варна, български)
+## Част D - SEO + GEO стратегия (Варна, български)
 
 ### D.0 Какво правят конкурентите (проверено на 2026-09-05)
 
@@ -492,11 +492,11 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 | krasyivanov.com/prom-photography | „Фотограф на абитуриентски бал – Варна“ | ~800 | Не (`/ceni`) | Не | линк към Google | Не | опц. |
 | rrusev.com/bal/ (**не е от Варна**, но излиза за „бал Варна цена 2027“) | **H1 „Абитуриентски балове 2027“**, € цени | ~1200 | Да | Не | Не | Не | Да, дрон |
 
-Изводи: (1) **никой конкурент във Варна не комбинира цени + FAQ + отзиви + видео + имена на локации на една страница** — това е свободната ниша; (2) за ценови заявки излизат тези, които показват числа — Take Two вече има € цени, но не в първия екран и не във „форма на отговор“; (3) никой във Варна не притежава „2027“ в заглавие/H1; (4) Bing индексацията на конкурентите не може да се провери отвън — гледа се в Bing Webmaster Tools.
+Изводи: (1) **никой конкурент във Варна не комбинира цени + FAQ + отзиви + видео + имена на локации на една страница** - това е свободната ниша; (2) за ценови заявки излизат тези, които показват числа - Take Two вече има € цени, но не в първия екран и не във „форма на отговор“; (3) никой във Варна не притежава „2027“ в заглавие/H1; (4) Bing индексацията на конкурентите не може да се провери отвън - гледа се в Bing Webmaster Tools.
 
 ### D.1 Честно позициониране: какво може и какво не може да значи „първи в ChatGPT/Gemini“
 
-- **Не може:** няма „позиция 1“ в LLM отговор. Един и същ въпрос дава различни фирми при различни пускания, потребители и формулировки. Според SOCi Local Visibility Index 2026 ChatGPT препоръчва ~1,2 % от анализираните локации (срещу ~36 % в Google local pack). „Винаги първи, без конкуренция“ не е постижимо и не е проверимо — за никого.
+- **Не може:** няма „позиция 1“ в LLM отговор. Един и същ въпрос дава различни фирми при различни пускания, потребители и формулировки. Според SOCi Local Visibility Index 2026 ChatGPT препоръчва ~1,2 % от анализираните локации (срещу ~36 % в Google local pack). „Винаги първи, без конкуренция“ не е постижимо и не е проверимо - за никого.
 - **Може (и това ще мерим):** „Когато потребител от Варна зададе въпрос за бал/сватба/B2B на български, Take Two Studio 1603 се **споменава в мнозинството пускания и се цитира собственият URL**.“ Цел март 2027: ≥ 50 % за 10-те бал-въпроса, ≥ 30 % сватби, ≥ 30 % B2B (панелът е в D.10). Базовата линия се мери в седмица 1.
 
 Как решава всеки двигател:
@@ -512,7 +512,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 
 | # | Лост | Състояние | Празнина |
 |---|---|---|---|
-| 1 | GBP: пълнота, брой/свежест/съдържание на отзивите, снимки, публикации | има профил; 3 отзива на сайта подсказват малко Google отзиви | **Голяма** — няма система за отзиви |
+| 1 | GBP: пълнота, брой/свежест/съдържание на отзивите, снимки, публикации | има профил; 3 отзива на сайта подсказват малко Google отзиви | **Голяма** - няма система за отзиви |
 | 2 | Bing индекс + Bing Places | BWT има, но сайтът не се вижда в Bing; няма Bing Places; GPTBot 429 | **Голяма** |
 | 3 | Консистентност на entity (едно име/телефон/имейл/адрес навсякъде; `sameAs` към всички профили) | **Счупена**: `/proms` показва `info@taketwostudio1603.com` и втори телефон; `sameAs` само FB+IG; няма `/kontakti`, `/za-nas` | Средна, евтина |
 | 4 | Цитирания от трети страни (директории, сватбени портали, партньорски страници на зали, асоциация, местни медии) | вероятно ~0 | **Голяма** |
@@ -521,7 +521,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 
 **Какво НЕ правим (ниска стойност за студио във Варна):** EN версия/hreflang; „doorway“ страници за Добрич/Шумен без реална работа там; купени линкове; Wikidata (ще бъде изтрит за notability); платени „AI visibility“ SaaS; разчитане на `llms.txt` (пазим го, не очакваме много); `meta keywords`; `aggregateRating` от собствени testimonials.
 
-### D.2 Карта на заявките (Варна, български) — качествен приоритет, без измислени обеми
+### D.2 Карта на заявките (Варна, български) - качествен приоритет, без измислени обеми
 
 **Абитуриентски балове (P1)**
 
@@ -534,7 +534,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 | Етапи | заснемане изпращане абитуриенти Варна; канене на класния; предбална фотосесия Варна | съществуващи блог постове + секции на `/proms` | P2 |
 | Индивидуална сесия | абитуриентска фотосесия Варна (студио/открито) | `/proms#fotosesia` | P2 |
 | Организатор | как да изберем фотограф за бала; договор; какво включва пакетът | блог (има `/blog/kak-da-organizirate-klasa-za-balen-fotograf`) | P2 |
-| Регион | фотограф за бал Добрич/Шумен/Балчик | FAQ „Работите ли извън Варна?“ — без отделни страници | P3 |
+| Регион | фотограф за бал Добрич/Шумен/Балчик | FAQ „Работите ли извън Варна?“ - без отделни страници | P3 |
 | Разговорни (AI) | „Кой е добър фотограф за бал във Варна?“, „Колко струва фото и видео за бал за цял клас във Варна?“ | answer capsule на `/proms` + GBP + цитирания | P1 |
 
 **Сватби (P1, най-силна конкуренция)**
@@ -594,7 +594,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 1. **H1** = услуга + град (+ година при сезонни).
 2. **Capsule (60–80 думи, обикновен `<p>` точно под H1, без карусел):** кой (име на студиото) + какво + къде + ценови диапазон в € + 2 диференциатора + срок на доставка. Това е параграфът, който LLM ще цитира.
 3. **H2 секции по интент:** какво включва → цени (таблица) → защо ние (числа) → портфолио/видео → процес → FAQ → доказателства → CTA.
-4. **Ценова таблица** в € (лв. в скоби само ако задължението за двойно обозначаване още важи — по Закона за въвеждане на еврото периодът е 12 месеца от 2026-01-01, т.е. до 2026-12-31; провери и махни лв. през януари 2027).
+4. **Ценова таблица** в € (лв. в скоби само ако задължението за двойно обозначаване още важи - по Закона за въвеждане на еврото периодът е 12 месеца от 2026-01-01, т.е. до 2026-12-31; провери и махни лв. през януари 2027).
 5. **FAQ:** 5–8 въпроса, отговор ≤ 60 думи, в `*Faq` таблиците → FAQPage schema автоматично.
 6. **Доказателства:** Google рейтинг + брой (на живо), години, брой балове/сватби, имена на зали, 2–3 цитата с първо име.
 7. **CTA:** един телефон, `/booking`, кратка форма.
@@ -606,46 +606,46 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 - H1: `Фотограф и видео за абитуриентски бал във Варна (випуск 2027)`
 - Capsule (~75 думи): „Take Two Studio 1603 е фото и видео студио във Варна, което заснема абитуриентски балове за цели класове: канене на класния, изпращане от училище, балната вечер и две безплатни фотосесии на класа. Цената е фиксирана на ученик – 100 € (пакет „Парти“) или 120 € (пакет „Лукс“ с дрон и флашка), без скрити такси. Един координиран екип от фотограф, видеооператор и дрон пилот; готовите снимки и клип са в онлайн галерия до [X] дни. Работим във Варна, Добрич и региона.“ *(собственикът попълва [X]; не се публикува placeholder)*
 - H2: Какво включва заснемането за целия клас (timeline) · Цени за бал 2027 – на ученик (таблица: Парти 100 €, Лукс 120 €, екстри) · Видео и дрон кадри (showreel + VideoObject) · Защо класовете във Варна избират един екип (числа) · Портфолио от балове във Варна (зали в captions) · Как да организирате класа и да запазите дата · Често задавани въпроси · Отзиви от класове и родители · Калкулатор/контакт
-- 6 FAQ (≤ 60 думи всеки): „Колко струва фотограф и видео за бал във Варна?“ · „Кога трябва да запазим дата за бал 2027?“ · „Един екип ли сте за снимки и видео?“ · „Кога получаваме снимките и видеото?“ · „Снимате ли извън Варна – Добрич, Шумен, Балчик?“ · „Какво включва безплатната фотосесия на класа?“ (готови отговори — в изхода на стратегическия агент; поставят се в `prom_faqs`)
+- 6 FAQ (≤ 60 думи всеки): „Колко струва фотограф и видео за бал във Варна?“ · „Кога трябва да запазим дата за бал 2027?“ · „Един екип ли сте за снимки и видео?“ · „Кога получаваме снимките и видеото?“ · „Снимате ли извън Варна – Добрич, Шумен, Балчик?“ · „Какво включва безплатната фотосесия на класа?“ (готови отговори - в изхода на стратегическия агент; поставят се в `prom_faqs`)
 
 **`/weddings` (кратко):** Title ≤ 60 `Сватбен фотограф и видео Варна – цени 2027 | Take Two Studio`; H1 `Сватбен фотограф и видеозаснемане във Варна – един екип за снимки и 4K филм`; capsule с „от 890 € до 1 145 €“, дрон, 4K, срок, зали (Евксиноград, Св. Св. Константин и Елена, Златни пясъци, Балчик); 8 FAQ в `wedding_faqs` (цена, колко предварително, двама фотографи?, доставка, извън Варна, договор/депозит, суров материал, дрон разрешения).
 
 **`/commercial` (кратко):** Title `Продуктова и рекламна фотография Варна | Take Two Studio`; H1 `Рекламна, продуктова и бизнес фотография и видео във Варна`; capsule с „от [X] € продуктова сесия / [Y] € половин ден събитие“, клиенти по име (с разрешение); H2: услуги за бизнеса (линкове към spokes) · цени · процес и срокове · клиенти и проекти · техника · FAQ (права за ползване, брой кадри, срок, фактура, дрон) · запитване.
 
-### D.5 Календар на съдържанието — първите 90 дни (2–4 материала/месец; пренаписването на hub брои за материал)
+### D.5 Календар на съдържанието - първите 90 дни (2–4 материала/месец; пренаписването на hub брои за материал)
 
 | Месец | # | Материал | Защо сега |
 |---|---|---|---|
 | **1 (5.09–5.10)** | 1.1 | Пренаписване на `/proms` по D.4 (+ оправяне на NAP: един имейл, един телефон) | класовете избират сега |
-| | 1.2 | Нова `/ceni` — H1 „Цени на фото и видео услуги във Варна (2027)“, секции по услуга, „Актуализирано на: дата“ | хваща всички „цени/колко струва“ заявки; дава числа на AI |
+| | 1.2 | Нова `/ceni` - H1 „Цени на фото и видео услуги във Варна (2027)“, секции по услуга, „Актуализирано на: дата“ | хваща всички „цени/колко струва“ заявки; дава числа на AI |
 | | 1.3 | Нови `/za-nas` + `/kontakti` (една работна единица): история, 3 биографии (Person), техника, договор/срокове; NAP идентичен с GBP, карта, часове | entity котва |
 | | 1.4 | Блог: „Колко струва фотограф и видео за абитуриентски бал във Варна през 2027? (реални цени)“ → `/blog/cena-fotograf-abiturientski-bal-varna-2027`; **поправи/скрий** `/blog/speistete-budjet-balno-zasnemane-varna` („195 лв.“) | директна ценова заявка |
-| **2 (5.10–5.11)** | 2.1 | Нова `/abiturientski-bal-varna` — „Абитуриентски бал Варна 2027: дати, зали, срокове, как да изберете фотограф“ (само зали, в които екипът е снимал) | никой във Варна не притежава „2027“ |
+| **2 (5.10–5.11)** | 2.1 | Нова `/abiturientski-bal-varna` - „Абитуриентски бал Варна 2027: дати, зали, срокове, как да изберете фотограф“ (само зали, в които екипът е снимал) | никой във Варна не притежава „2027“ |
 | | 2.2 | Upgrade на `/weddings` по D.4 (напълни `wedding_faqs`, capsule, зали, VideoObject, доказателства) | сезон за резервации лято 2027 = септ–март |
-| | 2.3 | Case study #1 `/svatbi/{slug}` — реална сватба в конкретна зала (300–500 думи, 15–25 снимки, филм, цитат; писмено съгласие) | залата е най-силният локален entity |
+| | 2.3 | Case study #1 `/svatbi/{slug}` - реална сватба в конкретна зала (300–500 думи, 15–25 снимки, филм, цитат; писмено съгласие) | залата е най-силният локален entity |
 | | 2.4 | Блог: „Сватбен фотограф и видеограф във Варна – цени 2027 и какво включват пакетите“ → `/blog/svatben-fotograf-varna-ceni-2027` | ценова заявка сватби |
 | **3 (5.11–5.12)** | 3.1 | Upgrade на `/commercial` по D.4 (лога, 3 мини кейса, `commercial_faqs`) | B2B бюджети за следващата година |
 | | 3.2 | Блог: „Продуктова фотография за онлайн магазин във Варна: цени, процес, подготовка“ → `/blog/produktova-fotografiya-varna-ceni-proces` | най-конкретна B2B ценова заявка |
-| | 3.3 | Case study #2 (сватба или бал във втора зала — Балчик/Златни пясъци) | втори локационен entity |
+| | 3.3 | Case study #2 (сватба или бал във втора зала - Балчик/Златни пясъци) | втори локационен entity |
 | | 3.4 (ако има капацитет) | Блог: „Фотограф за хотел и интериор във Варна“ → `/blog/fotograf-hotel-interior-varna` | архитектурна B2B |
 
-Отложено за Q1 2027: capsule + FAQ за `/baptism`, `/family`, `/portrait`, `/events`, `/automotive`; април — обновяване „изпращане 2027“; август — „2028“.
+Отложено за Q1 2027: capsule + FAQ за `/baptism`, `/family`, `/portrait`, `/events`, `/automotive`; април - обновяване „изпращане 2027“; август - „2028“.
 
-### D.6 Google Business Profile — playbook
+### D.6 Google Business Profile - playbook
 
 - **Категории:** основна `Фотограф`; допълнителни `Сватбен фотограф`, `Фотографско студио`, `Видеопродукция/Услуги за видеозаснемане`, `Фотограф за събития` (+ `Търговски фотограф`, ако съществува).
-- **Полета:** име точно `Take Two Studio 1603` (без добавени ключови думи — нарушение); **един** телефон = `telephone` в schema; каноничен имейл; адрес/часове като на сайта; зона на обслужване Варна + Добрич + Шумен + Балчик + Каварна + Бяла; описание 750 знака с услуги, € цени, зали, година на основаване.
+- **Полета:** име точно `Take Two Studio 1603` (без добавени ключови думи - нарушение); **един** телефон = `telephone` в schema; каноничен имейл; адрес/часове като на сайта; зона на обслужване Варна + Добрич + Шумен + Балчик + Каварна + Бяла; описание 750 знака с услуги, € цени, зали, година на основаване.
 - **Линкове с UTM:** сайт `https://taketwostudio1603.com/?utm_source=google&utm_medium=organic&utm_campaign=gbp`; резервация `https://taketwostudio1603.com/booking?utm_source=google&utm_medium=organic&utm_campaign=gbp_booking`.
 - **Услуги с цени:** Абитуриентски бал – цял клас (от 100 €/ученик) · Абитуриентска фотосесия · Сватбена фотография (от 890 €) · Сватбено видео 4K (от 890 €) · Дрон · Кръщене · Продуктова · Интериор/хотели · Автомобилна · Събития · Видео реклама. **Продукти:** Пакет Парти (100 €), Пакет Лукс (120 €), Сватбен пакет фото+видео (от 1 780 €) с линк към страницата.
 - **Публикации:** 1/седмица, 60–120 думи, снимка, CTA; септ–февр. се редуват бал/сватба, B2B веднъж месечно. **Снимки:** 5–10/седмица в сезон, файлове `abiturientski-bal-varna-hotel-x-2026.jpg`; 1 видео/месец.
 - **Q&A (собственикът задава и отговаря 10):** цена на ученик · и видео ли · Добрич/Шумен · срок за снимките · дрон и разрешение · колко фотографа на сватба · само видео за сватба · продуктови снимки за онлайн магазин · фактура · как се запазва дата.
-- **Система за отзиви (най-висок ROI в целия план):** тригер = денят на доставка на галерията (балове: до всеки ученик и родител през организатора; сватби: двойката + родители; B2B: контактът) + QR на флашката/галерията. Цел: 8–12 нови отзива/месец в месеците с доставки; 40+ до юни 2027. Скрипт (SMS/Viber/имейл): „Здравейте, [Име]! Благодарим, че избрахте Take Two Studio 1603 за [бала на 12-В / сватбата ви]. Ако сте доволни от снимките и видеото, ще ни помогне много кратък отзив в Google – 2 минути: [линк]. Ако можете, споменете какво снимахме (бал/сватба), къде беше и какво ви хареса най-много. Благодарим! – Симеон, Кристиана и Пресиан“. Последното изречение вкарва ключови думи (бал, Варна, дрон, зала) без диктовка. Никакви стимули. Отговор на всеки отзив до 48 ч. с шаблони (позитивен/негативен — в изхода на агента).
+- **Система за отзиви (най-висок ROI в целия план):** тригер = денят на доставка на галерията (балове: до всеки ученик и родител през организатора; сватби: двойката + родители; B2B: контактът) + QR на флашката/галерията. Цел: 8–12 нови отзива/месец в месеците с доставки; 40+ до юни 2027. Скрипт (SMS/Viber/имейл): „Здравейте, [Име]! Благодарим, че избрахте Take Two Studio 1603 за [бала на 12-В / сватбата ви]. Ако сте доволни от снимките и видеото, ще ни помогне много кратък отзив в Google – 2 минути: [линк]. Ако можете, споменете какво снимахме (бал/сватба), къде беше и какво ви хареса най-много. Благодарим! – Симеон, Кристиана и Пресиан“. Последното изречение вкарва ключови думи (бал, Варна, дрон, зала) без диктовка. Никакви стимули. Отговор на всеки отзив до 48 ч. с шаблони (позитивен/негативен - в изхода на агента).
 
 ### D.7 Bing + ChatGPT
 
 1. **Bing Webmaster Tools:** импорт от GSC; submit `sitemap.xml`; Site Scan; **Site Explorer** → провери дали `/`, `/proms`, `/weddings`, `/ceni` са индексирани (не `site:`); URL Submission за „Discovered but not crawled“.
-2. **IndexNow:** при публикуване/промяна на страница или пост → ping `https://api.indexnow.org/indexnow?url=…&key=…` (ключ-файл в root). В Laravel: listener на `BlogPost` saved (и на бъдещ `PageContent`), или пакет `ymigval/laravel-indexnow`. Google игнорира IndexNow — за него GSC URL Inspection.
-3. **Bing Places for Business:** създай чрез импорт на верифицирания GBP; ако България не е поддържана — пропусни.
+2. **IndexNow:** при публикуване/промяна на страница или пост → ping `https://api.indexnow.org/indexnow?url=…&key=…` (ключ-файл в root). В Laravel: listener на `BlogPost` saved (и на бъдещ `PageContent`), или пакет `ymigval/laravel-indexnow`. Google игнорира IndexNow - за него GSC URL Inspection.
+3. **Bing Places for Business:** създай чрез импорт на верифицирания GBP; ако България не е поддържана - пропусни.
 4. **Достъп на crawler-и:** след host-fix (Част C) провери в логовете, че `OAI-SearchBot`, `GPTBot` и `bingbot` получават 200 на `/proms`.
 5. **llms.txt / llms-full.txt:** пази ги в синхрон (без стар `info@` имейл и без лв. цени); реалната им стойност е като поддържан fact sheet за директории.
 6. **Месечна проверка в Bing (BG):** `фотограф за абитуриентски бал Варна`, `сватбен фотограф Варна`, `Take Two Studio 1603` → позиция.
@@ -677,9 +677,9 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 
 | KPI | Източник | Цел дек. 2026 | Цел март 2027 |
 |---|---|---|---|
-| GSC импресии/кликове — кластер балове (бал/абитуриент) | GSC | +50 % импресии | +150 % |
-| GSC — кластер сватби (сватб*) | GSC | +30 % | +80 % |
-| GSC — кластер B2B (продуктов*, рекламн*, хотел, интериор, събит*) | GSC | +20 % | +50 % |
+| GSC импресии/кликове - кластер балове (бал/абитуриент) | GSC | +50 % импресии | +150 % |
+| GSC - кластер сватби (сватб*) | GSC | +30 % | +80 % |
+| GSC - кластер B2B (продуктов*, рекламн*, хотел, интериор, събит*) | GSC | +20 % | +50 % |
 | Ср. позиция: `фотограф за абитуриентски бал варна` / `сватбен фотограф варна` / `фотограф варна цени` | GSC | top 5 / top 10 / top 5 | top 3 / top 5 / top 3 |
 | Bing: индексирани страници, импресии | BWT | всички hub-ове индексирани | растеж |
 | GBP: обаждания, упътвания, кликове | GBP Insights | +30 % | +100 % |
@@ -707,11 +707,11 @@ B2B: 16) Кой прави продуктова фотография за онл
 | W11–12 (14–28.11) | `/commercial` upgrade. Блог 3.2. Проверка на отзивите; отговори на всички | 6 | B2B hub готов; лога |
 | W13 (28.11–5.12) | Case study #2. Панел #3, KPI преглед, план Q1 (кръщене/семейни/портрет capsules, април „изпращане 2027“, август „2028“) | 4 | 90-дневен отчет; Q1 план |
 
-**Реалистичен резултат до март 2027:** студиото е надеждно откриваемо по име и по „фотограф за бал Варна“ в Google и Bing; GBP има 40+ отзива с ключови думи за бал/сватба/зала; 10–15 независими страници го цитират с идентичен NAP; бал-промптите го споменават в около половината пускания. „Без конкуренция“ няма да се случи — но **единственото студио във Варна с цени, FAQ, отзиви и зали на една страница** е това, което реално вдига дела на споменаванията.
+**Реалистичен резултат до март 2027:** студиото е надеждно откриваемо по име и по „фотограф за бал Варна“ в Google и Bing; GBP има 40+ отзива с ключови думи за бал/сватба/зала; 10–15 независими страници го цитират с идентичен NAP; бал-промптите го споменават в около половината пускания. „Без конкуренция“ няма да се случи - но **единственото студио във Варна с цени, FAQ, отзиви и зали на една страница** е това, което реално вдига дела на споменаванията.
 
 ---
 
-## Част E — Верификация (подреден checklist)
+## Част E - Верификация (подреден checklist)
 
 | # | Проверка | Команда / инструмент | Pass |
 |---|---|---|---|
@@ -742,7 +742,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 
 ---
 
-## Изпълнение — статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
+## Изпълнение - статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
 
 Всичко по-долу е commit-нато локално на `laratake` (24 commit-а след `7b5754d`), 83 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
 
@@ -772,7 +772,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 | Изображения (WebP) | `<x-picture>` компонент + `App\Support\Images` (WebP sibling, lazy/eager; **без** `width`/`height` атрибути по решение на собственика от 2026-09-05 – CSS определя размерите, фиксираните пиксели разтягаха снимките), `ImageOptimizer` пише .webp при upload, `php artisan images:webp` за наличните файлове (само файлова система), image-set + preload за hero фоновете; 80 inline стила → utility класове | C.5.1 |
 | Корици на блога | Обход на всичките 40 публикувани поста на живо (2026-09-05): единствената счупена картинка е `css/img/events-cover.jpg` – seed-натата корица на 11 бизнес поста (`BlogPostSeeder`), файл, който никога не е бил в репото (hero, карти и `og:image` → 404). Добавен реален `events-cover.jpg` (1920×1280 от `ads/subitie.jpg`, корпоративно събитие) + `.webp`; `BlogPost::resolveImageUrl()` вече пада на `default-placeholder.jpg`, ако файлът на корицата липсва (статичен или качен), вместо счупена картинка. Само файлове и код, без база. Тест `BlogCoverImageTest` (вкл. проверка, че всяка seed-ната корица е реален файл). **За собственика:** 11-те поста ползват една обща корица – качи индивидуални през Filament → Blog Posts, когато има време. | B4d, D.5 |
 
-**Не е правено (следващи фази):** Vite bundle/минификация, оставащите ~90 inline `style=""` атрибута, остатъкът от performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
+**Не е правено (следващи фази):** Vite bundle/минификация, оставащите ~90 inline `style=""` атрибута, остатъкът от performance (Vite bundle, `<x-picture>`, WebP деривати - C.5), GPTBot 429 (тикет към хостинга - C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 - действия на собственика).
 
 ### Runbook за деплой (в този ред)
 
@@ -815,7 +815,7 @@ B2B: 16) Кой прави продуктова фотография за онл
    ```
    Ако pull-ът пак изведе „would be overwritten“, повтори блока (той е идемпотентен). Ако pull-ът мине, а някоя artisan команда падне: `php artisan up` веднага, после виж грешката. `~/pre-pull-backup` (ръчният `.htaccess` е в него) може да се изтрие след успешна проверка.
 5. **Провери** матрицата от Част C.1 (curl) + `curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md` → 403.
-6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git. После **веднъж** `php artisan images:webp` (създава .webp до всяка качена снимка; само файлове, без база; може да отнеме няколко минути).
+6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) - не е в git. После **веднъж** `php artisan images:webp` (създава .webp до всяка качена снимка; само файлове, без база; може да отнеме няколко минути).
 7. **Filament:** Настройки → попълни `site_youtube` и `site_google_maps`; Услуги → `video_title`/`video_uploaded_at` за showreel-ите; Блог → автор (член на екипа) на постовете; Често задавани въпроси → добави FAQ за family/portrait/automotive/architectural/events.
 8. **GSC:** URL Inspection → Request indexing за услугите; Removals за `https://taketwostudio1603.com/public/`; resubmit `sitemap.xml`. **BWT:** import от GSC, submit sitemap, провери IndexNow „Submitted URLs“.
 9. **Rollback** при проблем: `cd ~/public_html && cp ~/pre-pull-backup/.htaccess .htaccess && git checkout HEAD~1 -- public/.htaccess && php artisan optimize:clear`.

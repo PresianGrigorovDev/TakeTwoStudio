@@ -4,7 +4,7 @@
 @section('meta_description', 'Професионално фото и видеозаснемане на автомобили във Варна. Заснемане на коли за обяви, автосалони, тунинг проекти и рекламни клипове.')
 @section('meta_keywords', 'автомобилен фотограф варна, автомобилно видеозаснемане, car photography варна, видео за коли, тунинг видео, заснемане на автомобили, Take Two Studio')
 @section('og_title', 'Автомобилна Фотография и Видео Варна | Take Two Studio')
-@section('og_description', 'Професионално заснемане на автомобили — динамични видео клипове, снимки, детайли и интериор. За автосалони, обяви и реклама.')
+@section('og_description', 'Професионално заснемане на автомобили - динамични видео клипове, снимки, детайли и интериор. За автосалони, обяви и реклама.')
 @section('og_image', asset('css/img/Коли.jpeg'))
 
 @push('styles')
@@ -50,7 +50,7 @@
                 <div class="section-divider"></div>
                 <p class="text-muted mb-4">
                     В <b>Take Two Studio 1603</b> се специализираме в автомобилна фотография, която представя колата ви
-                    в най-добрата светлина — буквално. Работим с естествена и изкуствена светлина, избираме локации,
+                    в най-добрата светлина - буквално. Работим с естествена и изкуствена светлина, избираме локации,
                     които допълват характера на автомобила, и обработваме всеки кадър с кинематографично внимание
                     към цветовете и контраста. Идеално за автосалони, обяви за продажба, тунинг проекти и лични колекции.
                 </p>
@@ -81,7 +81,7 @@
                     <div class="moment-card">
                         <i class="fas fa-couch moment-icon"></i>
                         <h5>Интериор</h5>
-                        <p class="small text-muted mb-0">Кокпит, табло и седалки — представени с перфектна композиция.</p>
+                        <p class="small text-muted mb-0">Кокпит, табло и седалки - представени с перфектна композиция.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -272,9 +272,9 @@
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
                             <div class="text-start mt-4 mb-4">
-                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">—</span></div>
-                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">—</span></div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">-</span></div>
+                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">-</span></div>
+                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
                             </div>
                             <input type="hidden" id="hiddenPrice" name="final_price">
                             <input type="hidden" id="hiddenDetails" name="details">

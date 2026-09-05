@@ -3,7 +3,7 @@
 @section('title', 'Портретен фотограф Варна | Take Two Studio 1603')
 @section('meta_description', 'Портретен фотограф във Варна – артистични портрети за лична марка, LinkedIn, актьорско портфолио или подарък. Студийно осветление и ретуш.')
 @section('meta_keywords', 'портретен фотограф варна, портретна фотосесия варна, бизнес портрет, headshot фотография, лична фотосесия, портрет в студио варна, Take Two Studio')
-@section('og_title', 'Портретна Фотография Варна — Разкрийте Своята Уникалност | Take Two Studio')
+@section('og_title', 'Портретна Фотография Варна - Разкрийте Своята Уникалност | Take Two Studio')
 @section('og_description', 'Артистични индивидуални портрети за лична марка, социални мрежи или подарък. Професионално студийно осветление и ретуш.')
 @section('og_image', asset('css/img/about.webp'))
 
@@ -47,13 +47,13 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <h3 class="mb-4 h4 text-muted fw-normal lh-base">
-                    Портретът е огледало на личността — ние го превръщаме в изкуство.
+                    Портретът е огледало на личността - ние го превръщаме в изкуство.
                 </h3>
                 <div class="section-divider"></div>
                 <p class="text-muted mb-4">
                     В <b>Take Two Studio 1603</b> създаваме портрети, които разказват вашата история. Независимо дали ви трябва
                     професионален headshot за LinkedIn, актьорско портфолио, бизнес портрет или просто искате да се почувствате
-                    специални — ние работим с професионално студийно осветление, внимание към детайла и индивидуален подход
+                    специални - ние работим с професионално студийно осветление, внимание към детайла и индивидуален подход
                     към всеки клиент.
                 </p>
             </div>
@@ -266,9 +266,9 @@
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
                             <div class="text-start mt-4 mb-4">
-                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">—</span></div>
-                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">—</span></div>
-                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">—</span></div>
+                                <div class="summary-item"><span>Услуга:</span> <span id="sumService">-</span></div>
+                                <div class="summary-item"><span>Обхват:</span> <span id="sumScope">-</span></div>
+                                <div class="summary-item"><span>Екстри:</span> <span id="sumExtras">-</span></div>
                                 <div class="summary-item" id="promo-discount-line" style="display:none; color:#22c55e;">
                                     <span>Промо Намаление:</span>
                                     <span class="discount-amount" style="font-weight:700;"></span>
