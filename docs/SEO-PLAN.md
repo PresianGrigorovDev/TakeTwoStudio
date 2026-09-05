@@ -744,7 +744,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 
 ## Изпълнение — статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
 
-Всичко по-долу е commit-нато локално на `laratake` (12 commit-а след `7b5754d`), 63 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
+Всичко по-долу е commit-нато локално на `laratake` (20 commit-а след `7b5754d`), 79 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
 
 | Commit | Какво | Покрива |
 |---|---|---|
@@ -758,8 +758,13 @@ B2B: 16) Кой прави продуктова фотография за онл
 | On-page | title ≤ 60, description ≤ 155, H1 „услуга + Варна“, data migration за hero заглавията | B14, B15 |
 | .cpanel.yml | optimize:clear → migrate --force → optimize → indexnow при „Deploy HEAD Commit“ | C.1.6 |
 | Public HTML hygiene | inline `<style>` → `public/css/components.css`, GA само след съгласие (без таг в `<head>`), без CSRF meta, без `/force-login`, без inline handlers | одит „публични ключове“ |
+| **Фаза 1 (2026-09-05)** | | |
+| Entity страници | `/ceni` (всички цени в €, OfferCatalog, FAQ), `/za-nas` (екип + Person, AboutPage), `/kontakti` (NAP, ContactPage, форма); nav/footer; `PageText` за редакция от Filament → Page Contents | D.3, D.4 |
+| Сезонен гид | `/abiturientski-bal-varna` (година автоматично, `PromSeason`), таблица бюджет на ученик от пакетите, FAQ, breadcrumbs; answer capsule на `/proms` | D.4, D.5 (2.1) |
+| Сватбени истории | `/svatbi/{slug}` от WeddingGallery + нови полета (venue, location, description, couple_quote, video_url) във Filament; Place/ImageObject/VideoObject schema; линкове от `/weddings`; sitemap | D.3, D.5 (2.3) |
+| Блог | 2 чернови ценови статии (SeoContentSeeder, непубликувани, за преглед); постът „195 лв.“ → евро (миграция) | D.5 (1.4, 2.4) |
 
-**Не е правено (следващи фази):** новите страници `/ceni`, `/za-nas`, `/kontakti`, `/abiturientski-bal-varna`, пренаписването на `/proms` по „answer capsule“ (D.4/D.5), performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
+**Не е правено (следващи фази):** пълното пренаписване на `/weddings` и `/commercial` по „answer capsule“ (D.4.2, D.4.3), performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
 
 ### Runbook за деплой (в този ред)
 
