@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 Route::get('/', [App\Http\Controllers\PageController::class, 'home']);
 
@@ -55,19 +52,3 @@ Route::get('/api/booking-hours', [App\Http\Controllers\BookingController::class,
 // Registration Routes
 // Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');
 // Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register']);
-
-if (app()->environment('local')) {
-    Route::get('/force-login', function () {
-        $user = User::updateOrCreate(
-            ['email' => 'presiangrigorovdev@gmail.com'],
-            [
-                'name' => 'Presian',
-                'password' => Hash::make('12345678'),
-                'is_admin' => true,
-            ]
-        );
-        
-        Auth::login($user);
-        return redirect('/admin');
-    });
-}

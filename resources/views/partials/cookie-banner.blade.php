@@ -15,50 +15,6 @@
     </div>
 </div>
 
-<style>
-    .cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        background: rgba(20, 20, 20, 0.97);
-        color: #fff;
-        padding: 18px 20px;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
-        border-top: 2px solid #b8860b;
-    }
-    .cookie-banner-inner {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-    .cookie-banner-text { flex: 1 1 60%; min-width: 280px; font-size: 0.9rem; line-height: 1.5; }
-    .cookie-banner-text strong { display: block; margin-bottom: 4px; font-size: 1rem; }
-    .cookie-banner-text a { color: #d4a849; text-decoration: underline; }
-    .cookie-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-cookie {
-        padding: 10px 20px;
-        border-radius: 4px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: opacity 0.2s;
-    }
-    .btn-cookie:hover { opacity: 0.85; }
-    .btn-cookie-primary { background: #b8860b; color: #fff; }
-    .btn-cookie-secondary { background: transparent; color: #fff; border: 1px solid #fff; }
-    @media (max-width: 600px) {
-        .cookie-banner-inner { flex-direction: column; align-items: stretch; }
-        .cookie-banner-actions { justify-content: stretch; }
-        .btn-cookie { flex: 1; }
-    }
-</style>
 
 <script>
 (function () {
@@ -90,14 +46,28 @@
     @endif
 
     @if(config('services.google_analytics.measurement_id'))
+    // Google Analytics is loaded ONLY after the visitor accepts optional cookies
+    // (Consent Mode v2, "basic" implementation: nothing is sent before consent).
     function grantAnalyticsConsent() {
-        if (typeof gtag !== 'function') return;
-        gtag('consent', 'update', {
+        if (window.gaLoaded) return;
+        window.gaLoaded = true;
+
+        var gaId = @json(config('services.google_analytics.measurement_id'));
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+        gtag('consent', 'default', {
             'ad_storage': 'granted',
             'ad_user_data': 'granted',
             'ad_personalization': 'granted',
             'analytics_storage': 'granted'
         });
+        gtag('js', new Date());
+        gtag('config', gaId, { 'anonymize_ip': true });
+
+        var tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId);
+        document.head.appendChild(tag);
     }
     @endif
 

@@ -4,25 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    @if(config('services.google_analytics.measurement_id'))
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics.measurement_id') }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        // Google Consent Mode v2: default to denied until the visitor accepts cookies.
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied',
-            'wait_for_update': 500
-        });
-        gtag('js', new Date());
-        gtag('config', '{{ config('services.google_analytics.measurement_id') }}');
-    </script>
-    @endif
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="google-site-verification" content="fmGR5uGwOviE4zl38-ww4bLzdYg-U2ZmSTbybxgHhaU" />
     
     <title>@yield('title', 'Сватбен фотограф и Видеозаснемане Варна | Балове и Кръщенета | Take Two Studio 1603')</title>
@@ -80,6 +61,7 @@
     @include('partials.schema-graph')
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/components.css') }}">
     @stack('styles')
 </head>
 
@@ -180,17 +162,17 @@
             <div class="row">
                 <div class="col-md-12 text-center m-auto">
                     <p class="mb-2">
-                        <a href="{{ route('legal.privacy') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Политика за поверителност</a>
+                        <a href="{{ route('legal.privacy') }}" class="footer-link">Политика за поверителност</a>
                         &bull;
-                        <a href="{{ route('legal.terms') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Общи условия</a>
+                        <a href="{{ route('legal.terms') }}" class="footer-link">Общи условия</a>
                         &bull;
-                        <a href="{{ route('legal.cookies') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Политика за бисквитки</a>
+                        <a href="{{ route('legal.cookies') }}" class="footer-link">Политика за бисквитки</a>
                     </p>
                     <p>
                         © {{ date('Y') }} Take Two Studio 1603. Всички права запазени.
                         @auth
                             @if(auth()->user()->isAdmin())
-                                &bull; <a href="{{ url('/admin') }}" style="color: #ccc; text-decoration: none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#ccc'">Админ Панел</a>
+                                &bull; <a href="{{ url('/admin') }}" class="footer-link">Админ Панел</a>
                             @endif
                         @endauth
                     </p>

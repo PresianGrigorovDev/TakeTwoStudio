@@ -132,15 +132,6 @@
         </div>
     </section>
 
-    <style>
-        .baptism-gallery-card:hover img { transform: scale(1.05); }
-        .baptism-gallery-card:hover .btn-outline-dark { background-color: #f39c12; color: white; border-color: #f39c12; }
-        .hover-border:hover { border-color: #f39c12 !important; opacity: 0.8; }
-        .custom-scrollbar::-webkit-scrollbar { height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #111; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #f39c12; }
-    </style>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>

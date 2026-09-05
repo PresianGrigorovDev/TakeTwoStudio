@@ -23,16 +23,4 @@
     </div>
 </section>
 
-@push('styles')
-<style>
-    .legal-page { background: #fff; color: #222; }
-    .legal-page h1 { font-weight: 700; }
-    .legal-content h2 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; }
-    .legal-content h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.15rem; font-weight: 600; }
-    .legal-content p, .legal-content ul, .legal-content ol { margin-bottom: 1rem; line-height: 1.7; }
-    .legal-content ul, .legal-content ol { padding-left: 1.5rem; }
-    .legal-content a { color: #b8860b; text-decoration: underline; }
-    .legal-content a:hover { color: #8b6508; }
-</style>
-@endpush
 @endsection

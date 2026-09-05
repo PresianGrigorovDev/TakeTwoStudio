@@ -32,7 +32,38 @@ class PagesRenderTest extends TestCase
         $response = $this->get($path);
 
         $response->assertOk();
-        $this->assertStringNotContainsString('/public/', $response->getContent(), "$path leaks a /public/ URL");
+        $html = $response->getContent();
+        $this->assertStringNotContainsString('/public/', $html, "$path leaks a /public/ URL");
+
+        if (str_starts_with($response->headers->get('Content-Type', ''), 'text/html')) {
+            $this->assertStringNotContainsString('<style', $html, "$path has inline <style> (styles belong in /css)");
+            $this->assertStringNotContainsString('name="csrf-token"', $html, "$path exposes the CSRF meta tag");
+            $this->assertStringNotContainsString('onmouseover=', $html, "$path has inline event handlers");
+        }
+    }
+
+    public function test_analytics_loads_only_after_cookie_consent(): void
+    {
+        $this->seed();
+        config(['services.google_analytics.measurement_id' => 'G-TEST12345']);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        // No tag in <head>: nothing is sent to Google before the visitor accepts.
+        $this->assertStringNotContainsString('<script async src="https://www.googletagmanager.com', $html);
+        // The consent banner carries the loader that injects gtag.js after "Приемам всички".
+        $this->assertStringContainsString("'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(gaId)", $html);
+        $this->assertStringContainsString('"G-TEST12345"', $html);
+    }
+
+    public function test_promo_code_request_uses_the_form_token_not_a_meta_tag(): void
+    {
+        $this->seed();
+
+        $html = $this->get('/weddings')->assertOk()->getContent();
+
+        $this->assertStringContainsString('input[name="_token"]', $html);
+        $this->assertStringContainsString('name="_token"', $html);
     }
 
     public function test_graduation_redirects_permanently_to_proms(): void

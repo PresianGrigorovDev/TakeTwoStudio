@@ -32,79 +32,6 @@
     <input type="hidden" name="promo_code" id="promo-code-hidden">
 </div>
 
-<style>
-.promo-code-input-section {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 16px;
-}
-.promo-input-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: rgba(255,255,255,0.5);
-    margin-bottom: 8px;
-}
-.promo-input-row {
-    display: flex;
-    gap: 8px;
-}
-.promo-code-field {
-    flex: 1;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 6px;
-    color: #fff;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    font-family: 'Courier New', monospace;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    transition: border-color 0.2s;
-}
-.promo-code-field:focus {
-    outline: none;
-    border-color: #f5a623;
-    background: rgba(245,166,35,0.06);
-}
-.promo-code-field.is-valid   { border-color: #22c55e; }
-.promo-code-field.is-invalid { border-color: #ef4444; }
-
-.promo-apply-btn {
-    background: #f5a623;
-    color: #111;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.15s;
-}
-.promo-apply-btn:hover    { background: #ffc144; transform: scale(1.03); }
-.promo-apply-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.promo-apply-btn.applied  { background: #22c55e; color: #fff; }
-
-.promo-code-feedback {
-    margin-top: 6px;
-    font-size: 0.78rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-}
-.promo-code-feedback.success {
-    background: rgba(34,197,94,0.12);
-    color: #22c55e;
-    border: 1px solid rgba(34,197,94,0.3);
-}
-.promo-code-feedback.error {
-    background: rgba(239,68,68,0.12);
-    color: #ef4444;
-    border: 1px solid rgba(239,68,68,0.3);
-}
-</style>
 
 <script>
 var _appliedPromoDiscount = { type: null, value: 0, active: false };
@@ -128,7 +55,7 @@ function applyPromoCode() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'X-CSRF-TOKEN': ((btn.closest('form') || document).querySelector('input[name="_token"]') || {}).value || '',
             'Accept': 'application/json',
         },
         body: JSON.stringify({ code: code })
