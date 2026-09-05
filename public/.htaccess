@@ -5,6 +5,19 @@
 
     RewriteEngine On
 
+
+    # Requests that literally name /public/ or index.php in the request line get ONE 301
+    # to the canonical URL. %{THE_REQUEST} is the raw request line, which the internal
+    # rewrite from the project root (/weddings -> public/weddings) never changes, so this
+    # cannot loop. Needed here because mod_rewrite does not inherit the project-root
+    # rules into this directory. Laravel's NormalizeCanonicalUrl middleware is the fallback.
+    RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+    RewriteCond %{HTTP_HOST} ^(www\.)?taketwostudio1603\.com$ [NC]
+    RewriteCond %{THE_REQUEST} \s/public(?:/|[\s?]) [NC,OR]
+    RewriteCond %{THE_REQUEST} \s/(?:public/)?index\.php(?:[\s?/]) [NC]
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\s/+(?:public(?:/+|(?=[\s?])))?(?:index\.php(?:/+|(?=[\s?])))?([^\s?]*?)/*[\s?] [NC]
+    RewriteRule ^ https://taketwostudio1603.com/%1 [R=301,L,NE]
+
     # Only the front controller may execute PHP inside public/
     RewriteRule ^(?!index\.php$).+\.php$ - [F,L]
 

@@ -1,8 +1,12 @@
 # ------------------------------------------------------------------------
 # Take Two Studio - project-root .htaccess (Laravel root == cPanel docroot)
-# Single source of truth for: deny rules, canonical 301s, rewrite into public/.
-# All redirect decisions use %{THE_REQUEST} (raw request line), which internal
-# rewrites never modify -> no /public/ leaks, no loops. Apache + LiteSpeed.
+# Owns: deny rules, canonical 301s (http/www/trailing slash/index.php), rewrite
+# into public/. All redirect decisions use %{THE_REQUEST} (raw request line),
+# which internal rewrites never modify -> no /public/ leaks, no loops.
+# mod_rewrite does NOT inherit these rules into public/, so requests that
+# literally start with /public/ are canonicalised by public/.htaccess (same
+# THE_REQUEST technique) and, as a last resort, by Laravel's
+# NormalizeCanonicalUrl middleware. Apache + LiteSpeed.
 # ------------------------------------------------------------------------
 <IfModule mod_negotiation.c>
     Options -MultiViews -Indexes
