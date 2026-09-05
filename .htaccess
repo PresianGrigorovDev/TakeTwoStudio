@@ -17,8 +17,12 @@ RewriteRule ^\.well-known/ - [L]
 
 # 1) Deny project internals (belt and braces; the catch-all below already hides them)
 #    NOTE: /storage/... is NOT denied by URL - it is the public symlink for uploads.
+#    NOTE: the deny must not shadow a real file under public/ with the same first
+#    segment: public/vendor/* holds the self-hosted Bootstrap/AOS/FontAwesome/GLightbox
+#    assets served as /vendor/... (2026-09-05: they returned 403 without this guard).
 RewriteRule ^\.(env|git|claude|editorconfig|phpunit) - [F,L]
 RewriteRule (^|/)\.DS_Store$ - [F,L]
+RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} !-f
 RewriteRule ^(_legacy|Ardes|app|bootstrap|config|database|docs|resources|routes|scripts|tests|vendor|node_modules)(/|$) - [F,L]
 RewriteRule ^storage/(app/private|framework|logs)(/|$) - [F,L]
 RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js|README\.md|[^/]+\.(py|sql|sh|bak|log))$ - [F,L]
