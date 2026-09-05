@@ -60,7 +60,7 @@
                     @php $url = preg_match('#^https?://#i', $photo->image_path) ? $photo->image_path : asset('storage/' . $photo->image_path); @endphp
                     <div class="col-6 col-md-4">
                         <a href="{{ $url }}" class="glightbox story-photo" data-gallery="wedding-{{ $gallery->id }}" data-title="Сватбата на {{ $gallery->title }}">
-                            <img src="{{ $url }}" alt="Сватбата на {{ $gallery->title }}{{ $place ? ', ' . $place : '' }} – снимка {{ $index + 1 }}, Take Two Studio 1603" loading="lazy" class="img-fluid rounded w-100 h-100 object-fit-cover">
+                            <x-picture :src="$url" alt="Сватбата на {{ $gallery->title }}{{ $place ? ', ' . $place : '' }} – снимка {{ $index + 1 }}, Take Two Studio 1603" class="img-fluid rounded w-100 h-100 object-fit-cover" />
                         </a>
                     </div>
                 @endforeach
@@ -89,7 +89,7 @@
                             <a href="{{ $item->url }}" class="text-decoration-none text-dark">
                                 <div class="wedding-gallery-card rounded">
                                     <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm story-related-cover">
-                                        <img src="{{ $item->cover_url }}" alt="Сватбата на {{ $item->title }}" loading="lazy" class="img-fluid w-100 h-100 object-fit-cover">
+                                        <x-picture :src="$item->cover_url" alt="Сватбата на {{ $item->title }}" class="img-fluid w-100 h-100 object-fit-cover" />
                                     </div>
                                     <div class="text-center mt-3">
                                         <h3 class="h5 fw-bold mb-1">{{ $item->title }}</h3>

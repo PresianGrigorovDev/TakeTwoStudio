@@ -13,9 +13,13 @@
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
 
+@php
+    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroWebp = \App\Support\Images::webpUrl($heroUrl);
+@endphp
 @section('preload')
-    @if(!empty($service->hero_image))
-        <link rel="preload" href="{{ asset('storage/' . $service->hero_image) }}" as="image" fetchpriority="high">
+    @if($heroUrl)
+        <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @endif
 @endsection
 
@@ -28,7 +32,7 @@
     @endphp
 
     <!-- HEADER -->
-    <section class="baptism-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
+    <section class="baptism-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
@@ -162,7 +166,7 @@
     <section class="calc-section" id="calculator">
         <div class="container">
             <h2 class="text-center mb-4">Калкулатор Портретна Фотография</h2>
-            <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
+            <p class="text-center mb-5 intro-text">
                 Проверете цената за портретна фотосесия във Варна и региона. Предлагаме гъвкави пакети за фото и видео.
             </p>
             @if(session('success'))
@@ -174,7 +178,7 @@
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
                             @if($service && $service->activePromotion)
-                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4 badge-gold">
                                     <i class="fas fa-percentage me-2 animate-pulse"></i>
                                     <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
                                 </div>

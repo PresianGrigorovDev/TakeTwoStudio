@@ -380,3 +380,17 @@
 .client-logos { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: center; }
 .client-logo { height: 48px; width: auto; max-width: 160px; object-fit: contain; filter: grayscale(1); opacity: 0.8; }
 .client-logo:hover { filter: none; opacity: 1; }
+
+/* ---- Utility classes replacing repeated inline styles ---- */
+.cursor-pointer { cursor: pointer; }
+.gallery-thumb { height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent; }
+.carousel-img { height: 65vh; background: #000; }
+.carousel-icon-shadow { filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.8)); }
+.img-zoom { transition: transform 0.4s ease; }
+.gallery-cover-h { height: 320px; }
+.thumb-strip { background: #1a1a1a; gap: 10px; }
+.bg-dark-111 { background: #111; }
+.intro-text { max-width: 800px; margin: 0 auto 3rem auto; }
+.badge-gold { background: rgba(243, 156, 18, 0.15); color: #f39c12; }
+.letter-spaced-1 { letter-spacing: 1px; }
+picture { display: contents; }

@@ -12,9 +12,13 @@
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
 
+@php
+    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroWebp = \App\Support\Images::webpUrl($heroUrl);
+@endphp
 @section('preload')
-    @if(!empty($service->hero_image))
-        <link rel="preload" href="{{ asset('storage/' . $service->hero_image) }}" as="image" fetchpriority="high">
+    @if($heroUrl)
+        <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @endif
 @endsection
 
@@ -29,7 +33,7 @@
     @endphp
 
     <!-- HEADER -->
-    <section class="baptism-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
+    <section class="baptism-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
@@ -109,12 +113,12 @@
                 @foreach($baptismGalleries as $gallery)
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
-                        <div class="baptism-gallery-card border-0 rounded position-relative" data-bs-toggle="modal" data-bs-target="#baptismGalleryModal{{ $gallery->id }}" style="cursor: pointer;">
-                            <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm" style="height: 320px;">
-                                <img src="{{ asset('storage/' . $gallery->cover_image) }}" alt="{{ $gallery->title }}" loading="lazy" class="img-fluid w-100 h-100 object-fit-cover" style="transition: transform 0.4s ease;">
+                        <div class="baptism-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#baptismGalleryModal{{ $gallery->id }}">
+                            <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm gallery-cover-h">
+                                <x-picture :src="asset('storage/' . $gallery->cover_image)" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
                             </div>
                             <div class="text-center mt-3 p-2">
-                                <span class="d-block text-muted small text-uppercase fw-bold mb-1" style="letter-spacing: 1px;">Разгледай кръщенето на</span>
+                                <span class="d-block text-muted small text-uppercase fw-bold mb-1 letter-spaced-1">Разгледай кръщенето на</span>
                                 <h4 class="fw-bold mb-2">{{ $gallery->title }}</h4>
                                 <span class="btn btn-sm btn-outline-dark rounded-pill px-4 mt-2">Виж Галерията</span>
                             </div>
@@ -123,7 +127,7 @@
                         <!-- Modal for Gallery -->
                         <div class="modal fade" id="baptismGalleryModal{{ $gallery->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-xl modal-dialog-centered">
-                                <div class="modal-content border-0" style="background: #111;">
+                                <div class="modal-content border-0 bg-dark-111">
                                     <div class="modal-header border-0 py-2 bg-white">
                                         <h5 class="modal-title text-dark fw-bold">Кръщенето на {{ $gallery->title }}</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -134,36 +138,36 @@
                                             <div class="carousel-inner">
                                                 <!-- Cover Image first -->
                                                 <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Снимка от кръщенето на {{ $gallery->title }} - Take Two Studio" loading="lazy" decoding="async">
+                                                    <x-picture :src="asset('storage/' . $gallery->cover_image)" class="d-block w-100 object-fit-contain carousel-img" alt="Снимка от кръщенето на {{ $gallery->title }} - Take Two Studio" />
                                                 </div>
                                                 <!-- Rest of the photos -->
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Детайл от кръщенето на {{ $gallery->title }} - фотограф Варна" loading="lazy" decoding="async">
+                                                    <x-picture :src="asset('storage/' . $photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Детайл от кръщенето на {{ $gallery->title }} - фотограф Варна" />
                                                 </div>
                                                 @endforeach
                                             </div>
                                             <!-- Controls -->
                                             <button class="carousel-control-prev" type="button" data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.8));"></span>
+                                                <span class="carousel-control-prev-icon carousel-icon-shadow" aria-hidden="true"></span>
                                             </button>
                                             <button class="carousel-control-next" type="button" data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: drop-shadow(0px 0px 4px rgba(0,0,0,0.8));"></span>
+                                                <span class="carousel-control-next-icon carousel-icon-shadow" aria-hidden="true"></span>
                                             </button>
                                         </div>
                                         
                                         <!-- Thumbnails Slider Below -->
-                                        <div class="d-flex overflow-auto p-3 custom-scrollbar" style="background: #1a1a1a; gap: 10px;">
-                                                <img src="{{ asset('storage/' . $gallery->cover_image) }}" 
-                                                    style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" 
-                                                    class="gallery-thumbnail hover-border"
-                                                    data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="0" loading="lazy" decoding="async">
+                                        <div class="d-flex overflow-auto p-3 custom-scrollbar thumb-strip">
+                                                <x-picture :src="asset('storage/' . $gallery->cover_image)" 
+                                                    
+                                                    class="gallery-thumbnail hover-border gallery-thumb"
+                                                    data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="0" />
                                                 
                                                 @foreach($gallery->photos as $index => $photo)
-                                                <img src="{{ asset('storage/' . $photo->image_path) }}" 
-                                                    style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" 
-                                                    class="gallery-thumbnail hover-border"
-                                                    data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" loading="lazy" decoding="async">
+                                                <x-picture :src="asset('storage/' . $photo->image_path)" 
+                                                    
+                                                    class="gallery-thumbnail hover-border gallery-thumb"
+                                                    data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" />
                                                 @endforeach
                                         </div>
 
@@ -213,7 +217,7 @@
     <section class="calc-section" id="calculator">
         <div class="container">
             <h2 class="text-center mb-4">Калкулатор Свето Кръщение</h2>
-            <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
+            <p class="text-center mb-5 intro-text">
                 Проверете цената за заснемане на кръщене във Варна и региона. Предлагаме гъвкави пакети за фото и видео,
                 които улавят всеки важен момент от ритуала и празненството. Съхранете светостта на празника с Take Two
                 Studio.
@@ -231,7 +235,7 @@
                     <div class="col-lg-8">
                         <div class="calc-card h-100">
                             @if($service && $service->activePromotion)
-                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4 badge-gold">
                                     <i class="fas fa-percentage me-2 animate-pulse"></i>
                                     <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички цени до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
                                 </div>

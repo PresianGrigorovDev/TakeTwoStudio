@@ -37,8 +37,8 @@
         <div class="container py-5">
             <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
                 <div class="col-lg-6">
-                    <img src="{{ asset('css/img/about.webp') }}" alt="Екипът на Take Two"
-                        class="about-img-main falling-item" width="800" height="600" loading="lazy">
+                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two"
+                        class="about-img-main falling-item" width="800" height="600" />
                 </div>
                 <div class="col-lg-6 text-center text-lg-start">
                     <h2 class="mb-3">Професионално фото и видео студио</h2>
@@ -61,8 +61,8 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
                         data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
-                        <img src="{{ $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png') }}"
-                            alt="{{ $member->name }}" class="team-img falling-item" loading="lazy">
+                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
+                            alt="{{ $member->name }}" class="team-img falling-item" />
                         <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
                         <p class="role-text">{{ $member->role_bg }}</p>
                         <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
@@ -83,14 +83,14 @@
         </div>
         <div class="brands-track">
             @foreach($partners as $partner)
-                <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}"
-                    class="brand-logo" alt="{{ $partner->name }}" loading="lazy">
+                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)"
+                    class="brand-logo" alt="{{ $partner->name }}" />
             @endforeach
 
             <!-- Duplicated for scrolling effect -->
             @foreach($partners as $partner)
-                <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}"
-                    class="brand-logo" alt="{{ $partner->name }}" loading="lazy">
+                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)"
+                    class="brand-logo" alt="{{ $partner->name }}" />
             @endforeach
         </div>
     </section>
@@ -143,8 +143,8 @@
                         <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
                             <a href="{{ url($category->slug) }}" class="text-decoration-none">
                                 <div class="portfolio-item falling-item">
-                                    <img src="{{ $category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg') }}"
-                                        class="portfolio-img" alt="{{ $category->name_bg }}" loading="lazy">
+                                    <x-picture :src="$category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg')"
+                                        class="portfolio-img" alt="{{ $category->name_bg }}" />
                                     <div class="portfolio-overlay">
                                         <div class="portfolio-info">
                                             <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
@@ -272,8 +272,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <img src="{{ $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png') }}"
-                            alt="{{ $member->name }}" class="team-img mb-3" style="width: 120px; height: 120px;" loading="lazy">
+                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
+                            alt="{{ $member->name }}" class="team-img mb-3" style="width: 120px; height: 120px;" />
                         <p class="role-text mb-3">{{ $member->role_bg }}</p>
                         <p class="text-muted mb-3">
                             {{ $member->bio_bg }}

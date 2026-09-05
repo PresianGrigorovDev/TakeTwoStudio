@@ -12,9 +12,13 @@
     <link rel="stylesheet" href="{{ asset('css/commercial.css') }}">
 @endpush
 
+@php
+    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroWebp = \App\Support\Images::webpUrl($heroUrl);
+@endphp
 @section('preload')
-    @if(!empty($service->hero_image))
-        <link rel="preload" href="{{ asset('storage/' . $service->hero_image) }}" as="image" fetchpriority="high">
+    @if($heroUrl)
+        <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @endif
 @endsection
 
@@ -27,7 +31,7 @@
     @endphp
 
     <!-- Header / Hero -->
-    <section class="commercial-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
+    <section class="commercial-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
@@ -60,7 +64,7 @@
                     <p class="text-muted text-uppercase small mb-3 letter-spaced">Клиенти и партньори</p>
                     <div class="client-logos">
                         @foreach($partners as $partner)
-                            <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="client-logo" loading="lazy" decoding="async" height="48">
+                            <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" alt="{{ $partner->name }}" class="client-logo" height="48" />
                         @endforeach
                     </div>
                 </div>
@@ -145,8 +149,8 @@
                     @endphp
                     <div class="masonry-item {{ $item->sub_category }}">
                         <div class="portfolio-item" onclick="openLightbox(this)">
-                            <img src="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}"
-                                class="portfolio-img" alt="{{ $item->alt_text ?? $displayCategory }}" loading="lazy">
+                            <x-picture :src="str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path)"
+                                class="portfolio-img" alt="{{ $item->alt_text ?? $displayCategory }}" />
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
                                     @if($item->alt_text)
@@ -185,7 +189,7 @@
                 <div class="col-lg-8">
                     <div class="contact-box">
                         @if($service && $service->activePromotion)
-                            <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                            <div class="alert alert-warning border-0 rounded-0 text-center mb-4 badge-gold">
                                 <i class="fas fa-percentage me-2 animate-pulse"></i>
                                 <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички стандартни цени за всички запитвания до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
                             </div>

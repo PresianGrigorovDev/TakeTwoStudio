@@ -57,5 +57,8 @@ class ImageOptimizer
         };
 
         imagedestroy($image);
+
+        // Responsive delivery: keep a WebP sibling in sync for <x-picture>.
+        Images::makeWebp($fullPath);
     }
 }

@@ -12,9 +12,13 @@
     <link rel="stylesheet" href="{{ asset('css/proms.css') }}">
 @endpush
 
+@php
+    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroWebp = \App\Support\Images::webpUrl($heroUrl);
+@endphp
 @section('preload')
-    @if(!empty($service->hero_image))
-        <link rel="preload" href="{{ asset('storage/' . $service->hero_image) }}" as="image" fetchpriority="high">
+    @if($heroUrl)
+        <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @endif
 @endsection
 
@@ -29,7 +33,7 @@
 @endphp
 
     <!-- HEADER -->
-    <section class="prom-hero" @if(!empty($service->hero_image)) style="background-image: url('{{ asset('storage/' . $service->hero_image) }}')" @endif>
+    <section class="prom-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
@@ -75,7 +79,7 @@
                     <p><b>Албуми:</b> Класически или персонализирани фотокниги - запази спомените завинаги.</p>
                 </div>
                 <div class="col-lg-6">
-                    <img src="{{ asset('css/img/prom.jpg') }}" class="w-100 rounded shadow-sm" alt="Абитуриентска Фотосесия" loading="lazy" decoding="async">
+                    <x-picture :src="asset('css/img/prom.jpg')" class="w-100 rounded shadow-sm" alt="Абитуриентска Фотосесия" />
                 </div>
             </div>
         </div>
@@ -88,21 +92,21 @@
             <div class="section-divider start mx-auto mb-5 mt-0"></div>
             <div class="row g-4">
                 <div class="col-6 col-md-3">
-                    <div class="reason-card" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
+                    <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-graduation-cap reason-icon"></i>
                         <h5>Опит с абитуриенти</h5>
                         <p>Всяка година работим с десетки випуски. Знаем точно кога и как да уловим най-доброто от абитуриентския бал, каненето и изпращането.</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="reason-card" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
+                    <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-film reason-icon"></i>
                         <h5>Кино визия</h5>
                         <p>Използваме професионални камери, дрон и модерна обработка, за да направим абитуриентското ви видео като от филм.</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <div class="reason-card" style="cursor: pointer;" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
+                    <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-user-friends reason-icon"></i>
                         <h5>Персонален подход</h5>
                         <p>Ние слушаме твоите идеи, от мястото за абитуриентска фотосесия до стила на снимките. Всичко е съобразено с теб.</p>
@@ -153,7 +157,7 @@
     <section class="calc-section" id="calculator">
         <div class="container">
             <h2 class="text-center mb-4">{{ $calcTitle }}</h2>
-            <p class="text-center mb-5" style="max-width: 800px; margin: 0 auto 3rem auto;">
+            <p class="text-center mb-5 intro-text">
                 Планирайте бюджета за вашия бал с нашия интерактивен калкулатор. Изберете фотосесия, видео заснемане на
                 изпращането и ресторанта, както и допълнителни екстри като дрон и видео визитки. Запазете спомените от
                 най-емоционалната вечер!
@@ -173,7 +177,7 @@
 
                             @if($service && $service->activePromotion)
                                 @php $promo = $service->activePromotion; @endphp
-                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4" style="background: rgba(243, 156, 18, 0.15); color: #f39c12;">
+                                <div class="alert alert-warning border-0 rounded-0 text-center mb-4 badge-gold">
                                     <i class="fas fa-percentage me-2 animate-pulse"></i>
                                     @if($promo->discount_type === 'fixed')
                                         <strong>ПРОМОЦИЯ:</strong> Специална цена {{ number_format($promo->discount_amount, 0) }}€ на пакет до {{ $promo->expires_at->format('d.m.Y') }}!
