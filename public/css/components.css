@@ -335,7 +335,7 @@
 .footer-link:hover { color: #fff; }
 
 /* ---- Standalone pages: /ceni, /za-nas, /kontakti, guides ---- */
-.page-hero { background: #111111; color: #ffffff; padding: 140px 0 56px; text-align: center; }
+.page-hero { background: #111111; color: #ffffff; padding: 20px 5px; text-align: center; }
 .page-hero h1 { font-size: clamp(1.6rem, 3.2vw, 2.6rem); font-weight: 700; margin-bottom: 0.75rem; }
 .page-hero__subtitle { color: #cfcfcf; margin: 0; font-size: 1.05rem; }
 .answer-capsule { font-size: 1.1rem; line-height: 1.7; color: #222; }
