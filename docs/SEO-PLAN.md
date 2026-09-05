@@ -739,3 +739,46 @@ B2B: 16) Кой прави продуктова фотография за онл
 ## Какво НЕ е част от тази сесия
 
 Само план. Никакви промени в кода/сървъра не са правени (освен неволните странични ефекти от GET заявките, описани в C.0). Следваща стъпка по избор на собственика: (1) имплементация на C.1 + C.2 като първи PR; (2) отделни PR-и за C.4/C.5; (3) съдържанието по D.5 с AI чернови за редакция.
+
+---
+
+## Изпълнение — статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
+
+Всичко по-долу е commit-нато локално на `laratake` (10 commit-а след `7b5754d`), 61 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
+
+| Commit | Какво | Покрива |
+|---|---|---|
+| Fix duplicate /public/ URLs | root `.htaccess` (deny + 1-hop 301 + rewrite в `public/`), нов `public/.htaccess`, `URL::forceRootUrl/forceScheme`, пренаписан `NormalizeCanonicalUrl` (по `getBaseUrl()`), canonical = `url()->current()`, тестове за всички варианти | A, C.1, B3 |
+| Security hygiene | махнати `/seed-all`, `/test-email-send`, `/clear-cache`, `public/optimize.php`, stubs, `storage.zip`; dev скриптове → `scripts/`; 52+46 „ 2“ дубликати; `.claude/` извън git; нов robots.txt; throttle на API | C.2, B1, B2, B4a, B12 |
+| Favicon/manifest/images | реален `favicon.ico`, `site.webmanifest`, `header.webp`, `social-share-cover.jpg`, `best-wedding-cover.jpg`, `default-placeholder.jpg` | B4d |
+| Settings (NAP) | `App\Support\Settings` (кеш по ключ), телефони E.164 + display формат, миграция `normalize_site_settings`, всички views/имейли/LLM през Settings | C.4.4, B9, B17, B19 |
+| Schema graph | един `@graph`: Organization ↔ LocalBusiness ↔ WebSite ↔ WebPage(+FAQPage) + BreadcrumbList + ImageObject + Service/Offer + VideoObject + Person + BlogPosting; видими breadcrumbs; без `aggregateRating`; нови колони `services.video_title/video_uploaded_at`, `blog_posts.author_team_member_id` (Filament полета) | C.4.1–C.4.3, B8, B10, B16, B18, B21, B22 |
+| FAQ консолидация | 5 таблици + hardcoded масив → `faqs(page_slug…)`, `FaqResource` видим в админа, общ partial, graduation мъртъв код изтрит | B5, C.4.2, C.6.2 |
+| Sitemap + IndexNow | sitemapindex (pages/blog/images) с реален `lastmod`, image sitemap, Cache-Control; IndexNow ping при публикуване + `php artisan seo:indexnow --all` + key файл `/{key}.txt` | C.4.5, B11, D.7.2 |
+| On-page | title ≤ 60, description ≤ 155, H1 „услуга + Варна“, data migration за hero заглавията | B14, B15 |
+| .cpanel.yml | optimize:clear → migrate --force → optimize → indexnow при „Deploy HEAD Commit“ | C.1.6 |
+
+**Не е правено (следващи фази):** новите страници `/ceni`, `/za-nas`, `/kontakti`, `/abiturientski-bal-varna`, пренаписването на `/proms` по „answer capsule“ (D.4/D.5), performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
+
+### Runbook за деплой (в този ред)
+
+1. **GitHub → Private.** Репото е публично; не push-вай преди това. После deploy key за cPanel (виж header-а горе).
+2. **Production `.env`** (cPanel File Manager → `public_html/.env`):
+   ```
+   APP_ENV=production
+   APP_DEBUG=false
+   APP_URL=https://taketwostudio1603.com
+   FORCE_CANONICAL_URL=true
+   INDEXNOW_KEY=<ключът от Bing Webmaster Tools>
+   ```
+3. **Push** `laratake` → GitHub.
+4. **Сървър (SSH или cPanel Terminal), един ред** — root `.htaccess` на сървъра е untracked и ще блокира pull-а:
+   ```bash
+   cd ~/public_html && cp .htaccess ~/htaccess.pre-fix.bak && rm .htaccess && git pull --ff-only origin laratake && php artisan optimize:clear && php artisan migrate --force && php artisan optimize && php artisan seo:indexnow --all
+   ```
+   (Алтернатива без SSH: File Manager → преименувай `.htaccess` → cPanel Git → „Update from Remote“ → „Deploy HEAD Commit“, което пуска `.cpanel.yml`.)
+5. **Провери** матрицата от Част C.1 (curl) + `curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md` → 403.
+6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git.
+7. **Filament:** Настройки → попълни `site_youtube` и `site_google_maps`; Услуги → `video_title`/`video_uploaded_at` за showreel-ите; Блог → автор (член на екипа) на постовете; Често задавани въпроси → добави FAQ за family/portrait/automotive/architectural/events.
+8. **GSC:** URL Inspection → Request indexing за услугите; Removals за `https://taketwostudio1603.com/public/`; resubmit `sitemap.xml`. **BWT:** import от GSC, submit sitemap, провери IndexNow „Submitted URLs“.
+9. **Rollback** при проблем: `cd ~/public_html && cp ~/htaccess.pre-fix.bak .htaccess && git checkout HEAD~1 -- public/.htaccess && php artisan optimize:clear`.

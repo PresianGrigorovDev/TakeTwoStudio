@@ -1,0 +1,12 @@
+---
+# cPanel Git Version Control -> "Deploy HEAD Commit" runs these after the checkout
+# is updated in place (/home/mbgsqksf/public_html == this repository).
+# "Update from Remote" alone does NOT run them - use Deploy, or run the same
+# commands over SSH:  cd ~/public_html && php artisan optimize:clear && php artisan migrate --force && php artisan optimize
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/mbgsqksf/public_html
+    - cd $DEPLOYPATH && php artisan optimize:clear
+    - cd $DEPLOYPATH && php artisan migrate --force
+    - cd $DEPLOYPATH && php artisan optimize
+    - cd $DEPLOYPATH && php artisan seo:indexnow --all || true
