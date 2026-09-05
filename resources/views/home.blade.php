@@ -5,7 +5,7 @@
 @section('meta_keywords', 'фотограф варна, сватбен фотограф варна, фотограф за бал варна, заснемане на събития варна, семейна фотосесия, портретен фотограф, автомобилна фотография, архитектурна фотография, видеозаснемане варна, дрон заснемане, Take Two Studio 1603')
 @section('og_title', 'Take Two Studio 1603 - Фотограф и Видеозаснемане Варна')
 @section('og_description', 'Професионален фотограф и видеооператор във Варна от Take Two Studio 1603. Сватби, балове, събития, портрети, семейна и дрон фотография.')
-@section('og_image', asset('css/img/header.jpg'))
+@section('og_image', asset('css/img/social-share-cover.jpg'))
 
 @section('preload')
     <link rel="preload" href="{{ asset('css/img/header.webp') }}" as="image" type="image/webp" fetchpriority="high">

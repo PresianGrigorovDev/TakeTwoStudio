@@ -45,7 +45,7 @@
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta property="og:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България. Вижте портфолиото ни.')">
-    <meta property="og:image" content="@yield('og_image', asset('css/img/header.jpg'))">
+    <meta property="og:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
     <meta property="og:locale" content="bg_BG">
     <meta property="og:site_name" content="Take Two Studio 1603">
 
@@ -53,7 +53,7 @@
     <meta name="twitter:site" content="@@taketwostudio1603">
     <meta name="twitter:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta name="twitter:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България.')">
-    <meta name="twitter:image" content="@yield('og_image', asset('css/img/header.jpg'))">
+    <meta name="twitter:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
 
     <meta name="geo.region" content="BG-03">
     <meta name="geo.placename" content="Varna">
@@ -74,8 +74,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('css/img/favicon_io/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('css/img/favicon_io/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('css/img/favicon_io/favicon-16x16.png') }}">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="icon" href="{{ asset('css/img/favicon_io/favicon-16x16.png') }}" sizes="any">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
 
     @php
         $testimonialStats = \App\Models\Testimonial::where('is_active', true)

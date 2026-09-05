@@ -1,0 +1,14 @@
+{
+  "name": "Take Two Studio 1603",
+  "short_name": "Take Two 1603",
+  "description": "Фото и видео студио във Варна – сватби, абитуриентски балове, кръщенета, бизнес фотография, дрон.",
+  "lang": "bg",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#D4AF37",
+  "icons": [
+    { "src": "/css/img/favicon_io/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/css/img/favicon_io/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
