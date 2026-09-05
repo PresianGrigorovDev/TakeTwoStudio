@@ -347,7 +347,6 @@
 .price-table thead th { border-bottom: 2px solid #D4AF37; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .price-table__featured { background: rgba(212, 175, 55, 0.08); }
 .price-extras summary { cursor: pointer; color: #555; font-size: 0.9rem; }
-.price-note { background: #f8f9fa; }
 .process-list { padding-left: 1.25rem; }
 .process-list li { margin-bottom: 0.75rem; line-height: 1.6; }
 .trust-list { list-style: none; padding: 0; }
