@@ -20,7 +20,7 @@ class PagesRenderTest extends TestCase
             ['/'], ['/weddings'], ['/proms'], ['/baptism'], ['/commercial'], ['/family'],
             ['/portrait'], ['/automotive'], ['/architectural'], ['/events'],
             ['/blog'], ['/booking'], ['/privacy'], ['/terms'], ['/cookies'],
-            ['/ceni'], ['/za-nas'], ['/kontakti'],
+            ['/ceni'], ['/za-nas'], ['/kontakti'], ['/abiturientski-bal-varna'],
             ['/sitemap.xml'], ['/llms.txt'], ['/llms-full.txt'],
         ];
     }

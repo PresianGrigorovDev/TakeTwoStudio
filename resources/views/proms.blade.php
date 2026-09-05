@@ -40,17 +40,23 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <!-- INTRO -->
-    <section class="pt-4 pb-5 text-center container">
+    <!-- INTRO / answer capsule -->
+    <section class="pt-4 pb-5 container">
         <div class="row justify-content-center">
-            <div class="col-lg-11">
-                <h2 class="mb-4 h2 text-black fw-normal lh-base">
-                    <b>Абитуриентският бал е един от най-вълнуващите моменти в живота на всеки млад човек и заслужава да бъде запечатан безупречно.</b>
-                </h2>
-
+            <div class="col-lg-9">
+                @php
+                    $promText = \App\Support\PageText::for('proms');
+                    $promMin = $promPackages->min('price_eur');
+                    $promSeason = (int) config('seo.prom_season_year', now()->month >= 7 ? now()->year + 1 : now()->year);
+                    $promCapsuleDefault = 'Take Two Studio 1603 е фото и видео студио във Варна, което заснема абитуриентски балове за цели класове: канене на класния ръководител, изпращане от училище, балната вечер и фотосесиите на класа. Цената е фиксирана на ученик' . ($promMin ? ' (от ' . number_format($promMin, 0) . ' €)' : '') . ', без скрити такси. Един координиран екип от фотограф, видеооператор и дрон пилот, а готовите снимки и клипът се доставят в онлайн галерия. Работим във Варна, Добрич и целия регион.';
+                @endphp
+                <h2 class="h3 mb-3 text-center">{{ $promText->get('intro', 'title', "Фотограф и видео за абитуриентски бал във Варна, випуск {$promSeason}") }}</h2>
                 <div class="section-divider"></div>
-                <p class="text-black mb-0">
-                    В <b>Take Two Studio 1603</b> предлагаме пълно фотографско покритие на абитуриентски балове, от първата усмивка до последния танц.<br>От фотосесиите през каненето и изпращането, до върха на нощта, самия бал, ще създадем спомени, които ще живеят вечно.
+                <p class="lead answer-capsule text-center">{{ $promText->get('intro', 'capsule', $promCapsuleDefault) }}</p>
+                <p class="text-center small text-muted mb-0">
+                    <a href="{{ url('/abiturientski-bal-varna') }}">Гид: абитуриентски бал Варна {{ $promSeason }}</a> &bull;
+                    <a href="{{ url('/ceni#abiturienti') }}">Всички цени на ученик</a> &bull;
+                    <a href="#calculator">Калкулатор за класа</a>
                 </p>
             </div>
         </div>

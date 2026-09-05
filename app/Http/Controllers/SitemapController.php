@@ -97,6 +97,7 @@ class SitemapController extends Controller
             $serviceDates->values()->all(),
             [$this->tableMax('faqs', ['page_slug' => 'ceni']), $this->tableMax('page_contents', ['page_slug' => 'ceni'])]
         )))];
+        $entries[] = ['loc' => url('/abiturientski-bal-varna'), 'lastmod' => $this->fmt($this->max([$serviceDates['proms'], $this->tableMax('faqs', ['page_slug' => 'abiturientski-bal-varna']), $this->tableMax('page_contents', ['page_slug' => 'abiturientski-bal-varna'])]))];
         $entries[] = ['loc' => url('/za-nas'), 'lastmod' => $this->fmt($this->max([$this->tableMax('team_members'), $this->tableMax('page_contents', ['page_slug' => 'za-nas']), $this->tableMax('testimonials')]))];
         $entries[] = ['loc' => url('/kontakti'), 'lastmod' => $this->fmt($this->max([$this->tableMax('site_settings'), $this->tableMax('page_contents', ['page_slug' => 'kontakti'])]))];
         $entries[] = ['loc' => url('/booking'), 'lastmod' => $this->fmt($this->max([$this->tableMax('blocked_dates'), $this->tableMax('services')]))];

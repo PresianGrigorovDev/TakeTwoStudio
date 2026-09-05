@@ -22,6 +22,7 @@ Route::get('/events', [App\Http\Controllers\PageController::class, 'events']);
 Route::get('/ceni', [App\Http\Controllers\SitePageController::class, 'prices'])->name('pages.prices');
 Route::get('/za-nas', [App\Http\Controllers\SitePageController::class, 'about'])->name('pages.about');
 Route::get('/kontakti', [App\Http\Controllers\SitePageController::class, 'contact'])->name('pages.contact');
+Route::get('/abiturientski-bal-varna', [App\Http\Controllers\SitePageController::class, 'promGuide'])->name('pages.prom-guide');
 
 Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [App\Http\Controllers\BlogController::class, 'category'])->name('blog.category');

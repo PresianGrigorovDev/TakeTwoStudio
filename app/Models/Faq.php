@@ -34,6 +34,7 @@ class Faq extends Model
     public const PAGES = [
         'general' => 'Общи',
         'ceni' => 'Цени (страница /ceni)',
+        'abiturientski-bal-varna' => 'Гид: абитуриентски бал Варна',
         'weddings' => 'Сватби',
         'proms' => 'Абитуриентски балове',
         'baptism' => 'Кръщенета',

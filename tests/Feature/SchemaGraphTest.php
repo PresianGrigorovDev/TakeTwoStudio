@@ -147,4 +147,13 @@ class SchemaGraphTest extends TestCase
         $contact = $this->node($this->graph('/kontakti'), 'ContactPage');
         $this->assertNotNull($contact);
     }
+
+    public function test_prom_guide_has_faq_and_three_level_breadcrumbs(): void
+    {
+        $graph = $this->graph('/abiturientski-bal-varna');
+
+        $this->assertNotNull($this->node($graph, 'FAQPage'), 'seeded guide FAQs must mark the page as FAQPage');
+        $this->assertSame(['Начало', 'Абитуриентски балове'], array_slice(array_column($this->node($graph, 'BreadcrumbList')['itemListElement'], 'name'), 0, 2));
+        $this->get('/proms')->assertOk()->assertSee('abiturientski-bal-varna');
+    }
 }

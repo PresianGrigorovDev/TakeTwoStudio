@@ -152,6 +152,46 @@ class SitePageController extends Controller
         ]);
     }
 
+    /** Evergreen season guide: /abiturientski-bal-varna ("Абитуриентски бал Варна 2027"). */
+    public function promGuide()
+    {
+        $season = (int) config('seo.prom_season_year', now()->month >= 7 ? now()->year + 1 : now()->year);
+        $packages = PromPackage::where('is_visible', true)->orderBy('price_eur')->get();
+        $sessions = GraduationPackage::where('is_visible', true)->orderBy('price_eur')->get();
+        $faqs = Faq::forPageVisible('abiturientski-bal-varna');
+        $text = PageText::for('abiturientski-bal-varna');
+
+        $seo = app(Seo::class);
+        $seo->setBreadcrumbs([
+            ['name' => 'Начало', 'url' => url('/')],
+            ['name' => 'Абитуриентски балове', 'url' => url('/proms')],
+            ['name' => "Абитуриентски бал Варна {$season}", 'url' => null],
+        ]);
+        $seo->setFaqs($faqs);
+        $seo->setDates(null, $this->guideUpdatedAt($packages));
+
+        return view('pages.abiturientski-bal-varna', [
+            'season' => $season,
+            'packages' => $packages,
+            'sessions' => $sessions,
+            'faqs' => $faqs,
+            'text' => $text,
+            'minPrice' => $packages->min('price_eur'),
+            'maxPrice' => $packages->max('price_eur'),
+        ]);
+    }
+
+    private function guideUpdatedAt(Collection $packages): ?Carbon
+    {
+        $dates = collect([
+            $packages->max('updated_at'),
+            \App\Models\PageContent::where('page_slug', 'abiturientski-bal-varna')->max('updated_at'),
+            Faq::forPage('abiturientski-bal-varna')->max('updated_at'),
+        ])->filter()->map(fn ($d) => Carbon::parse($d));
+
+        return $dates->max();
+    }
+
     /** @return array{name:string,price:float,description:string,features:array<int,string>,featured:bool}|null */
     private function normalizePackage($package): ?array
     {
