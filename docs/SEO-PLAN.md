@@ -785,23 +785,36 @@ B2B: 16) Кой прави продуктова фотография за онл
    INDEXNOW_KEY=<ключът от Bing Webmaster Tools>
    ```
 3. **Push** `laratake` → GitHub.
-4. **Сървър (SSH или cPanel Terminal).** cPanel „Update from Remote“ ще отказва merge-а, докато в `public_html` има локални разлики. Реалният случай от 2026-09-05: `public/check_video_path.php` беше изтрит на сървъра (самоизтриващ се stub, а commit-ът също го маха) и `public/css/img/header.webp` беше untracked файл, който репото вече доставя. Почисти и дръпни в една сесия, с maintenance mode, защото между pull и migrate страниците с услуги дават 500:
+4. **Сървър (SSH или cPanel Terminal).** cPanel „Update from Remote“ отказва merge-а, докато в `public_html` има локални разлики спрямо репото. Реално появили се на 2026-09-05: (а) tracked файл с локална промяна – `public/check_video_path.php` (самоизтриващ се stub, изтрит на сървъра); (б) untracked файлове, които новите commit-и вече доставят – първо `public/css/img/header.webp`, после след WebP кръга още 7 в същата папка (`Edited_IMG_9630.webp`, `krustene.webp`, `prom.webp`, `Бал.webp`, `Коли.webp`, `Сватба.webp`, `реклама.webp` – стари деривати от `optimize.php`); (в) ръчният untracked root `.htaccess`. Блокът по-долу почиства всичко това генерично (`core.quotepath=false` е нужен заради кирилските имена), после дръпва в една сесия с maintenance mode, защото между pull и migrate страниците с услуги дават 500:
    ```bash
    cd ~/public_html
-   git status --porcelain                                     # виж какво е различно
-   git checkout -- public/check_video_path.php                # върни stub-а, merge-ът ще го изтрие
-   mv public/css/img/header.webp ~/header.webp.server.bak     # untracked файл, репото го доставя
-   [ -f .htaccess ] && ! git ls-files --error-unmatch .htaccess >/dev/null 2>&1 && cp .htaccess ~/htaccess.pre-fix.bak && rm .htaccess   # само ако има ръчен untracked root .htaccess
-   git status --porcelain                                     # трябва да е празно (или само ?? файлове, които merge-ът не пипа)
+   git fetch origin
+   B=$(git rev-parse --abbrev-ref HEAD)                          # laratake или main (двата са на един commit)
+   mkdir -p ~/pre-pull-backup
+
+   # (а) tracked файлове с локална промяна/изтриване -> копие в backup, после върни версията от git
+   git -c core.quotepath=false status --porcelain | grep -v '^??' | cut -c4- | while IFS= read -r f; do
+     [ -e "$f" ] && mkdir -p ~/pre-pull-backup/"$(dirname "$f")" && cp -p -- "$f" ~/pre-pull-backup/"$f"
+     git checkout -- "$f" && echo "restored: $f"
+   done
+
+   # (б)+(в) untracked файлове, които входящите commit-и добавят (вкл. root .htaccess) -> премести в backup
+   git -c core.quotepath=false diff --name-only --diff-filter=A HEAD "origin/$B" | while IFS= read -r f; do
+     if [ -e "$f" ] && ! git ls-files --error-unmatch -- "$f" >/dev/null 2>&1; then
+       mkdir -p ~/pre-pull-backup/"$(dirname "$f")" && mv -- "$f" ~/pre-pull-backup/"$f" && echo "moved: $f"
+     fi
+   done
+
+   git -c core.quotepath=false status --porcelain                # празно, или само ?? файлове, които merge-ът не пипа
    php artisan down --retry=30 \
-     && git pull --ff-only origin laratake \
+     && git pull --ff-only origin "$B" \
      && php artisan optimize:clear && php artisan migrate --force && php artisan optimize \
      && php artisan up \
      && php artisan seo:indexnow --all
    ```
-   Ако `git pull` изведе нови „would be overwritten“ файлове, повтори за всеки: tracked с промяна → `git checkout -- <файл>`; untracked → `mv <файл> ~/<файл>.bak`. Ако pull-ът мине, а някоя artisan команда падне: `php artisan up` веднага, после виж грешката.
+   Ако pull-ът пак изведе „would be overwritten“, повтори блока (той е идемпотентен). Ако pull-ът мине, а някоя artisan команда падне: `php artisan up` веднага, после виж грешката. `~/pre-pull-backup` (ръчният `.htaccess` е в него) може да се изтрие след успешна проверка.
 5. **Провери** матрицата от Част C.1 (curl) + `curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md` → 403.
 6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git. После **веднъж** `php artisan images:webp` (създава .webp до всяка качена снимка; само файлове, без база; може да отнеме няколко минути).
 7. **Filament:** Настройки → попълни `site_youtube` и `site_google_maps`; Услуги → `video_title`/`video_uploaded_at` за showreel-ите; Блог → автор (член на екипа) на постовете; Често задавани въпроси → добави FAQ за family/portrait/automotive/architectural/events.
 8. **GSC:** URL Inspection → Request indexing за услугите; Removals за `https://taketwostudio1603.com/public/`; resubmit `sitemap.xml`. **BWT:** import от GSC, submit sitemap, провери IndexNow „Submitted URLs“.
-9. **Rollback** при проблем: `cd ~/public_html && cp ~/htaccess.pre-fix.bak .htaccess && git checkout HEAD~1 -- public/.htaccess && php artisan optimize:clear`.
+9. **Rollback** при проблем: `cd ~/public_html && cp ~/pre-pull-backup/.htaccess .htaccess && git checkout HEAD~1 -- public/.htaccess && php artisan optimize:clear`.
