@@ -103,6 +103,10 @@ class SitemapController extends Controller
         $entries[] = ['loc' => url('/booking'), 'lastmod' => $this->fmt($this->max([$this->tableMax('blocked_dates'), $this->tableMax('services')]))];
         $entries[] = ['loc' => url('/blog'), 'lastmod' => $this->fmt($this->max([BlogPost::published()->max('updated_at'), BlogPost::published()->max('published_at')]))];
 
+        foreach (\App\Models\WeddingGallery::where('is_active', true)->whereNotNull('slug')->orderByDesc('event_date')->get() as $gallery) {
+            $entries[] = ['loc' => route('weddings.story', $gallery->slug), 'lastmod' => $this->fmt($gallery->updated_at)];
+        }
+
         foreach (['privacy', 'terms', 'cookies'] as $legal) {
             $entries[] = ['loc' => url($legal), 'lastmod' => $this->fmt($this->tableMax('legal_pages', ['slug' => $legal]))];
         }
@@ -159,6 +163,13 @@ class SitemapController extends Controller
 
             if ($images) {
                 $entries[] = ['loc' => url($slug), 'lastmod' => $this->fmt($this->serviceLastmod($slug)), 'images' => array_slice($images, 0, 1000)];
+            }
+        }
+
+        foreach (\App\Models\WeddingGallery::with('photos')->where('is_active', true)->whereNotNull('slug')->get() as $gallery) {
+            $images = array_values(array_filter(array_map(fn ($p) => $this->imageUrl($p), array_merge([$gallery->cover_image], $gallery->photos->pluck('image_path')->all()))));
+            if ($images) {
+                $entries[] = ['loc' => route('weddings.story', $gallery->slug), 'lastmod' => $this->fmt($gallery->updated_at), 'images' => $images];
             }
         }
 

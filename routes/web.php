@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\PageController::class, 'home']);
 
 Route::get('/weddings', [App\Http\Controllers\PageController::class, 'weddings']);
+Route::get('/svatbi/{slug}', [App\Http\Controllers\WeddingStoryController::class, 'show'])->name('weddings.story');
 
 Route::get('/proms', [App\Http\Controllers\PageController::class, 'proms']);
 

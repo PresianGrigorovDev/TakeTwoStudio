@@ -183,6 +183,9 @@
                                 <span class="btn btn-sm btn-outline-dark rounded-pill px-4 mt-2">Виж Галерията</span>
                             </div>
                         </div>
+                        @if($gallery->slug)
+                            <a href="{{ route('weddings.story', $gallery->slug) }}" class="d-block text-center small mt-1 story-link">Историята на сватбата{{ $gallery->place_label ? ' · ' . $gallery->place_label : '' }}</a>
+                        @endif
 
                         <!-- Modal for Gallery -->
                         <div class="modal fade" id="galleryModal{{ $gallery->id }}" tabindex="-1" aria-hidden="true">

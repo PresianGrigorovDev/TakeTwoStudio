@@ -41,6 +41,28 @@ class WeddingGalleryResource extends Resource
                         Forms\Components\DatePicker::make('event_date')
                             ->label('Дата на събитието')
                             ->native(false),
+                        Forms\Components\TextInput::make('venue')
+                            ->label('Зала / локация (напр. Евксиноград, Св. Св. Константин и Елена)')
+                            ->helperText('Името на залата е силен локален сигнал за Google и AI търсачките.')
+                            ->maxLength(150),
+                        Forms\Components\TextInput::make('location')
+                            ->label('Град / населено място')
+                            ->default('Варна')
+                            ->maxLength(100),
+                        Forms\Components\Textarea::make('description')
+                            ->label('Историята на сватбата (300–500 думи)')
+                            ->helperText('Как мина денят, локациите, какво заснехме, с какво беше различна. Публикува се на /svatbi/{slug}.')
+                            ->rows(8)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('couple_quote')
+                            ->label('Цитат от двойката (с тяхно съгласие)')
+                            ->rows(2)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('video_url')
+                            ->label('Сватбен филм (YouTube линк)')
+                            ->url()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
                         Forms\Components\Placeholder::make('cover_image_preview')
                             ->label('Текуща корица')
                             ->content(fn (?WeddingGallery $record): \Illuminate\Support\HtmlString =>
