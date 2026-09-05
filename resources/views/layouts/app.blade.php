@@ -104,7 +104,7 @@
                                 @endphp
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('pages.prices') }}">Цени</a></li>
+                        {{-- <li class="nav-item"><a class="nav-link" href="{{ route('pages.prices') }}">Цени</a></li> --}}
                         <li class="nav-item"><a class="nav-link" href="/booking">Резервация</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('pages.contact') }}">Контакти</a></li>
                     </div>
