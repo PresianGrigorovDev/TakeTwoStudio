@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\GraduationFaq;
+use App\Models\Faq;
 use App\Models\GraduationPackage;
 use Illuminate\Database\Seeder;
 
@@ -11,7 +11,8 @@ class GraduationContentSeeder extends Seeder
     public function run(): void
     {
         // ── FAQ ──────────────────────────────────────────────────────────
-        if (GraduationFaq::count() === 0) {
+        // Pre-prom photoshoot FAQs live on /proms (/graduation redirects there).
+        if (Faq::forPage('proms')->where('question', 'Колко трае фотосесията?')->doesntExist()) {
             $faqs = [
                 [
                     'question'   => 'Колко трае фотосесията?',
@@ -40,8 +41,9 @@ class GraduationContentSeeder extends Seeder
                 ],
             ];
 
+            $offset = (int) Faq::forPage('proms')->max('sort_order');
             foreach ($faqs as $faq) {
-                GraduationFaq::create($faq);
+                Faq::create(['page_slug' => 'proms', 'question' => $faq['question'], 'answer' => $faq['answer'], 'sort_order' => $offset + $faq['sort_order'], 'is_visible' => true]);
             }
         }
 

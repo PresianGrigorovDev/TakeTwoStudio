@@ -12,11 +12,7 @@ use App\Models\PortraitPackage;
 use App\Models\AutomotivePackage;
 use App\Models\ArchitecturalPackage;
 use App\Models\EventPackage;
-use App\Models\WeddingFaq;
-use App\Models\PromFaq;
-use App\Models\GraduationFaq;
-use App\Models\BaptismFaq;
-use App\Models\CommercialFaq;
+use App\Models\Faq;
 use App\Models\Testimonial;
 
 class LLMController extends Controller
@@ -75,11 +71,11 @@ class LLMController extends Controller
         $eventPackages = EventPackage::where('is_visible', true)->orderBy('sort_order')->get();
 
         // Load FAQs dynamically
-        $weddingFaqs = WeddingFaq::all();
-        $promFaqs = PromFaq::where('is_visible', true)->orderBy('sort_order')->get();
-        $graduationFaqs = GraduationFaq::where('is_visible', true)->orderBy('sort_order')->get();
-        $baptismFaqs = BaptismFaq::where('is_visible', true)->orderBy('sort_order')->get();
-        $commercialFaqs = CommercialFaq::where('is_visible', true)->orderBy('sort_order')->get();
+        $weddingFaqs = Faq::forPageVisible('weddings');
+        $promFaqs = Faq::forPageVisible('proms'); // includes the former graduation FAQs
+        $graduationFaqs = collect();
+        $baptismFaqs = Faq::forPageVisible('baptism');
+        $commercialFaqs = Faq::forPageVisible('commercial');
 
         return response()->view('llms.full', compact(
             'siteName', 'tagline', 'phone', 'email', 'address', 

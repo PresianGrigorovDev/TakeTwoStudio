@@ -142,34 +142,7 @@
         </div>
     </section>
 
-    <!-- FAQ -->
-    <section class="py-5 bg-white">
-        <div class="container">
-            <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    @if($promFaqs->isNotEmpty())
-                    <div class="accordion" id="promFaqAccordion">
-                        @foreach($promFaqs as $i => $faq)
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#pfaq{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="pfaq{{ $faq->id }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#promFaqAccordion">
-                                <div class="accordion-body text-muted">
-                                    {{ $faq->answer }}
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('partials.faq-section')
 
     <!-- CALCULATOR -->
     <section class="calc-section" id="calculator">

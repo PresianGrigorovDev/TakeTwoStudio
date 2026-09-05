@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faq;
 use App\Models\PortfolioItem;
 use App\Models\Service;
 use App\Support\Seo\Seo;
@@ -75,30 +76,6 @@ class PageController extends Controller
         return $this->showService('events');
     }
 
-    public function graduation()
-    {
-        $graduationPhotos = \App\Models\GraduationPortfolioPhoto::where('is_visible', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $graduationFaqs = \App\Models\GraduationFaq::where('is_visible', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $graduationPackages = \App\Models\GraduationPackage::where('is_visible', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        $service = Service::where('slug', 'graduation')->with('activePromotion')->first();
-
-        return view('graduation', [
-            'service'            => $service,
-            'graduationPhotos'   => $graduationPhotos,
-            'graduationFaqs'     => $graduationFaqs,
-            'graduationPackages' => $graduationPackages,
-        ]);
-    }
-
     private function showService($slug)
     {
         $service = Service::where('slug', $slug)->with('activePromotion')->first();
@@ -125,26 +102,22 @@ class PageController extends Controller
             });
 
         // Get galleries
+        $faqs = Faq::forPageVisible($slug);
+
         $weddingGalleries = collect();
-        $weddingFaqs = collect();
         if ($slug === 'weddings') {
             $weddingGalleries = \App\Models\WeddingGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
-            $weddingFaqs = \App\Models\WeddingFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $baptismGalleries = collect();
-        $baptismFaqs = collect();
         if ($slug === 'baptism') {
             $baptismGalleries = \App\Models\BaptismGallery::with('photos')->where('is_active', true)->orderByDesc('event_date')->get();
-            $baptismFaqs = \App\Models\BaptismFaq::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
         $promPortfolioPhotos = collect();
-        $promFaqs = collect();
         $promPackages = collect();
         if ($slug === 'proms') {
             $promPortfolioPhotos = \App\Models\PromPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
-            $promFaqs = \App\Models\PromFaq::where('is_visible', true)->orderBy('sort_order')->get();
             $promPackages = \App\Models\PromPackage::where('is_visible', true)->orderBy('sort_order')->get();
         }
 
@@ -194,18 +167,16 @@ class PageController extends Controller
             default => $service?->packages ?? collect(),
         };
 
-        $this->registerServiceSeo($slug, $service, $offerPackages, collect([$weddingFaqs, $promFaqs, $baptismFaqs])->first(fn ($c) => $c->isNotEmpty(), collect()));
+        $this->registerServiceSeo($slug, $service, $offerPackages, $faqs);
 
         return view($slug, [
             'service' => $service,
             'portfolioItems' => $portfolioItems,
+            'faqs' => $faqs,
             'weddingGalleries' => $weddingGalleries,
-            'weddingFaqs' => $weddingFaqs,
             'baptismGalleries' => $baptismGalleries,
             'promPortfolioPhotos' => $promPortfolioPhotos,
-            'promFaqs' => $promFaqs,
             'promPackages' => $promPackages,
-            'baptismFaqs' => $baptismFaqs,
             'commercialPhotos' => $commercialPhotos,
             'portraitPortfolioPhotos' => $portraitPortfolioPhotos,
             'eventPortfolioPhotos' => $eventPortfolioPhotos,

@@ -645,34 +645,7 @@
         </div>
     </section>
 
-    @if(isset($weddingFaqs) && $weddingFaqs->isNotEmpty())
-    <!-- FAQ -->
-    <section class="py-5 bg-white">
-        <div class="container">
-            <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="weddingFaqAccordion">
-                        @foreach($weddingFaqs as $i => $faq)
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#wfaq{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="wfaq{{ $faq->id }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#weddingFaqAccordion">
-                                <div class="accordion-body text-muted">
-                                    {{ $faq->answer }}
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    @endif
+    @include('partials.faq-section')
 
     <!-- Validation Modal -->
     <div class="modal fade" id="validationModal" tabindex="-1" aria-hidden="true">

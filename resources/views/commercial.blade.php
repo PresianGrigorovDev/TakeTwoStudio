@@ -162,42 +162,7 @@
         </div>
     </section>
 
-    @php
-    $commercialFaqs = [
-        ['q' => 'Каква е цената за продуктова фотография?', 'a' => 'Цената зависи от броя продукти, вида обработка и специфичните изисквания на проекта. Изпратете ни запитване с детайли и ще изготвим индивидуална оферта за вас.'],
-        ['q' => 'Правите ли рекламни видеа за социалните мрежи?', 'a' => 'Да, създаваме кратко и динамично видео съдържание, оптимизирано за Instagram, Facebook, TikTok и YouTube. Работим с дрон, студийно осветление и модерна постпродукция.'],
-        ['q' => 'Снимате ли хотели, ресторанти и имоти?', 'a' => 'Да, предлагаме интериорна и екстериорна фотография за хотели, ресторанти, фитнес зали и имоти. Дроните ни добавят въздушна перспектива, която се откроява.'],
-        ['q' => 'Работите ли с малък и среден бизнес?', 'a' => 'Разбира се! Работим с бизнеси от всякакъв мащаб — от малки онлайн магазини до корпоративни компании. Всеки проект получава индивидуално внимание и подход.'],
-    ];
-    app(\App\Support\Seo\Seo::class)->setFaqs($commercialFaqs);
-    @endphp
-
-    <!-- FAQ -->
-    <section class="py-5 bg-white">
-        <div class="container">
-            <h2 class="text-center mb-5">Често Задавани Въпроси</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="commercialFaqAccordion">
-                        @foreach($commercialFaqs as $i => $faq)
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#cfaq{{ $i }}">
-                                    {{ $faq['q'] }}
-                                </button>
-                            </h2>
-                            <div id="cfaq{{ $i }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}" data-bs-parent="#commercialFaqAccordion">
-                                <div class="accordion-body text-muted">
-                                    {{ $faq['a'] }}
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('partials.faq-section')
 
     <!-- Inquiry Form -->
     <section class="py-5 bg-light" id="contact">
