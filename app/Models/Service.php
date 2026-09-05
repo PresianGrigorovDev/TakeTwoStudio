@@ -20,6 +20,10 @@ class Service extends Model
     protected static function booted(): void
     {
         static::saved(function (Service $service) {
+            if ($service->slug && \App\Support\Seo\ServiceCatalog::has($service->slug)) {
+                \App\Support\Seo\IndexNow::submitLater([url($service->slug), url('/')]);
+            }
+
             if ($service->wasChanged('hero_image') && ! empty($service->hero_image)) {
                 ImageOptimizer::optimize('public', $service->hero_image);
             }

@@ -38,6 +38,12 @@ class BlogPost extends Model
 
     protected static function booted(): void
     {
+        static::saved(function (BlogPost $post) {
+            if ($post->is_published && $post->published_at && $post->published_at->isPast()) {
+                \App\Support\Seo\IndexNow::submitLater([route('blog.show', $post->slug), route('blog.index')]);
+            }
+        });
+
         static::saving(function (BlogPost $post) {
             if (empty($post->slug)) {
                 $post->slug = Str::slug($post->title);

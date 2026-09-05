@@ -43,4 +43,9 @@ return [
         'measurement_id' => env('GA_MEASUREMENT_ID'),
     ],
 
+    'indexnow' => [
+        // https://www.bing.com/indexnow -> generate a key, put it in INDEXNOW_KEY; the key file is served at /{key}.txt
+        'key' => env('INDEXNOW_KEY'),
+    ],
+
 ];

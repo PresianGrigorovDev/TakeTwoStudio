@@ -27,6 +27,14 @@ Route::get('/blog/category/{slug}', [App\Http\Controllers\BlogController::class,
 Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/sitemap-pages.xml', [App\Http\Controllers\SitemapController::class, 'pages']);
+Route::get('/sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 'blog']);
+Route::get('/sitemap-images.xml', [App\Http\Controllers\SitemapController::class, 'images']);
+
+// IndexNow key verification file (Bing). Only exists when INDEXNOW_KEY is configured.
+if ($indexNowKey = \App\Support\Seo\IndexNow::key()) {
+    Route::get('/'.$indexNowKey.'.txt', fn () => response($indexNowKey, 200, ['Content-Type' => 'text/plain']));
+}
 
 Route::get('/llms.txt', [App\Http\Controllers\LLMController::class, 'index']);
 Route::get('/llms-full.txt', [App\Http\Controllers\LLMController::class, 'full']);

@@ -19,6 +19,18 @@ class Faq extends Model
         'is_visible' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        $ping = function (Faq $faq) {
+            if ($faq->page_slug && \App\Support\Seo\ServiceCatalog::has($faq->page_slug)) {
+                \App\Support\Seo\IndexNow::submitLater([url($faq->page_slug)]);
+            }
+        };
+
+        static::saved($ping);
+        static::deleted($ping);
+    }
+
     public const PAGES = [
         'general' => 'Общи',
         'weddings' => 'Сватби',

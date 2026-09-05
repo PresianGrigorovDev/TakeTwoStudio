@@ -33,7 +33,7 @@ class LLMController extends Controller
         return response()->view('llms.index', compact(
             'siteName', 'tagline', 'phone', 'email', 'address', 
             'instagram', 'facebook', 'tiktok'
-        ))->header('Content-Type', 'text/plain; charset=UTF-8');
+        ))->header('Content-Type', 'text/plain; charset=UTF-8')->header('Cache-Control', 'public, max-age=3600');
     }
 
     public function full()
@@ -83,6 +83,6 @@ class LLMController extends Controller
             'weddingsPackages', 'baptismPackages', 'promPackages', 'graduationPackages',
             'familyPackages', 'portraitPackages', 'automotivePackages', 'architecturalPackages',
             'eventPackages', 'weddingFaqs', 'promFaqs', 'graduationFaqs', 'baptismFaqs', 'commercialFaqs'
-        ))->header('Content-Type', 'text/plain; charset=UTF-8');
+        ))->header('Content-Type', 'text/plain; charset=UTF-8')->header('Cache-Control', 'public, max-age=3600');
     }
 }
