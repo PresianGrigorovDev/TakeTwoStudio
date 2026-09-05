@@ -772,11 +772,21 @@ B2B: 16) Кой прави продуктова фотография за онл
    INDEXNOW_KEY=<ключът от Bing Webmaster Tools>
    ```
 3. **Push** `laratake` → GitHub.
-4. **Сървър (SSH или cPanel Terminal), един ред** — root `.htaccess` на сървъра е untracked и ще блокира pull-а:
+4. **Сървър (SSH или cPanel Terminal).** cPanel „Update from Remote“ ще отказва merge-а, докато в `public_html` има локални разлики. Реалният случай от 2026-09-05: `public/check_video_path.php` беше изтрит на сървъра (самоизтриващ се stub, а commit-ът също го маха) и `public/css/img/header.webp` беше untracked файл, който репото вече доставя. Почисти и дръпни в една сесия, с maintenance mode, защото между pull и migrate страниците с услуги дават 500:
    ```bash
-   cd ~/public_html && cp .htaccess ~/htaccess.pre-fix.bak && rm .htaccess && git pull --ff-only origin laratake && php artisan optimize:clear && php artisan migrate --force && php artisan optimize && php artisan seo:indexnow --all
+   cd ~/public_html
+   git status --porcelain                                     # виж какво е различно
+   git checkout -- public/check_video_path.php                # върни stub-а, merge-ът ще го изтрие
+   mv public/css/img/header.webp ~/header.webp.server.bak     # untracked файл, репото го доставя
+   [ -f .htaccess ] && ! git ls-files --error-unmatch .htaccess >/dev/null 2>&1 && cp .htaccess ~/htaccess.pre-fix.bak && rm .htaccess   # само ако има ръчен untracked root .htaccess
+   git status --porcelain                                     # трябва да е празно (или само ?? файлове, които merge-ът не пипа)
+   php artisan down --retry=30 \
+     && git pull --ff-only origin laratake \
+     && php artisan optimize:clear && php artisan migrate --force && php artisan optimize \
+     && php artisan up \
+     && php artisan seo:indexnow --all
    ```
-   (Алтернатива без SSH: File Manager → преименувай `.htaccess` → cPanel Git → „Update from Remote“ → „Deploy HEAD Commit“, което пуска `.cpanel.yml`.)
+   Ако `git pull` изведе нови „would be overwritten“ файлове, повтори за всеки: tracked с промяна → `git checkout -- <файл>`; untracked → `mv <файл> ~/<файл>.bak`. Ако pull-ът мине, а някоя artisan команда падне: `php artisan up` веднага, после виж грешката.
 5. **Провери** матрицата от Част C.1 (curl) + `curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md` → 403.
 6. **Изтрий на сървъра** `storage/app/public/Archive.zip` (97 MB) — не е в git.
 7. **Filament:** Настройки → попълни `site_youtube` и `site_google_maps`; Услуги → `video_title`/`video_uploaded_at` за showreel-ите; Блог → автор (член на екипа) на постовете; Често задавани въпроси → добави FAQ за family/portrait/automotive/architectural/events.
