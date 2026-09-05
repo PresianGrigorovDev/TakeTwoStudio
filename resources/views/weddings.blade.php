@@ -8,8 +8,7 @@
 @section('og_image', asset('css/img/Сватба.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/weddings.css') }}">
 @endpush
 
@@ -50,26 +49,29 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <!-- INTRO -->
-    <div class="desc desc1 pt-4 pb-0">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-lg-10 m-auto text-center">
-                    <h2 class="pt-3 h3 mb-4">
-                        <b>Вашата сватба е един от<br> най-важните дни в живота ви</b>
-                    </h2>
-                    <div class="section-divider"></div>
-                    <p class="py-2">
-                        В <b>Take Two Studio 1603</b> предлагаме професионална сватбена фотография и
-                        видеозаснемане, които комбинират креативност, стил и персонално отношение към всяка двойка.
-                        <br><br>
-                        От първия танц до най-малкия детайл – ние ще съхраним вашите емоции, за да ги преживявате отново
-                        и отново.
-                    </p>
-                </div>
+    <!-- INTRO / answer capsule -->
+    <section class="pt-4 pb-5 container">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                @php
+                    $weddingText = \App\Support\PageText::for('weddings');
+                    $weddingMin = $service?->packages?->min('price_eur');
+                    $weddingVenues = $weddingGalleries->pluck('venue')->filter()->unique()->take(4)->implode(', ');
+                    $weddingCapsuleDefault = 'Take Two Studio 1603 е сватбен фотограф и видеооператор във Варна: един екип за снимки и 4K сватбен филм, дрон кадри при подходящо време и доставка в онлайн галерия.'
+                        . ($weddingMin ? ' Пакетите започват от ' . number_format($weddingMin, 0) . ' €, а комбинациите се изчисляват в калкулатора по-долу.' : ' Цените и комбинациите се изчисляват в калкулатора по-долу.')
+                        . ($weddingVenues ? ' Снимали сме сватби в ' . $weddingVenues . ' и по цялото Северно Черноморие.' : ' Снимаме във Варна, курортите около нея и по цялото Северно Черноморие.');
+                @endphp
+                <h2 class="h3 mb-3 text-center">{{ $weddingText->get('intro', 'title', 'Сватбен фотограф и видео във Варна от един екип') }}</h2>
+                <div class="section-divider"></div>
+                <p class="lead answer-capsule text-center">{{ $weddingText->get('intro', 'capsule', $weddingCapsuleDefault) }}</p>
+                <p class="text-center small text-muted mb-0">
+                    <a href="{{ url('/ceni#svatbi') }}">Всички сватбени цени</a> &bull;
+                    <a href="#portfolio">Реални сватби, които сме заснели</a> &bull;
+                    <a href="#calculator">Сватбен калкулатор</a>
+                </p>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- SERVICES -->
     <div class="desc desc2 py-5">
@@ -98,7 +100,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-lg-6 m-auto">
-                    <img src="{{ asset('css/img/Сватба.jpg') }}" class="w-100 rounded shadow" alt="Сватбен момент">
+                    <img src="{{ asset('css/img/Сватба.jpg') }}" class="w-100 rounded shadow" alt="Сватбен момент" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -148,7 +150,7 @@
                     Сватбеният ден е изпълнен с неподправени емоции и магия. Вижте нашето кратко видео, което показва нашия подход, динамика и стил на заснемане на терен.
                 </p>
                 <div class="video-cover-card mx-auto position-relative rounded shadow-lg overflow-hidden" style="max-width: 800px; aspect-ratio: 16/9;">
-                    <img src="{{ !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : asset('css/img/best-wedding-cover.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Видео превю">
+                    <img src="{{ !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : asset('css/img/best-wedding-cover.jpg') }}" class="w-100 h-100 object-fit-cover" alt="Видео превю" loading="lazy" decoding="async">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0, 0, 0, 0.45);">
                         <a href="{{ $service->video_url }}" class="glightbox video-play-btn-large">
                             <span class="play-btn-ring"></span>
@@ -201,12 +203,12 @@
                                             <div class="carousel-inner">
                                                 <!-- Cover Image first -->
                                                 <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Сватбена снимка на {{ $gallery->title }} - Take Two Studio">
+                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Сватбена снимка на {{ $gallery->title }} - Take Two Studio" loading="lazy" decoding="async">
                                                 </div>
                                                 <!-- Rest of the photos -->
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Сватбена фотография от сватбата на {{ $gallery->title }} - сватбен фотограф Варна">
+                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Сватбена фотография от сватбата на {{ $gallery->title }} - сватбен фотограф Варна" loading="lazy" decoding="async">
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -224,13 +226,13 @@
                                                 <img src="{{ asset('storage/' . $gallery->cover_image) }}" 
                                                     style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" 
                                                     class="gallery-thumbnail hover-border"
-                                                    data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0">
+                                                    data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0" loading="lazy" decoding="async">
                                                 
                                                 @foreach($gallery->photos as $index => $photo)
                                                 <img src="{{ asset('storage/' . $photo->image_path) }}" 
                                                     style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" 
                                                     class="gallery-thumbnail hover-border"
-                                                    data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}">
+                                                    data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" loading="lazy" decoding="async">
                                                 @endforeach
                                         </div>
 
@@ -645,7 +647,7 @@
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
     <script src="{{ asset('js/calculators/wedding.js') }}"></script>
     <script>
         const lightbox = GLightbox({

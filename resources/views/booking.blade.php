@@ -5,7 +5,6 @@
 @section('meta_keywords', 'резервация фотограф варна, запази дата сватба, резервация фотосесия, Take Two Studio')
 
 @push('styles')
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/booking.css') }}">
 @endpush
 

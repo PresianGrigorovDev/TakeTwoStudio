@@ -8,8 +8,7 @@
 @section('og_image', asset('css/img/Edited_IMG_9630.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
 
@@ -124,11 +123,11 @@
                                         <div id="carouselGallery{{ $gallery->id }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
-                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Интериорна снимка на {{ $gallery->title }} - Take Two Studio">
+                                                    <img src="{{ asset('storage/' . $gallery->cover_image) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Интериорна снимка на {{ $gallery->title }} - Take Two Studio" loading="lazy" decoding="async">
                                                 </div>
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Архитектурна фотография Варна - {{ $gallery->title }} - интериорен фотограф">
+                                                    <img src="{{ asset('storage/' . $photo->image_path) }}" class="d-block w-100 object-fit-contain" style="height: 65vh; background: #000;" alt="Архитектурна фотография Варна - {{ $gallery->title }} - интериорен фотограф" loading="lazy" decoding="async">
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -140,9 +139,9 @@
                                             </button>
                                         </div>
                                         <div class="d-flex overflow-auto p-3 custom-scrollbar" style="background: #1a1a1a; gap: 10px;">
-                                            <img src="{{ asset('storage/' . $gallery->cover_image) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0">
+                                            <img src="{{ asset('storage/' . $gallery->cover_image) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0" loading="lazy" decoding="async">
                                             @foreach($gallery->photos as $index => $photo)
-                                            <img src="{{ asset('storage/' . $photo->image_path) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}">
+                                            <img src="{{ asset('storage/' . $photo->image_path) }}" style="height: 70px; width: 100px; object-fit: cover; cursor: pointer; border-radius: 4px; border: 2px solid transparent;" class="gallery-thumbnail hover-border" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" loading="lazy" decoding="async">
                                             @endforeach
                                         </div>
                                     </div>
@@ -315,8 +314,8 @@
             <div class="row g-4">
                 <div class="col-lg-12">
                     <div class="map-container" style="height: 400px; border-radius: 4px; overflow: hidden; border: 1px solid #eee;">
-                        <iframe src="https://maps.google.com/maps?q=Take+Two+Studio+1603+Varna&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
+                            @include('partials.map-embed')
+</div>
                 </div>
             </div>
         </div>
@@ -325,7 +324,7 @@
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
     <script>
         const lightbox = GLightbox({
             selector: '.glightbox'

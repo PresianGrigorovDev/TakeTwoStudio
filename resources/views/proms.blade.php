@@ -8,8 +8,7 @@
 @section('og_image', asset('css/img/Бал.jpeg'))
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/proms.css') }}">
 @endpush
 
@@ -76,7 +75,7 @@
                     <p><b>Албуми:</b> Класически или персонализирани фотокниги - запази спомените завинаги.</p>
                 </div>
                 <div class="col-lg-6">
-                    <img src="{{ asset('css/img/prom.jpg') }}" class="w-100 rounded shadow-sm" alt="Абитуриентска Фотосесия">
+                    <img src="{{ asset('css/img/prom.jpg') }}" class="w-100 rounded shadow-sm" alt="Абитуриентска Фотосесия" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -369,7 +368,7 @@
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
     <script src="{{ asset('js/calculators/prom.js') }}"></script>
     <script>
         const lightbox = GLightbox({

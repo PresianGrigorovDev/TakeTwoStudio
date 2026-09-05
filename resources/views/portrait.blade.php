@@ -8,8 +8,7 @@
 @section('og_image', asset('css/img/about.webp'))
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/proms.css') }}">
     <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
 @endpush
@@ -134,7 +133,7 @@
 
 
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+        <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
         <script src="{{ asset('js/calculators/generic.js') }}"></script>
         <script>
             const lightbox = GLightbox({
@@ -314,8 +313,8 @@
             <div class="row g-4">
                 <div class="col-lg-12">
                     <div class="map-container" style="height: 400px; border-radius: 4px; overflow: hidden; border: 1px solid #eee;">
-                        <iframe src="https://maps.google.com/maps?q=Take+Two+Studio+1603+Varna&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
+                            @include('partials.map-embed')
+</div>
                 </div>
             </div>
         </div>

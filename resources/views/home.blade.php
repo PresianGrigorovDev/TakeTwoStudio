@@ -251,11 +251,7 @@
                     </form>
                 </div>
                 <div class="col-lg-6">
-                    <div class="map-container">
-                        <iframe
-                            src="https://maps.google.com/maps?q=Take+Two+Studio+1603+Varna&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                            allowfullscreen="" loading="lazy"></iframe>
-                    </div>
+                    @include('partials.map-embed')
                 </div>
             </div>
         </div>
@@ -264,7 +260,7 @@
     <!-- Modals -->
     <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
         <span class="position-absolute top-0 end-0 m-4 text-white fs-1 cursor-pointer">×</span>
-        <img id="lightbox-img" src="" style="max-height: 90vh; max-width: 90vw;">
+        <img id="lightbox-img" src="" style="max-height: 90vh; max-width: 90vw;" loading="lazy" decoding="async">
     </div>
 
     @foreach($teamMembers as $member)

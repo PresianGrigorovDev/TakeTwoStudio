@@ -41,16 +41,15 @@
     <meta name="geo.position" content="43.21405;27.914733">
     <meta name="ICBM" content="43.21405, 27.914733">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    
+    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
     @yield('preload')
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- All CSS/JS/fonts are self-hosted: no third-party origins before the visitor consents to anything. --}}
+    <link href="{{ asset('vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fontawesome/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('fonts/montserrat/montserrat.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('css/img/favicon_io/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('css/img/favicon_io/favicon-32x32.png') }}">
@@ -98,7 +97,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                                 @php
-                                $portfolioCategories = \App\Models\PortfolioCategory::where('is_visible', true)->get();
+                                $portfolioCategories = \App\Models\PortfolioCategory::visibleCached();
                                     foreach ($portfolioCategories as $portfolioCategory)
                                        if($portfolioCategory->is_visible)
                                             echo '<li><a class="dropdown-item" href="' . url($portfolioCategory->slug) . '"><i class="fas fa-' . $portfolioCategory->icon . '"></i> ' . $portfolioCategory->name_bg . '</a></li>';
@@ -134,7 +133,7 @@
 
                     <ul>
                         @php
-                            $portfolioCategories = \App\Models\PortfolioCategory::where('is_visible', true)->get();
+                            $portfolioCategories = \App\Models\PortfolioCategory::visibleCached();
                             foreach ($portfolioCategories as $category) {
                                 echo '<li><a href="' . url($category->slug) . '">' . $category->name_bg . '</a></li>';
                             }
@@ -189,8 +188,8 @@
     @include('partials.mobile-sticky-cta')
     @include('partials.quick-lead-modal')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <script src="{{ asset('vendor/bootstrap/bootstrap.bundle.min.js') }}" defer></script>
+    <script src="{{ asset('vendor/aos/aos.js') }}" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             setTimeout(function () {

@@ -65,9 +65,7 @@
                     </form>
                 </div>
                 <div class="col-lg-6">
-                    <div class="map-container">
-                        <iframe src="https://maps.google.com/maps?q=Take+Two+Studio+1603+Varna&t=&z=15&ie=UTF8&iwloc=&output=embed" title="Take Two Studio 1603 на картата" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
+                    @include('partials.map-embed')
                     <p class="small text-muted mt-3 mb-0">{{ $text->get('info', 'note', 'Предпочитате календар? Изберете свободна дата директно от страницата за резервация.') }} <a href="{{ url('/booking') }}">Запази дата</a></p>
                 </div>
             </div>

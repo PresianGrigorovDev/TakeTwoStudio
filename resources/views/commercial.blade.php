@@ -8,8 +8,7 @@
 @section('og_image', asset('css/img/реклама.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/commercial.css') }}">
 @endpush
 
@@ -38,20 +37,35 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <!-- SEO Intro -->
-    <section class="py-5 text-center container">
+    <!-- INTRO / answer capsule -->
+    <section class="pt-4 pb-5 container">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <h3 class="mb-4 h4 text-muted fw-normal lh-base">
-                    В дигиталната ера визуалното съдържание е лицето на вашия бизнес.
-                </h3>
+            <div class="col-lg-9">
+                @php $commercialText = \App\Support\PageText::for('commercial'); @endphp
+                <h2 class="h3 mb-3 text-center">{{ $commercialText->get('intro', 'title', 'Рекламна, продуктова и бизнес фотография и видео във Варна') }}</h2>
                 <div class="section-divider"></div>
-                <p class="text-muted mb-4">
-                    В <b>Take Two Studio 1603</b> създаваме висококачествено фото и видео съдържание за брандове, които
-                    искат да се отличат.
-                </p>
+                <p class="lead answer-capsule text-center">{{ $commercialText->get('intro', 'capsule', 'Take Two Studio 1603 прави рекламна, продуктова и бизнес фотография и видео във Варна: продуктови снимки за онлайн магазини, интериор и хотели, автомобили, фирмени събития и кратки рекламни видеа за социалните мрежи, с дрон и 4K. Работим по бриф с ясни срокове и фактура, а за по-големи проекти изготвяме индивидуална оферта.') }}</p>
+                <ul class="audience-list">
+                    <li><a href="{{ url('/commercial#services') }}">Онлайн магазини и брандове</a></li>
+                    <li><a href="{{ url('/architectural') }}">Хотели, ресторанти и имоти</a></li>
+                    <li><a href="{{ url('/automotive') }}">Автокъщи и автомобили</a></li>
+                    <li><a href="{{ url('/events') }}">Фирмени събития и конференции</a></li>
+                    <li><a href="{{ url('/ceni#biznes') }}">Цени за бизнес клиенти</a></li>
+                </ul>
             </div>
         </div>
+        @if(isset($partners) && $partners->isNotEmpty())
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-10 text-center">
+                    <p class="text-muted text-uppercase small mb-3 letter-spaced">Клиенти и партньори</p>
+                    <div class="client-logos">
+                        @foreach($partners as $partner)
+                            <img src="{{ str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="client-logo" loading="lazy" decoding="async" height="48">
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </section>
 
     <!-- Services Grid -->
@@ -231,7 +245,7 @@
 
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
     <script src="{{ asset('js/commercial.js') }}"></script>
     <script>
         const lightbox = GLightbox({

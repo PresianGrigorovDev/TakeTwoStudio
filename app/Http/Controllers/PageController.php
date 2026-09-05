@@ -122,8 +122,10 @@ class PageController extends Controller
         }
 
         $commercialPhotos = collect();
+        $partners = collect();
         if ($slug === 'commercial') {
             $commercialPhotos = \App\Models\CommercialPortfolioPhoto::where('is_visible', true)->orderBy('sort_order')->get();
+            $partners = \App\Models\Partner::orderBy('display_order')->get();
         }
 
         $portraitPortfolioPhotos = collect();
@@ -178,6 +180,7 @@ class PageController extends Controller
             'promPortfolioPhotos' => $promPortfolioPhotos,
             'promPackages' => $promPackages,
             'commercialPhotos' => $commercialPhotos,
+            'partners' => $partners,
             'portraitPortfolioPhotos' => $portraitPortfolioPhotos,
             'eventPortfolioPhotos' => $eventPortfolioPhotos,
             'galleries' => $galleries,
