@@ -476,23 +476,23 @@ class LegacyDataSeeder extends Seeder
         \App\Models\PageContent::create(['page_slug' => 'index', 'section_slug' => 'footer_seo', 'field_key' => 'content', 'content_bg' => 'Take Two Studio 1603 е вашето студио за професионални фото и видео услуги. Като водещи фотографи във Варна, ние предлагаме цялостно заснемане на сватби, кинематографични сватбени филми, заснемане на семейни празници и бизнес събития.']);
 
         // Weddings Page
-        \App\Models\PageContent::create(['page_slug' => 'weddings', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Вашият Сватбен Ден']);
+        \App\Models\PageContent::create(['page_slug' => 'weddings', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Сватбен фотограф и видеозаснемане във Варна']);
         \App\Models\PageContent::create(['page_slug' => 'weddings', 'section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Изкуството да улавяме любовта']);
         \App\Models\PageContent::create(['page_slug' => 'weddings', 'section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Сватбен Калкулатор']);
 
         // Commercial Page
-        \App\Models\PageContent::create(['page_slug' => 'commercial', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Реклама и Бизнес']);
+        \App\Models\PageContent::create(['page_slug' => 'commercial', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Рекламна, продуктова и бизнес фотография във Варна']);
         \App\Models\PageContent::create(['page_slug' => 'commercial', 'section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Визуална идентичност, която продава']);
         \App\Models\PageContent::create(['page_slug' => 'commercial', 'section_slug' => 'intro', 'field_key' => 'content', 'content_bg' => 'В дигиталната ера визуалното съдържание е лицето на вашия бизнес. В Take Two Studio 1603 създаваме висококачествено фото и видео съдържание за брандове, които искат да се отличат.']);
         \App\Models\PageContent::create(['page_slug' => 'commercial', 'section_slug' => 'services', 'field_key' => 'title', 'content_bg' => 'Корпоративни Услуги']);
 
         // Baptism Page
-        \App\Models\PageContent::create(['page_slug' => 'baptism', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Свето Кръщение']);
+        \App\Models\PageContent::create(['page_slug' => 'baptism', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Фотограф за кръщене във Варна']);
         \App\Models\PageContent::create(['page_slug' => 'baptism', 'section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Първият важен празник на вашето дете']);
         \App\Models\PageContent::create(['page_slug' => 'baptism', 'section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Калкулатор за Кръщене']);
 
         // Proms Page
-        \App\Models\PageContent::create(['page_slug' => 'proms', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Абитуриентски Балове']);
+        \App\Models\PageContent::create(['page_slug' => 'proms', 'section_slug' => 'hero', 'field_key' => 'title', 'content_bg' => 'Фотограф и видео за абитуриентски бал във Варна']);
         \App\Models\PageContent::create(['page_slug' => 'proms', 'section_slug' => 'hero', 'field_key' => 'subtitle', 'content_bg' => 'Енергията на новото начало']);
         \App\Models\PageContent::create(['page_slug' => 'proms', 'section_slug' => 'calculator', 'field_key' => 'title', 'content_bg' => 'Абитуриентски Калкулатор']);
 

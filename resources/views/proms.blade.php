@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Фотограф за Абитуриентски Бал Варна | Фото и Видеозаснемане | Take Two Studio 1603')
-@section('meta_description', 'Търсите фотограф за абитуриентски бал във Варна? Take Two Studio предлага индивидуални и пред-бални фотосесии, 4K видеозаснемане, дрон и изгодни пакети с онлайн калкулатор.')
+@section('title', 'Фотограф за абитуриентски бал Варна 2027 | Take Two Studio')
+@section('meta_description', 'Фото + 4K видео и дрон за целия клас на фиксирана цена на ученик. Канене, изпращане, бал и фотосесии във Варна и региона. Запази дата за бал 2027.')
 @section('meta_keywords', 'фотограф за абитуриентски бал варна, фотограф за бал варна цени, абитуриентска фотосесия варна, изпращане абитуриент, видеозаснемане бал, пред-бална фотосесия варна, Take Two Studio 1603')
-@section('og_title', 'Фотограф за Абитуриентски Бал Варна | Take Two Studio 1603')
+@section('og_title', 'Фотограф за абитуриентски бал Варна | Take Two Studio 1603')
 @section('og_description', 'Запазете спомените от вашия бал с кинематографично качество! Индивидуални фотосесии, видеозаснемане и изпращане на абитуриенти във Варна.')
 @section('og_image', asset('css/img/Бал.jpeg'))
 
@@ -24,7 +24,7 @@
 {{-- Get page content --}}
 @php
     $pageContent = \App\Models\PageContent::where('page_slug', 'proms')->get();
-    $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Направи бала незабравим';
+    $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Фотограф и видео за абитуриентски бал във Варна';
     $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Създаваме вечни спомени от вашия специален ден';
     $calcTitle = $pageContent->where('section_slug', 'calculator')->where('field_key', 'title')->first()?->content_bg ?? 'Абитуриентски Калкулатор';
 @endphp

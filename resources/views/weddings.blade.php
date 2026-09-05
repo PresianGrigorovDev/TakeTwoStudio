@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Сватбен Фотограф и Видеозаснемане Варна | Take Two Studio 1603')
-@section('meta_description', 'Търсите сватбен фотограф и видеозаснемане във Варна? Кинематографични сватбени филми с 4K качество, дрон кадри и авторска фотография. Изчислете цена с калкулатора!')
+@section('title', 'Сватбен фотограф и видео Варна – цени 2027 | Take Two Studio')
+@section('meta_description', 'Сватбен фотограф и видеооператор във Варна – един екип за снимки и 4K филм с дрон. Прозрачни цени, онлайн калкулатор и свободни дати за 2027.')
 @section('meta_keywords', 'сватбен фотограф варна, сватбено видеозаснемане варна, сватбен калкулатор варна, сватбен фотограф варна цени, дрон за сватба, Take Two Studio 1603')
-@section('og_title', 'Сватбен Фотограф и Видеозаснемане Варна | Take Two Studio 1603')
+@section('og_title', 'Сватбен фотограф и видеозаснемане Варна | Take Two Studio 1603')
 @section('og_description', 'Професионално заснемане на сватби във Варна и цяла България. 4K видео, дрон и авторска фотография. Вижте нашите пакети!')
 @section('og_image', asset('css/img/Сватба.jpg'))
 
@@ -25,7 +25,7 @@
     @php
 
         $pageContent = \App\Models\PageContent::where('page_slug', 'weddings')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Сватбена фотография';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Сватбен фотограф и видеозаснемане във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Създаваме вечни спомени от вашия специален ден';
         $calcTitle = $pageContent->where('section_slug', 'calculator')->where('field_key', 'title')->first()?->content_bg ?? 'Сватбен Калкулатор';
     @endphp

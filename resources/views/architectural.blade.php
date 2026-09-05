@@ -23,7 +23,7 @@
 
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'architectural')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Архитектурна Фотография';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Архитектурна и интериорна фотография във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Заснемане на сгради, интериори и екстериори с перфектна композиция';
     @endphp
 

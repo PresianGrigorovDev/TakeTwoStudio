@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Фотограф за Кръщене Варна | Видеозаснемане и Ритуал | Take Two Studio 1603')
-@section('meta_description', 'Търсите фотограф за кръщене във Варна? Професионално заснемане на ритуала в църква и празненството. Емоционални кадри на детето и семейството. Вижте портфолиото ни!')
+@section('title', 'Фотограф за кръщене Варна | фото и видео | Take Two Studio')
+@section('meta_description', 'Фотограф и видеооператор за кръщене във Варна: ритуалът в църквата, семейна фотосесия и празненството. Емоционални кадри на детето. Вижте пакетите.')
 @section('meta_keywords', 'фотограф за кръщене варна, заснемане на кръщене, видео за кръщене, снимки в църква, детска фотосесия, кръщене варна цени, Take Two Studio')
-@section('og_title', 'Свето Кръщение - Запазете спомена завинаги | Take Two Studio')
+@section('og_title', 'Фотограф за кръщене Варна | Take Two Studio 1603')
 @section('og_description', 'Най-важният ден за вашето дете заслужава най-добрите снимки. Разгледайте нашите фотосесии от кръщенета във Варна.')
 @section('og_image', asset('css/img/krustene.jpg'))
 
@@ -24,7 +24,7 @@
     {{-- Get page content --}}
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'baptism')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Свето Кръщение';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Фотограф за кръщене във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Запечатайте първия празник на вашето дете';
         $calculator = $pageContent->where('section_slug', 'calculator')->first()?->content_bg ?? 'Калкулатор Свето Кръщение';
     @endphp

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Рекламна и Продуктова Фотография Варна | Корпоративно Видео | Take Two Studio 1603')
-@section('meta_description', 'Увеличете продажбите си с професионална рекламна фотография и видеозаснемане. Продуктова фотография за онлайн магазини, корпоративни събития, дрон услуги и съдържание за социални мрежи във Варна.')
+@section('title', 'Продуктова и рекламна фотография Варна | Take Two Studio')
+@section('meta_description', 'Продуктова фотография за онлайн магазини, рекламни видеа, дрон и корпоративно съдържание във Варна. Ясен процес, срокове и фактура за бизнеса.')
 @section('meta_keywords', 'продуктова фотография варна, рекламно видео, заснемане на хотел, бизнес портрети, корпоративно събитие, дрон услуги, снимки за онлайн магазин, Take Two Studio')
-@section('og_title', 'Професионално Фото и Видео за Вашия Бизнес | Take Two Studio')
+@section('og_title', 'Продуктова и рекламна фотография Варна | Take Two Studio 1603')
 @section('og_description', 'Качественото визуално съдържание продава. Доверете се на нас за вашата рекламна визия, продуктови кадри и видео презентации.')
 @section('og_image', asset('css/img/реклама.jpg'))
 
@@ -23,7 +23,7 @@
 
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'commercial')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Реклама и Бизнес';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Рекламна, продуктова и бизнес фотография във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Визуална идентичност, която продава';
     @endphp
 

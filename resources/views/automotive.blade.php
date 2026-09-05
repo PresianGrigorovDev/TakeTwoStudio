@@ -23,7 +23,7 @@
 
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'automotive')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Автомобилна Фотография';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Автомобилна фотография във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Заснемане на автомобили с внимание към всеки детайл';
     @endphp
 

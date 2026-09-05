@@ -23,7 +23,7 @@
 
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'family')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Семейна Фотография';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Семеен фотограф във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Запечатайте най-ценните моменти със семейството си';
     @endphp
 

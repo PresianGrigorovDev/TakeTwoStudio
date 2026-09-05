@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Портретен Фотограф Варна | Индивидуална Фотосесия в Студио и на Открито | Take Two Studio 1603')
-@section('meta_description', 'Търсите портретен фотограф във Варна? Артистични портрети за лична марка, LinkedIn, актьорско портфолио или подарък. Професионален ретуш и студийно осветление. Резервирайте сесия!')
+@section('title', 'Портретен фотограф Варна | Take Two Studio 1603')
+@section('meta_description', 'Портретен фотограф във Варна – артистични портрети за лична марка, LinkedIn, актьорско портфолио или подарък. Студийно осветление и ретуш.')
 @section('meta_keywords', 'портретен фотограф варна, портретна фотосесия варна, бизнес портрет, headshot фотография, лична фотосесия, портрет в студио варна, Take Two Studio')
 @section('og_title', 'Портретна Фотография Варна — Разкрийте Своята Уникалност | Take Two Studio')
 @section('og_description', 'Артистични индивидуални портрети за лична марка, социални мрежи или подарък. Професионално студийно осветление и ретуш.')
@@ -24,7 +24,7 @@
 
     @php
         $pageContent = \App\Models\PageContent::where('page_slug', 'portrait')->get();
-        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Портретна Фотография';
+        $heroTitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'title')->first()?->content_bg ?? 'Портретен фотограф във Варна';
         $heroSubtitle = $pageContent->where('section_slug', 'hero')->where('field_key', 'subtitle')->first()?->content_bg ?? 'Артистични портрети, които разкриват вашата уникалност';
     @endphp
 
