@@ -744,7 +744,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 
 ## Изпълнение — статус към 2026-09-05 (Фаза 1+2 готова в кода, чака деплой)
 
-Всичко по-долу е commit-нато локално на `laratake` (10 commit-а след `7b5754d`), 61 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
+Всичко по-долу е commit-нато локално на `laratake` (12 commit-а след `7b5754d`), 63 теста зелени (`php artisan test`). **Нищо още не е деплойнато.**
 
 | Commit | Какво | Покрива |
 |---|---|---|
@@ -757,6 +757,7 @@ B2B: 16) Кой прави продуктова фотография за онл
 | Sitemap + IndexNow | sitemapindex (pages/blog/images) с реален `lastmod`, image sitemap, Cache-Control; IndexNow ping при публикуване + `php artisan seo:indexnow --all` + key файл `/{key}.txt` | C.4.5, B11, D.7.2 |
 | On-page | title ≤ 60, description ≤ 155, H1 „услуга + Варна“, data migration за hero заглавията | B14, B15 |
 | .cpanel.yml | optimize:clear → migrate --force → optimize → indexnow при „Deploy HEAD Commit“ | C.1.6 |
+| Public HTML hygiene | inline `<style>` → `public/css/components.css`, GA само след съгласие (без таг в `<head>`), без CSRF meta, без `/force-login`, без inline handlers | одит „публични ключове“ |
 
 **Не е правено (следващи фази):** новите страници `/ceni`, `/za-nas`, `/kontakti`, `/abiturientski-bal-varna`, пренаписването на `/proms` по „answer capsule“ (D.4/D.5), performance (Vite bundle, `<x-picture>`, WebP деривати — C.5), GPTBot 429 (тикет към хостинга — C.3), timezone `Europe/Sofia` (C.6.1), GBP/Bing Places/цитирания (D.6–D.8 — действия на собственика).
 
