@@ -167,7 +167,7 @@
     @endif
 
     <!-- Section - Wedding Galleries -->
-    <section class="py-5" id="portfolio">
+    <section class="py-5 px-1" id="portfolio">
         <div class="container mt-1">
             <div class="row mb-5">
                 <h2 class="text-center text-uppercase fw-bold">Сватбени Галерии</h2>

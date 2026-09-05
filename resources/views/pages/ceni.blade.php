@@ -14,7 +14,7 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <section class="py-5">
+    <section class="py-5 px-1 px-1">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-9">
@@ -98,7 +98,7 @@
 
     @include('partials.faq-section', ['faqs' => $faqs, 'title' => 'Често задавани въпроси за цените'])
 
-    <section class="py-5 bg-light text-center">
+    <section class="py-5 px-1 bg-light text-center">
         <div class="container">
             <h2 class="mb-3">Искате точна оферта?</h2>
             <div class="section-divider"></div>

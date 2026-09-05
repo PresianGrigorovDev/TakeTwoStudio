@@ -20,7 +20,7 @@
     @include('partials.breadcrumbs')
 
     <!-- CALENDAR -->
-    <section class="py-5">
+    <section class="py-5 px-1">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -55,10 +55,11 @@
                     </div>
 
                     <!-- Booking Form (hidden until date selected, or shown again if a previous submit had errors) -->
-                    <div class="booking-form-wrapper" id="bookingFormWrapper" style="{{ $errors->any() ? '' : 'display:none' }}" data-aos="fade-up">
+                    <div class="booking-form-wrapper" id="bookingFormWrapper"
+                        style="{{ $errors->any() ? '' : 'display:none' }}" data-aos="fade-up">
                         <h3 class="text-center mb-4">Заявка за резервация</h3>
 
-                        @if($errors->any() && (! old('event_date') || ! old('start_time') || ! old('end_time')))
+                        @if($errors->any() && (!old('event_date') || !old('start_time') || !old('end_time')))
                             <div class="alert alert-warning text-center">
                                 Моля, изберете отново дата и часове от календара по-горе.
                             </div>
@@ -81,7 +82,8 @@
                                     <p class="text-muted text-center">Изберете дата от календара</p>
                                 </div>
                                 <div id="selectedTimeDisplay" class="selected-time-display" style="display:none"></div>
-                                <small class="text-muted">Кликнете отново върху часовия диапазон за да изберете наново</small>
+                                <small class="text-muted">Кликнете отново върху часовия диапазон за да изберете
+                                    наново</small>
                             </div>
 
                             <div class="mb-3">
@@ -99,11 +101,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="name" class="form-label">Вашето име *</label>
-                                    <input type="text" name="name" id="name" class="form-control" required value="{{ old('name') }}">
+                                    <input type="text" name="name" id="name" class="form-control" required
+                                        value="{{ old('name') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="phone" class="form-label">Телефон *</label>
-                                    <input type="tel" name="phone" id="phone" class="form-control" required value="{{ old('phone') }}">
+                                    <input type="tel" name="phone" id="phone" class="form-control" required
+                                        value="{{ old('phone') }}">
                                 </div>
                             </div>
 
@@ -114,7 +118,8 @@
 
                             <div class="mb-3">
                                 <label for="message" class="form-label">Съобщение (незадължително)</label>
-                                <textarea name="message" id="message" class="form-control" rows="3">{{ old('message') }}</textarea>
+                                <textarea name="message" id="message" class="form-control"
+                                    rows="3">{{ old('message') }}</textarea>
                             </div>
 
                             @include('partials.gdpr-consent', ['consentId' => 'booking'])
@@ -149,12 +154,12 @@
 @push('scripts')
     <script src="{{ asset('js/booking-calendar.js') }}" defer></script>
     @if(request('service'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var map = {weddings:'Сватба', proms:'Абитуриентски Бал', baptism:'Свето Кръщене', graduation:'Изпращане', commercial:'Реклама и Бизнес'};
-            var val = map['{{ request("service") }}'];
-            if (val) document.getElementById('service_type').value = val;
-        });
-    </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var map = { weddings: 'Сватба', proms: 'Абитуриентски Бал', baptism: 'Свето Кръщене', graduation: 'Изпращане', commercial: 'Реклама и Бизнес' };
+                var val = map['{{ request("service") }}'];
+                if (val) document.getElementById('service_type').value = val;
+            });
+        </script>
     @endif
 @endpush

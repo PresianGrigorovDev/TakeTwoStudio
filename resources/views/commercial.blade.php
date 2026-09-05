@@ -31,7 +31,9 @@
     @endphp
 
     <!-- Header / Hero -->
-    <section class="commercial-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
+    <section class="commercial-hero" @if($heroUrl)
+        style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}"
+    @endif>
         <div class="hero-overlay"></div>
         <div class="hero-title" data-aos="fade-up">
             <h1>{{ $heroTitle }}</h1>
@@ -46,9 +48,13 @@
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 @php $commercialText = \App\Support\PageText::for('commercial'); @endphp
-                <h2 class="h3 mb-3 text-center">{{ $commercialText->get('intro', 'title', 'Рекламна, продуктова и бизнес фотография и видео във Варна') }}</h2>
+                <h2 class="h3 mb-3 text-center">
+                    {{ $commercialText->get('intro', 'title', 'Рекламна, продуктова и бизнес фотография и видео във Варна') }}
+                </h2>
                 <div class="section-divider"></div>
-                <p class="lead answer-capsule text-center">{{ $commercialText->get('intro', 'capsule', 'Take Two Studio 1603 прави рекламна, продуктова и бизнес фотография и видео във Варна: продуктови снимки за онлайн магазини, интериор и хотели, автомобили, фирмени събития и кратки рекламни видеа за социалните мрежи, с дрон и 4K. Работим по бриф с ясни срокове и фактура, а за по-големи проекти изготвяме индивидуална оферта.') }}</p>
+                <p class="lead answer-capsule text-center">
+                    {{ $commercialText->get('intro', 'capsule', 'Take Two Studio 1603 прави рекламна, продуктова и бизнес фотография и видео във Варна: продуктови снимки за онлайн магазини, интериор и хотели, автомобили, фирмени събития и кратки рекламни видеа за социалните мрежи, с дрон и 4K. Работим по бриф с ясни срокове и фактура, а за по-големи проекти изготвяме индивидуална оферта.') }}
+                </p>
                 <ul class="audience-list">
                     <li><a href="{{ url('/commercial#services') }}">Онлайн магазини и брандове</a></li>
                     <li><a href="{{ url('/architectural') }}">Хотели, ресторанти и имоти</a></li>
@@ -121,7 +127,7 @@
     <!-- Filterable Portfolio Gallery -->
     @include('partials.video-showcase-section')
 
-    <section class="py-5 bg-white" id="portfolio">
+    <section class="py-5 px-1 bg-white" id="portfolio">
         <div class="container">
             <h2 class="text-center mb-4">Нашият почерк</h2>
             <div class="section-divider"></div>
@@ -139,18 +145,18 @@
                 @foreach($commercialPhotos as $item)
                     @php
                         $categoryMap = [
-                            'ads'     => 'Рекламна Фотография',
+                            'ads' => 'Рекламна Фотография',
                             'product' => 'Продуктова Фотография',
-                            'imoti'   => 'Интериорна фотография',
-                            'events'  => 'Събития',
-                            'drone'   => 'Въздушни Кадри',
+                            'imoti' => 'Интериорна фотография',
+                            'events' => 'Събития',
+                            'drone' => 'Въздушни Кадри',
                         ];
                         $displayCategory = $categoryMap[$item->sub_category] ?? $item->sub_category;
                     @endphp
                     <div class="masonry-item {{ $item->sub_category }}">
                         <div class="portfolio-item" onclick="openLightbox(this)">
-                            <x-picture :src="str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path)"
-                                class="portfolio-img" alt="{{ $item->alt_text ?? $displayCategory }}" />
+                            <x-picture :src="str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path)" class="portfolio-img"
+                                alt="{{ $item->alt_text ?? $displayCategory }}" />
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
                                     @if($item->alt_text)
@@ -164,9 +170,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <a href="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}" class="glightbox d-none"
-                               data-title="{{ $item->alt_text ?? $displayCategory }}"
-                               data-description="{{ $item->description ?? '' }}"></a>
+                            <a href="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}"
+                                class="glightbox d-none" data-title="{{ $item->alt_text ?? $displayCategory }}"
+                                data-description="{{ $item->description ?? '' }}"></a>
                         </div>
                     </div>
                 @endforeach
@@ -183,7 +189,7 @@
     @include('partials.faq-section')
 
     <!-- Inquiry Form -->
-    <section class="py-5 bg-light" id="contact">
+    <section class="py-5 px-1 bg-light" id="contact">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
@@ -191,7 +197,9 @@
                         @if($service && $service->activePromotion)
                             <div class="alert alert-warning border-0 rounded-0 text-center mb-4 badge-gold">
                                 <i class="fas fa-percentage me-2 animate-pulse"></i>
-                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички стандартни цени за всички запитвания до {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
+                                <strong>ПРОМОЦИЯ:</strong> Спестете {{ $service->activePromotion->discount_percent }}% от всички
+                                стандартни цени за всички запитвания до
+                                {{ $service->activePromotion->expires_at->format('d.m.Y') }}!
                             </div>
                         @endif
                         <h2 class="text-center mb-4">Поискайте Оферта</h2>
@@ -200,11 +208,11 @@
                             предложение за вас.
                         </p>
 
-                    @if(session('success'))
-                        <div class="alert alert-success mb-4 text-center">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                        @if(session('success'))
+                            <div class="alert alert-success mb-4 text-center">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         <form action="{{ url('/submit-order') }}" method="post">
                             @csrf
                             <input type="hidden" name="orderType" value="Commercial">

@@ -86,7 +86,7 @@
     </section>
 
     <!-- WHY US -->
-    <section class="py-5 bg-white" id="why-choose-us">
+    <section class="py-5 px-1 bg-white" id="why-choose-us">
         <div class="container">
             <h2 class="text-center mb-5">Защо да избереш нас?</h2>
             <div class="section-divider start mx-auto mb-5 mt-0"></div>
@@ -126,7 +126,7 @@
     <!-- PORTFOLIO -->
     @include('partials.video-showcase-section')
 
-    <section class="py-5 bg-white" id="portfolio">
+    <section class="py-5 px-1 bg-white" id="portfolio">
         <div class="container">
             <h2 class="text-center mb-5">Нашето Портфолио</h2>
             <div class="section-divider"></div>

@@ -14,7 +14,7 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <section class="py-5">
+    <section class="py-5 px-1 px-1">
         <div class="container">
             <div class="row g-4 justify-content-center text-center mb-4">
                 <div class="col-md-4">

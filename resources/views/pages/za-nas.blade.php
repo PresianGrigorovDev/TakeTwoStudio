@@ -15,7 +15,7 @@
     </section>
     @include('partials.breadcrumbs')
 
-    <section class="py-5 px-1">
+    <section class="py-5 px-1 px-1">
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
@@ -35,7 +35,7 @@
     </section>
 
     @if($teamMembers->isNotEmpty())
-    <section class="py-5 bg-light" id="ekip">
+    <section class="py-5 px-1 bg-light" id="ekip">
         <div class="container">
             <h2 class="text-center mb-3">{{ $text->get('team', 'title', 'Екипът') }}</h2>
             <div class="section-divider"></div>
@@ -61,7 +61,7 @@
     </section>
     @endif
 
-    <section class="py-5">
+    <section class="py-5 px-1">
         <div class="container">
             <div class="row g-5">
                 <div class="col-lg-6">
@@ -86,7 +86,7 @@
         </div>
     </section>
 
-    <section class="py-5 bg-light text-center">
+    <section class="py-5 px-1 bg-light text-center">
         <div class="container">
             <h2 class="mb-3">Да поговорим за вашето събитие</h2>
             <div class="section-divider"></div>

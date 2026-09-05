@@ -43,7 +43,7 @@
     @include('partials.breadcrumbs')
 
     <!-- INTRO -->
-    <section class="py-5 text-center container">
+    <section class="py-5 px-1 text-center container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <h3 class="mb-4 h4 text-muted fw-normal lh-base">
@@ -61,7 +61,7 @@
     </section>
 
     <!-- WHAT WE OFFER -->
-    <section class="py-5 bg-gray-light">
+    <section class="py-5 px-1 bg-gray-light">
         <div class="container">
             <h2 class="text-center mb-5">Видове Портретни Сесии</h2>
             <div class="row g-4">
@@ -100,7 +100,7 @@
     <!-- GALLERY -->
     @include('partials.video-showcase-section')
 
-    <section class="py-5 bg-white" id="portfolio">
+    <section class="py-5 px-1 bg-white" id="portfolio">
         <div class="container mt-1">
             <div class="row mb-5">
                 <h2 class="text-center text-uppercase fw-bold">Портфолио</h2>

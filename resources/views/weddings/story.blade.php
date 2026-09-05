@@ -20,7 +20,8 @@
     <section class="story-hero" @if($gallery->cover_url) style="background-image: url('{{ $gallery->cover_url }}')" @endif>
         <div class="hero-overlay"></div>
         <div class="container position-relative">
-            <p class="story-hero__kicker">Реална сватба{{ $place ? ' · ' . $place : ' · Варна' }}{{ $dateText ? ' · ' . $dateText : '' }}</p>
+            <p class="story-hero__kicker">Реална
+                сватба{{ $place ? ' · ' . $place : ' · Варна' }}{{ $dateText ? ' · ' . $dateText : '' }}</p>
             <h1>Сватбата на {{ $gallery->title }}{{ $place ? ' – ' . $place : ' във Варна' }}</h1>
         </div>
     </section>
@@ -31,7 +32,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-9">
                     <p class="lead answer-capsule">
-                        Сватбата на {{ $gallery->title }}{{ $place ? ' в ' . $place : ' във Варна' }}{{ $dateText ? ', ' . $dateText : '' }}: снимки{{ $videoId ? ' и сватбен филм' : '' }} от Take Two Studio 1603, сватбен фотограф и видеооператор във Варна. Един екип за фото и видео, дрон кадри при подходящо време и доставка в онлайн галерия.
+                        Сватбата на
+                        {{ $gallery->title }}{{ $place ? ' в ' . $place : ' във Варна' }}{{ $dateText ? ', ' . $dateText : '' }}:
+                        снимки{{ $videoId ? ' и сватбен филм' : '' }} от Take Two Studio 1603, сватбен фотограф и
+                        видеооператор във Варна. Един екип за фото и видео, дрон кадри при подходящо време и доставка в
+                        онлайн галерия.
                     </p>
                     @if($gallery->description)
                         <div class="story-text">{!! nl2br(e($gallery->description)) !!}</div>
@@ -49,7 +54,10 @@
                 <div class="row justify-content-center mt-4">
                     <div class="col-lg-9">
                         <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
-                            <iframe src="https://www.youtube-nocookie.com/embed/{{ $videoId }}" title="Сватбен филм: {{ $gallery->title }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe src="https://www.youtube-nocookie.com/embed/{{ $videoId }}"
+                                title="Сватбен филм: {{ $gallery->title }}" loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -59,8 +67,11 @@
                 @foreach($gallery->photos as $index => $photo)
                     @php $url = preg_match('#^https?://#i', $photo->image_path) ? $photo->image_path : asset('storage/' . $photo->image_path); @endphp
                     <div class="col-6 col-md-4">
-                        <a href="{{ $url }}" class="glightbox story-photo" data-gallery="wedding-{{ $gallery->id }}" data-title="Сватбата на {{ $gallery->title }}">
-                            <x-picture :src="$url" alt="Сватбата на {{ $gallery->title }}{{ $place ? ', ' . $place : '' }} – снимка {{ $index + 1 }}, Take Two Studio 1603" class="img-fluid rounded w-100 h-100 object-fit-cover" />
+                        <a href="{{ $url }}" class="glightbox story-photo" data-gallery="wedding-{{ $gallery->id }}"
+                            data-title="Сватбата на {{ $gallery->title }}">
+                            <x-picture :src="$url"
+                                alt="Сватбата на {{ $gallery->title }}{{ $place ? ', ' . $place : '' }} – снимка {{ $index + 1 }}, Take Two Studio 1603"
+                                class="img-fluid rounded w-100 h-100 object-fit-cover" />
                         </a>
                     </div>
                 @endforeach
@@ -68,7 +79,7 @@
         </div>
     </article>
 
-    <section class="py-5 bg-light text-center">
+    <section class="py-5 px-1 bg-light text-center">
         <div class="container">
             <h2 class="mb-3">Планирате сватба{{ $gallery->location ? ' в ' . $gallery->location : ' във Варна' }}?</h2>
             <div class="section-divider"></div>
@@ -80,7 +91,7 @@
     </section>
 
     @if($related->isNotEmpty())
-        <section class="py-5">
+        <section class="py-5 px-1">
             <div class="container">
                 <h2 class="text-center mb-4">Още сватби</h2>
                 <div class="row g-4 justify-content-center">
@@ -89,11 +100,13 @@
                             <a href="{{ $item->url }}" class="text-decoration-none text-dark">
                                 <div class="wedding-gallery-card rounded">
                                     <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm story-related-cover">
-                                        <x-picture :src="$item->cover_url" alt="Сватбата на {{ $item->title }}" class="img-fluid w-100 h-100 object-fit-cover" />
+                                        <x-picture :src="$item->cover_url" alt="Сватбата на {{ $item->title }}"
+                                            class="img-fluid w-100 h-100 object-fit-cover" />
                                     </div>
                                     <div class="text-center mt-3">
                                         <h3 class="h5 fw-bold mb-1">{{ $item->title }}</h3>
-                                        @if($item->place_label)<p class="small text-muted mb-0">{{ $item->place_label }}</p>@endif
+                                        @if($item->place_label)
+                                        <p class="small text-muted mb-0">{{ $item->place_label }}</p>@endif
                                     </div>
                                 </div>
                             </a>

@@ -17,8 +17,9 @@
         <div class="hero-overlay"></div>
         <div class="hero-content" data-aos="fade-up">
             <h1>Фотограф и Видеозаснемане Варна</h1>
-            <span class="hero-subtitle">Сватби, абитуриентски балове, кръщенета, семейни и събитийни фотосесии във Варна и цяла България</span>
-            
+            <span class="hero-subtitle">Сватби, абитуриентски балове, кръщенета, семейни и събитийни фотосесии във Варна и
+                цяла България</span>
+
             <!-- Desktop Buttons -->
             <div class="d-none d-md-flex flex-wrap justify-content-center gap-2 mt-4">
                 <a href="#portfolio" class="btn-custom-full">Портфолио</a>
@@ -28,7 +29,9 @@
             <!-- Mobile Buttons -->
             <div class="d-flex d-md-none flex-wrap justify-content-center gap-2 mt-4">
                 <a href="#portfolio" class="btn-custom-full">Услуги</a>
-                <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#quickLeadModal" style="background: var(--accent, #d4af37); color: #000; font-weight: 700; border: none;">Бърза Оферта</button>
+                <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#quickLeadModal"
+                    style="background: var(--accent, #d4af37); color: #000; font-weight: 700; border: none;">Бърза
+                    Оферта</button>
             </div>
         </div>
     </header>
@@ -61,8 +64,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
                         data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
-                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
-                            alt="{{ $member->name }}" class="team-img falling-item" />
+                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img falling-item" />
                         <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
                         <p class="role-text">{{ $member->role_bg }}</p>
                         <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
@@ -83,19 +85,17 @@
         </div>
         <div class="brands-track">
             @foreach($partners as $partner)
-                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)"
-                    class="brand-logo" alt="{{ $partner->name }}" />
+                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
             @endforeach
 
             <!-- Duplicated for scrolling effect -->
             @foreach($partners as $partner)
-                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)"
-                    class="brand-logo" alt="{{ $partner->name }}" />
+                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
             @endforeach
         </div>
     </section>
 
-    <section class="py-5 bg-white" data-aos="fade-up">
+    <section class="py-5 px-1 bg-white" data-aos="fade-up">
         <div class="container pb-5 text-center">
             <h2 class="mb-3">Как работим</h2>
             <div class="section-divider"></div>
@@ -143,8 +143,8 @@
                         <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
                             <a href="{{ url($category->slug) }}" class="text-decoration-none">
                                 <div class="portfolio-item falling-item">
-                                    <x-picture :src="$category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg')"
-                                        class="portfolio-img" alt="{{ $category->name_bg }}" />
+                                    <x-picture :src="$category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg')" class="portfolio-img"
+                                        alt="{{ $category->name_bg }}" />
                                     <div class="portfolio-overlay">
                                         <div class="portfolio-info">
                                             <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
@@ -161,7 +161,7 @@
         </div>
     </section>
 
-    <section class="py-5 bg-light">
+    <section class="py-5 px-1 bg-light">
         <div class="container text-center">
             <h2 class="mb-3">Какво казват клиентите</h2>
             <div class="section-divider"></div>
@@ -189,20 +189,21 @@
             <div class="text-center mb-5">
                 <h2>Нашите Услуги</h2>
                 <div class="section-divider"></div>
-                <p class="text-muted">Професионална фотография и видеозаснемане за всеки повод - сватби, балове, събития, портрети и още</p>
+                <p class="text-muted">Професионална фотография и видеозаснемане за всеки повод - сватби, балове, събития,
+                    портрети и още</p>
             </div>
 
             <div class="row g-4 services-mobile-slider">
                 @foreach($services as $index => $service)
-                <div class="col-md-4 col-sm-6 service-card-col" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
-                    <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark h-100 d-block">
-                        <div class="service-card bg-white {{ $service->slug }} falling-item h-100">
-                            <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
-                            <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
-                            <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
-                        </div>
-                    </a>
-                </div>
+                    <div class="col-md-4 col-sm-6 service-card-col" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
+                        <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark h-100 d-block">
+                            <div class="service-card bg-white {{ $service->slug }} falling-item h-100">
+                                <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
+                                <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
+                                <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
+                            </div>
+                        </a>
+                    </div>
                 @endforeach
             </div>
         </div>
@@ -215,11 +216,14 @@
 
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4"><i class="fas fa-phone mb-3 text-black fa-2x"></i>
-                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></div>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
+                            href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a>
+                    </div>
                 </div>
                 <div class="col-md-4"><i class="far fa-envelope mb-3 text-black fa-2x"></i>
                     <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
-                            href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a></div>
+                            href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a>
+                    </div>
                 </div>
                 <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-black fa-2x"></i>
                     <div class="fs-6 fw-bold">ж.к. Възраждане IV 1603, Варна</div>
@@ -272,8 +276,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
-                            alt="{{ $member->name }}" class="team-img mb-3" style="width: 120px; height: 120px;" />
+                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img mb-3"
+                            style="width: 120px; height: 120px;" />
                         <p class="role-text mb-3">{{ $member->role_bg }}</p>
                         <p class="text-muted mb-3">
                             {{ $member->bio_bg }}
@@ -286,7 +290,8 @@
                                     </a>
                                 @endif
                                 @if($member->instagram_url)
-                                    <a href="{{ $member->instagram_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-0">
+                                    <a href="{{ $member->instagram_url }}" target="_blank"
+                                        class="btn btn-outline-dark btn-sm rounded-0">
                                         <i class="fab fa-instagram me-1"></i> Instagram
                                     </a>
                                 @endif
