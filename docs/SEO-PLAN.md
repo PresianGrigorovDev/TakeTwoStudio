@@ -1,10 +1,19 @@
 <!--
 ВЪТРЕШЕН ДОКУМЕНТ — само за екипа на Take Two Studio 1603.
-Не публикувай, не споделяй линк, не качвай в публично репо. Съдържа детайли за хостинга,
-неотстранени уязвимости и бизнес приоритети.
-Папка docs/ НЕ трябва да е достъпна през уеб: днес root .htaccess на сървъра пренаписва всичко
-към public/ (→ 404), а новият root .htaccess от Част C.1 я блокира изрично (403). След деплой провери:
+Не публикувай, не споделяй линк. Съдържа детайли за хостинга, неотстранени уязвимости и бизнес приоритети.
+
+РЕПОТО ТРЯБВА ДА Е PRIVATE. Към 2026-09-05 GitHub репото PresianGrigorovDev/TakeTwoStudio е публично и този файл
+вече беше push-нат в него (branch laratake, commit 7b5754d). Стъпки на собственика:
+  1. GitHub → Settings → General → Danger Zone → Change visibility → Make private.
+  2. cPanel Git с private репо работи само през SSH: cPanel → Git Version Control → копирай публичния SSH ключ
+     (или генерирай от cPanel → SSH Access) → GitHub → Settings → Deploy keys → Add (read-only).
+     На сървъра: cd ~/public_html && git remote set-url origin git@github.com:PresianGrigorovDev/TakeTwoStudio.git
+  3. Едва тогава push на нови commit-и.
+
+Папка docs/ НЕ трябва да е достъпна през уеб: днес root .htaccess на сървъра пренаписва всичко към public/ (→ 404),
+а новият root .htaccess от Част C.1 я блокира изрично (403). След деплой провери:
   curl -sI https://taketwostudio1603.com/docs/SEO-PLAN.md   # трябва 403/404
+
 Източник: анализ от 2026-09-05 (Claude Code, plan mode). Обновявай този файл при промяна на плана.
 -->
 
@@ -43,14 +52,14 @@
 
 ### A.2 Механизмът (стъпка по стъпка)
 
-1. **Document root = root на Laravel проекта.** cPanel Git деплойва репото директно в `/home/mbgsqksf/public_html/` (виж [_legacy/.cpanel.yml](../_legacy/.cpanel.yml). Папката `public/` на Laravel е *под* webroot-а, вместо да *е* webroot.
-2. **Root `.htaccess` съществува само на сървъра.** В репото няма root `.htaccess` (старият е преименуван в commit `b12cb1c` и е в [_legacy/.htaccess_old](../_legacy/.htaccess_old). `.gitignore` не го игнорира → файлът е създаден ръчно на сървъра и е untracked. Поведението (`/composer.json` → 404, `/index.php` → начална страница) показва правило от типа `RewriteRule ^(.*)$ public/$1 [L]`.
-3. **Redirect правилата живеят в [public/.htaccess](../public/.htaccess#L8-L27 и използват `%{REQUEST_URI}`.** След per-directory rewrite (`RewriteRule ^(.*)$ public/$1 [L]`) mod_rewrite прави вътрешен redirect и на следващия pass `%{REQUEST_URI}` вече е `/public/weddings` — това е класическият бъг „Laravel на shared hosting пренасочва към /public/ при trailing slash“ и се случва **и на Apache, и на LiteSpeed**. Затова трите redirect-а (HTTPS, www, trailing slash) пренасочват към `/public/...`. Само `%{THE_REQUEST}` (суровият request line) никога не се променя — затова той е правилната основа за redirect-и. Потвърдено и с `/css` → `301 → /public/css/` (DirectorySlash на сървъра също изтича вътрешния път).
+1. **Document root = root на Laravel проекта.** cPanel Git деплойва репото директно в `/home/mbgsqksf/public_html/` (виж [_legacy/.cpanel.yml](../_legacy/.cpanel.yml)). Папката `public/` на Laravel е *под* webroot-а, вместо да *е* webroot.
+2. **Root `.htaccess` съществува само на сървъра.** В репото няма root `.htaccess` (старият е преименуван в commit `b12cb1c` и е в [_legacy/.htaccess_old](../_legacy/.htaccess_old)). `.gitignore` не го игнорира → файлът е създаден ръчно на сървъра и е untracked. Поведението (`/composer.json` → 404, `/index.php` → начална страница) показва правило от типа `RewriteRule ^(.*)$ public/$1 [L]`.
+3. **Redirect правилата живеят в [public/.htaccess](../public/.htaccess#L8-L27) и използват `%{REQUEST_URI}`.** След per-directory rewrite (`RewriteRule ^(.*)$ public/$1 [L]`) mod_rewrite прави вътрешен redirect и на следващия pass `%{REQUEST_URI}` вече е `/public/weddings` — това е класическият бъг „Laravel на shared hosting пренасочва към /public/ при trailing slash“ и се случва **и на Apache, и на LiteSpeed**. Затова трите redirect-а (HTTPS, www, trailing slash) пренасочват към `/public/...`. Само `%{THE_REQUEST}` (суровият request line) никога не се променя — затова той е правилната основа за redirect-и. Потвърдено и с `/css` → `301 → /public/css/` (DirectorySlash на сървъра също изтича вътрешния път).
 4. **Laravel вярва на URL-а.** При заявка `/public/weddings` Symfony изчислява `baseUrl = /public` и всички `url()`, `route()`, `asset()` генерират `/public/...` (78× `url(`, 23× `route(`, 113× `asset(` в blade файловете). При заявка `/weddings` базата е чиста — затова версията без `/public/` изглежда наред.
 5. **Съществуващите „лепенки“ не решават проблема:**
-   - [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php#L28-L33 проверява `$request->path()` за префикс `public/`, но Symfony вече е махнал `/public` от `path()` → клонът никога не се изпълнява (доказано: `/public/weddings` връща 200, не 301). Останалата част дублира HTTPS/www redirect-ите от `.htaccess`.
-   - [resources/views/layouts/app.blade.php](../resources/views/layouts/app.blade.php#L36-L40 „закърпва“ canonical с `preg_replace('#^public/#', ...)` и hardcoded домейн — затова canonical е чист, а линковете не са.
-   - [app/Http/Controllers/SitemapController.php](../app/Http/Controllers/SitemapController.php е с hardcoded `$baseUrl` (commit `5fe1d05`) — симптоматично решение, което потвърждава, че проблемът е бил забелязан.
+   - [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php#L28-L33) проверява `$request->path()` за префикс `public/`, но Symfony вече е махнал `/public` от `path()` → клонът никога не се изпълнява (доказано: `/public/weddings` връща 200, не 301). Останалата част дублира HTTPS/www redirect-ите от `.htaccess`.
+   - [resources/views/layouts/app.blade.php](../resources/views/layouts/app.blade.php#L36-L40) „закърпва“ canonical с `preg_replace('#^public/#', ...)` и hardcoded домейн — затова canonical е чист, а линковете не са.
+   - [app/Http/Controllers/SitemapController.php](../app/Http/Controllers/SitemapController.php) е с hardcoded `$baseUrl` (commit `5fe1d05`) — симптоматично решение, което потвърждава, че проблемът е бил забелязан.
 
 ### A.3 Защо „преди беше директно името на услугата“
 
@@ -85,37 +94,37 @@
 
 | # | Находка | Доказателство | Къде |
 |---|---|---|---|
-| B1 | `GET /seed-all` е публичен и без auth → всеки може да пусне seed-ване на базата | live: **HTTP 200** | [routes/web.php:77](../routes/web.php#L77, `SeedController` |
-| B2 | `GET /test-email-send` е публичен → при всяко отваряне създава запис `Inquiry` и праща имейл до админа (спам/DoS вектор, замърсява CRM-а) | live: **HTTP 200** | [routes/web.php:39-63](../routes/web.php#L39-L63 |
-| B3 | Дублирано съдържание `/public/*` + redirect chains към `/public/*` (Част A) | live curl матрица | server root `.htaccess`, [public/.htaccess](../public/.htaccess |
+| B1 | `GET /seed-all` е публичен и без auth → всеки може да пусне seed-ване на базата | live: **HTTP 200** | [routes/web.php:77](../routes/web.php#L77), `SeedController` |
+| B2 | `GET /test-email-send` е публичен → при всяко отваряне създава запис `Inquiry` и праща имейл до админа (спам/DoS вектор, замърсява CRM-а) | live: **HTTP 200** | [routes/web.php:39-63](../routes/web.php#L39-L63) |
+| B3 | Дублирано съдържание `/public/*` + redirect chains към `/public/*` (Част A) | live curl матрица | server root `.htaccess`, [public/.htaccess](../public/.htaccess) |
 | B4 | **GPTBot получава HTTP 429** (празен body, `server: LiteSpeed`) в 9 от 9 мои теста през ~25 минути (08:56 и 09:18 UTC); агентът видя кратък прозорец с 200 → **UA-keyed rate limit с cooldown на ниво хостинг**, не hard block. robots.txt го разрешава. `OAI-SearchBot` (crawler-ът на ChatGPT Search) и `ChatGPT-User` минават с 200 → **видимостта в ChatGPT Search не е засегната**; засегнат е training crawler-ът. `Bytespider`, `Amazonbot`, `meta-externalagent` → 403 (host bot list) | live UA тестове | хостинг JetHosting (`ms.eu108.jethosting.com`): LiteSpeed per-client throttling / Imunify360 / ModSecurity |
-| B4a | `public/optimize.php` е **публичен (200)** и без auth — `?run` стартира GD пренаписване на всички изображения (CPU DoS + променя файлове) | live 200 | [public/optimize.php:13](../public/optimize.php#L13 |
-| B4b | `BlogPostSeeder` и `LegalPageSeeder` ползват `updateOrCreate` по slug → всяко посещение на `/seed-all` (вкл. HEAD) **презаписва редакции от админа** на seed-натите постове и правни страници | код | [BlogPostSeeder.php:30](../database/seeders/BlogPostSeeder.php#L30, [LegalPageSeeder.php:36](../database/seeders/LegalPageSeeder.php#L36 |
+| B4a | `public/optimize.php` е **публичен (200)** и без auth — `?run` стартира GD пренаписване на всички изображения (CPU DoS + променя файлове) | live 200 | [public/optimize.php:13](../public/optimize.php#L13) |
+| B4b | `BlogPostSeeder` и `LegalPageSeeder` ползват `updateOrCreate` по slug → всяко посещение на `/seed-all` (вкл. HEAD) **презаписва редакции от админа** на seed-натите постове и правни страници | код | [BlogPostSeeder.php:30](../database/seeders/BlogPostSeeder.php#L30), [LegalPageSeeder.php:36](../database/seeders/LegalPageSeeder.php#L36) |
 | B4c | Чужда клиентска страница (Ardes/NVIDIA landing) се сервира и е индексируема на този домейн: `/ardes/nvidia-02.2026/index.html` → 200; архиви в web-достъпни пътища: `/storage.zip` → 200, `storage/app/public/Archive.zip` (97 MB, 403 само заради host конфиг) | live | `public/ardes/`, `Ardes/`, `public/storage.zip` |
-| B4d | `/favicon.ico` е **0 байта** (Google показва favicon в мобилни SERP); `/site.webmanifest` → **404** (линкнат от всяка страница); `home.blade.php:11` preload-ва несъществуващ `css/img/header.webp` (404 при всяко зареждане); липсват `social-share-cover.jpg` (default `og:image` за блога → 404), `best-wedding-cover.jpg`, `default-placeholder.jpg` | live + repo | [layouts/app.blade.php:75](../resources/views/layouts/app.blade.php#L75, [home.blade.php:11](../resources/views/home.blade.php#L11 |
+| B4d | `/favicon.ico` е **0 байта** (Google показва favicon в мобилни SERP); `/site.webmanifest` → **404** (линкнат от всяка страница); `home.blade.php:11` preload-ва несъществуващ `css/img/header.webp` (404 при всяко зареждане); липсват `social-share-cover.jpg` (default `og:image` за блога → 404), `best-wedding-cover.jpg`, `default-placeholder.jpg` | live + repo | [layouts/app.blade.php:75](../resources/views/layouts/app.blade.php#L75), [home.blade.php:11](../resources/views/home.blade.php#L11) |
 
 ### B.2 Високи (SEO съдържание и структура)
 
 | # | Находка | Къде |
 |---|---|---|
-| B5 | На живия `/weddings` **няма FAQ секция и FAQPage schema** (кодът ги поддържа, но таблицата `wedding_faqs` е празна в production). FAQPage има само на `/proms` | [resources/views/weddings.blade.php:647](../resources/views/weddings.blade.php#L647, [PageController.php:122-125](../app/Http/Controllers/PageController.php#L122-L125 |
-| B6 | Няма самостоятелни страници **За нас / Контакти / Цени / Екип** (само anchors на home) → слаб E-E-A-T, няма „цени“ URL, а конкурентите имат | [routes/web.php](../routes/web.php |
+| B5 | На живия `/weddings` **няма FAQ секция и FAQPage schema** (кодът ги поддържа, но таблицата `wedding_faqs` е празна в production). FAQPage има само на `/proms` | [resources/views/weddings.blade.php:647](../resources/views/weddings.blade.php#L647), [PageController.php:122-125](../app/Http/Controllers/PageController.php#L122-L125) |
+| B6 | Няма самостоятелни страници **За нас / Контакти / Цени / Екип** (само anchors на home) → слаб E-E-A-T, няма „цени“ URL, а конкурентите имат | [routes/web.php](../routes/web.php) |
 | B7 | Английски slugs (`/weddings`, `/proms`) срещу конкуренти с `/svatben-fotograf-varna/`, `/abiturienski-fotosesii-varna/` | routes |
-| B8 | `aggregateRating` върху `LocalBusiness` от собствени testimonials → Google го смята за self-serving и не показва звезди; риск за spam флаг | [layouts/app.blade.php:120-126](../resources/views/layouts/app.blade.php#L120-L126 |
-| B9 | Несъответствие на телефона: `088 619 0124` (сайт, JSON-LD като `0886190124`, не е E.164) срещу `089 420 0634` (proms + mobile CTA, commit `ff893d0`) → NAP несъответствие за GBP/AI | [proms.blade.php](../resources/views/proms.blade.php, [partials/mobile-sticky-cta.blade.php](../resources/views/partials/mobile-sticky-cta.blade.php |
+| B8 | `aggregateRating` върху `LocalBusiness` от собствени testimonials → Google го смята за self-serving и не показва звезди; риск за spam флаг | [layouts/app.blade.php:120-126](../resources/views/layouts/app.blade.php#L120-L126) |
+| B9 | Несъответствие на телефона: `088 619 0124` (сайт, JSON-LD като `0886190124`, не е E.164) срещу `089 420 0634` (proms + mobile CTA, commit `ff893d0`) → NAP несъответствие за GBP/AI | [proms.blade.php](../resources/views/proms.blade.php), [partials/mobile-sticky-cta.blade.php](../resources/views/partials/mobile-sticky-cta.blade.php) |
 | B10 | Липсва `BreadcrumbList`, `VideoObject`, `Person` (екип), `Offer` с цени (има само на мъртвата `/graduation`), няма общ `@id` граф Organization↔WebSite↔WebPage | views |
-| B11 | Sitemap: `lastmod` = днешна дата за всички статични URL (фалшива свежест), `changefreq/priority` (игнорирани), без `/blog/category/*` | [SitemapController.php](../app/Http/Controllers/SitemapController.php |
-| B12 | robots.txt изброява `/clear-cache` и `/force-login` → рекламира вътрешни endpoints | [public/robots.txt](../public/robots.txt |
+| B11 | Sitemap: `lastmod` = днешна дата за всички статични URL (фалшива свежест), `changefreq/priority` (игнорирани), без `/blog/category/*` | [SitemapController.php](../app/Http/Controllers/SitemapController.php) |
+| B12 | robots.txt изброява `/clear-cache` и `/force-login` → рекламира вътрешни endpoints | [public/robots.txt](../public/robots.txt) |
 | B13 | **Сайтът не се появява в Bing** — нито `site:taketwostudio1603.com`, нито брандовата заявка `taketwostudio1603` връщат резултат („Няма резултати“). ChatGPT Search стъпва на индекса на Bing → докато това не се оправи, ChatGPT няма как да цитира сайта | Bing Webmaster Tools (проверка на покритието) |
 | B14 | Title тагове над 60 знака на 5 от 9 услуги (proms 82, commercial 82, portrait 94, baptism 74, weddings 62); description над 155 знака на 6 страници (commercial 195, portrait 179, proms 172) → отрязват се в SERP | `@section('title')` / `meta_description` във всяка service view |
 | B15 | H1 на услугите е без ключова дума и град („Вашият Сватбен Ден“, „Абитуриентски Балове“, „Реклама и Бизнес“) → H1 ≠ заявка, докато title е правилен | service views |
-| B16 | Началната страница емитира **два** отделни `LocalBusiness` блока (site-wide + собствен) без общ `@id` → две „фирми“ за парсера | [layouts/app.blade.php:83](../resources/views/layouts/app.blade.php#L83, [home.blade.php:306-345](../resources/views/home.blade.php#L306-L345 |
-| B17 | `sameAs` съдържа само Facebook и Instagram; YouTube и TikTok липсват в schema и във footer-а (footer линква 3 лични Instagram профила на екипа) → по-слаба entity връзка към каналите, които Gemini/ChatGPT цитират | [layouts/app.blade.php:116-119](../resources/views/layouts/app.blade.php#L116-L119, footer |
+| B16 | Началната страница емитира **два** отделни `LocalBusiness` блока (site-wide + собствен) без общ `@id` → две „фирми“ за парсера | [layouts/app.blade.php:83](../resources/views/layouts/app.blade.php#L83), [home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) |
+| B17 | `sameAs` съдържа само Facebook и Instagram; YouTube и TikTok липсват в schema и във footer-а (footer линква 3 лични Instagram профила на екипа) → по-слаба entity връзка към каналите, които Gemini/ChatGPT цитират | [layouts/app.blade.php:116-119](../resources/views/layouts/app.blade.php#L116-L119), footer |
 | B18 | `aggregateRating` е `5.0` от `3` отзива → освен self-serving (B8), малкият брой прави сигнала слаб; реалната стойност е в Google отзивите | Testimonial таблица |
-| B19 | `/proms` показва **друг имейл** (`info@taketwostudio1603.com`) спрямо останалия сайт (`taketwostudio1603@gmail.com`) + втори телефон (B9) → NAP на най-важната страница се разминава с GBP/schema | [proms.blade.php](../resources/views/proms.blade.php |
-| B20 | Блог постът `/blog/speistete-budjet-balno-zasnemane-varna` рекламира „195 лв. на ученик“ — противоречи на актуалните € цени (100/120 €) на `/proms` и в llms-full.txt → объркващ сигнал за AI и клиенти | [database/seeders/BlogPostSeeder.php:168-175](../database/seeders/BlogPostSeeder.php#L168-L175, production DB |
-| B21 | Blog `BlogPosting.author` е `Organization`, не `Person` → няма E-E-A-T авторска връзка | [blog/show.blade.php:20-24](../resources/views/blog/show.blade.php#L20-L24 |
-| B22 | `areaServed` в schema е само „Варна“, докато услугите се предлагат и в Добрич/Шумен/Балчик/Каварна/Бяла | [layouts/app.blade.php:105-109](../resources/views/layouts/app.blade.php#L105-L109 |
+| B19 | `/proms` показва **друг имейл** (`info@taketwostudio1603.com`) спрямо останалия сайт (`taketwostudio1603@gmail.com`) + втори телефон (B9) → NAP на най-важната страница се разминава с GBP/schema | [proms.blade.php](../resources/views/proms.blade.php) |
+| B20 | Блог постът `/blog/speistete-budjet-balno-zasnemane-varna` рекламира „195 лв. на ученик“ — противоречи на актуалните € цени (100/120 €) на `/proms` и в llms-full.txt → объркващ сигнал за AI и клиенти | [database/seeders/BlogPostSeeder.php:168-175](../database/seeders/BlogPostSeeder.php#L168-L175), production DB |
+| B21 | Blog `BlogPosting.author` е `Organization`, не `Person` → няма E-E-A-T авторска връзка | [blog/show.blade.php:20-24](../resources/views/blog/show.blade.php#L20-L24) |
+| B22 | `areaServed` в schema е само „Варна“, докато услугите се предлагат и в Добрич/Шумен/Балчик/Каварна/Бяла | [layouts/app.blade.php:105-109](../resources/views/layouts/app.blade.php#L105-L109) |
 
 ### B.3 Скорост (live `/weddings`, mobile)
 
@@ -276,12 +285,12 @@ RewriteRule ^(.*)$ public/$1 [L]
 
 | # | Файл | Промяна |
 |---|---|---|
-| 1 | [app/Providers/AppServiceProvider.php](../app/Providers/AppServiceProvider.php `boot()` | `if (! $this->app->environment('local', 'testing')) { URL::forceRootUrl(config('app.url')); URL::forceScheme('https'); }` — `url()/asset()/route()/Storage::url()` стават имунни на това как е дошла заявката |
+| 1 | [app/Providers/AppServiceProvider.php](../app/Providers/AppServiceProvider.php) `boot()` | `if (! $this->app->environment('local', 'testing')) { URL::forceRootUrl(config('app.url')); URL::forceScheme('https'); }` — `url()/asset()/route()/Storage::url()` стават имунни на това как е дошла заявката |
 | 2 | Production `.env` (cPanel File Manager, `public_html/.env`) | `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://taketwostudio1603.com`. `config/filesystems.php:44` извлича `/storage` URL-ите от `APP_URL` → Filament preview-ите също зависят. После `php artisan config:clear`. Коментар в `.env.example` |
-| 3 | [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php | Пази се като fallback (ако `.htaccess` се загуби), но пренаписан: GET/HEAD; skip в `local`/`testing`; `$root = rtrim(config('app.url'),'/')`; 301 към `$root.'/'.trim($request->getPathInfo(),'/').($qs?'?'.$qs:'')` при: host ≠ host на `APP_URL`, `! isSecure()`, **`$request->getBaseUrl() !== ''`** (правилният детектор за `/public` и `/index.php`), или trailing slash. Остава `prepend()` |
-| 4 | [layouts/app.blade.php:36-40](../resources/views/layouts/app.blade.php#L36-L40 | `preg_replace` блокът → `$canonicalUrl = url()->current();` (за blog `?page>1` → `url()->full()`, self-canonical) |
-| 5 | [SitemapController.php](../app/Http/Controllers/SitemapController.php | `$baseUrl = rtrim(config('app.url'), '/');` |
-| 6 | всички `@push('schema')` с hardcoded `'https://taketwostudio1603.com...'` (weddings 706-721, proms 397-412, baptism 469-473, commercial 274-278, family 363-368, portrait 342-347, automotive 333-338, architectural 343-348, events 275-280, graduation 585-591) + [home.blade.php:306-345](../resources/views/home.blade.php#L306-L345 | `url('/')` / `url()->current()`; после се заменят от graph partial-а (C.4) |
+| 3 | [app/Http/Middleware/NormalizeCanonicalUrl.php](../app/Http/Middleware/NormalizeCanonicalUrl.php) | Пази се като fallback (ако `.htaccess` се загуби), но пренаписан: GET/HEAD; skip в `local`/`testing`; `$root = rtrim(config('app.url'),'/')`; 301 към `$root.'/'.trim($request->getPathInfo(),'/').($qs?'?'.$qs:'')` при: host ≠ host на `APP_URL`, `! isSecure()`, **`$request->getBaseUrl() !== ''`** (правилният детектор за `/public` и `/index.php`), или trailing slash. Остава `prepend()` |
+| 4 | [layouts/app.blade.php:36-40](../resources/views/layouts/app.blade.php#L36-L40) | `preg_replace` блокът → `$canonicalUrl = url()->current();` (за blog `?page>1` → `url()->full()`, self-canonical) |
+| 5 | [SitemapController.php](../app/Http/Controllers/SitemapController.php) | `$baseUrl = rtrim(config('app.url'), '/');` |
+| 6 | всички `@push('schema')` с hardcoded `'https://taketwostudio1603.com...'` (weddings 706-721, proms 397-412, baptism 469-473, commercial 274-278, family 363-368, portrait 342-347, automotive 333-338, architectural 343-348, events 275-280, graduation 585-591) + [home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) | `url('/')` / `url()->current()`; после се заменят от graph partial-а (C.4) |
 | 7 | `tests/Feature/CanonicalUrlTest.php` (нов) | `$this->call('GET','/weddings',[],[],[],['SCRIPT_NAME'=>'/public/index.php','REQUEST_URI'=>'/public/weddings','HTTPS'=>'on','HTTP_HOST'=>'taketwostudio1603.com'])->assertRedirect('https://taketwostudio1603.com/weddings')`; `url('/') === config('app.url')`; рендерираният `/weddings` не съдържа `/public/` |
 
 **Ред на деплой (без 404/loop) и rollback**
@@ -339,9 +348,9 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 
 | Елемент | Къде | Действие | Проверка |
 |---|---|---|---|
-| `/test-email-send` | [routes/web.php:39-63](../routes/web.php#L39-L63 | Изтрий. Ако трябва → artisan команда `mail:test-inquiry` | 404 |
-| `/seed-all` | [routes/web.php:77](../routes/web.php#L77, `SeedController` | Изтрий route + controller; `php artisan db:seed --class=…` през SSH | 404 |
-| `/clear-cache` | [routes/web.php:65-75](../routes/web.php#L65-L75 | Изтрий (или `middleware(['auth'])` + `isAdmin()`); махни от robots.txt | 404/403 |
+| `/test-email-send` | [routes/web.php:39-63](../routes/web.php#L39-L63) | Изтрий. Ако трябва → artisan команда `mail:test-inquiry` | 404 |
+| `/seed-all` | [routes/web.php:77](../routes/web.php#L77), `SeedController` | Изтрий route + controller; `php artisan db:seed --class=…` през SSH | 404 |
+| `/clear-cache` | [routes/web.php:65-75](../routes/web.php#L65-L75) | Изтрий (или `middleware(['auth'])` + `isAdmin()`); махни от robots.txt | 404/403 |
 | `/force-login` | web.php:92-106 | вече local-only; махни от robots.txt | – |
 | `public/optimize.php` (200, `?run` пренаписва изображения) | `public/optimize.php` | Изтрий; новото `public/.htaccess` блокира всеки не-`index.php` PHP | 403/404 |
 | `public/check_video_path.php`, `public/final_cleanup.php` | `public/` | Изтрий от репото | – |
@@ -381,13 +390,13 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 | Файл | Цел |
 |---|---|
 | `app/Support/SchemaGraph.php` (нов, singleton в `AppServiceProvider::register`) | `add(array $node)`, `nodes()`. Views/controllers добавят възли преди layout-а да рендерира |
-| `resources/views/partials/schema-graph.blade.php` (нов) | емитира **един** `{"@context":"https://schema.org","@graph":[...]}`; замества [app.blade.php:78-143](../resources/views/layouts/app.blade.php#L78-L143; `@stack('schema')` остава един release за миграция |
+| `resources/views/partials/schema-graph.blade.php` (нов) | емитира **един** `{"@context":"https://schema.org","@graph":[...]}`; замества [app.blade.php:78-143](../resources/views/layouts/app.blade.php#L78-L143); `@stack('schema')` остава един release за миграция |
 | Core възли | `#organization` (Organization: name, url, logo ImageObject, `sameAs` от settings, `contactPoint[]`), `#localbusiness` (["LocalBusiness","ProfessionalService"]: `parentOrganization`→`#organization`, address, geo `43.21405/27.914733` (един източник), openingHours, priceRange, `areaServed` списък, image, `telephone` E.164, **без aggregateRating**), `#website` (WebSite: url, name, `inLanguage: bg`, publisher), `#webpage` (WebPage: `@id = url()->current().'#webpage'`, name = title, description, `isPartOf`, `about`→`#localbusiness`, `breadcrumb`→`#breadcrumb`, `primaryImageOfPage`) |
 | `app/Support/Seo/Breadcrumbs.php` + `partials/breadcrumbs.blade.php` (нови; видим `<nav aria-label="breadcrumb">` под hero-то на всяка не-home страница) | от route: `/`→[Начало]; услуга→[Начало, `Service.name_bg`]; blog.index→[Начало, Блог]; blog.category→[…, категория]; blog.show→[…, категория, пост]; booking/legal→[Начало, title]. Емитира `BreadcrumbList` `#breadcrumb` с абсолютни `item` URL |
 
 **C.4.2 Service страници (всички 9)**
 - `Service` блоковете от views → `PageController::showService()` → `SchemaGraph::add()` веднъж: `provider: {"@id":"#localbusiness"}`, `url: url($slug)`, `serviceType`, `areaServed`, `offers`.
-- **Offers** от пакетните таблици по slug (`service_packages.price_eur` за weddings/baptism/commercial; `PromPackage`, `FamilyPackage`, `PortraitPackage`, `AutomotivePackage`, `ArchitecturalPackage`, `EventPackage`): `{"@type":"Offer","name":…,"price":"450.00","priceCurrency":"EUR","availability":"https://schema.org/InStock","eligibleRegion":{"@type":"Country","name":"BG"},"url":url($slug).'#packages'}`; „от“ цени → `UnitPriceSpecification` с `minPrice`. `PackageSource` map вместо `if ($slug === …)` блоковете в [PageController.php:120-182](../app/Http/Controllers/PageController.php#L120-L182.
+- **Offers** от пакетните таблици по slug (`service_packages.price_eur` за weddings/baptism/commercial; `PromPackage`, `FamilyPackage`, `PortraitPackage`, `AutomotivePackage`, `ArchitecturalPackage`, `EventPackage`): `{"@type":"Offer","name":…,"price":"450.00","priceCurrency":"EUR","availability":"https://schema.org/InStock","eligibleRegion":{"@type":"Country","name":"BG"},"url":url($slug).'#packages'}`; „от“ цени → `UnitPriceSpecification` с `minPrice`. `PackageSource` map вместо `if ($slug === …)` блоковете в [PageController.php:120-182](../app/Http/Controllers/PageController.php#L120-L182).
 - **FAQ консолидация (препоръчано):** неизползваната таблица `faqs` вече има `page_slug`, `question_bg`, `answer_bg`, `display_order`, `is_active` + `FaqResource` във Filament. Миграция `consolidate_faqs`: копира `wedding_faqs`→`weddings`, `prom_faqs`→`proms`, `baptism_faqs`→`baptism`, `commercial_faqs`→`commercial`, `graduation_faqs`→`proms`; `Faq::scopeForPage($slug)`; `PageController` подава `$faqs`; нов `partials/faq-section.blade.php` замества 5-те accordion копия; после drop 5 таблици, 5 модела, 5 Filament ресурса; update `LLMController::full`. Fallback при малко време: `app/Support/Seo/FaqSource.php` map slug→model. Live `/weddings` няма FAQ, защото `wedding_faqs` е празна в production → съдържанието се добавя през Filament след консолидацията.
 - FAQ markup: `#webpage` става `@type: ["WebPage","FAQPage"]` с `mainEntity` (без отделен възел).
 
@@ -395,11 +404,11 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 
 | Entity | Източник / промяна | Къде |
 |---|---|---|
-| `VideoObject` | `services.video_url` (вече се парсва в [partials/video-showcase-section.blade.php:1-33](../resources/views/partials/video-showcase-section.blade.php#L1-L33). Миграция: `services.video_uploaded_at`, `video_title`, `video_thumbnail` (YouTube default `https://i.ytimg.com/vi/{id}/maxresdefault.jpg`) + Filament полета. Възел: name, description, thumbnailUrl, uploadDate, embedUrl, publisher. Пропусни Instagram embeds | partial → `SchemaGraph::add()` |
-| `Person` (E-E-A-T) | `team_members` (name, role_bg, bio_bg, image_path, instagram_url). Възли `url('/').'#person-'.$id`, jobTitle, image, worksFor, `sameAs:[instagram_url]`, knowsAbout. `Organization.employee`. Ново `blog_posts.author_team_member_id` (nullable FK) + Filament select; `BlogPosting.author` → Person (fallback `#organization`) | [home.blade.php](../resources/views/home.blade.php team секция, [blog/show.blade.php:11-41](../resources/views/blog/show.blade.php#L11-L41 |
+| `VideoObject` | `services.video_url` (вече се парсва в [partials/video-showcase-section.blade.php:1-33](../resources/views/partials/video-showcase-section.blade.php#L1-L33)). Миграция: `services.video_uploaded_at`, `video_title`, `video_thumbnail` (YouTube default `https://i.ytimg.com/vi/{id}/maxresdefault.jpg`) + Filament полета. Възел: name, description, thumbnailUrl, uploadDate, embedUrl, publisher. Пропусни Instagram embeds | partial → `SchemaGraph::add()` |
+| `Person` (E-E-A-T) | `team_members` (name, role_bg, bio_bg, image_path, instagram_url). Възли `url('/').'#person-'.$id`, jobTitle, image, worksFor, `sameAs:[instagram_url]`, knowsAbout. `Organization.employee`. Ново `blog_posts.author_team_member_id` (nullable FK) + Filament select; `BlogPosting.author` → Person (fallback `#organization`) | [home.blade.php](../resources/views/home.blade.php) team секция, [blog/show.blade.php:11-41](../resources/views/blog/show.blade.php#L11-L41) |
 | `ImageObject` | hero + първите N галерийни снимки: contentUrl, width/height, caption (alt), `creator`→`#organization`, `creditText: "Take Two Studio 1603"`, `copyrightNotice`, `license: route('legal.terms')`, `acquireLicensePage: url('/kontakti')` → Google Images licensing бадж | от `<x-picture>` компонента (C.5) с `:schema="true"` |
 | `BlogPosting` | + `author` Person, `publisher`, `mainEntityOfPage`→`#webpage`, `image` ImageObject, `wordCount`, `articleSection`, `inLanguage` | blog/show |
-| Премахване | вторият `LocalBusiness` на home ([home.blade.php:306-345](../resources/views/home.blade.php#L306-L345 — конфликтни geo `43.2141/27.9147` и адрес); всички вложени `provider` копия с различни телефони; `aggregateRating` (layout 120-126) | – |
+| Премахване | вторият `LocalBusiness` на home ([home.blade.php:306-345](../resources/views/home.blade.php#L306-L345) — конфликтни geo `43.2141/27.9147` и адрес); всички вложени `provider` копия с различни телефони; `aggregateRating` (layout 120-126) | – |
 
 **C.4.4 NAP — един източник на истина**
 - Нов `app/Support/Settings.php`: `Settings::get('site_phone')` върху `Cache::rememberForever('site_settings', fn () => SiteSetting::pluck('setting_value','setting_key'))`; `SiteSettingObserver` (`saved/deleted`) чисти кеша. Заменя всички `SiteSetting::find(4|5|6|7|8|14)` (layout 205-239, home 218-222/327-328, mobile-sticky-cta:7) и недетерминираното `where('site_phone')->orWhere('contact_phone')->first()` (layout 91,95,117,118).
@@ -408,7 +417,7 @@ curl -sIL --max-redirs 5 -o /dev/null -w "%{num_redirects}\n" https://taketwostu
 - Schema: `#localbusiness.telephone = +359886190124`; `#organization.contactPoint = [{customer service, +359886190124, areaServed BG, availableLanguage [bg,en]}, {sales, "Абитуриентски балове", +359894200634}]`. **Бизнес решение:** ако номерът за балове е личен телефон на член от екипа → `Person.telephone`, а на страницата за балове остава един фирмен номер.
 - Hardcoded телефони за поправка: `proms.blade.php:377-378,398`, `weddings.blade.php:707`, `graduation.blade.php:586`, `mobile-sticky-cta.blade.php:7`, `LLMController.php:28,48`, двата имейл шаблона.
 
-**C.4.5 Sitemaps** ([SitemapController.php](../app/Http/Controllers/SitemapController.php)
+**C.4.5 Sitemaps** ([SitemapController.php](../app/Http/Controllers/SitemapController.php))
 - `/sitemap.xml` → `<sitemapindex>` с `/sitemap-pages.xml`, `/sitemap-blog.xml`, `/sitemap-images.xml`.
 - Pages: `lastmod` = max(`services.updated_at`, `page_contents.updated_at`, пакетни таблици, `faqs.updated_at`) чрез `lastmodFor($slug)`; home = max от всички; `/booking` и правните страници (index,follow) се включват. Drop `changefreq`/`priority`. `/blog/category/*` вече е включен — остава.
 - Images: `<image:image><image:loc>` за галерийни снимки по URL на услуга (до 1000), `xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"`.
@@ -428,7 +437,7 @@ npx lighthouse https://taketwostudio1603.com/weddings --preset=perf --form-facto
 
 | Стъпка | Файлове |
 |---|---|
-| Разшири `ImageOptimizer` в генератор на деривати: `{name}-{480,768,1200,1920}.webp` (+ `.avif` ако `function_exists('imageavif')` на сървъра); width/height в `image_variants` таблица или кеш | [app/Support/ImageOptimizer.php](../app/Support/ImageOptimizer.php, нова команда `images:derivatives`; преизползвай backup логиката от `CompressStorageImages.php` |
+| Разшири `ImageOptimizer` в генератор на деривати: `{name}-{480,768,1200,1920}.webp` (+ `.avif` ако `function_exists('imageavif')` на сървъра); width/height в `image_variants` таблица или кеш | [app/Support/ImageOptimizer.php](../app/Support/ImageOptimizer.php), нова команда `images:derivatives`; преизползвай backup логиката от `CompressStorageImages.php` |
 | Hook на upload: `Service`, `BlogPost` вече викат `ImageOptimizer::optimize`; добави `saved` hook на всички gallery/portfolio photo модели, `TeamMember`, `Partner`, `PortfolioCategory` | `app/Models/*Photo.php` |
 | Blade компонент `<x-picture src alt width height sizes :eager :schema />` → `<picture>` с avif/webp `<source srcset>` + `<img width height loading="lazy" decoding="async">`; `eager` = `fetchpriority="high"`, без lazy | `resources/views/components/picture.blade.php` (нов) |
 | Hero: CSS `background-image` (`weddings.blade.php:36`, `proms.blade.php:33`, home `.hero`) → `<x-picture eager>` + `<link rel="preload" as="image" imagesrcset imagesizes fetchpriority="high">`; поправи счупения preload на `header.webp` (`home.blade.php:11`) | views + `style.css` |
