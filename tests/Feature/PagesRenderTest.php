@@ -22,6 +22,7 @@ class PagesRenderTest extends TestCase
             ['/blog'], ['/booking'], ['/privacy'], ['/terms'], ['/cookies'],
             ['/ceni'], ['/za-nas'], ['/kontakti'], ['/abiturientski-bal-varna'],
             ['/sitemap.xml'], ['/llms.txt'], ['/llms-full.txt'],
+            ['/igra?target=prom'], ['/igra?target=wedding'],
         ];
     }
 
