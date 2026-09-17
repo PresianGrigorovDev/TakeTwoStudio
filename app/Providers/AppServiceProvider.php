@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Support\Assets;
 use App\Support\Seo\Seo;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +28,22 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
 
         $this->forceCanonicalUrls();
+        $this->registerAdminAssets();
+    }
+
+    /**
+     * Self-hosted QR generator for the admin panel (Маркетинг → QR стикери):
+     * qrcode-generator (MIT) builds the module matrix, public/js/admin/game-qr.js draws
+     * the styled SVG/PNG. Registered here (not via Panel::assets()) because Filament
+     * registers panel assets in both Panel::register() and Panel::boot(), which loads
+     * every script twice.
+     */
+    private function registerAdminAssets(): void
+    {
+        FilamentAsset::register([
+            Js::make('qrcode-generator', asset('vendor/qrcode/qrcode.min.js')),
+            Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
+        ], package: 'taketwo');
     }
 
     /**

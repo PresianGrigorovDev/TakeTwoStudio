@@ -324,6 +324,9 @@ class GameTest extends TestCase
         $page = $this->actingAs($admin)->get(GameStats::getUrl())->getContent();
         $this->assertStringContainsString('vendor/qrcode/qrcode.min.js', $page);
         $this->assertStringContainsString('js/admin/game-qr.js?v=', $page);
+        $this->assertSame(1, substr_count($page, 'js/admin/game-qr.js'), 'QR generator script must be loaded exactly once');
+        // Our scripts must run before Filament's Alpine bundle so x-data="GameQr.panel(...)" can resolve.
+        $this->assertLessThan(strpos($page, 'js/filament/filament/app.js'), strpos($page, 'js/admin/game-qr.js'));
         foreach (['vendor/qrcode/qrcode.min.js', 'vendor/qrcode/LICENSE', 'js/admin/game-qr.js', 'css/img/logo-tts-white.webp', 'css/img/logo-tts-black.png'] as $file) {
             $this->assertFileExists(public_path($file));
         }
