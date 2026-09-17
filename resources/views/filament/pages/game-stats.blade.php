@@ -1,8 +1,16 @@
 <x-filament-panels::page>
-    {{-- Game links: base links, per-sticker generator, and locations already seen. --}}
+    @assets
+        <script src="{{ asset('vendor/qrcode/qrcode.min.js') }}"></script>
+        <script src="{{ \App\Support\Assets::versioned('js/admin/game-qr.js') }}"></script>
+    @endassets
+
+    @php($generated = $this->getGeneratedUrl())
+    @php($known = $this->getKnownLocations())
+
+    {{-- Game links + QR generator --}}
     <x-filament::section>
-        <x-slot name="heading">Линкове към игрите</x-slot>
-        <x-slot name="description">Това са адресите, които се кодират в QR стикерите. Всеки стикер получава своя локация (loc), за да се вижда в статистиката кой стикер работи.</x-slot>
+        <x-slot name="heading">Линкове и QR кодове към игрите</x-slot>
+        <x-slot name="description">Всеки стикер получава своя локация (loc), за да се вижда в статистиката кой стикер работи. QR кодът се генерира тук от линка и се сваля готов за печат.</x-slot>
 
         <div class="space-y-6">
             {{-- Base links --}}
@@ -33,12 +41,11 @@
                 @endforeach
             </div>
 
-            {{-- Generator --}}
+            {{-- Generator: link + QR --}}
             <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-                <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Линк за нов стикер</div>
+                <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Линк и QR код за стикер</div>
                 {{ $this->form }}
 
-                @php($generated = $this->getGeneratedUrl())
                 <div class="mt-4 flex flex-wrap items-center gap-2">
                     <code class="flex-1 min-w-0 truncate text-sm font-mono font-semibold text-primary-600 dark:text-primary-400" id="game-generated-url" title="{{ $generated }}">{{ $generated }}</code>
                     <x-filament::button
@@ -48,7 +55,7 @@
                         x-data="{}"
                         x-on:click="window.navigator.clipboard.writeText(@js($generated)); if (window.FilamentNotification) { new FilamentNotification().title('Линкът е копиран').success().send() }"
                     >
-                        Копирай
+                        Копирай линка
                     </x-filament::button>
                     <x-filament::button
                         icon="heroicon-m-arrow-top-right-on-square"
@@ -62,11 +69,69 @@
                         Отвори
                     </x-filament::button>
                 </div>
-                <p class="mt-2 text-xs text-gray-400">QR кодът за стикера се генерира от този адрес (напр. с генератора на печатницата). Препоръка: корекция на грешки „H“, за да се чете и надраскан.</p>
+
+                {{-- QR panel (Alpine; re-renders whenever the Livewire link changes) --}}
+                <div
+                    class="mt-5 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_260px] gap-5"
+                    id="game-qr-panel"
+                    wire:ignore
+                    x-data="GameQr.panel({ url: @js($generated), name: @js($this->stickerName), logos: @js($this->getLogoUrls()) })"
+                    x-effect="setUrl($wire.generatedUrl, $wire.stickerName)"
+                >
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="block">
+                                <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Стил</span>
+                                <select x-model="style" x-on:change="render()" class="fi-select-input mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                    <option value="dark">Черен фон, бели модули</option>
+                                    <option value="light">Бял фон, черни модули (класически)</option>
+                                    <option value="gold">Черен фон, златни модули</option>
+                                </select>
+                            </label>
+                            <label class="block">
+                                <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Център</span>
+                                <select x-model="center" x-on:change="render()" class="fi-select-input mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                    <option value="question">Въпросителна „?“</option>
+                                    <option value="logo">Лого на студиото</option>
+                                    <option value="none">Без</option>
+                                </select>
+                            </label>
+                            <label class="block">
+                                <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Модули</span>
+                                <select x-model="dots" x-on:change="render()" class="fi-select-input mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                    <option value="square">Квадратни</option>
+                                    <option value="round">Кръгли</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select x-model="size" class="fi-select-input rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                <option value="1024">PNG 1024 px</option>
+                                <option value="2048">PNG 2048 px</option>
+                                <option value="4096">PNG 4096 px</option>
+                            </select>
+                            <x-filament::button color="primary" size="sm" icon="heroicon-m-arrow-down-tray" x-on:click="downloadPng()" x-bind:disabled="busy || !url">
+                                Свали PNG
+                            </x-filament::button>
+                            <x-filament::button color="gray" size="sm" icon="heroicon-m-arrow-down-tray" x-on:click="downloadSvg()" x-bind:disabled="!url">
+                                Свали SVG (за печат)
+                            </x-filament::button>
+                        </div>
+
+                        <p class="text-xs text-gray-400">
+                            Корекция на грешки „H“ (30%), затова центърът може да бъде покрит. Версия: <span x-text="version"></span>.
+                            <span x-show="isInverted()" x-cloak>Обърнатите кодове (светли модули на тъмен фон) се четат от камерите на iPhone и Android, но не от всички стари скенери – винаги тествай с 2–3 телефона преди печат; класическият стил е най-сигурен.</span>
+                        </p>
+                    </div>
+
+                    <div class="flex items-start justify-center">
+                        <div class="w-[260px] max-w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 [&_svg]:w-full [&_svg]:h-auto [&_svg]:block" x-html="svgMarkup"></div>
+                    </div>
+                </div>
             </div>
 
             {{-- Known locations --}}
-            @php($known = $this->getKnownLocations())
             <div>
                 <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Стикери, които вече са сканирани</div>
                 @if(empty($known))
@@ -91,6 +156,13 @@
                                         <td class="py-1.5 px-2 text-right tabular-nums">{{ $row['scans'] }}</td>
                                         <td class="py-1.5 px-2 font-mono text-xs text-gray-600 dark:text-gray-300 truncate max-w-xs" title="{{ $row['url'] }}">{{ $row['url'] }}</td>
                                         <td class="py-1.5 pl-2 whitespace-nowrap">
+                                            <x-filament::icon-button
+                                                icon="heroicon-m-qr-code"
+                                                color="primary"
+                                                label="Зареди в генератора за QR"
+                                                size="sm"
+                                                wire:click="setSticker(@js($row['target']), @js($row['loc']))"
+                                            />
                                             <x-filament::icon-button
                                                 icon="heroicon-m-clipboard-document"
                                                 color="gray"
