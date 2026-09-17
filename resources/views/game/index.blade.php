@@ -53,30 +53,35 @@
             <span class="rv-rule" aria-hidden="true"></span>
         </div>
         <div class="rv-card" id="rv-card">
-            <span class="rv-badge">{{ $config['discountPercent'] }}% OFF VOUCHER</span>
-            <p class="rv-card__sub">{{ $config['discountPercent'] }}% отстъпка за пълно фото и видео заснемане на {{ $target === 'wedding' ? 'сватбата ти' : 'бала ти – Бал '.$config['seasonYear'] }}.</p>
+            <span class="rv-badge" id="rv-badge">{{ $config['discountPercent'] }}% OFF VOUCHER</span>
+            <p class="rv-card__sub" id="rv-sub">{{ $config['discountPercent'] }}% отстъпка за пълно фото и видео заснемане на {{ $target === 'wedding' ? 'сватбата ти' : 'бала ти – Бал '.$config['seasonYear'] }}.</p>
+            @if($config['discountPercentShared'] > $config['discountPercent'])
+                <p class="rv-boost mono" id="rv-boost">&gt; Сподели Story артефакта и отстъпката става {{ $config['discountPercentShared'] }}%.</p>
+            @endif
             <div class="rv-code-row">
                 <code class="rv-code mono" id="rv-code" aria-label="Твоят код">VN-····-····</code>
                 <button type="button" class="igra-btn igra-btn--ghost igra-btn--sm" id="rv-copy">Копирай</button>
             </div>
             <p class="rv-timer mono" id="rv-timer" role="timer" aria-live="off">Валиден {{ $config['validityHours'] }} часа</p>
+            <a class="igra-btn igra-btn--primary rv-use" id="rv-use" href="{{ $config['useUrl'] }}">Използвай кода в сайта</a>
         </div>
         <div class="rv-story">
             <button type="button" class="igra-btn igra-btn--primary" id="rv-generate">Генерирай Story Артефакт</button>
             <p class="igra-msg mono" id="rv-story-msg" role="status"></p>
             <figure class="rv-preview" id="rv-preview" hidden>
-                <img alt="Story артефакт с кода за отстъпка" id="rv-preview-img">
+                <img alt="Story артефакт за отстъпката" id="rv-preview-img">
                 <figcaption class="mono" id="rv-preview-hint"></figcaption>
             </figure>
             <div class="igra-actions igra-actions--inline" id="rv-story-actions" hidden>
                 <button type="button" class="igra-btn igra-btn--primary" id="rv-share" hidden>Сподели</button>
                 <button type="button" class="igra-btn igra-btn--primary" id="rv-download" hidden>Свали артефакта</button>
             </div>
+            <button type="button" class="igra-btn igra-btn--ghost" id="rv-confirm" hidden>Качих го в Instagram Story ✓</button>
         </div>
         <ol class="rv-steps">
             <li>Свали артефакта.</li>
             <li>Качи го на Instagram Story с таг <a href="{{ $config['instagramUrl'] }}" target="_blank" rel="noopener">{{ '@'.$config['instagramHandle'] }}</a>.</li>
-            <li>Изпрати ни кода на лично съобщение в рамките на {{ $config['validityHours'] }} часа, за да запазим датата ти.</li>
+            <li>Използвай кода в калкулатора на сайта или ни го изпрати на лично съобщение в рамките на {{ $config['validityHours'] }} часа, за да запазим датата ти.</li>
         </ol>
         <a class="rv-ig igra-btn igra-btn--ghost" href="{{ $config['instagramUrl'] }}" target="_blank" rel="noopener">Отвори {{ '@'.$config['instagramHandle'] }}</a>
         @if(!empty($config['legalUrl']))

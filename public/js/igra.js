@@ -36,7 +36,8 @@
       target: 'prom', loc: null, eventUrl: '/api/igra/event',
       instagramHandle: 'taketwostudio1603', instagramUrl: 'https://www.instagram.com/taketwostudio1603',
       logoUrl: '/css/img/logo-tts-white.webp', studioName: 'Take Two Studio 1603',
-      discountPercent: 15, validityHours: 72, seasonYear: new Date().getFullYear(), legalUrl: null
+      discountPercent: 5, discountPercentShared: 15, validityHours: 72, seasonYear: new Date().getFullYear(), legalUrl: null,
+      useUrl: '/proms'
     };
     try {
       var node = $('igra-config');
@@ -75,7 +76,11 @@
     shareTitle: CONFIG.studioName, shareText: 'ДЕКРИПТИРАХ КОДА ЗА ВАРНА',
     boot: '> ДЕКРИПТИРАНЕ… OK',
     soundOn: 'Звук: включен', soundOff: 'Звук: изключен',
-    fileName: function (code) { return 'taketwo-story-' + code + '.jpg'; }
+    badge: function (p) { return p + '% OFF VOUCHER'; },
+    boostHint: function (p) { return '> Сподели Story артефакта и отстъпката става ' + p + '%.'; },
+    boosted: function (p) { return '> Story споделено. Отстъпката ти е ' + p + '%.'; },
+    syncing: '> Активиране на кода…',
+    fileName: function () { return 'taketwo-story-varna.jpg'; }   // never put the voucher code in the file name
   };
 
   /* ---------- game data ---------- */
@@ -152,16 +157,20 @@
 
   /* ---------- Events (fire-and-forget analytics, no cookies) ---------- */
   var Events = {
-    log: function (event, meta, code) {
+    /* Resolves true when the server accepted the event (2xx); never rejects, never throws. */
+    send: function (event, meta, code) {
       try {
         var body = JSON.stringify({ target: TARGET, loc: CONFIG.loc, event: event, code: code || null, meta: meta || null });
         try {
-          fetch(CONFIG.eventUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: body, keepalive: true, credentials: 'omit' }).catch(noop);
+          return fetch(CONFIG.eventUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: body, keepalive: true, credentials: 'omit' })
+            .then(function (r) { return r.ok; }, function () { return false; });
         } catch (e) {
-          if (navigator.sendBeacon) { navigator.sendBeacon(CONFIG.eventUrl, new Blob([body], { type: 'text/plain' })); }
+          var ok = !!(navigator.sendBeacon && navigator.sendBeacon(CONFIG.eventUrl, new Blob([body], { type: 'text/plain' })));
+          return Promise.resolve(ok);
         }
-      } catch (e) { /* never break gameplay */ }
+      } catch (e) { return Promise.resolve(false); }
     },
+    log: function (event, meta, code) { Events.send(event, meta, code); },
     once: function (event, meta, code) {
       var s = Store.load();
       if (s.logged[event]) { return; }
@@ -540,12 +549,40 @@
     prefix: IS_PROM ? 'VN-PROM-' : 'VN-WED-',
     getOrCreate: function () {
       var s = Store.load();
-      if (s.voucher && s.voucher.code) { return s.voucher; }
+      if (s.voucher && s.voucher.code) { if (!s.voucher.synced) { this.sync(s.voucher); } return s.voucher; }
       var now = Date.now();
-      var v = { code: this.prefix + dateChar(new Date(now)) + randomChars(3), createdAt: now, expiresAt: now + CONFIG.validityHours * 3600e3 };
+      var v = {
+        code: this.prefix + dateChar(new Date(now)) + randomChars(3), createdAt: now, expiresAt: now + CONFIG.validityHours * 3600e3,
+        percent: CONFIG.discountPercent, percentShared: CONFIG.discountPercentShared, boosted: false, synced: false
+      };
       s.voucher = v; Store.save(); Store.mirrorVoucher(v);
-      Events.once('voucher', null, v.code);
+      this.sync(v);
       return v;
+    },
+    /* The server-side voucher row is what makes the code work in the site calculators: make sure it exists. */
+    sync: function (v) {
+      if (this.syncing) { return this.syncing; }
+      var self = this;
+      this.syncing = Events.send('voucher', null, v.code).then(function (ok) {
+        self.syncing = null;
+        if (ok) { Store.patch(function (s) { if (s.voucher) { s.voucher.synced = true; } }); Store.mirrorVoucher(Store.load().voucher); }
+        return ok;
+      });
+      return this.syncing;
+    },
+    current: function () { return Store.load().voucher; },
+    percent: function (v) { return v.boosted ? (v.percentShared || CONFIG.discountPercentShared) : (v.percent || CONFIG.discountPercent); },
+    /* Sharing the Story (share sheet, download or the manual confirmation) unlocks the higher discount. */
+    boost: function (method) {
+      var v = this.current(); if (!v) { return; }
+      var first = !v.boosted;
+      if (first && (v.percentShared || CONFIG.discountPercentShared) > (v.percent || 0)) {
+        Store.patch(function (s) { if (s.voucher) { s.voucher.boosted = true; } });
+        Store.mirrorVoucher(Store.load().voucher);
+        Reveal.renderVoucher(Store.load().voucher);
+        Sound.solve();
+      }
+      Events.send('share', { method: method }, v.code);
     }
   };
 
@@ -574,6 +611,7 @@
     show: function () {
       var v = Voucher.getOrCreate(), self = this;
       var code = $('rv-code'); if (code) { code.textContent = v.code; }
+      this.renderVoucher(v);
       App.go('reveal');
       typewriter($('rv-boot'), STR.boot, 18);
       if (IS_PROM) { var t = $('rv-title'); if (t) { t.classList.add('rv-glitch-once'); } }
@@ -587,7 +625,32 @@
         on($('rv-generate'), 'click', function () { Story.generate(v.code); });
         on($('rv-share'), 'click', function () { Story.share(v.code); });
         on($('rv-download'), 'click', function () { Story.download(v.code); });
+        on($('rv-confirm'), 'click', function () { Voucher.boost('confirm'); var b = $('rv-confirm'); if (b) { b.hidden = true; } });
+        on($('rv-use'), 'click', function (ev) { self.use(ev); });
       }
+    },
+    /* Badge, sub line, boost hint and the "use in the site" link reflect the voucher's current percent. */
+    renderVoucher: function (v) {
+      var p = Voucher.percent(v), badge = $('rv-badge'), sub = $('rv-sub'), boost = $('rv-boost'), use = $('rv-use');
+      if (badge) { badge.textContent = STR.badge(p); }
+      if (sub) { sub.textContent = sub.textContent.replace(/^\d+%/, p + '%'); }
+      if (boost) {
+        if (v.boosted) { boost.textContent = STR.boosted(p); boost.classList.add('is-done'); }
+        else { boost.textContent = STR.boostHint(v.percentShared || CONFIG.discountPercentShared); boost.classList.remove('is-done'); }
+      }
+      if (use) { use.href = CONFIG.useUrl + '?promo=' + encodeURIComponent(v.code) + '#calculator'; }
+    },
+    /* "Използвай кода в сайта": make sure the server knows the voucher before the calculator asks about it. */
+    use: function (ev) {
+      var v = Voucher.current(), link = $('rv-use'); if (!v || !link) { return; }
+      Events.log('use', null, v.code);
+      if (v.synced) { return; }   // normal navigation
+      ev.preventDefault();
+      var href = link.href, done = false;
+      function go() { if (!done) { done = true; window.location.href = href; } }
+      setMsg($('rv-story-msg'), STR.syncing);
+      Voucher.sync(v).then(go, go);
+      setTimeout(go, 2500);
     },
     tick: function (v) {
       var left = v.expiresAt - Date.now(), timerEl = $('rv-timer'), card = $('rv-card');
@@ -648,11 +711,13 @@
       var isIOS = /iP(hone|ad|od)/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       var canShare = !!(this.file && navigator.canShare && navigator.share && (function (f) { try { return navigator.canShare({ files: [f] }); } catch (e) { return false; } })(this.file));
       var canDownload = ('download' in HTMLAnchorElement.prototype) && !inApp && !isIOS;
-      var actions = $('rv-story-actions'), shareBtn = $('rv-share'), dlBtn = $('rv-download'), hint = $('rv-preview-hint');
+      var actions = $('rv-story-actions'), shareBtn = $('rv-share'), dlBtn = $('rv-download'), hint = $('rv-preview-hint'), confirm = $('rv-confirm');
       if (actions) { actions.hidden = !(canShare || canDownload); }
       if (shareBtn) { shareBtn.hidden = !canShare; }
       if (dlBtn) { dlBtn.hidden = canShare || !canDownload; }
       if (hint) { hint.textContent = (!canShare && !canDownload) ? STR.holdToSave : ''; }
+      var v = Voucher.current();
+      if (confirm) { confirm.hidden = !!(v && v.boosted); }   // manual "I posted it" for in-app browsers / long-press saves
       if (!canShare && !canDownload) { Events.log('share', { method: 'preview' }, code); }
     },
     share: function (code) {   // must stay synchronous up to navigator.share() – iOS requires the user gesture
@@ -660,13 +725,13 @@
       var self = this; this.busy = true;
       var p;
       try { p = navigator.share({ files: [this.file], title: STR.shareTitle, text: STR.shareText }); } catch (e) { this.busy = false; return; }
-      p.then(function () { Events.log('share', { method: 'share' }, code); }, noop).then(function () { self.busy = false; });
+      p.then(function () { Voucher.boost('share'); var b = $('rv-confirm'); if (b) { b.hidden = true; } }, noop).then(function () { self.busy = false; });
     },
     download: function (code) {
       if (!this.url) { return; }
       var a = el('a'); a.href = this.url; a.download = STR.fileName(code); a.rel = 'noopener';
       document.body.appendChild(a); a.click(); a.remove();
-      Events.log('share', { method: 'download' }, code);
+      Voucher.boost('download'); var b = $('rv-confirm'); if (b) { b.hidden = true; }
     },
     draw: function (code, logo) {
       var W = 1080, H = 1920, P = IS_PROM;
@@ -718,15 +783,17 @@
       // 7. badge
       ctx.fillStyle = P ? accent : '#D4AF37'; roundRect(ctx, 260, 860, 560, 110, 55); ctx.fill();
       ctx.fillStyle = P ? '#050807' : '#111111'; ctx.font = '700 44px ' + FONT;
-      drawSpaced(ctx, CONFIG.discountPercent + '% OFF VOUCHER', 540, 931, 4);
+      var storyPercent = Math.max(CONFIG.discountPercentShared || 0, CONFIG.discountPercent || 0);   // the Story advertises the shared level
+      drawSpaced(ctx, storyPercent + '% OFF VOUCHER', 540, 931, 4);
       // 8. sub line
       ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.font = '400 34px ' + FONT;
-      wrapText(ctx, CONFIG.discountPercent + '% отстъпка за фото и видео заснемане', 540, 1040, 920, 44);
-      // 9. code box
+      wrapText(ctx, storyPercent + '% отстъпка за фото и видео заснемане', 540, 1040, 920, 44);
+      // 9. code box – the real code never appears on the Story (only the prefix, the rest is masked)
+      var masked = code.replace(/[^-]+$/, '••••');
       ctx.strokeStyle = rgba(accent, 0.7); ctx.lineWidth = 2; ctx.strokeRect(160, 1090, 760, 150);
       ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(160, 1090, 760, 150);
-      var fc = fitFont(ctx, code, 680, 84, '700', MONO); ctx.font = '700 ' + fc + 'px ' + MONO; ctx.fillStyle = '#ffffff';
-      drawSpaced(ctx, code, 540, 1195, 6);
+      var fc = fitFont(ctx, masked, 680, 84, '700', MONO); ctx.font = '700 ' + fc + 'px ' + MONO; ctx.fillStyle = '#ffffff';
+      drawSpaced(ctx, masked, 540, 1195, 6);
       // 10. validity
       ctx.fillStyle = accent; ctx.font = '500 32px ' + FONT;
       drawSpaced(ctx, 'ВАЛИДЕН ' + CONFIG.validityHours + ' ЧАСА', 540, 1330, 5);

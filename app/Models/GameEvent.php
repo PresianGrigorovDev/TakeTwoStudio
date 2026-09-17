@@ -15,7 +15,7 @@ class GameEvent extends Model
 
     public const TARGETS = ['prom', 'wedding'];
 
-    public const EVENTS = ['scan', 'win', 'lose', 'voucher', 'share'];
+    public const EVENTS = ['scan', 'win', 'lose', 'voucher', 'share', 'use'];
 
     public const LOC_PATTERN = '/^[a-z0-9-]{1,40}$/';
 

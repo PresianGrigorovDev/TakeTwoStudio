@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GameEvent;
 use App\Models\LegalPage;
+use App\Support\GameVoucher;
 use App\Support\Seo\PromSeason;
 use App\Support\Settings;
 use Illuminate\Http\JsonResponse;
@@ -20,13 +21,12 @@ use Illuminate\Validation\Rule;
  * The page is noindex, cookie-free and shares nothing with the main layout.
  * The browser generates the voucher code and posts anonymous events to
  * /api/igra/event (fire-and-forget, also via navigator.sendBeacon as text/plain).
- * Both routes run without StartSession / CSRF (see routes/web.php).
+ * The "voucher" event is what makes the code redeemable in the site calculators
+ * (see App\Support\GameVoucher). Both routes run without StartSession / CSRF.
  */
 class GameController extends Controller
 {
-    public const DISCOUNT_PERCENT = 15;
-
-    public const VALIDITY_HOURS = 72;
+    public const VALIDITY_HOURS = GameVoucher::VALIDITY_HOURS;
 
     public const MAX_BODY_BYTES = 4096;
 
@@ -37,16 +37,22 @@ class GameController extends Controller
     /** Root-relative on purpose: an absolute URL on a different host would taint the Story canvas. */
     public const LOGO_URL = '/css/img/logo-tts-white.webp';
 
-    /** @var array<string,array{title:string,description:string,theme:string}> */
+    /** Calculator page where the code is applied via ?promo=CODE (partials/promo-code-input auto-applies it). */
+    public const USE_PATHS = [
+        'prom' => '/proms',
+        'wedding' => '/weddings',
+    ];
+
+    /** @var array<string,array{title:string,description:string,theme:string}> description takes the discount percent (%d). */
     public const PAGE = [
         'prom' => [
             'title' => 'Протокол: Излизане от Матрицата [Варна]',
-            'description' => 'Мини игра от QR стикер във Варна: открий четирите скрити връзки за 4 опита и вземи '.self::DISCOUNT_PERCENT.'% отстъпка за фото и видео заснемане на бала от Take Two Studio 1603.',
+            'description' => 'Мини игра от QR стикер във Варна: открий четирите скрити връзки за 4 опита и вземи %d%% отстъпка за фото и видео заснемане на бала от Take Two Studio 1603.',
             'theme' => '#050807',
         ],
         'wedding' => [
             'title' => 'Логически пъзел: Сватбената маса',
-            'description' => 'Логически пъзел от QR стикер: настани шестимата гости според четирите правила и вземи '.self::DISCOUNT_PERCENT.'% отстъпка за сватбено фото и видео от Take Two Studio 1603.',
+            'description' => 'Логически пъзел от QR стикер: настани шестимата гости според четирите правила и вземи %d%% отстъпка за сватбено фото и видео от Take Two Studio 1603.',
             'theme' => '#0b0b0f',
         ],
     ];
@@ -55,6 +61,8 @@ class GameController extends Controller
     {
         $target = self::sanitizeTarget($request->query('target'));
         $loc = self::sanitizeLoc($request->query('loc'));
+        $percent = GameVoucher::percentFor($target, 'base');
+        $percentShared = GameVoucher::percentFor($target, 'shared');
 
         $instagramUrl = Settings::socialLinks()['instagram'] ?? self::DEFAULT_INSTAGRAM_URL;
 
@@ -64,15 +72,20 @@ class GameController extends Controller
             ? route('legal.igra')
             : null;
 
+        $page = self::PAGE[$target];
+        $page['description'] = sprintf($page['description'], max($percent, $percentShared));
+
         $config = [
             'target' => $target,
             'loc' => $loc,
             'eventUrl' => route('game.event'),
+            'useUrl' => url(self::USE_PATHS[$target]),
             'instagramHandle' => $this->instagramHandle($instagramUrl),
             'instagramUrl' => $instagramUrl,
             'logoUrl' => self::LOGO_URL,
             'studioName' => Settings::siteName(),
-            'discountPercent' => self::DISCOUNT_PERCENT,
+            'discountPercent' => $percent,
+            'discountPercentShared' => $percentShared,
             'validityHours' => self::VALIDITY_HOURS,
             'seasonYear' => PromSeason::year(),
             'legalUrl' => $legalUrl,
@@ -83,7 +96,7 @@ class GameController extends Controller
                 'target' => $target,
                 'loc' => $loc,
                 'config' => $config,
-                'page' => self::PAGE[$target],
+                'page' => $page,
                 // loc is deliberately left out of the URL people share.
                 'shareUrl' => route('game.show', ['target' => $target]),
             ])
@@ -112,13 +125,13 @@ class GameController extends Controller
             'target' => ['required', 'string', Rule::in(GameEvent::TARGETS)],
             'loc' => ['nullable', 'string', 'regex:'.GameEvent::LOC_PATTERN],
             'event' => ['required', 'string', Rule::in(GameEvent::EVENTS)],
-            'code' => ['nullable', 'string', 'regex:'.GameEvent::CODE_PATTERN, 'required_if:event,voucher,share', 'prohibited_unless:event,voucher,share'],
+            'code' => ['nullable', 'string', 'regex:'.GameEvent::CODE_PATTERN, 'required_if:event,voucher,share,use', 'prohibited_unless:event,voucher,share,use'],
             'meta' => ['nullable', 'array:lives_left,seconds,attempts,solved,method'],
             'meta.lives_left' => ['nullable', 'integer', 'between:0,4'],
             'meta.seconds' => ['nullable', 'integer', 'between:0,86400'],
             'meta.attempts' => ['nullable', 'integer', 'between:0,999'],
             'meta.solved' => ['nullable', 'integer', 'between:0,4'],
-            'meta.method' => ['nullable', 'string', Rule::in(['share', 'download', 'preview'])],
+            'meta.method' => ['nullable', 'string', Rule::in(['share', 'download', 'preview', 'confirm'])],
         ]);
 
         // A VN-WED-… code on the prom game (or vice versa) is a forged payload.
@@ -146,6 +159,25 @@ class GameController extends Controller
         }
         $meta['device'] = self::deviceClass($request);
 
+        if ($data['event'] === 'voucher') {
+            // The voucher row IS the redeemable voucher: keep it unique per code (the browser may
+            // retry the beacon) and freeze both discount levels the player was shown.
+            if (GameVoucher::row($data['code']) !== null) {
+                return response()->noContent();
+            }
+
+            $meta['percent'] = GameVoucher::percentFor($data['target'], 'base');
+            $meta['percent_shared'] = GameVoucher::percentFor($data['target'], 'shared');
+        }
+
+        if ($data['event'] === 'share' && in_array($meta['method'] ?? null, GameVoucher::BOOSTING_METHODS, true)) {
+            // Sharing the Story artefact unlocks the higher discount on the voucher itself.
+            $voucher = GameVoucher::row($data['code']);
+            if ($voucher !== null) {
+                GameVoucher::boost($voucher);
+            }
+        }
+
         GameEvent::create([
             'target' => $data['target'],
             'loc' => $data['loc'] ?? null,
@@ -157,7 +189,7 @@ class GameController extends Controller
         return response()->noContent();
     }
 
-    /** Public URL of a sticker: /igra?target=prom&loc=mg (loc omitted when null). Used by the admin link generator too. */
+    /** Public URL of a sticker: /igra?target=prom&loc=mg (loc omitted when null). Used by the admin too. */
     public static function url(string $target, ?string $loc = null): string
     {
         return route('game.show', array_filter([

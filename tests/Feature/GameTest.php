@@ -11,7 +11,9 @@ use App\Filament\Resources\GameStickerResource\Pages\CreateGameSticker;
 use App\Filament\Resources\GameStickerResource\Pages\ListGameStickers;
 use App\Models\GameEvent;
 use App\Models\GameSticker;
+use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\GameVoucher;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Session\Middleware\StartSession;
@@ -64,7 +66,9 @@ class GameTest extends TestCase
         $this->assertSame($target, $config['target']);
         $this->assertSame('mg', $config['loc']);
         $this->assertSame(url('/api/igra/event'), $config['eventUrl']);
-        $this->assertSame(15, $config['discountPercent']);
+        $this->assertSame(5, $config['discountPercent']);          // default: 5% at win …
+        $this->assertSame(15, $config['discountPercentShared']);   // … 15% after sharing the Story
+        $this->assertSame(url($target === 'wedding' ? '/weddings' : '/proms'), $config['useUrl']);
         $this->assertSame(72, $config['validityHours']);
         $this->assertSame('taketwostudio1603', $config['instagramHandle']);
         $this->assertStringStartsWith('https://', $config['instagramUrl']);
@@ -81,8 +85,57 @@ class GameTest extends TestCase
 
         $this->assertStringContainsString('igra.css?v=', $html);
         $this->assertStringContainsString('igra.js?v=', $html);
-        $this->assertStringContainsString('15% OFF VOUCHER', $html);
+        $this->assertStringContainsString('5% OFF VOUCHER', $html);
+        $this->assertStringContainsString('отстъпката става 15%', $html);
+        $this->assertStringContainsString('id="rv-use"', $html);
+        $this->assertStringContainsString('Използвай кода в сайта', $html);
         $this->assertStringNotContainsString('25%', $html);
+    }
+
+    public function test_discount_percents_come_from_site_settings(): void
+    {
+        SiteSetting::query()->create(['setting_key' => 'game_discount_base_prom', 'setting_value' => '10']);
+        SiteSetting::query()->create(['setting_key' => 'game_discount_shared_prom', 'setting_value' => '20']);
+
+        $html = $this->get('/igra?target=prom')->assertOk()->getContent();
+        $config = $this->configFrom($html);
+
+        $this->assertSame(10, $config['discountPercent']);
+        $this->assertSame(20, $config['discountPercentShared']);
+        $this->assertStringContainsString('10% OFF VOUCHER', $html);
+        $this->assertStringContainsString('отстъпката става 20%', $html);
+
+        // The other game keeps its defaults.
+        $this->assertSame(5, $this->configFrom($this->get('/igra?target=wedding')->getContent())['discountPercent']);
+    }
+
+    public function test_voucher_event_is_unique_per_code_and_sharing_boosts_the_discount(): void
+    {
+        // The voucher row is created once (the browser may retry the beacon) and freezes both levels.
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'voucher', 'code' => 'VN-PROM-K7M3'])->assertNoContent();
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'voucher', 'code' => 'VN-PROM-K7M3'])->assertNoContent();
+        $this->assertSame(1, GameEvent::query()->where('event', 'voucher')->count());
+
+        $voucher = GameEvent::query()->where('event', 'voucher')->firstOrFail();
+        $this->assertSame(5, $voucher->meta['percent']);
+        $this->assertSame(15, $voucher->meta['percent_shared']);
+        $this->assertArrayNotHasKey('boosted_at', $voucher->meta);
+
+        // A preview-only share does not unlock the higher discount …
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'share', 'code' => 'VN-PROM-K7M3', 'meta' => ['method' => 'preview']])->assertNoContent();
+        $this->assertSame(5, $voucher->fresh()->meta['percent']);
+
+        // … but a real share (share sheet / download / manual confirmation) does, once.
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'share', 'code' => 'VN-PROM-K7M3', 'meta' => ['method' => 'share']])->assertNoContent();
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'share', 'code' => 'VN-PROM-K7M3', 'meta' => ['method' => 'confirm']])->assertNoContent();
+        $boosted = $voucher->fresh();
+        $this->assertSame(15, $boosted->meta['percent']);
+        $this->assertNotEmpty($boosted->meta['boosted_at']);
+
+        // "Използвай кода в сайта" is logged as its own event.
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'loc' => 'mg', 'event' => 'use', 'code' => 'VN-PROM-K7M3'])->assertNoContent();
+        $this->assertSame(1, GameEvent::query()->where('event', 'use')->count());
+        $this->postJson(self::EVENT_URL, ['target' => 'prom', 'event' => 'use'])->assertStatus(422);   // code required
     }
 
     public function test_invalid_or_missing_target_defaults_to_prom(): void
@@ -147,7 +200,8 @@ class GameTest extends TestCase
         $this->assertSame('mg', $event->loc);
         $this->assertSame('voucher', $event->event);
         $this->assertSame('VN-PROM-K7M3', $event->code);
-        $this->assertSame(['lives_left' => 2, 'seconds' => 95, 'device' => 'mobile'], $event->meta);
+        // Voucher rows additionally freeze both discount levels the player was shown.
+        $this->assertSame(['lives_left' => 2, 'seconds' => 95, 'device' => 'mobile', 'percent' => 5, 'percent_shared' => 15], $event->meta);
         $this->assertNotNull($event->created_at);
         $this->assertNull($event->redeemed_at);
 
@@ -430,6 +484,31 @@ class GameTest extends TestCase
         $sticker->delete();
         $this->assertDatabaseCount('game_stickers', 1);
         $this->assertDatabaseCount('game_events', 4);
+    }
+
+    public function test_admin_edits_the_game_discounts_on_the_stats_page(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        Livewire::actingAs($admin)
+            ->test(GameStats::class)
+            ->assertFormSet(['prom_base' => 5, 'prom_shared' => 15, 'wedding_base' => 5, 'wedding_shared' => 15])
+            ->fillForm(['prom_base' => 8, 'prom_shared' => 20, 'wedding_base' => 5, 'wedding_shared' => 12])
+            ->call('saveSettings')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame(8, GameVoucher::percentFor('prom', 'base'));
+        $this->assertSame(20, GameVoucher::percentFor('prom', 'shared'));
+        $this->assertSame(5, GameVoucher::percentFor('wedding', 'base'));
+        $this->assertSame(12, GameVoucher::percentFor('wedding', 'shared'));
+        $this->assertSame('20', SiteSetting::query()->where('setting_key', 'game_discount_shared_prom')->value('setting_value'));
+
+        // The shared discount can never be lower than the base one.
+        Livewire::actingAs($admin)
+            ->test(GameStats::class)
+            ->fillForm(['prom_base' => 20, 'prom_shared' => 10])
+            ->call('saveSettings')
+            ->assertHasFormErrors(['prom_shared']);
     }
 
     /** @return array<string,mixed> */

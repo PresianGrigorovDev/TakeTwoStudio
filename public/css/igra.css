@@ -257,6 +257,10 @@ a { color: var(--accent); }
 .rv-code-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .rv-code { font: 700 clamp(1.3rem, 7vw, 1.9rem)/1 var(--mono); letter-spacing: .08em; color: var(--accent-2); }
 .rv-timer { color: var(--dim); }
+.rv-boost { color: var(--accent-2); }
+.rv-boost.is-done { color: var(--ok); }
+.rv-use { width: 100%; margin-top: 4px; }
+#rv-confirm { align-self: center; }
 .rv-card.is-expired .rv-code { text-decoration: line-through; color: var(--dim); }
 .rv-card.is-expired .rv-timer { color: var(--bad); }
 .rv-story { display: flex; flex-direction: column; gap: 10px; }
