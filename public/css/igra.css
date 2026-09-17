@@ -60,6 +60,7 @@ body.igra {
 .igra-noscript, .igra-unsupported { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--dim); text-align: center; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 :focus:not(:focus-visible) { outline: 0; }
+[tabindex="-1"]:focus { outline: 0; }   /* headings receive programmatic focus on screen change */
 a { color: var(--accent); }
 
 /* 3. Shared components ---------------------------------------------------- */
