@@ -5,25 +5,20 @@ namespace App\Filament\Pages;
 use App\Filament\Resources\GameEventResource;
 use App\Filament\Resources\GameEventResource\Widgets\GameOverviewWidget;
 use App\Filament\Resources\GameEventResource\Widgets\GameStatsWidget;
+use App\Filament\Resources\GameStickerResource;
 use App\Http\Controllers\GameController;
 use App\Models\GameEvent;
+use App\Models\GameSticker;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 
 /**
- * "QR Игра – статистика": headline numbers, funnel per sticker location and the
- * game links (base links + per-sticker generator) so the studio can copy them
- * for QR codes. Lives in the Маркетинг navigation group next to the events list.
+ * "QR Игра – статистика": headline numbers, funnel per sticker location, and the list of
+ * locations that were actually scanned (linked to their sticker, or offering to create one).
+ * Links and QR codes themselves are managed in Маркетинг → QR стикери (GameStickerResource).
  */
-class GameStats extends Page implements HasForms
+class GameStats extends Page
 {
-    use InteractsWithForms;
-
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $navigationLabel = 'QR Игра – статистика';
@@ -38,62 +33,15 @@ class GameStats extends Page implements HasForms
 
     protected static string $view = 'filament.pages.game-stats';
 
-    /** @var array<string,mixed>|null */
-    public ?array $data = [];
-
-    public function mount(): void
-    {
-        $this->form->fill(['target' => 'prom', 'loc' => '']);
-    }
-
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Select::make('target')
-                    ->label('Игра')
-                    ->options(GameEventResource::TARGET_LABELS)
-                    ->default('prom')
-                    ->required()
-                    ->native(false)
-                    ->live(),
-
-                TextInput::make('loc')
-                    ->label('Локация на стикера (loc)')
-                    ->placeholder('напр. mg, morska, sevastopol')
-                    ->maxLength(40)
-                    ->helperText('Малки латински букви, цифри и тире – до 40 знака. Празно = линк без локация.')
-                    ->live(debounce: 400),
-            ])
-            ->columns(2)
-            ->statePath('data');
-    }
-
-    /** The link for the target + loc currently in the form (loc sanitized the same way as the public page). */
-    public function getGeneratedUrl(): string
-    {
-        return GameController::url((string) ($this->data['target'] ?? 'prom'), $this->data['loc'] ?? null);
-    }
-
-    /** @return array<string,string> label => url */
-    public function getBaseLinks(): array
-    {
-        $links = [];
-
-        foreach (GameEventResource::TARGET_LABELS as $target => $label) {
-            $links[$label] = GameController::url($target);
-        }
-
-        return $links;
-    }
-
     /**
-     * Sticker locations that have already been scanned at least once, with their links.
+     * Sticker locations that have been scanned at least once, with their sticker (if registered).
      *
-     * @return array<int,array{target:string,label:string,loc:string,scans:int,url:string}>
+     * @return array<int,array{target:string,label:string,loc:string,scans:int,url:string,sticker:?GameSticker,createUrl:string}>
      */
     public function getKnownLocations(): array
     {
+        $stickers = GameSticker::query()->get()->keyBy(fn (GameSticker $s) => $s->target.'|'.$s->loc);
+
         return GameEvent::query()
             ->selectRaw("target, loc, SUM(CASE WHEN event = 'scan' THEN 1 ELSE 0 END) AS scans")
             ->whereNotNull('loc')
@@ -108,6 +56,8 @@ class GameStats extends Page implements HasForms
                 'loc' => $row->loc,
                 'scans' => (int) $row->scans,
                 'url' => GameController::url($row->target, $row->loc),
+                'sticker' => $stickers->get($row->target.'|'.$row->loc),
+                'createUrl' => GameStickerResource::getUrl('create', ['target' => $row->target, 'loc' => $row->loc]),
             ])
             ->all();
     }
@@ -115,9 +65,15 @@ class GameStats extends Page implements HasForms
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('stickers')
+                ->label('QR стикери')
+                ->icon('heroicon-m-qr-code')
+                ->url(GameStickerResource::getUrl()),
+
             Action::make('events')
                 ->label('Всички събития и кодове')
                 ->icon('heroicon-m-table-cells')
+                ->color('gray')
                 ->url(GameEventResource::getUrl()),
         ];
     }

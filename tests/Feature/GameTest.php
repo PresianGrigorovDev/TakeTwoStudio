@@ -6,7 +6,11 @@ use App\Filament\Pages\GameStats;
 use App\Filament\Resources\GameEventResource;
 use App\Filament\Resources\GameEventResource\Widgets\GameOverviewWidget;
 use App\Filament\Resources\GameEventResource\Widgets\GameStatsWidget;
+use App\Filament\Resources\GameStickerResource;
+use App\Filament\Resources\GameStickerResource\Pages\CreateGameSticker;
+use App\Filament\Resources\GameStickerResource\Pages\ListGameStickers;
 use App\Models\GameEvent;
+use App\Models\GameSticker;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -302,23 +306,30 @@ class GameTest extends TestCase
             ->assertSee('QR Игра – статистика')
             ->assertSee('QR Игра – събития');
 
-        // Dedicated statistics page (Маркетинг → QR Игра – статистика) with the game links.
+        // Dedicated statistics page (Маркетинг → QR Игра – статистика): no hardcoded links,
+        // scanned locations are listed and can be turned into stickers.
         $this->actingAs($admin)
             ->get(GameStats::getUrl())
             ->assertOk()
             ->assertSee('QR Игра – статистика')
             ->assertSee('Как да валидираш код от Instagram DM')
             ->assertSee('Всички събития и кодове')
-            ->assertSee('Линкове към игрите')
-            ->assertSee(url('/igra?target=prom'))
-            ->assertSee(url('/igra?target=wedding'))
-            ->assertSee(url('/igra?target=prom&loc=mg'));   // already-scanned sticker listed with its link
+            ->assertSee('QR стикери')
+            ->assertSee('Сканирани локации')
+            ->assertSee('mg')
+            ->assertSee('Създай стикер')
+            ->assertDontSee('без локация');
 
-        // The link generator sanitizes loc exactly like the public page.
-        Livewire::actingAs($admin)
-            ->test(GameStats::class)
-            ->fillForm(['target' => 'wedding', 'loc' => 'Morska Gradina!'])
-            ->assertSee(url('/igra?target=wedding&loc=morska-gradina'));
+        // The QR generator scripts are registered on the panel (every admin page) and exist on disk.
+        $page = $this->actingAs($admin)->get(GameStats::getUrl())->getContent();
+        $this->assertStringContainsString('vendor/qrcode/qrcode.min.js', $page);
+        $this->assertStringContainsString('js/admin/game-qr.js?v=', $page);
+        $this->assertSame(1, substr_count($page, 'js/admin/game-qr.js'), 'QR generator script must be loaded exactly once');
+        // Our scripts must run before Filament's Alpine bundle so x-data="GameQr.panel(...)" can resolve.
+        $this->assertLessThan(strpos($page, 'js/filament/filament/app.js'), strpos($page, 'js/admin/game-qr.js'));
+        foreach (['vendor/qrcode/qrcode.min.js', 'vendor/qrcode/LICENSE', 'js/admin/game-qr.js', 'css/img/logo-tts-white.webp', 'css/img/logo-tts-black.png'] as $file) {
+            $this->assertFileExists(public_path($file));
+        }
 
         // The dashboard must NOT carry the game widgets any more (they moved to the Маркетинг page);
         // Livewire mounts widgets by their kebab-case component alias, so its absence proves they are not registered there.
@@ -349,6 +360,76 @@ class GameTest extends TestCase
         $this->assertSame('mg', $stats['prom']['rows'][0]['loc']);
         $this->assertSame(100, $stats['prom']['totals']['win_rate']);
         $this->assertSame(100, $stats['prom']['totals']['voucher_rate']);
+    }
+
+    public function test_admin_creates_qr_stickers_with_generated_links_and_qr_codes(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        // Create: the loc is sanitized like the public page and must be unique per game.
+        Livewire::actingAs($admin)
+            ->test(CreateGameSticker::class)
+            ->fillForm(['name' => 'Морска градина – главен вход', 'target' => 'prom', 'loc' => 'Morska Gradina!'])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $sticker = GameSticker::query()->firstOrFail();
+        $this->assertSame('morska-gradina', $sticker->loc);
+        $this->assertSame('prom', $sticker->target);
+        $this->assertSame(url('/igra?target=prom&loc=morska-gradina'), $sticker->url);
+
+        Livewire::actingAs($admin)
+            ->test(CreateGameSticker::class)
+            ->fillForm(['name' => 'Дубликат', 'target' => 'prom', 'loc' => 'morska-gradina'])
+            ->call('create')
+            ->assertHasFormErrors(['loc']);
+
+        // The same loc is allowed for the other game (different QR, different link).
+        Livewire::actingAs($admin)
+            ->test(CreateGameSticker::class)
+            ->fillForm(['name' => 'Морска градина (сватби)', 'target' => 'wedding', 'loc' => 'morska-gradina'])
+            ->call('create')
+            ->assertHasNoFormErrors();
+        $this->assertDatabaseCount('game_stickers', 2);
+
+        // Prefill from the statistics page: ?target=&loc= land in the create form.
+        Livewire::actingAs($admin)
+            ->withQueryParams(['target' => 'wedding', 'loc' => 'Sevastopol'])
+            ->test(CreateGameSticker::class)
+            ->assertFormSet(['target' => 'wedding', 'loc' => 'sevastopol']);
+
+        // Events with the same target + loc are counted on the sticker; the QR modal renders the generator.
+        GameEvent::create(['target' => 'prom', 'loc' => 'morska-gradina', 'event' => 'scan']);
+        GameEvent::create(['target' => 'prom', 'loc' => 'morska-gradina', 'event' => 'scan']);
+        GameEvent::create(['target' => 'prom', 'loc' => 'morska-gradina', 'event' => 'win']);
+        GameEvent::create(['target' => 'wedding', 'loc' => 'morska-gradina', 'event' => 'scan']);
+
+        $counted = GameSticker::query()->withEventCounts()->whereKey($sticker->id)->firstOrFail();
+        $this->assertSame(2, (int) $counted->scans);
+        $this->assertSame(1, (int) $counted->wins);
+        $this->assertSame(0, (int) $counted->vouchers);
+
+        Livewire::actingAs($admin)
+            ->test(ListGameStickers::class)
+            ->assertCanSeeTableRecords(GameSticker::all())
+            ->assertSee('Морска градина – главен вход')
+            ->assertSee('morska-gradina')
+            ->mountTableAction('qr', $sticker)
+            ->assertSee('GameQr.panel(')
+            ->assertSee('Свали PNG')
+            ->assertSee('Свали SVG');
+
+        // The statistics page links a scanned location to its sticker.
+        $this->actingAs($admin)
+            ->get(GameStats::getUrl())
+            ->assertOk()
+            ->assertSee('Морска градина – главен вход')
+            ->assertSee(GameStickerResource::getUrl('edit', ['record' => $sticker]));
+
+        // Deleting a sticker never deletes its events.
+        $sticker->delete();
+        $this->assertDatabaseCount('game_stickers', 1);
+        $this->assertDatabaseCount('game_events', 4);
     }
 
     /** @return array<string,mixed> */
