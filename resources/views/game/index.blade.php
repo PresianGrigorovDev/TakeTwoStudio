@@ -13,7 +13,7 @@
 
 <main class="igra-app" id="igra-app">
     <header class="igra-top">
-        <span class="igra-tag mono" aria-hidden="true">// 1603</span>
+        <span class="igra-tag mono">// {{ $config['studioName'] }}</span>
         <button type="button" class="igra-icon-btn" id="btn-mute" aria-pressed="false" aria-label="Звук">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="24" height="24">
                 <path class="ico-speaker" d="M4 9v6h3.5l4.5 4V5L7.5 9H4z"/>
@@ -33,7 +33,7 @@
             <button type="button" class="igra-btn igra-btn--primary" id="btn-start">Започни</button>
         @else
             <h1 class="igra-title glitch" id="igra-h1" tabindex="-1" data-text="ПРОТОКОЛ: ИЗЛИЗАНЕ ОТ МАТРИЦАТА [ВАРНА]">ПРОТОКОЛ: ИЗЛИЗАНЕ ОТ МАТРИЦАТА [ВАРНА]</h1>
-            <p class="igra-lead mono">&gt; 16 сигнала. 4 скрити връзки. 4 опита.</p>
+            <p class="igra-lead mono">&gt; 16 плочки. 4 скрити групи по 4. 4 опита.</p>
             <button type="button" class="igra-btn igra-btn--primary" id="btn-start">Влез в системата</button>
         @endif
     </section>

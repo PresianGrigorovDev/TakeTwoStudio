@@ -6,7 +6,7 @@
             <span class="cx-life"></span><span class="cx-life"></span><span class="cx-life"></span><span class="cx-life"></span>
         </div>
     </div>
-    <p class="cx-hint mono">Избери 4 плочки, които имат нещо общо.</p>
+    <p class="cx-hint mono">16 плочки, скрити в 4 групи по 4. Избери 4 с нещо общо и натисни „Провери връзката“.</p>
     <div class="cx-grid" id="cx-grid" role="group" aria-label="Плочки"></div>
     <p class="igra-msg mono" id="cx-msg" role="status"></p>
     <div class="igra-actions">
