@@ -314,11 +314,27 @@ class GameTest extends TestCase
             ->assertSee(url('/igra?target=wedding'))
             ->assertSee(url('/igra?target=prom&loc=mg'));   // already-scanned sticker listed with its link
 
-        // The link generator sanitizes loc exactly like the public page.
+        // The link generator sanitizes loc exactly like the public page and feeds the QR panel via $wire.
         Livewire::actingAs($admin)
             ->test(GameStats::class)
+            ->assertSet('generatedUrl', url('/igra?target=prom'))
+            ->assertSet('stickerName', 'prom')
             ->fillForm(['target' => 'wedding', 'loc' => 'Morska Gradina!'])
-            ->assertSee(url('/igra?target=wedding&loc=morska-gradina'));
+            ->assertSee(url('/igra?target=wedding&loc=morska-gradina'))
+            ->assertSet('generatedUrl', url('/igra?target=wedding&loc=morska-gradina'))
+            ->assertSet('stickerName', 'wedding-morska-gradina')
+            ->call('setSticker', 'prom', 'mg')
+            ->assertSet('generatedUrl', url('/igra?target=prom&loc=mg'))
+            ->assertFormSet(['target' => 'prom', 'loc' => 'mg']);
+
+        // QR generator assets are self-hosted and referenced by the page.
+        $page = $this->actingAs($admin)->get(GameStats::getUrl())->getContent();
+        $this->assertStringContainsString('vendor/qrcode/qrcode.min.js', $page);
+        $this->assertStringContainsString('js/admin/game-qr.js?v=', $page);
+        $this->assertStringContainsString('GameQr.panel(', $page);
+        foreach (['vendor/qrcode/qrcode.min.js', 'vendor/qrcode/LICENSE', 'js/admin/game-qr.js', 'css/img/logo-tts-white.webp', 'css/img/logo-tts-black.png'] as $file) {
+            $this->assertFileExists(public_path($file));
+        }
 
         // The dashboard must NOT carry the game widgets any more (they moved to the Маркетинг page);
         // Livewire mounts widgets by their kebab-case component alias, so its absence proves they are not registered there.
