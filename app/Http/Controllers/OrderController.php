@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Models\PromoCode;
+use App\Support\GameVoucher;
 
 class OrderController extends Controller
 {
@@ -59,17 +60,26 @@ class OrderController extends Controller
         $discountAmount  = null;
         $finalPrice      = (float) $validated['final_price'];
 
+        // NOTE: the calculators already apply the discount in the browser (applyPromoDiscount) and post the
+        // discounted total as final_price, so the server only RECORDS the discount instead of subtracting it again.
         if (! empty($validated['promo_code'])) {
-            $promoCode = PromoCode::where('code', strtoupper(trim($validated['promo_code'])))->first();
+            $code      = strtoupper(trim($validated['promo_code']));
+            $promoCode = PromoCode::where('code', $code)->first();
 
             if ($promoCode && $promoCode->isValid()) {
-                $discountAmount = $promoCode->calculateDiscount($finalPrice);
-                $finalPrice     = max(0, $finalPrice - $discountAmount);
+                $discountAmount = GameVoucher::discountFromDiscountedPrice($finalPrice, $promoCode->discount_type, (float) $promoCode->discount_value);
                 $promoCodeId    = $promoCode->id;
                 $promoCodeStr   = $promoCode->code;
 
                 // Increment usage count
                 $promoCode->increment('uses_count');
+            } elseif (($voucher = GameVoucher::find($code)) !== null) {
+                // Voucher from the QR game (/igra): one-time use, marked as redeemed here.
+                $percent        = GameVoucher::percentOf($voucher);
+                $discountAmount = GameVoucher::discountFromDiscountedPrice($finalPrice, 'percent', $percent);
+                $promoCodeStr   = $code;
+
+                GameVoucher::redeem($voucher);
             }
         }
 
@@ -170,6 +180,24 @@ class OrderController extends Controller
         $promoCode = PromoCode::where('code', $code)->first();
 
         if (! $promoCode) {
+            // Voucher from the QR game (/igra): valid 72h after it was issued, until redeemed.
+            if (GameVoucher::isGameCode($code)) {
+                $voucher = GameVoucher::find($code);
+
+                if (! $voucher) {
+                    return response()->json(['valid' => false, 'message' => 'Кодът от играта е изтекъл, вече е използван или не е разпознат.']);
+                }
+
+                $percent = GameVoucher::percentOf($voucher);
+
+                return response()->json([
+                    'valid'          => true,
+                    'discount_type'  => 'percent',
+                    'discount_value' => (float) $percent,
+                    'message'        => "Кодът от играта е приложен! Намаление: {$percent}%",
+                ]);
+            }
+
             return response()->json(['valid' => false, 'message' => 'Невалиден промо код.']);
         }
 

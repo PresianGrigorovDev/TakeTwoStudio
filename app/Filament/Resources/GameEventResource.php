@@ -44,6 +44,7 @@ class GameEventResource extends Resource
         'lose' => 'Загуба',
         'voucher' => 'Ваучер',
         'share' => 'Споделяне',
+        'use' => 'Към сайта',
     ];
 
     public static function canCreate(): bool
@@ -115,10 +116,25 @@ class GameEventResource extends Resource
                         'lose' => 'danger',
                         'voucher' => 'warning',
                         'share' => 'info',
+                        'use' => 'primary',
                         default => 'gray',
                     })
                     ->formatStateUsing(fn (string $state): string => self::EVENT_LABELS[$state] ?? $state)
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('discount')
+                    ->label('Отстъпка')
+                    ->state(function (GameEvent $record): ?string {
+                        if ($record->event !== 'voucher') {
+                            return null;
+                        }
+                        $percent = (int) ($record->meta['percent'] ?? 0);
+                        $shared = (int) ($record->meta['percent_shared'] ?? 0);
+                        $boosted = ! empty($record->meta['boosted_at']);
+
+                        return $percent > 0 ? $percent.'%'.($boosted ? ' ✓ споделено' : ($shared > $percent ? ' (→ '.$shared.'% при споделяне)' : '')) : null;
+                    })
+                    ->placeholder('—'),
 
                 Tables\Columns\TextColumn::make('code')
                     ->label('Код')

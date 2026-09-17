@@ -9,16 +9,27 @@ use App\Filament\Resources\GameStickerResource;
 use App\Http\Controllers\GameController;
 use App\Models\GameEvent;
 use App\Models\GameSticker;
+use App\Models\SiteSetting;
+use App\Support\GameVoucher;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 
 /**
- * "QR Игра – статистика": headline numbers, funnel per sticker location, and the list of
- * locations that were actually scanned (linked to their sticker, or offering to create one).
+ * "QR Игра – статистика": headline numbers, funnel per sticker location, the list of
+ * locations that were actually scanned (linked to their sticker, or offering to create one)
+ * and the game settings (discount at win / after sharing, per game).
  * Links and QR codes themselves are managed in Маркетинг → QR стикери (GameStickerResource).
  */
-class GameStats extends Page
+class GameStats extends Page implements HasForms
 {
+    use InteractsWithForms;
+
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static ?string $navigationLabel = 'QR Игра – статистика';
@@ -32,6 +43,75 @@ class GameStats extends Page
     protected static ?string $slug = 'game-stats';
 
     protected static string $view = 'filament.pages.game-stats';
+
+    /** @var array<string,mixed>|null */
+    public ?array $settings = [];
+
+    /** @var array<string,array{target:string,level:string,label:string}> form field => setting */
+    private const FIELDS = [
+        'prom_base' => ['target' => 'prom', 'level' => 'base', 'label' => 'Отстъпка при победа – бал'],
+        'prom_shared' => ['target' => 'prom', 'level' => 'shared', 'label' => 'Отстъпка след споделяне – бал'],
+        'wedding_base' => ['target' => 'wedding', 'level' => 'base', 'label' => 'Отстъпка при победа – сватба'],
+        'wedding_shared' => ['target' => 'wedding', 'level' => 'shared', 'label' => 'Отстъпка след споделяне – сватба'],
+    ];
+
+    public function mount(): void
+    {
+        $state = [];
+        foreach (self::FIELDS as $field => $def) {
+            $state[$field] = GameVoucher::percentFor($def['target'], $def['level']);
+        }
+
+        $this->form->fill($state);
+    }
+
+    public function form(Form $form): Form
+    {
+        $percent = fn (string $name, string $label) => TextInput::make($name)
+            ->label($label)
+            ->numeric()
+            ->integer()
+            ->minValue(0)
+            ->maxValue(GameVoucher::MAX_PERCENT)
+            ->suffix('%')
+            ->required();
+
+        return $form
+            ->schema([
+                Fieldset::make('Абитуриентски бал')
+                    ->schema([
+                        $percent('prom_base', 'При победа'),
+                        $percent('prom_shared', 'След споделяне на Story')->gte('prom_base'),
+                    ])
+                    ->columns(2),
+
+                Fieldset::make('Сватба')
+                    ->schema([
+                        $percent('wedding_base', 'При победа'),
+                        $percent('wedding_shared', 'След споделяне на Story')->gte('wedding_base'),
+                    ])
+                    ->columns(2),
+            ])
+            ->statePath('settings');
+    }
+
+    public function saveSettings(): void
+    {
+        $data = $this->form->getState();
+
+        foreach (self::FIELDS as $field => $def) {
+            SiteSetting::query()->updateOrCreate(
+                ['setting_key' => GameVoucher::SETTING_KEYS[$def['target']][$def['level']]],
+                ['setting_value' => (string) (int) $data[$field], 'description' => 'QR игра: '.$def['label'].' (%)'],
+            );
+        }
+
+        Notification::make()
+            ->title('Настройките на играта са запазени')
+            ->body('Важат за ваучерите, издадени от сега нататък. Вече издадените пазят процента, който играчът е видял.')
+            ->success()
+            ->send();
+    }
 
     /**
      * Sticker locations that have been scanned at least once, with their sticker (if registered).
