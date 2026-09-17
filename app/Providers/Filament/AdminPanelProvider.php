@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Support\Assets;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -10,6 +11,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -32,6 +34,11 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            // Self-hosted QR generator for Маркетинг → QR стикери (public/js/admin/game-qr.js + qrcode-generator, MIT).
+            ->assets([
+                Js::make('qrcode-generator', asset('vendor/qrcode/qrcode.min.js')),
+                Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
