@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\GameStats;
 use App\Filament\Resources\GameEventResource;
-use App\Filament\Widgets\GameStatsWidget;
+use App\Filament\Resources\GameEventResource\Widgets\GameOverviewWidget;
+use App\Filament\Resources\GameEventResource\Widgets\GameStatsWidget;
 use App\Models\GameEvent;
 use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
@@ -279,7 +281,7 @@ class GameTest extends TestCase
         $this->assertDirectoryDoesNotExist(public_path('igra'));
     }
 
-    public function test_admin_can_browse_game_events_and_dashboard_shows_stats(): void
+    public function test_admin_can_browse_game_events_and_marketing_stats_page(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);
 
@@ -293,12 +295,28 @@ class GameTest extends TestCase
             ->assertSee('VN-PROM-K7M3')
             ->assertSee('Маркирай като използван');
 
+        // Both entries live in the "Маркетинг" navigation group.
         $this->actingAs($admin)
             ->get('/admin')
             ->assertOk()
-            ->assertSee('QR Игра');
+            ->assertSee('QR Игра – статистика')
+            ->assertSee('QR Игра – събития');
 
-        // Dashboard widgets are lazy Livewire components, so their content is asserted on the component itself.
+        // Dedicated statistics page (Маркетинг → QR Игра – статистика).
+        $this->actingAs($admin)
+            ->get(GameStats::getUrl())
+            ->assertOk()
+            ->assertSee('QR Игра – статистика')
+            ->assertSee('Как да валидираш код от Instagram DM')
+            ->assertSee('Всички събития и кодове');
+
+        // The dashboard must NOT carry the game widgets any more (they moved to the Маркетинг page);
+        // Livewire mounts widgets by their kebab-case component alias, so its absence proves they are not registered there.
+        $dashboard = $this->actingAs($admin)->get('/admin')->getContent();
+        $this->assertStringNotContainsString('game-stats-widget', $dashboard);
+        $this->assertStringNotContainsString('game-overview-widget', $dashboard);
+
+        // Header widgets are lazy Livewire components, so their content is asserted on the components themselves.
         Livewire::actingAs($admin)
             ->test(GameStatsWidget::class)
             ->assertSee('QR Игра – статистика по локация')
@@ -306,6 +324,13 @@ class GameTest extends TestCase
             ->assertSee('mg')
             ->assertSee('100% · 100%')
             ->assertSee('Провери код от DM');
+
+        Livewire::actingAs($admin)
+            ->test(GameOverviewWidget::class)
+            ->assertSee('Сканирания')
+            ->assertSee('Активни ваучери (72 ч)')
+            ->assertSee('Използвани ваучери')
+            ->assertSee('1 издадени общо');
 
         // 1 scan / 1 win / 1 voucher for prom+mg -> both conversions are 100%.
         $stats = app(GameStatsWidget::class)->getStats();

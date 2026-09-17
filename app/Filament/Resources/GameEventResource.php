@@ -23,7 +23,7 @@ class GameEventResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-qr-code';
 
-    protected static ?string $navigationLabel = 'QR Игра';
+    protected static ?string $navigationLabel = 'QR Игра – събития';
 
     protected static ?string $navigationGroup = 'Маркетинг';
 

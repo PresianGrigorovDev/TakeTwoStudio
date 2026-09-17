@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\GameEventResource\Widgets;
 
 use App\Filament\Resources\GameEventResource;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Dashboard funnel of the QR sticker game per target and sticker location:
+ * Funnel of the QR sticker game per target and sticker location:
  * scans -> wins / losses -> vouchers -> shares, with conversion percentages.
+ * Shown on the "QR Игра – статистика" page (Маркетинг), not on the dashboard.
  */
 class GameStatsWidget extends Widget
 {
     protected static string $view = 'filament.widgets.game-stats';
 
-    protected static ?int $sort = 11;
+    protected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = 'full';
 
