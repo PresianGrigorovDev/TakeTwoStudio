@@ -302,13 +302,23 @@ class GameTest extends TestCase
             ->assertSee('QR Игра – статистика')
             ->assertSee('QR Игра – събития');
 
-        // Dedicated statistics page (Маркетинг → QR Игра – статистика).
+        // Dedicated statistics page (Маркетинг → QR Игра – статистика) with the game links.
         $this->actingAs($admin)
             ->get(GameStats::getUrl())
             ->assertOk()
             ->assertSee('QR Игра – статистика')
             ->assertSee('Как да валидираш код от Instagram DM')
-            ->assertSee('Всички събития и кодове');
+            ->assertSee('Всички събития и кодове')
+            ->assertSee('Линкове към игрите')
+            ->assertSee(url('/igra?target=prom'))
+            ->assertSee(url('/igra?target=wedding'))
+            ->assertSee(url('/igra?target=prom&loc=mg'));   // already-scanned sticker listed with its link
+
+        // The link generator sanitizes loc exactly like the public page.
+        Livewire::actingAs($admin)
+            ->test(GameStats::class)
+            ->fillForm(['target' => 'wedding', 'loc' => 'Morska Gradina!'])
+            ->assertSee(url('/igra?target=wedding&loc=morska-gradina'));
 
         // The dashboard must NOT carry the game widgets any more (they moved to the Маркетинг page);
         // Livewire mounts widgets by their kebab-case component alias, so its absence proves they are not registered there.

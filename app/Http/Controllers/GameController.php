@@ -53,8 +53,8 @@ class GameController extends Controller
 
     public function show(Request $request): Response
     {
-        $target = $this->sanitizeTarget($request->query('target'));
-        $loc = $this->sanitizeLoc($request->query('loc'));
+        $target = self::sanitizeTarget($request->query('target'));
+        $loc = self::sanitizeLoc($request->query('loc'));
 
         $instagramUrl = Settings::socialLinks()['instagram'] ?? self::DEFAULT_INSTAGRAM_URL;
 
@@ -157,8 +157,17 @@ class GameController extends Controller
         return response()->noContent();
     }
 
+    /** Public URL of a sticker: /igra?target=prom&loc=mg (loc omitted when null). Used by the admin link generator too. */
+    public static function url(string $target, ?string $loc = null): string
+    {
+        return route('game.show', array_filter([
+            'target' => self::sanitizeTarget($target),
+            'loc' => self::sanitizeLoc($loc),
+        ], fn ($value) => $value !== null));
+    }
+
     /** Anything that is not exactly prom|wedding (including ?target[]=x) falls back to prom. */
-    private function sanitizeTarget(mixed $raw): string
+    public static function sanitizeTarget(mixed $raw): string
     {
         if (! is_string($raw)) {
             return 'prom';
@@ -170,7 +179,7 @@ class GameController extends Controller
     }
 
     /** Sticker slug: lower-case latin letters, digits and dashes, max 40 chars, or null. */
-    private function sanitizeLoc(mixed $raw): ?string
+    public static function sanitizeLoc(mixed $raw): ?string
     {
         if (! is_string($raw)) {
             return null;
