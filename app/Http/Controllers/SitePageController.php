@@ -186,7 +186,7 @@ class SitePageController extends Controller
         $dates = collect([
             $packages->max('updated_at'),
             \App\Models\PageContent::where('page_slug', 'abiturientski-bal-varna')->max('updated_at'),
-            Faq::forPage('abiturientski-bal-varna')->max('updated_at'),
+            Faq::forPageSlug('abiturientski-bal-varna')->max('updated_at'),
         ])->filter()->map(fn ($d) => Carbon::parse($d));
 
         return $dates->max();

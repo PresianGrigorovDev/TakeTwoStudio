@@ -46,7 +46,12 @@ class Faq extends Model
         'events' => 'Събития',
     ];
 
-    public function scopeForPage(Builder $query, string $slug): Builder
+    public function scopeForPageSlug(Builder $query, string $slug): Builder
+    {
+        return $query->where('page_slug', $slug);
+    }
+
+    public function scopeByPage(Builder $query, string $slug): Builder
     {
         return $query->where('page_slug', $slug);
     }
@@ -64,6 +69,6 @@ class Faq extends Model
     /** Visible, ordered FAQs for a page. */
     public static function forPageVisible(string $slug)
     {
-        return static::forPage($slug)->visible()->ordered()->get();
+        return static::forPageSlug($slug)->visible()->ordered()->get();
     }
 }

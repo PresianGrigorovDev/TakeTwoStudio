@@ -42,7 +42,7 @@ class SeoContentSeeder extends Seeder
         $this->draftPricePosts();
 
         foreach ($faqs as $slug => $rows) {
-            $offset = (int) Faq::forPage($slug)->max('sort_order');
+            $offset = (int) Faq::forPageSlug($slug)->max('sort_order');
 
             foreach ($rows as $i => [$question, $answer]) {
                 Faq::firstOrCreate(

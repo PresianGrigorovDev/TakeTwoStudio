@@ -63,19 +63,24 @@ class FaqResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('page_slug')
                     ->label('Страница')
-                    ->formatStateUsing(fn (string $state): string => Faq::PAGES[$state] ?? $state)
+                    ->formatStateUsing(fn (?string $state): ?string => $state ? (Faq::PAGES[$state] ?? $state) : '—')
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('question')
                     ->label('Въпрос')
                     ->searchable()
-                    ->limit(70),
+                    ->wrap()
+                    ->limit(90),
+                Tables\Columns\TextColumn::make('answer')
+                    ->label('Отговор')
+                    ->searchable()
+                    ->limit(80)
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Подредба')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_visible')
-                    ->label('Видим')
-                    ->boolean(),
+                Tables\Columns\ToggleColumn::make('is_visible')
+                    ->label('Видим'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновен на')
                     ->dateTime('d.m.Y H:i')
@@ -86,6 +91,8 @@ class FaqResource extends Resource
                 Tables\Filters\SelectFilter::make('page_slug')
                     ->label('Страница')
                     ->options(Faq::PAGES),
+                Tables\Filters\TernaryFilter::make('is_visible')
+                    ->label('Видимост'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
