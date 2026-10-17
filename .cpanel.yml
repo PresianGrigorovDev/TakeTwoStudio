@@ -9,5 +9,9 @@ deployment:
     - cd $DEPLOYPATH && php artisan optimize:clear
     - cd $DEPLOYPATH && php artisan migrate --force
     - cd $DEPLOYPATH && php artisan db:seed --class=SeoContentSeeder --force
+    # Fit uploaded team photos / portfolio covers to their display size + localise the Pixieset
+    # cover. Idempotent (a re-run changes nothing), always exits 0. --skip-public: public/css/img
+    # is optimised locally and shipped via git - never modify tracked files here (it would block pulls).
+    - cd $DEPLOYPATH && php artisan images:optimize-all --skip-public --no-interaction || true
     - cd $DEPLOYPATH && php artisan optimize
     - cd $DEPLOYPATH && php artisan seo:indexnow --all || true
