@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\ImageOptimizer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class PortfolioCategory extends Model
 {
@@ -17,8 +18,8 @@ class PortfolioCategory extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => \Illuminate\Support\Facades\Cache::forget('nav.portfolio_categories'));
-        static::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('nav.portfolio_categories'));
+        static::saved(fn () => Cache::forget('nav.portfolio_categories'));
+        static::deleted(fn () => Cache::forget('nav.portfolio_categories'));
 
         // Safety net for covers that skip the Filament client-side resize.
         static::created(fn (PortfolioCategory $category) => $category->optimizeCover());
@@ -32,7 +33,7 @@ class PortfolioCategory extends Model
     /** Visible categories for the nav/footer (rendered on every page) - cached for an hour. */
     public static function visibleCached()
     {
-        return \Illuminate\Support\Facades\Cache::remember('nav.portfolio_categories', 3600, fn () => static::where('is_visible', true)->orderBy('display_order')->get());
+        return Cache::remember('nav.portfolio_categories', 3600, fn () => static::where('is_visible', true)->orderBy('display_order')->get());
     }
 
     private function optimizeCover(): void

@@ -24,7 +24,7 @@ class Service extends Model
                 \App\Support\Seo\IndexNow::submitLater([url($service->slug), url('/')]);
             }
 
-            if ($service->wasChanged('hero_image') && ! empty($service->hero_image)) {
+            if (($service->wasRecentlyCreated || $service->wasChanged('hero_image')) && ! empty($service->hero_image)) { // wasChanged() is false on create
                 ImageOptimizer::optimize('public', $service->hero_image);
             }
         });

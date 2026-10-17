@@ -31,7 +31,7 @@
 
     <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-700-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="{{ asset('fonts/montserrat/montserrat.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('fonts/montserrat/montserrat.css') }}">
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/igra.css') }}">
 
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('css/img/favicon_io/favicon-32x32.png') }}">

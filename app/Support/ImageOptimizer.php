@@ -42,10 +42,10 @@ class ImageOptimizer
      * $beforeWrite($path) is called right before an existing file (the image or its
      * .webp sibling) is overwritten - the images:optimize-all command uses it for
      * backups. With $dryRun nothing is written; the sizes in the result are what the
-     * run would produce.
+     * run would produce. Result status: optimized | webp (only the sibling changed) |
+     * ok (nothing to do) | missing | unsupported | error.
      *
      * @return array{status: string, note: string, before: int, after: int, dims_before: ?string, dims_after: ?string, webp_before: ?int, webp_after: ?int}
-     *         status: optimized | webp (only the sibling changed) | ok (nothing to do) | missing | unsupported | error
      */
     public static function optimizeFile(
         string $fullPath,
@@ -185,7 +185,7 @@ class ImageOptimizer
 
             if (! $stale) {
                 $siblingInfo = @getimagesize($webp);
-                $stale = ! $siblingInfo || $siblingInfo[0].'x'.$siblingInfo[1] !== $result['dims_after'];
+                $stale = ! $siblingInfo || $result['dims_after'] !== $siblingInfo[0].'x'.$siblingInfo[1];
             }
 
             if ($stale) {

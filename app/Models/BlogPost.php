@@ -56,7 +56,7 @@ class BlogPost extends Model
         });
 
         static::saved(function (BlogPost $post) {
-            if ($post->wasChanged('cover_image') && ! empty($post->cover_image)) {
+            if (($post->wasRecentlyCreated || $post->wasChanged('cover_image')) && ! empty($post->cover_image)) { // wasChanged() is false on create
                 ImageOptimizer::optimize('public', $post->cover_image);
             }
         });

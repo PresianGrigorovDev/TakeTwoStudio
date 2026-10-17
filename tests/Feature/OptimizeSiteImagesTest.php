@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\BlogPost;
 use App\Models\PortfolioCategory;
 use App\Models\TeamMember;
 use App\Support\ImageOptimizer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -146,7 +146,7 @@ class OptimizeSiteImagesTest extends TestCase
         $this->image($this->publicDir.'/css/img/about.webp', 2400, 1600);
 
         $this->runCommand()
-            ->expectsOutputToContain('Cover of "weddings" not downloaded')
+            ->expectsOutputToContain('Cover of "weddings" not localised')
             ->expectsOutputToContain('3 warning(s)')
             ->assertExitCode(0)
             ->run();
@@ -181,6 +181,11 @@ class OptimizeSiteImagesTest extends TestCase
         $this->image($disk->path('portfolio/categories/new.jpg'), 3000, 2000);
         $category->update(['cover_image' => 'portfolio/categories/new.jpg']);
         $this->assertDims([1200, 800], $disk->path('portfolio/categories/new.jpg'));
+
+        // BlogPost used wasChanged() only, which is false on create: new covers were never optimised.
+        $this->image($disk->path('blog/new.jpg'), 3000, 2000);
+        BlogPost::create(['title' => 'Тест', 'slug' => 'test', 'excerpt' => 'x', 'body' => 'x', 'cover_image' => 'blog/new.jpg']);
+        $this->assertDims([2200, 1467], $disk->path('blog/new.jpg'));
 
         // Remote and missing values are ignored, never fetched.
         Http::fake();

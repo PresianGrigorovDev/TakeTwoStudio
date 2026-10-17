@@ -190,19 +190,23 @@ class OptimizeSiteImages extends Command
 
             try {
                 [$bytes, $dims] = $this->download($url, $disk->path($target), $disk->path(''));
+                $this->seen[$disk->path($target)] = true;
+                $result = ImageOptimizer::optimizeFile($disk->path($target), PortfolioCategory::COVER_MAX, PortfolioCategory::COVER_MAX, self::QUALITY, false, $this->backupUsing($disk->path('')));
+
+                // Through the model: its saved hook clears the cached nav categories.
+                $category->cover_image = $target;
+                $category->save();
             } catch (\Throwable $e) {
                 $this->warnings++;
-                $this->warn("Cover of \"{$category->slug}\" not downloaded ({$url}): ".Str::limit($e->getMessage(), 200).' - left unchanged.');
+                $this->warn("Cover of \"{$category->slug}\" not localised ({$url}): ".Str::limit($e->getMessage(), 200).' - cover_image left unchanged.');
 
                 continue;
             }
 
-            $this->seen[$disk->path($target)] = true;
-            $result = ImageOptimizer::optimizeFile($disk->path($target), PortfolioCategory::COVER_MAX, PortfolioCategory::COVER_MAX, self::QUALITY, false, $this->backupUsing($disk->path('')));
-
-            // Through the model: its saved hook clears the cached nav categories.
-            $category->cover_image = $target;
-            $category->save();
+            if ($result['status'] === 'error') {
+                $this->warnings++;
+                $this->warn("{$label}: downloaded as is, not resized - {$result['note']}");
+            }
 
             $this->rows[] = [$label, [
                 'status' => 'download',

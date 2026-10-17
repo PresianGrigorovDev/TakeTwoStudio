@@ -45,7 +45,7 @@ const VIEWPORTS = [
 ];
 // JS-toggled states that may be needed before bootstrap.min.css arrives (always kept when present).
 const SAFELIST = [
-    /^\.(fade|collapsing|modal|modal-backdrop|dropdown-menu|visually-hidden)(\.(fade|show|collapse-horizontal))?$/,
+    /^\.(fade|collapsing|modal|modal-backdrop|dropdown-menu|visually-hidden)(\.(fade|show))?$/,
     /^\.(fade|collapse):not\(\.show\)$/,
     /^\.(modal-open|dropdown-menu\.show|visually-hidden-focusable:not\(:focus\):not\(:focus-within\))$/,
 ];
