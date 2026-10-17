@@ -79,7 +79,7 @@
             <div class="collapse navbar-collapse justify-content-center h-100" id="navbarNav">
                 <ul class="navbar-nav align-items-center w-100 justify-content-between h-100">
                     <div class="d-flex flex-column flex-lg-row h-100 align-items-center">
-                        <li class="nav-item"><a class="nav-link" href="{{ route('pages.about') }}">За нас</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#about">За нас</a></li>
                         <li class="nav-item"><a class="nav-link" href="/#portfolio">Портфолио</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ route('blog.index') }}">Блог</a></li>
                     </div>
@@ -138,12 +138,6 @@
                                 echo '<li><a href="' . url($category->slug) . '">' . $category->name_bg . '</a></li>';
                             }
                         @endphp
-                        {{-- <li><a href="{{ url('weddings') }}">Сватбена фотография и видео</a></li>
-                        <li><a href="{{ url('proms') }}">Абитуриентски балове и фотосесии</a></li>
-                        <li><a href="{{ url('baptism') }}">Детска фотография и Кръщенета</a></li>
-                        <li><a href="{{ url('commercial') }}">Рекламна и продуктова фотография</a></li>
-                        <li><a href="{{ url('commercial') }}">Корпоративно видеозаснемане и дрон</a></li>
-                        <li><a href="{{ url('graduation') }}">Пред-бална фотосесия</a></li> --}}
                     </ul>
                 </div>
                 <div class="col-md-4">
