@@ -26,6 +26,9 @@ class ImageOptimizer
      * Optimise an image already saved on the given disk, in place. Without
      * $maxHeight only the width is limited (the original behaviour); with it the
      * image is fitted inside the $maxWidth x $maxHeight box.
+     *
+     * Called from model saved/created hooks: a failure (unwritable file, full disk...)
+     * is logged and never breaks the save - the upload simply stays unoptimised.
      */
     public static function optimize(string $disk, string $path, int $maxWidth = 2200, int $quality = 82, ?int $maxHeight = null, int $webpQuality = self::WEBP_QUALITY): void
     {
@@ -33,7 +36,11 @@ class ImageOptimizer
             return;
         }
 
-        self::optimizeFile(Storage::disk($disk)->path($path), $maxWidth, $maxHeight, $quality, false, null, $webpQuality);
+        try {
+            self::optimizeFile(Storage::disk($disk)->path($path), $maxWidth, $maxHeight, $quality, false, null, $webpQuality);
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /**
