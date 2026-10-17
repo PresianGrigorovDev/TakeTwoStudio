@@ -8,14 +8,14 @@
 @section('og_description', 'Съвети, истории и вдъхновение от Take Two Studio - вашият фотограф във Варна.')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/blog.css') }}">
 @endpush
 
 @section('content')
     <section class="blog-hero">
         <div class="container">
-            <h1 class="blog-hero__title" data-aos="fade-up">Блог на Take Two Studio</h1>
-            <p class="blog-hero__subtitle" data-aos="fade-up" data-aos-delay="100">
+            <h1 class="blog-hero__title">Блог на Take Two Studio</h1>
+            <p class="blog-hero__subtitle">
                 Съвети, истории зад кадъра и вдъхновение за вашите специални моменти
             </p>
         </div>
@@ -34,7 +34,7 @@
                     @else
                         <div class="blog-grid">
                             @foreach($posts as $post)
-                                @include('blog.partials.card', ['post' => $post])
+                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->first])
                             @endforeach
                         </div>
 

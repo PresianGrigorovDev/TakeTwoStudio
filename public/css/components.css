@@ -22,8 +22,8 @@
     .legal-content h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.15rem; font-weight: 600; }
     .legal-content p, .legal-content ul, .legal-content ol { margin-bottom: 1rem; line-height: 1.7; }
     .legal-content ul, .legal-content ol { padding-left: 1.5rem; }
-    .legal-content a { color: #b8860b; text-decoration: underline; }
-    .legal-content a:hover { color: #8b6508; }
+    .legal-content a { color: #856404; text-decoration: underline; } /* #b8860b was 3.25:1 on white */
+    .legal-content a:hover { color: #5c4503; }
 
 /* ---- Cookie banner ---- */
 .cookie-banner {
@@ -61,7 +61,7 @@
         transition: opacity 0.2s;
     }
     .btn-cookie:hover { opacity: 0.85; }
-    .btn-cookie-primary { background: #b8860b; color: #fff; }
+    .btn-cookie-primary { background: #b8860b; color: #111; } /* dark text: white on #b8860b was 3.25:1 */
     .btn-cookie-secondary { background: transparent; color: #fff; border: 1px solid #fff; }
     @media (max-width: 600px) {
         .cookie-banner-inner { flex-direction: column; align-items: stretch; }
@@ -361,6 +361,8 @@
 .story-hero__kicker { color: #D4AF37; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.8rem; margin-bottom: 0.5rem; }
 .story-text { line-height: 1.75; color: #333; }
 .story-quote { padding: 0.5rem 1rem; margin: 1.5rem 0; font-style: italic; }
+/* The global `footer {background:#111; padding-top:60px}` (site footer) also hit the quote's <footer>: muted text on black */
+.story-quote footer { background: none; padding-top: 0; overflow: visible; }
 .story-photo { display: block; aspect-ratio: 4 / 3; overflow: hidden; }
 .story-photo img { transition: transform 0.4s ease; }
 .story-photo:hover img { transform: scale(1.04); }
@@ -390,6 +392,15 @@
 .thumb-strip { background: #1a1a1a; gap: 10px; }
 .bg-dark-111 { background: #111; }
 .intro-text { max-width: 800px; margin: 0 auto 3rem auto; }
-.badge-gold { background: rgba(243, 156, 18, 0.15); color: #f39c12; }
+.badge-gold { background: rgba(243, 156, 18, 0.15); color: #945a0c; } /* promo alerts on white: #f39c12 was 1.94:1 */
 .letter-spaced-1 { letter-spacing: 1px; }
 picture { display: contents; }
+
+/* ---- Contrast fixes shared by the service pages (WCAG AA) ---- */
+/* Quick-lead modal is dark (#1e1e1e inline); the global light .modal-header strip put the yellow title at 1.54:1
+   and hid the white close button. */
+#quickLeadModal .modal-header { background-color: transparent; }
+/* GDPR links inside the dark calculator total box (#222): Bootstrap link blue was 3.53:1 */
+.total-price-box .form-check-label a { color: var(--accent, #D4AF37); }
+/* Promo prices (.text-warning) on the white calculator cards: #ffc107 was 1.63:1 */
+.calc-card label .text-warning { color: #946c00 !important; }

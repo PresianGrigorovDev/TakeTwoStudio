@@ -14,8 +14,9 @@
 @section('content')
 
     <header class="hero">
+        <img src="{{ asset('css/img/header.webp') }}" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
         <div class="hero-overlay"></div>
-        <div class="hero-content" data-aos="fade-up">
+        <div class="hero-content">
             <h1>Фотограф и Видеозаснемане Варна</h1>
             <span class="hero-subtitle">Сватби, абитуриентски балове, кръщенета, семейни и събитийни фотосесии във Варна и
                 цяла България</span>
@@ -276,8 +277,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-center">
-                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img mb-3"
-                            style="width: 120px; height: 120px;" />
+                        {{-- Not requested until the modal opens (data-src -> src on show.bs.modal, script below).
+                             data-src is the same URL the team grid already downloaded (WebP sibling when it exists). --}}
+                        @php
+                            $modalImg = $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png');
+                        @endphp
+                        <img class="team-img team-modal-img mb-3 lazy-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            data-src="{{ \App\Support\Images::webpUrl($modalImg) ?? $modalImg }}" alt="{{ $member->name }}">
                         <p class="role-text mb-3">{{ $member->role_bg }}</p>
                         <p class="text-muted mb-3">
                             {{ $member->bio_bg }}
@@ -303,3 +309,15 @@
         </div>
     @endforeach
 @endsection
+
+@push('scripts')
+    <script>
+        // Team modal photos load only when their modal opens (Bootstrap 5 modal events bubble to document).
+        document.addEventListener('show.bs.modal', function (event) {
+            event.target.querySelectorAll('img.lazy-modal-img[data-src]').forEach(function (img) {
+                img.src = img.getAttribute('data-src');
+                img.removeAttribute('data-src');
+            });
+        });
+    </script>
+@endpush

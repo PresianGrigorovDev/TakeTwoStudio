@@ -226,7 +226,7 @@ h5 {
 .filter-btn:hover,
 .filter-btn.active {
     background: var(--accent);
-    color: #fff;
+    color: #111; /* white on gold was 2.1:1 */
     border-color: var(--accent);
 }
 
@@ -361,6 +361,33 @@ h5 {
     border-radius: 4px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
     border-top: 3px solid var(--accent);
+}
+
+/* The promo-code partial is styled for the dark calculator box (white text); here it sits on white and was invisible. */
+.contact-box .promo-code-input-section {
+    border-top-color: #eee;
+}
+
+.contact-box .promo-input-label {
+    color: #555;
+}
+
+.contact-box .promo-code-field {
+    color: #222;
+    background: #f8f9fa;
+    border-color: #ccc;
+}
+
+.contact-box .promo-code-field:focus {
+    background: #fff;
+}
+
+.contact-box .promo-code-feedback.success {
+    color: #15803d;
+}
+
+.contact-box .promo-code-feedback.error {
+    color: #b91c1c;
 }
 
 @media (min-width: 992px) {

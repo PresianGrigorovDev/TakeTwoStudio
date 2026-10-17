@@ -46,11 +46,7 @@ class PortfolioCategoryResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('cover_image')
-                    ->label('Корица')
-                    ->required()
-                    ->image()
-                    ->directory('portfolio/categories'),
+                static::coverUpload(),
                 Forms\Components\TextInput::make('display_order')
                     ->label('Поредност')
                     ->numeric()
@@ -100,11 +96,7 @@ class PortfolioCategoryResource extends Resource
                     ->label('Снимка')
                     ->icon('heroicon-o-camera')
                     ->form([
-                        Forms\Components\FileUpload::make('cover_image')
-                            ->label('Корица')
-                            ->required()
-                            ->image()
-                            ->directory('portfolio/categories'),
+                        static::coverUpload(),
                     ])
                     ->mountUsing(fn ($form, $record) => $form->fill([
                         'cover_image' => $record->cover_image,
@@ -129,6 +121,27 @@ class PortfolioCategoryResource extends Resource
                         ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
+    }
+
+    /**
+     * The cover fills a 3:2 card with object-fit: cover, so it is fitted inside
+     * 1200x1200 in the browser (no forced crop - the card crops). maxSize is checked
+     * by FilePond on the ORIGINAL file before that resize, so it must let 6-11 MB
+     * camera photos through; PortfolioCategory also optimises on save.
+     */
+    private static function coverUpload(): Forms\Components\FileUpload
+    {
+        return Forms\Components\FileUpload::make('cover_image')
+            ->label('Корица')
+            ->helperText('Хоризонтална снимка (3:2). Може и директно от фотоапарата - намалява се автоматично до 1200 px.')
+            ->required()
+            ->image()
+            ->imageResizeMode('contain')
+            ->imageResizeTargetWidth((string) PortfolioCategory::COVER_MAX)
+            ->imageResizeTargetHeight((string) PortfolioCategory::COVER_MAX)
+            ->imageResizeUpscale(false)
+            ->maxSize(20480)
+            ->directory('portfolio/categories');
     }
 
     public static function getRelations(): array

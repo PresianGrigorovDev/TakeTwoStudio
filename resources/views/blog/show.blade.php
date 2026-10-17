@@ -10,7 +10,7 @@
 
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/blog.css') }}">
 @endpush
 
 @section('content')
@@ -32,7 +32,7 @@
                     </span>
                 @endif
 
-                <h1 class="blog-post__title" data-aos="fade-up">{{ $post->title }}</h1>
+                <h1 class="blog-post__title">{{ $post->title }}</h1>
 
                 <div class="blog-post__meta">
                     <time datetime="{{ $post->published_at?->toIso8601String() }}">
@@ -46,11 +46,11 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-9">
-                    <div class="blog-post__excerpt" data-aos="fade-up">
+                    <div class="blog-post__excerpt">
                         {{ $post->excerpt }}
                     </div>
 
-                    <div class="blog-post__body" data-aos="fade-up">
+                    <div class="blog-post__body">
                         {!! $post->body !!}
                     </div>
 

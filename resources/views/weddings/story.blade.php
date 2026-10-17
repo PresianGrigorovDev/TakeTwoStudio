@@ -13,7 +13,7 @@
 @section('og_image', $gallery->cover_url ?: asset('css/img/best-wedding-cover.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
 @endpush
 
 @section('content')
@@ -119,7 +119,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}" defer></script>
+    <script src="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.js') }}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof GLightbox === 'function') { GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true }); }

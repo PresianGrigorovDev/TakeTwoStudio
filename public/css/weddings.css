@@ -165,7 +165,7 @@ h4 {
 }
 
 .text-primary {
-    color: var(--accent) !important;
+    color: var(--accent-text-accessible, #856404) !important; /* on white: --accent was 2.1:1 */
 }
 
 .reasons .reason {
@@ -296,7 +296,7 @@ h4 {
 
 .extra-price {
     font-size: 0.85rem;
-    color: #888;
+    color: #6f6f6f; /* #888 was 3.54:1 on white */
     margin-top: auto; /* Push to bottom */
     font-weight: 400;
     margin-bottom: 0;
@@ -395,7 +395,7 @@ h4 {
 .btn-custom {
     border: 2px solid var(--accent);
     background: var(--accent);
-    color: #fff;
+    color: #111; /* white on gold was 2.1:1 */
     padding: 12px 30px;
     text-transform: uppercase;
     font-weight: 700;

@@ -39,10 +39,21 @@ class TeamMemberResource extends Resource
                 Forms\Components\TextInput::make('role_en')
                     ->label('Роля (EN)')
                     ->maxLength(100),
+                // Cropped to a square and resized to 600x600 in the browser before upload.
+                // maxSize is checked by FilePond on the ORIGINAL file (before that resize),
+                // so it must let 6-11 MB camera photos through; TeamMember also optimises on save.
                 Forms\Components\FileUpload::make('image_path')
                     ->label('Снимка')
+                    ->helperText('Квадратна снимка (1:1). Може и директно от фотоапарата - намалява се автоматично до 600x600 px.')
                     ->image()
                     ->imageEditor()
+                    ->imageEditorAspectRatios(['1:1'])
+                    ->imageCropAspectRatio('1:1')
+                    ->imageResizeMode('cover')
+                    ->imageResizeTargetWidth((string) TeamMember::IMAGE_MAX)
+                    ->imageResizeTargetHeight((string) TeamMember::IMAGE_MAX)
+                    ->imageResizeUpscale(false)
+                    ->maxSize(20480)
                     ->directory('team'),
                 Forms\Components\Textarea::make('bio_bg')
                     ->label('Биография')

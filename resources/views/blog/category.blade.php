@@ -6,7 +6,7 @@
 @section('og_title', $category->name . ' | Блог | Take Two Studio')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/blog.css') }}">
 @endpush
 
 @section('content')
@@ -17,9 +17,9 @@
                 <span>/</span>
                 <span>{{ $category->name }}</span>
             </nav>
-            <h1 class="blog-hero__title" data-aos="fade-up">{{ $category->name }}</h1>
+            <h1 class="blog-hero__title">{{ $category->name }}</h1>
             @if($category->description)
-                <p class="blog-hero__subtitle" data-aos="fade-up" data-aos-delay="100">{{ $category->description }}</p>
+                <p class="blog-hero__subtitle">{{ $category->description }}</p>
             @endif
         </div>
     </section>
@@ -37,7 +37,7 @@
                     @else
                         <div class="blog-grid">
                             @foreach($posts as $post)
-                                @include('blog.partials.card', ['post' => $post])
+                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->first])
                             @endforeach
                         </div>
 

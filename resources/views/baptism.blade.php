@@ -8,8 +8,8 @@
 @section('og_image', asset('css/img/krustene.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('vendor/glightbox/glightbox.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/baptism.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/baptism.css') }}">
 @endpush
 
 @php
@@ -35,7 +35,7 @@
     <!-- HEADER -->
     <section class="baptism-hero" @if($heroUrl) style="background-image: url('{{ $heroUrl }}');{{ $heroWebp ? " background-image: image-set(url('{$heroWebp}') type('image/webp'), url('{$heroUrl}') type('image/jpeg'));" : '' }}" @endif>
         <div class="hero-overlay"></div>
-        <div class="hero-title" data-aos="fade-up">
+        <div class="hero-title">
             <h1>{{ $heroTitle }}</h1>
             <p>{{ $heroSubtitle }}</p>
             @include('partials.video-hero-button')
@@ -407,8 +407,8 @@
 
 
 @push('scripts')
-    <script src="{{ asset('vendor/glightbox/glightbox.min.js') }}"></script>
-    <script src="{{ asset('js/calculators/baptism.js') }}"></script>
+    <script src="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.js') }}"></script>
+    <script src="{{ \App\Support\Assets::versioned('js/calculators/baptism.js') }}"></script>
     <script>
         const lightbox = GLightbox({
             selector: '.glightbox'

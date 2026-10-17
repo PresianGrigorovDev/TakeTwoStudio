@@ -29,6 +29,8 @@ p {
     --text-color: #222;
     --bg-color: #fff;
     --accent: #D4AF37;
+    /* Darker gold for text/icons on LIGHT backgrounds (WCAG AA: 5.49:1 on #fff). On dark backgrounds keep --accent. */
+    --accent-text-accessible: #856404;
     --dark-bg: #111111;
 }
 
@@ -181,17 +183,27 @@ h4 {
     }
 }
 
-/* HERO */
+/* HERO (home): the photo is a real <img class="hero-bg-img" fetchpriority="high"> (LCP), not a CSS background */
 .hero {
     min-height: 75vh;
-    background-image: url('img/header.webp');
-    background-size: cover;
-    background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
     margin-top: -1px;
+}
+
+.hero-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .hero-overlay {
@@ -201,6 +213,12 @@ h4 {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
+}
+
+/* Scoped to the home hero: on /svatbi/{slug} the title container is position:relative without z-index
+   and must stay above its .hero-overlay. */
+.hero .hero-overlay {
+    z-index: 1;
 }
 
 .hero-content {
@@ -265,6 +283,20 @@ h4 {
     color: black;
 }
 
+/* Outside the dark home hero (/ceni, /za-nas, /svatbi/{slug}, guides) the white-on-glass button sat on a light
+   section (2.1:1). Dark outline there; the hero keeps the original look. Page CSS (weddings/proms/baptism)
+   redefines .btn-custom on its own pages, so this does not reach them. */
+.btn-custom:not(:where(.hero *)) {
+    color: #111;
+    border-color: #111;
+    background: transparent;
+}
+
+.btn-custom:not(:where(.hero *)):hover {
+    background: #111;
+    color: #fff;
+}
+
 .btn-custom-full {
     background: #fff;
     color: #000;
@@ -291,6 +323,13 @@ h4 {
     transition: 0.3s;
 }
 
+/* Team modal photo (home): smaller than the grid avatar; replaces the old inline 120px style */
+.team-img.team-modal-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
 .team-member:hover .team-img {
     border-color: var(--accent);
     transform: scale(1.05);
@@ -303,7 +342,7 @@ h4 {
 }
 
 .role-text {
-    color: var(--accent);
+    color: var(--accent-text-accessible);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -402,14 +441,14 @@ h4 {
     width: 80px;
     height: 80px;
     background: #fff;
-    border: 2px solid var(--accent);
+    border: 2px solid var(--accent-text-accessible);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
     font-size: 2rem;
-    color: var(--accent);
+    color: var(--accent-text-accessible);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
@@ -522,6 +561,12 @@ h4 {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     margin: 15px;
     font-style: italic;
+}
+
+/* Rating stars on the white testimonial card: Bootstrap .text-warning (#ffc107) is 1.63:1 there */
+.testimonial-stars.text-warning,
+.testimonial-stars .text-warning {
+    color: #946c00 !important;
 }
 
 .quote-icon {

@@ -5,14 +5,14 @@
 @section('meta_keywords', 'резервация фотограф варна, запази дата сватба, резервация фотосесия, Take Two Studio')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/booking.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/booking.css') }}">
 @endpush
 
 @section('content')
     <!-- HERO -->
     <section class="booking-hero">
         <div class="hero-overlay"></div>
-        <div class="hero-title" data-aos="fade-up">
+        <div class="hero-title">
             <h1>Резервирай Дата</h1>
             <p>Изберете свободна дата за вашето събитие</p>
         </div>
@@ -31,7 +31,7 @@
                     @endif
 
                     <!-- Calendar -->
-                    <div class="booking-calendar-wrapper" data-aos="fade-up">
+                    <div class="booking-calendar-wrapper">
                         <div class="cal-header">
                             <button type="button" class="cal-nav" id="calPrev" aria-label="Предишен месец">&larr;</button>
                             <h3 class="cal-month-title" id="calTitle"></h3>
@@ -152,7 +152,7 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/booking-calendar.js') }}" defer></script>
+    <script src="{{ \App\Support\Assets::versioned('js/booking-calendar.js') }}" defer></script>
     @if(request('service'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {

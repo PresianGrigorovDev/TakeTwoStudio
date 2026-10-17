@@ -132,7 +132,7 @@ h1, h2, h3, h4, h5 {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #888;
+    color: #6f6f6f; /* #888 was 3.54:1 on white */
     margin-bottom: 8px;
     padding-bottom: 8px;
     border-bottom: 1px solid #eee;
@@ -195,7 +195,7 @@ h1, h2, h3, h4, h5 {
 
 .cal-day.selected {
     background: var(--accent) !important;
-    color: #fff !important;
+    color: #111 !important; /* white on gold was 2.1:1 */
     border-color: var(--accent) !important;
 }
 
@@ -250,13 +250,13 @@ h1, h2, h3, h4, h5 {
 
 .time-slot-btn.selected {
     background: var(--accent);
-    color: #fff;
+    color: #111;
     border-color: var(--accent);
 }
 
 .time-slot-btn.in-range {
     background: var(--accent);
-    color: #fff;
+    color: #111;
     border-color: var(--accent);
     opacity: 0.85;
 }
@@ -328,7 +328,7 @@ h1, h2, h3, h4, h5 {
 
 .booking-form-wrapper .btn-custom-full {
     background: var(--accent);
-    color: #fff;
+    color: #111; /* white on gold was 2.1:1 */
     border: none;
     padding: 14px 50px;
     text-transform: uppercase;
