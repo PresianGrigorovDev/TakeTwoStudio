@@ -179,12 +179,13 @@ class ImageOptimizer
         @unlink($tmp);
 
         if ($webp) {
-            $stale = $result['webp_before'] === null || $rewrite || filemtime($webp) < filemtime($fullPath);
+            // Stale = missing, source rewritten, or not the source's size (e.g. made from the
+            // huge original). Deliberately not mtime-based: a fresh git checkout scrambles mtimes.
+            $stale = $result['webp_before'] === null || $rewrite;
 
             if (! $stale) {
                 $siblingInfo = @getimagesize($webp);
-                [$finalW, $finalH] = explode('x', (string) $result['dims_after']);
-                $stale = ! $siblingInfo || $siblingInfo[0] > (int) $finalW || $siblingInfo[1] > (int) $finalH;
+                $stale = ! $siblingInfo || $siblingInfo[0].'x'.$siblingInfo[1] !== $result['dims_after'];
             }
 
             if ($stale) {
