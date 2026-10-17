@@ -37,7 +37,9 @@ class OptimizeSiteImagesTest extends TestCase
         File::ensureDirectoryExists($this->publicDir.'/css/img/ads');
         $this->app->usePublicPath($this->publicDir);
 
-        Storage::fake('public');
+        // A private "public" disk: Storage::fake() shares storage/framework/testing/disks/public
+        // with any other test process running at the same time.
+        Storage::set('public', Storage::build(['driver' => 'local', 'root' => $root.'/storage']));
     }
 
     protected function tearDown(): void
