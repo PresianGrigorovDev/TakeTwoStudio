@@ -930,7 +930,8 @@ footer ul li a:hover {
         margin-top: 0.5rem;
     }
 
-    #contact h4 {
+    #contact h4,
+    #contact h3.fs-6 { /* /portrait loads proms.css: its contact lines were <h5 class="fs-6"> */
         font-size: 0.88rem !important;
     }
 }
