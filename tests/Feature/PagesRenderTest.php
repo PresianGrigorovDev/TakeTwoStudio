@@ -38,7 +38,9 @@ class PagesRenderTest extends TestCase
         $this->assertStringNotContainsString('/public/', $html, "$path leaks a /public/ URL");
 
         if (str_starts_with($response->headers->get('Content-Type', ''), 'text/html')) {
-            $this->assertStringNotContainsString('<style', $html, "$path has inline <style> (styles belong in /css)");
+            // The only inline CSS allowed is the generated critical CSS (scripts/critical-css.mjs).
+            $this->assertLessThanOrEqual(1, substr_count($html, '<style'), "$path has inline <style> (styles belong in /css)");
+            $this->assertSame(substr_count($html, '<style'), substr_count($html, '<style id="critical-css">'), "$path has inline <style> (styles belong in /css)");
             $this->assertStringNotContainsString('name="csrf-token"', $html, "$path exposes the CSRF meta tag");
             $this->assertStringNotContainsString('onmouseover=', $html, "$path has inline event handlers");
             foreach (['cdn.jsdelivr.net', 'unpkg.com', 'cdnjs.cloudflare.com', 'fonts.googleapis.com', 'fonts.gstatic.com'] as $cdn) {

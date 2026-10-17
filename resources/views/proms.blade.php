@@ -8,7 +8,8 @@
 @section('og_image', asset('css/img/Бал.jpeg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/proms.css') }}">
 @endpush
 
@@ -19,6 +20,9 @@
 @section('preload')
     @if($heroUrl)
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
+    @else
+        {{-- Fallback hero from proms.css .prom-hero (image-set picks the WebP): same URL, so it downloads once --}}
+        <link rel="preload" href="{{ asset('css/img/proms-hero.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -79,7 +83,7 @@
                     <p><b>Албуми:</b> Класически или персонализирани фотокниги - запази спомените завинаги.</p>
                 </div>
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/prom.jpg')" class="w-100 rounded shadow-sm" alt="Абитуриентска Фотосесия" />
+                    <x-picture :src="asset('css/img/prom.jpg')" class="w-100 rounded shadow-sm intro-photo" alt="Абитуриентска Фотосесия" />
                 </div>
             </div>
         </div>
@@ -94,28 +98,28 @@
                 <div class="col-6 col-md-3">
                     <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-graduation-cap reason-icon"></i>
-                        <h5>Опит с абитуриенти</h5>
+                        <h3>Опит с абитуриенти</h3>
                         <p>Всяка година работим с десетки випуски. Знаем точно кога и как да уловим най-доброто от абитуриентския бал, каненето и изпращането.</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-film reason-icon"></i>
-                        <h5>Кино визия</h5>
+                        <h3>Кино визия</h3>
                         <p>Използваме професионални камери, дрон и модерна обработка, за да направим абитуриентското ви видео като от филм.</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="reason-card cursor-pointer" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-user-friends reason-icon"></i>
-                        <h5>Персонален подход</h5>
+                        <h3>Персонален подход</h3>
                         <p>Ние слушаме твоите идеи, от мястото за абитуриентска фотосесия до стила на снимките. Всичко е съобразено с теб.</p>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="reason-card" style="cursor: pointer; border: 1px solid var(--accent, #d4af37);" onclick="document.getElementById('calculator')?.scrollIntoView({behavior: 'smooth'})">
                         <i class="fas fa-tag reason-icon"></i>
-                        <h5>Изгодни пакети <i class="fas fa-arrow-down small ms-1 text-warning"></i></h5>
+                        <h3>Изгодни пакети <i class="fas fa-arrow-down small ms-1 text-warning"></i></h3>
                         <p>Имаме готови пакети за абитуриентско заснемане с фиксирани цени, които покриват всичко, без скрити такси и изненади.</p>
                     </div>
                 </div>
@@ -188,8 +192,8 @@
                             @endif
 
                             <!-- 1. PACKAGES -->
-                            <h4 class="mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет
-                            </h4>
+                            <h3 class="fs-4 mb-4 text-center"><i class="fas fa-crown me-2 text-warning"></i> Избери Пакет
+                            </h3>
 
                             @php
                                 $fixedTargetPkgId = null;
@@ -258,7 +262,7 @@
                             </div>
 
                             <!-- 2. ALBUMS & EXTRAS -->
-                            <h4 class="mb-4 text-center"><i class="fas fa-book-open me-2 text-warning"></i> Добавки</h4>
+                            <h3 class="fs-4 mb-4 text-center"><i class="fas fa-book-open me-2 text-warning"></i> Добавки</h3>
                             <div class="row g-3 justify-content-center">
                                 @php
                                     $allExtras = $service->extras->sortBy('display_order');
@@ -306,7 +310,7 @@
                     <!-- RIGHT: SUMMARY -->
                     <div class="col-lg-4">
                         <div class="total-price-box">
-                            <h5 class="text-uppercase text-white-50">Цена на ученик</h5>
+                            <h4 class="text-uppercase text-white-50 total-price-label">Цена на ученик</h4>
                             <div class="price-display">€ <span id="finalPrice">103</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 
@@ -354,16 +358,16 @@
         <div class="container">
             <h2 class="pb-3">Свържи се с нас</h2>
             <div class="section-divider"></div>
-            <h4>Запази своето място още сега!</h4>
+            <h3 class="fs-4">Запази своето място още сега!</h3>
             <div class="mt-4">
                 @php
                     $promPhone = \App\Support\Settings::phoneSecondary() ?? \App\Support\Settings::phone();
                     $instagramUrl = \App\Support\Settings::socialLinks()['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
                 @endphp
-                <h5 class="mb-2"><strong>Instagram:</strong> <a href="{{ $instagramUrl }}" target="_blank" rel="noopener" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h5>
-                <h5 class="mb-2"><strong>Телефон{{ \App\Support\Settings::phoneSecondaryLabel() ? ' (' . \App\Support\Settings::phoneSecondaryLabel() . ')' : '' }}:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref($promPhone) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay($promPhone) }}</a></h5>
+                <h4 class="mb-2"><strong>Instagram:</strong> <a href="{{ $instagramUrl }}" target="_blank" rel="noopener" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h4>
+                <h4 class="mb-2"><strong>Телефон{{ \App\Support\Settings::phoneSecondaryLabel() ? ' (' . \App\Support\Settings::phoneSecondaryLabel() . ')' : '' }}:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref($promPhone) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay($promPhone) }}</a></h4>
                 @if ($promPhone !== \App\Support\Settings::phone())
-                <h5><strong>Студио:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h5>
+                <h4 class="mb-0"><strong>Студио:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h4>
                 @endif
             </div>
         </div>

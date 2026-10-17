@@ -82,6 +82,11 @@ class BlogPostResource extends Resource
                                     ->required()
                                     ->image()
                                     ->imageEditor()
+                                    // fitted inside 1600x1600 in the browser; BlogPost also optimises on save
+                                    ->imageResizeMode('contain')
+                                    ->imageResizeTargetWidth((string) BlogPost::COVER_MAX)
+                                    ->imageResizeTargetHeight((string) BlogPost::COVER_MAX)
+                                    ->imageResizeUpscale(false)
                                     ->directory('blog')
                                     ->columnSpanFull(),
                                 Forms\Components\Textarea::make('excerpt')

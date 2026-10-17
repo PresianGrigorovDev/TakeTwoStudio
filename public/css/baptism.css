@@ -121,6 +121,8 @@ h5 {
     min-height: 60vh;
     /* Снимката от твоя сайт */
     background-image: url('../css/img/krustene.jpg');
+    /* Same photo as WebP (fallback hero on pages without a Filament hero image: /baptism, /family, /automotive) */
+    background-image: image-set(url('../css/img/krustene.webp') type('image/webp'), url('../css/img/krustene.jpg') type('image/jpeg'));
     /* Fixed path relative to css file */
     background-size: cover;
     background-position: center;
@@ -188,6 +190,14 @@ h5 {
     font-size: 2.5rem;
     color: var(--accent);
     margin-bottom: 20px;
+}
+
+/* Heading order (a11y): the moment-card titles and the calculator total label used to be <h5>;
+   now <h3>/<h4>, sized and spaced exactly like the old h5 (Bootstrap h5 size, no h1-h4 bottom margin). */
+.moment-card h3,
+.total-price-label {
+    font-size: 1.25rem;
+    margin-bottom: 0;
 }
 
 /* --- CALCULATOR STYLES --- */

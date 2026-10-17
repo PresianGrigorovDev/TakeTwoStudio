@@ -12,6 +12,12 @@ class Service extends Model
     use LogsActivity;
     protected $guarded = [];
 
+    /** Hero = full-width cover background behind a dark overlay (LCP of every service page): fit inside this box (px). */
+    public const HERO_MAX = 1920;
+
+    /** WebP sibling quality for heroes: q65-72 is indistinguishable behind the 40-50% overlay (tested 17.10.2026). */
+    public const HERO_WEBP_QUALITY = 70;
+
     protected $casts = [
         'is_active' => 'boolean',
         'video_uploaded_at' => 'date',
@@ -25,7 +31,7 @@ class Service extends Model
             }
 
             if (($service->wasRecentlyCreated || $service->wasChanged('hero_image')) && ! empty($service->hero_image)) { // wasChanged() is false on create
-                ImageOptimizer::optimize('public', $service->hero_image);
+                ImageOptimizer::optimize('public', $service->hero_image, self::HERO_MAX, 82, self::HERO_MAX, self::HERO_WEBP_QUALITY);
             }
         });
     }

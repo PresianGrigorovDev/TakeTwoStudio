@@ -1,17 +1,17 @@
 // Usage: node scripts/critical-css.mjs http://127.0.0.1:8000   (Node >= 22 + Google Chrome; a seeded local site must be running; CHROME_PATH overrides the browser)
 //
 // Regenerates resources/views/partials/critical-css.blade.php, the <style id="critical-css"> block that
-// layouts/app.blade.php inlines so bootstrap.min.css can load without blocking the first paint.
-// Run it again after upgrading Bootstrap or changing above-the-fold markup (nav, heroes, cookie banner).
+// layouts/app.blade.php inlines so bootstrap.min.css / all.min.css can load without blocking the first paint.
+// Run it again after upgrading Bootstrap / Font Awesome or changing above-the-fold markup (nav, heroes, cookie banner).
 //
 // How it works (no npm dependencies, Chrome is driven over the DevTools protocol):
 //  1. every page below is rendered at each viewport with the full CSS; the "critical" elements are the ones
-//     intersecting the first viewport, their ancestors, and hidden subtrees hanging off them (collapsed mobile
-//     menu, dropdown, modals) - so their display:none rules are kept. The mobile menu + dropdown are also
-//     opened and measured again;
-//  2. a Bootstrap rule is kept when one of its selectors matches a critical element (pseudo-elements stripped,
-//     :hover/:focus/:active-only rules dropped), inside its original @media/@supports wrapper and in the
-//     original order; unused :root custom properties are dropped;
+//     intersecting the first viewport, their ancestors, and the roots of hidden subtrees hanging off them
+//     (collapsed mobile menu, dropdown, modals) - so their display:none rules are kept. The mobile menu and the
+//     services dropdown are then opened and measured again;
+//  2. a Bootstrap / Font Awesome rule is kept when one of its selectors matches a critical element (pseudo-elements
+//     stripped, :hover/:focus/:active-only rules dropped), inside its original @media wrapper and in the original
+//     order; custom properties nothing uses are dropped; @font-face/@keyframes of the vendors are left out;
 //  3. the Montserrat @font-face rules are inlined as well. Every weight file of a subset is the same variable
 //     font (identical bytes), so each subset becomes one @font-face with a weight range: two files cover all text.
 
@@ -20,11 +20,13 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = (process.argv[2] || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const CHROME = process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const BOOTSTRAP = path.join(ROOT, 'public/vendor/bootstrap/bootstrap.min.css');
+const FONTAWESOME = path.join(ROOT, 'public/vendor/fontawesome/css/all.min.css');
 const MONTSERRAT = path.join(ROOT, 'public/fonts/montserrat/montserrat.css');
 const OUT = path.join(ROOT, 'resources/views/partials/critical-css.blade.php');
 
@@ -48,6 +50,7 @@ const SAFELIST = [
     /^\.(fade|collapsing|modal|modal-backdrop|dropdown-menu|visually-hidden)(\.(fade|show))?$/,
     /^\.(fade|collapse):not\(\.show\)$/,
     /^\.(modal-open|dropdown-menu\.show|visually-hidden-focusable:not\(:focus\):not\(:focus-within\))$/,
+    /^\.dropdown-menu(-end)?\[data-bs-popper\]$/, // set by bootstrap.bundle.js when the services dropdown opens
 ];
 
 // ---------------------------------------------------------------- CSS parsing (enough for minified vendor CSS)
@@ -248,7 +251,7 @@ function inPage(selectors) {
 }
 
 // ---------------------------------------------------------------- build
-function bootstrapSubset(tree, keep) {
+function subset(trees, keep) {
     const out = [];
     const walk = (nodes) => nodes.map((n) => {
         if (n.type === 'rule') {
@@ -260,9 +263,11 @@ function bootstrapSubset(tree, keep) {
             const children = walk(n.children).filter(Boolean);
             return children.length ? { ...n, children } : null;
         }
-        return null; // @charset, @keyframes (Bootstrap's only animate spinners/progress bars)
+        // @charset, @keyframes (spinners, progress bars, fa-spin...) and @font-face: Font Awesome's fonts are
+        // fetched once all.min.css arrives (they would compete with the LCP image), the glyph boxes are already sized.
+        return null;
     }).filter(Boolean);
-    out.push(...walk(tree));
+    trees.forEach((tree) => out.push(...walk(tree)));
 
     // Drop custom properties nothing in the subset uses (nor the site CSS / inline styles in the views): most of
     // Bootstrap's weight is component variables for hover/active/disabled states that are not critical.
@@ -330,10 +335,12 @@ function montserratFaces() {
     }).join('');
 }
 
-const tree = parse(fs.readFileSync(BOOTSTRAP, 'utf8'));
+// Font Awesome is included for the icons shown above the fold (contact icons, buttons): without their sized
+// ::before boxes the text under them would jump when all.min.css arrives.
+const trees = [BOOTSTRAP, FONTAWESOME].map((file) => parse(fs.readFileSync(file, 'utf8')));
 const allSelectors = [];
 const visitRules = (nodes) => nodes.forEach((n) => (n.type === 'group' ? (/^@media\s+print\b/.test(n.prelude) || visitRules(n.children)) : n.type === 'rule' && allSelectors.push(...n.selectors)));
-visitRules(tree);
+trees.forEach(visitRules);
 const unique = [...new Set(allSelectors)];
 const forms = unique.map(matchForm);
 
@@ -361,13 +368,18 @@ try {
 }
 
 const keep = (sel) => matched.has(sel) || SAFELIST.some((re) => re.test(sel));
-const version = (fs.readFileSync(BOOTSTRAP, 'utf8').match(/Bootstrap\s+v([\d.]+)/) || [, '?'])[1];
-const css = `/*! Bootstrap v${version} subset | MIT License | github.com/twbs/bootstrap */` + montserratFaces() + bootstrapSubset(tree, keep);
+const version = (file, re) => (fs.readFileSync(file, 'utf8').match(re) || [, '?'])[1];
+const css = `/*! Bootstrap v${version(BOOTSTRAP, /Bootstrap\s+v([\d.]+)/)} (MIT) + Font Awesome Free ${version(FONTAWESOME, /Font Awesome Free ([\d.]+)/)} `
+    + '(https://fontawesome.com/license/free) subsets */' + montserratFaces() + subset(trees, keep);
 
+// PerformanceHeadTest compares these hashes: a vendor CSS upgrade without regenerating fails the test suite.
+const sources = [BOOTSTRAP, FONTAWESOME, MONTSERRAT]
+    .map((file) => `    ${path.relative(path.join(ROOT, 'public'), file)} sha1:${createHash('sha1').update(fs.readFileSync(file)).digest('hex')}`).join('\n');
 fs.writeFileSync(OUT, `{{--
     GENERATED by scripts/critical-css.mjs - do not edit by hand, re-run the script instead.
-    Above-the-fold subset of public/vendor/bootstrap/bootstrap.min.css + the Montserrat @font-face rules,
-    inlined by layouts/app.blade.php so the full stylesheets can load without blocking the first paint.
+    Above-the-fold subset of bootstrap.min.css and fontawesome/css/all.min.css + the Montserrat @font-face rules,
+    inlined by layouts/app.blade.php so the full stylesheets can load without blocking the first paint. Sources:
+${sources}
 --}}
 <style id="critical-css">@verbatim${css}@endverbatim</style>
 `);

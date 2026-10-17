@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
     private function registerAdminAssets(): void
     {
         FilamentAsset::register([
-            Js::make('qrcode-generator', asset('vendor/qrcode/qrcode.min.js')),
+            Js::make('qrcode-generator', Assets::versioned('vendor/qrcode/qrcode.min.js')),
             Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
         ], package: 'taketwo');
     }

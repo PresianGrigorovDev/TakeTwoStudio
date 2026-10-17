@@ -6,7 +6,7 @@
 <aside class="blog-sidebar">
     @if($categories->isNotEmpty())
         <div class="blog-sidebar__block">
-            <h4 class="blog-sidebar__title">Категории</h4>
+            <h3 class="blog-sidebar__title">Категории</h3>
             <ul class="blog-sidebar__list">
                 <li @class(['is-active' => is_null($activeCategorySlug)])>
                     <a href="{{ route('blog.index') }}">Всички публикации</a>
@@ -25,7 +25,7 @@
 
     @if($recentPosts->isNotEmpty())
         <div class="blog-sidebar__block">
-            <h4 class="blog-sidebar__title">Последни публикации</h4>
+            <h3 class="blog-sidebar__title">Последни публикации</h3>
             <ul class="blog-sidebar__recent">
                 @foreach($recentPosts as $recent)
                     <li>
@@ -45,7 +45,7 @@
     @endif
 
     <div class="blog-sidebar__block blog-sidebar__cta">
-        <h4 class="blog-sidebar__title">Нужен ви е фотограф?</h4>
+        <h3 class="blog-sidebar__title">Нужен ви е фотограф?</h3>
         <p>Свържете се с нас за запитване или резервация на дата.</p>
         <a href="{{ url('/booking') }}" class="blog-sidebar__cta-btn">Запази сесия</a>
     </div>

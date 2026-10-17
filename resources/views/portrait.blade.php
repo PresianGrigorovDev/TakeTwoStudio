@@ -8,7 +8,8 @@
 @section('og_image', asset('css/img/about.webp'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/proms.css') }}">
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/baptism.css') }}">
 @endpush
@@ -20,6 +21,9 @@
 @section('preload')
     @if($heroUrl)
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
+    @else
+        {{-- Fallback hero from baptism.css .baptism-hero (image-set picks the WebP): same URL, so it downloads once --}}
+        <link rel="preload" href="{{ asset('css/img/krustene.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -46,9 +50,9 @@
     <section class="py-5 px-1 text-center container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h3 class="mb-4 h4 text-muted fw-normal lh-base">
+                <h2 class="mb-4 h4 text-muted fw-normal lh-base">
                     Портретът е огледало на личността - ние го превръщаме в изкуство.
-                </h3>
+                </h2>
                 <div class="section-divider"></div>
                 <p class="text-muted mb-4">
                     В <b>Take Two Studio 1603</b> създаваме портрети, които разказват вашата история. Независимо дали ви трябва
@@ -68,28 +72,28 @@
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-briefcase moment-icon"></i>
-                        <h5>Бизнес Портрет</h5>
+                        <h3>Бизнес Портрет</h3>
                         <p class="small text-muted mb-0">Професионални headshot снимки за LinkedIn, CV и корпоративен профил.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-palette moment-icon"></i>
-                        <h5>Артистичен Портрет</h5>
+                        <h3>Артистичен Портрет</h3>
                         <p class="small text-muted mb-0">Креативни концепции с драматично осветление и уникална визия.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-gift moment-icon"></i>
-                        <h5>Портрет Подарък</h5>
+                        <h3>Портрет Подарък</h3>
                         <p class="small text-muted mb-0">Перфектният подарък за рожден ден, годишнина или специален повод.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-magic moment-icon"></i>
-                        <h5>Ретуш и Стил</h5>
+                        <h3>Ретуш и Стил</h3>
                         <p class="small text-muted mb-0">Професионална обработка, цветова корекция и кожен ретуш.</p>
                     </div>
                 </div>
@@ -184,7 +188,7 @@
                                 </div>
                             @endif
 
-                            <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
+                            <h3 class="fs-4 mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h3>
                             <div class="row g-3 mb-5">
                                 @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
@@ -220,7 +224,7 @@
 
                             @foreach($groupedExtras as $groupName => $extras)
                                 @if($groupName)
-                                <h4 class="mb-4"><i class="fas fa-plus-circle me-2 text-warning"></i> {{ $groupName }}</h4>
+                                <h3 class="fs-4 mb-4"><i class="fas fa-plus-circle me-2 text-warning"></i> {{ $groupName }}</h3>
                                 @endif
                                 <div class="row g-3 mb-5">
                                     @foreach($extras as $extra)
@@ -262,7 +266,7 @@
 
                     <div class="col-lg-4">
                         <div class="total-price-box">
-                            <h5 class="text-uppercase text-white-50">Обща Цена</h5>
+                            <h4 class="text-uppercase text-white-50 total-price-label">Обща Цена</h4>
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
                             <div class="text-start mt-4 mb-4">
@@ -303,15 +307,15 @@
             <div class="row justify-content-center mb-5 g-4 mt-2">
                 <div class="col-md-4">
                     <i class="fas fa-phone mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold"><a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h5>
+                    <h3 class="fs-6 fw-bold mb-0"><a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h3>
                 </div>
                 <div class="col-md-4">
                     <i class="far fa-envelope mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold"><a href="mailto:{{ \App\Support\Settings::email() }}" class="text-dark">{{ \App\Support\Settings::email() }}</a></h5>
+                    <h3 class="fs-6 fw-bold mb-0"><a href="mailto:{{ \App\Support\Settings::email() }}" class="text-dark">{{ \App\Support\Settings::email() }}</a></h3>
                 </div>
                 <div class="col-md-4">
                     <i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i>
-                    <h5 class="fs-6 fw-bold">{{ \App\Support\Settings::address() }}</h5>
+                    <h3 class="fs-6 fw-bold mb-0">{{ \App\Support\Settings::address() }}</h3>
                 </div>
             </div>
             <div class="row g-4">

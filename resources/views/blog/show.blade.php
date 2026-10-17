@@ -27,7 +27,7 @@
 
                 @if($post->category)
                     <span class="blog-post__category"
-                          @if($post->category->color) style="background-color: {{ $post->category->color }};" @endif>
+                          @if($post->category->color) style="background-color: {{ $post->category->color }}; color: @include('blog.partials.badge-ink', ['hex' => $post->category->color]);" @endif>
                         {{ $post->category->name }}
                     </span>
                 @endif

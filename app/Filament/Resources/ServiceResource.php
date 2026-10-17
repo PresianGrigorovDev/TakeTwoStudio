@@ -54,12 +54,18 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
+                // Fitted inside 1920x1920 in the browser before upload (the size check above
+                // runs on the original file); Service also optimises the saved file.
                 Forms\Components\FileUpload::make('hero_image')
                     ->label('Hero снимка (фон)')
                     ->image()
                     ->directory('hero-images')
                     ->disk('public')
                     ->imageEditor()
+                    ->imageResizeMode('contain')
+                    ->imageResizeTargetWidth((string) Service::HERO_MAX)
+                    ->imageResizeTargetHeight((string) Service::HERO_MAX)
+                    ->imageResizeUpscale(false)
                     ->columnSpanFull()
                     ->maxSize(30720),
                 Forms\Components\TextInput::make('video_url')

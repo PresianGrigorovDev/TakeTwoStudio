@@ -8,7 +8,8 @@
 @section('og_image', asset('css/img/Edited_IMG_9630.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/baptism.css') }}">
 @endpush
 
@@ -19,6 +20,9 @@
 @section('preload')
     @if($heroUrl)
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
+    @else
+        {{-- Fallback hero from baptism.css .baptism-hero (image-set picks the WebP): same URL, so it downloads once --}}
+        <link rel="preload" href="{{ asset('css/img/krustene.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -44,9 +48,9 @@
     <section class="py-5 px-1 text-center container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h3 class="mb-4 h4 text-muted fw-normal lh-base">
+                <h2 class="mb-4 h4 text-muted fw-normal lh-base">
                     Архитектурата говори чрез форми, светлина и пространство - ние я превръщаме в завладяващи кадри.
-                </h3>
+                </h2>
                 <div class="section-divider"></div>
                 <p class="text-muted mb-4">
                     В <b>Take Two Studio 1603</b> заснемаме сгради, интериори и екстериори с прецизна геометрия и
@@ -66,28 +70,28 @@
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-building moment-icon"></i>
-                        <h5>Екстериор</h5>
+                        <h3>Екстериор</h3>
                         <p class="small text-muted mb-0">Фасади, дворове и околна среда с перфектна перспектива и композиция.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-door-open moment-icon"></i>
-                        <h5>Интериор</h5>
+                        <h3>Интериор</h3>
                         <p class="small text-muted mb-0">Стаи, хотелски лобита, ресторанти и офиси с широкоъгълна оптика.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-helicopter moment-icon"></i>
-                        <h5>Дрон Кадри</h5>
+                        <h3>Дрон Кадри</h3>
                         <p class="small text-muted mb-0">Въздушна перспектива за цялостно представяне на имота и локацията.</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="moment-card">
                         <i class="fas fa-layer-group moment-icon"></i>
-                        <h5>HDR Обработка</h5>
+                        <h3>HDR Обработка</h3>
                         <p class="small text-muted mb-0">Многоекспозиционна техника за балансирана светлина във всяко помещение.</p>
                     </div>
                 </div>
@@ -201,7 +205,7 @@
                                 </div>
                             @endif
 
-                            <h4 class="mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h4>
+                            <h3 class="fs-4 mb-4"><i class="fas fa-camera me-2 text-warning"></i> Избери Услуга</h3>
                             <div class="row g-3 mb-5">
                                 @foreach($categoryPackages as $package)
                                 <div class="col-md-4">
@@ -237,7 +241,7 @@
 
                             @foreach($groupedExtras as $groupName => $extras)
                                 @if($groupName)
-                                <h4 class="mb-4"><i class="fas fa-plus-circle me-2 text-warning"></i> {{ $groupName }}</h4>
+                                <h3 class="fs-4 mb-4"><i class="fas fa-plus-circle me-2 text-warning"></i> {{ $groupName }}</h3>
                                 @endif
                                 <div class="row g-3 mb-5">
                                     @foreach($extras as $extra)
@@ -278,7 +282,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="total-price-box">
-                            <h5 class="text-uppercase text-white-50">Обща Цена</h5>
+                            <h4 class="text-uppercase text-white-50 total-price-label">Обща Цена</h4>
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
                             <div class="text-start mt-4 mb-4">
@@ -311,9 +315,9 @@
             <h2 class="mb-3">Свържете се с нас</h2>
             <div class="section-divider"></div>
             <div class="row justify-content-center mb-5 g-4 mt-2">
-                <div class="col-md-4"><i class="fas fa-phone mb-3 text-muted fa-2x"></i><h5 class="fs-6 fw-bold"><a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h5></div>
-                <div class="col-md-4"><i class="far fa-envelope mb-3 text-muted fa-2x"></i><h5 class="fs-6 fw-bold"><a href="mailto:{{ \App\Support\Settings::email() }}" class="text-dark">{{ \App\Support\Settings::email() }}</a></h5></div>
-                <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i><h5 class="fs-6 fw-bold">{{ \App\Support\Settings::address() }}</h5></div>
+                <div class="col-md-4"><i class="fas fa-phone mb-3 text-muted fa-2x"></i><h3 class="fs-6 fw-bold mb-0"><a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h3></div>
+                <div class="col-md-4"><i class="far fa-envelope mb-3 text-muted fa-2x"></i><h3 class="fs-6 fw-bold mb-0"><a href="mailto:{{ \App\Support\Settings::email() }}" class="text-dark">{{ \App\Support\Settings::email() }}</a></h3></div>
+                <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-muted fa-2x"></i><h3 class="fs-6 fw-bold mb-0">{{ \App\Support\Settings::address() }}</h3></div>
             </div>
             <div class="row g-4">
                 <div class="col-lg-12">

@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\BlogPostResource;
 use App\Filament\Resources\PortfolioCategoryResource;
+use App\Filament\Resources\ServiceResource;
 use App\Filament\Resources\TeamMemberResource;
 use App\Models\BlogPost;
 use App\Models\PortfolioCategory;
+use App\Models\Service;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Support\ImageOptimizer;
@@ -173,6 +176,42 @@ class OptimizeSiteImagesTest extends TestCase
         $this->assertDims([600, 600], Storage::disk('public')->path('team/a.jpg'));
     }
 
+    public function test_service_heroes_and_blog_covers_are_fitted_but_og_images_left_alone(): void
+    {
+        $disk = Storage::disk('public');
+
+        $hero = $this->image($disk->path('hero-images/wide.jpg'), 2600, 1400);
+        $this->image($disk->path('legacy/hero.jpg'), 2400, 1600); // outside the directories, referenced by a row
+        Service::create(['slug' => 'test-service', 'name_bg' => 'Тест']);
+        Service::query()->update(['hero_image' => 'legacy/hero.jpg']); // no model events: the command must find it
+        $this->image($disk->path('blog/cover.jpg'), 2200, 3300);
+        $og = $this->image($disk->path('blog/og/share.png'), 2400, 1260);
+
+        $this->runCommand(['--skip-public' => true])->assertExitCode(0)->run();
+
+        $this->assertDims([1920, 1034], $disk->path('hero-images/wide.jpg'));
+        $this->assertDims([1920, 1034], $disk->path('hero-images/wide.webp'));
+        $this->assertSame($hero, md5_file($this->backupDir.'/hero-images/wide.jpg'));
+        $this->assertDims([1920, 1280], $disk->path('legacy/hero.jpg'));
+        $this->assertFileExists($disk->path('legacy/hero.webp'));
+        $this->assertDims([1067, 1600], $disk->path('blog/cover.jpg'), 'portrait covers fit the 1600 box');
+        $this->assertSame($og, md5_file($disk->path('blog/og/share.png')), 'social-share images are not touched');
+
+        $this->runCommand(['--skip-public' => true])->expectsOutputToContain('0 changed')->run();
+    }
+
+    public function test_hero_webp_siblings_use_the_lower_hero_quality(): void
+    {
+        $disk = Storage::disk('public');
+        $this->image($disk->path('a/photo.jpg'), 1600, 1000);
+        File::copyDirectory($disk->path('a'), $disk->path('b'));
+
+        ImageOptimizer::optimizeFile($disk->path('a/photo.jpg'), 1920, 1920);
+        ImageOptimizer::optimizeFile($disk->path('b/photo.jpg'), 1920, 1920, 82, false, null, Service::HERO_WEBP_QUALITY);
+
+        $this->assertLessThan(filesize($disk->path('a/photo.webp')), filesize($disk->path('b/photo.webp')));
+    }
+
     public function test_model_hooks_fit_photos_saved_any_way(): void
     {
         $disk = Storage::disk('public');
@@ -190,7 +229,12 @@ class OptimizeSiteImagesTest extends TestCase
         // BlogPost used wasChanged() only, which is false on create: new covers were never optimised.
         $this->image($disk->path('blog/new.jpg'), 3000, 2000);
         BlogPost::create(['title' => 'Тест', 'slug' => 'test', 'excerpt' => 'x', 'body' => 'x', 'cover_image' => 'blog/new.jpg']);
-        $this->assertDims([2200, 1467], $disk->path('blog/new.jpg'));
+        $this->assertDims([1600, 1067], $disk->path('blog/new.jpg'));
+
+        $this->image($disk->path('hero-images/new.jpg'), 2600, 1600);
+        Service::create(['slug' => 'test-service', 'name_bg' => 'Тест', 'hero_image' => 'hero-images/new.jpg']);
+        $this->assertDims([1920, 1182], $disk->path('hero-images/new.jpg'));
+        $this->assertFileExists($disk->path('hero-images/new.webp'));
 
         // Remote and missing values are ignored, never fetched.
         Http::fake();
@@ -206,14 +250,33 @@ class OptimizeSiteImagesTest extends TestCase
         // FilePond checks maxSize on the ORIGINAL file, before its client-side resize:
         // 20 MB lets 6-11 MB camera photos through, the resize brings them down.
         $this->actingAs($admin)->get(TeamMemberResource::getUrl('create'))->assertOk()
-            ->assertSee('imageResizeTargetWidth: JSON.parse(\'"600"\')', false)
-            ->assertSee('imageCropAspectRatio: JSON.parse(\'"1:1"\')', false)
-            ->assertSee('maxSize: JSON.parse(\'"20480KB"\')', false);
+            ->assertSee("imageCropAspectRatio: '1:1'", false)
+            ->assertSee("imageResizeMode: 'cover'", false)
+            ->assertSee("imageResizeTargetWidth: '600'", false)
+            ->assertSee("imageResizeTargetHeight: '600'", false)
+            ->assertSee("maxSize: '20480KB'", false);
 
         $this->actingAs($admin)->get(PortfolioCategoryResource::getUrl('create'))->assertOk()
-            ->assertSee('imageResizeMode: JSON.parse(\'"contain"\')', false)
-            ->assertSee('imageResizeTargetWidth: JSON.parse(\'"1200"\')', false)
-            ->assertSee('maxSize: JSON.parse(\'"20480KB"\')', false);
+            ->assertSee("imageResizeMode: 'contain'", false)
+            ->assertSee("imageResizeTargetWidth: '1200'", false)
+            ->assertSee("imageResizeTargetHeight: '1200'", false)
+            ->assertSee("maxSize: '20480KB'", false);
+
+        $this->actingAs($admin)->get(ServiceResource::getUrl('create'))->assertOk()
+            ->assertSee("imageResizeTargetWidth: '1920'", false);
+
+        $this->actingAs($admin)->get(BlogPostResource::getUrl('create'))->assertOk()
+            ->assertSee("imageResizeTargetWidth: '1600'", false);
+    }
+
+    public function test_proms_hero_fallback_is_self_hosted(): void
+    {
+        $css = file_get_contents(base_path('public/css/proms.css'));
+
+        $this->assertStringNotContainsString('pixieset.com', $css, 'the /proms LCP must not come from a third-party host');
+        $this->assertStringContainsString("image-set(url('../css/img/proms-hero.webp') type('image/webp'), url('../css/img/proms-hero.jpg') type('image/jpeg'))", $css);
+        $this->assertDims([1600, 1068], base_path('public/css/img/proms-hero.jpg'));
+        $this->assertDims([1600, 1068], base_path('public/css/img/proms-hero.webp'));
     }
 
     public function test_exif_orientation_is_applied_before_the_metadata_is_dropped(): void

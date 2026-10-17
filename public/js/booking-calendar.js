@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var cell = document.createElement('div');
             cell.className = 'cal-day ' + status;
+            // Cells are rebuilt on every render (grid.innerHTML = ''), so the attribute never goes stale.
+            if (status === 'past' || status === 'unavailable') cell.setAttribute('aria-disabled', 'true');
             cell.textContent = d;
             cell.dataset.date = dateStr;
 

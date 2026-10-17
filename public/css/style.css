@@ -303,10 +303,13 @@ h4 {
 }
 
 /* ABOUT */
+/* aspect-ratio "auto W / H" reserves the box before the photo loads (CLS) and then defers to the file's
+   own ratio - the CSS equivalent of width/height attributes without the distortion (no HTML size attrs on photos). */
 .about-img-main {
     width: 100%;
     border-radius: 4px;
     height: auto;
+    aspect-ratio: auto 1080 / 904; /* css/img/about.webp */
 }
 
 .team-member {
@@ -400,6 +403,7 @@ h4 {
     height: 100px;
     width: 100%;
     max-width: 150px;
+    aspect-ratio: auto 3 / 2; /* placeholder width while loading; each logo keeps its own ratio once loaded */
     margin: 0 50px;
     opacity: 1;
     filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.4));
@@ -656,6 +660,7 @@ footer {
     overflow: hidden;
 }
 
+footer h2,
 footer h3 {
     color: #fff;
     margin-bottom: 20px;

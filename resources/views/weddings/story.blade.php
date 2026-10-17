@@ -13,7 +13,8 @@
 @section('og_image', $gallery->cover_url ?: asset('css/img/best-wedding-cover.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
 @endpush
 
 @section('content')

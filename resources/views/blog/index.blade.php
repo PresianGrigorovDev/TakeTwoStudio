@@ -28,13 +28,13 @@
                     @if($posts->isEmpty())
                         <div class="blog-empty">
                             <i class="fas fa-newspaper"></i>
-                            <h3>Скоро тук ще има публикации</h3>
+                            <h2>Скоро тук ще има публикации</h2>
                             <p>Работим върху нови статии. Върнете се скоро!</p>
                         </div>
                     @else
                         <div class="blog-grid">
                             @foreach($posts as $post)
-                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->first])
+                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->index < 3, 'lcp' => $loop->first, 'titleTag' => 'h2'])
                             @endforeach
                         </div>
 

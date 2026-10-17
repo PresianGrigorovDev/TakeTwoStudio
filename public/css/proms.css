@@ -121,7 +121,9 @@ h5 {
 /* --- HERO --- */
 .prom-hero {
     min-height: 60vh;
-    background-image: url('https://images.pixieset.com/68309375/aecfe6c33b44a70ece3418012f6990e5-xxlarge.jpg');
+    /* Self-hosted copy of the former Pixieset hero (fallback LCP on /proms when no Filament hero image is set) */
+    background-image: url('../css/img/proms-hero.jpg');
+    background-image: image-set(url('../css/img/proms-hero.webp') type('image/webp'), url('../css/img/proms-hero.jpg') type('image/jpeg'));
     background-size: cover;
     background-position: center;
     position: relative;
@@ -216,9 +218,21 @@ h5 {
     color: var(--accent);
 }
 
-.reason-card h5 {
+/* Heading order (a11y): these used to be <h5> (.reason-card) / bare <h5> (#contact) / <h5> in .total-price-box.
+   They are now h3/h4/h4; the font sizes below are Bootstrap's h5 size so they look exactly as before. */
+.reason-card h3 {
     margin-bottom: 15px;
     font-weight: 700;
+    font-size: 1.25rem;
+}
+
+#contact h4 {
+    font-size: 1.25rem;
+}
+
+.total-price-label {
+    font-size: 1.25rem;
+    margin-bottom: 0;
 }
 
 .reason-card p {
@@ -511,6 +525,17 @@ h5 {
     transform: scale(1.05);
 }
 
+/* Placeholder height while a gallery photo loads (most uploads are 2:3 portraits); once loaded
+   the photo keeps its own ratio ("auto"), so the masonry looks exactly as before. */
+.masonry .portfolio-img {
+    aspect-ratio: auto 2 / 3;
+}
+
+/* Intro photo (css/img/prom.jpg / prom.webp, 1600x1066): reserve its box before it loads */
+.intro-photo {
+    aspect-ratio: auto 1600 / 1066;
+}
+
 /* Responsiveness for Masonry */
 @media (max-width: 991px) {
     .masonry {
@@ -748,7 +773,7 @@ footer ul li a:hover {
         margin-bottom: 12px !important;
     }
 
-    .reason-card h5 {
+    .reason-card h3 {
         font-size: 0.78rem !important;
         margin-bottom: 8px !important;
         line-height: 1.3;
@@ -809,7 +834,7 @@ footer ul li a:hover {
         border-radius: 6px;
     }
 
-    .calc-card h4 {
+    .calc-card h3 {
         font-size: 1rem !important;
         margin-bottom: 1.2rem !important;
     }
@@ -872,7 +897,7 @@ footer ul li a:hover {
         padding: 30px 22px !important;
     }
 
-    .total-price-box h5 {
+    .total-price-box .total-price-label {
         font-size: 0.82rem !important;
     }
 
@@ -900,12 +925,12 @@ footer ul li a:hover {
         font-size: 1.2rem !important;
     }
 
-    #contact h4 {
+    #contact h3.fs-4 {
         font-size: 0.95rem !important;
         margin-top: 0.5rem;
     }
 
-    #contact h5 {
+    #contact h4 {
         font-size: 0.88rem !important;
     }
 }

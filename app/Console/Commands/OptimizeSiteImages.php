@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\BlogPost;
 use App\Models\PortfolioCategory;
+use App\Models\Service;
 use App\Models\TeamMember;
 use App\Support\ImageOptimizer;
 use Illuminate\Console\Command;
@@ -19,8 +21,9 @@ use Illuminate\Support\Str;
  *   php artisan images:optimize-all --skip-public   # on the server: never touch git-tracked files
  *
  * - public/css/img: the static photos pages really load, fitted to the box they are shown in
- * - storage/app/public team/ and portfolio/categories/ (+ any other file team_members /
- *   portfolio_categories point at)
+ * - storage/app/public team/, portfolio/categories/, hero-images/ (service heroes = LCP),
+ *   blog/ + blog/attachments/ (+ any other file team_members, portfolio_categories,
+ *   services.hero_image or blog_posts.cover_image point at)
  * - portfolio_categories.cover_image on a foreign host (Pixieset) -> downloaded into
  *   portfolio/categories/<slug>-cover.jpg and the column updated through the model
  *
@@ -48,7 +51,8 @@ class OptimizeSiteImages extends Command
      */
     public const PUBLIC_TARGETS = [
         'css/img/about.webp' => [1080, null],      // home + /za-nas "about" photo, <= ~640 css px wide
-        'css/img/krustene.jpg' => [1920, 1920],    // baptism hero background, legacy portfolio cover
+        'css/img/krustene.jpg' => [1920, 1920],    // baptism/family/automotive hero fallback, legacy portfolio cover
+        'css/img/proms-hero.jpg' => [1920, 1920],  // /proms hero fallback (self-hosted copy of the old Pixieset image)
         'css/img/реклама.jpg' => [1920, 1920],     // legacy portfolio cover, og image
         'css/img/prom.jpg' => [1920, 1920],        // proms page photo, legacy portfolio cover
         'css/img/Сватба.jpg' => [1920, 1920],      // weddings hero background + photo
@@ -60,10 +64,18 @@ class OptimizeSiteImages extends Command
         'css/img/ads' => [1920, 1920],             // commercial portfolio grid + full-screen lightbox
     ];
 
-    /** Upload directories on the "public" disk => square box they are fitted into. */
+    /** Upload directories on the "public" disk => square box they are fitted into (blog/og is left alone). */
     public const STORAGE_DIRS = [
         'team' => TeamMember::IMAGE_MAX,
         'portfolio/categories' => PortfolioCategory::COVER_MAX,
+        'hero-images' => Service::HERO_MAX,
+        'blog' => BlogPost::COVER_MAX,
+        'blog/attachments' => BlogPost::COVER_MAX,
+    ];
+
+    /** WebP sibling quality per upload directory (default ImageOptimizer::WEBP_QUALITY). */
+    public const STORAGE_WEBP_QUALITY = [
+        'hero-images' => Service::HERO_WEBP_QUALITY,
     ];
 
     /** Absolute URLs on these hosts are our own files, not something to download. */
@@ -140,7 +152,7 @@ class OptimizeSiteImages extends Command
         foreach (self::STORAGE_DIRS as $dir => $max) {
             if (is_dir($disk->path($dir))) {
                 foreach ($this->imagesIn($disk->path($dir)) as $file) {
-                    $this->process($file, $max, $max, $base);
+                    $this->process($file, $max, $max, $base, '', self::STORAGE_WEBP_QUALITY[$dir] ?? ImageOptimizer::WEBP_QUALITY);
                 }
             }
         }
@@ -151,14 +163,20 @@ class OptimizeSiteImages extends Command
         }
 
         $referenced = [
-            [TeamMember::query()->pluck('image_path'), TeamMember::IMAGE_MAX],
-            [PortfolioCategory::query()->pluck('cover_image'), PortfolioCategory::COVER_MAX],
+            [TeamMember::class, 'image_path', TeamMember::IMAGE_MAX, ImageOptimizer::WEBP_QUALITY],
+            [PortfolioCategory::class, 'cover_image', PortfolioCategory::COVER_MAX, ImageOptimizer::WEBP_QUALITY],
+            [Service::class, 'hero_image', Service::HERO_MAX, Service::HERO_WEBP_QUALITY],
+            [BlogPost::class, 'cover_image', BlogPost::COVER_MAX, ImageOptimizer::WEBP_QUALITY],
         ];
 
-        foreach ($referenced as [$paths, $max]) {
-            foreach ($paths->filter() as $path) {
+        foreach ($referenced as [$model, $column, $max, $webpQuality]) {
+            if (! Schema::hasTable((new $model)->getTable())) {
+                continue;
+            }
+
+            foreach ($model::query()->pluck($column)->filter() as $path) {
                 if (! preg_match('#^(https?:)?//#i', $path) && ! str_contains($path, '..')) {
-                    $this->process($disk->path(ltrim($path, '/')), $max, $max, $base);
+                    $this->process($disk->path(ltrim($path, '/')), $max, $max, $base, '', $webpQuality);
                 }
             }
         }
@@ -166,7 +184,7 @@ class OptimizeSiteImages extends Command
 
     private function localiseRemoteCovers(): void
     {
-        if (! $this->database()) {
+        if (! $this->database() || ! Schema::hasTable('portfolio_categories')) {
             return;
         }
 
@@ -270,7 +288,7 @@ class OptimizeSiteImages extends Command
         return [strlen($body), $info[0].'x'.$info[1]];
     }
 
-    private function process(string $file, ?int $maxWidth, ?int $maxHeight, string $base, string $backupPrefix = ''): void
+    private function process(string $file, ?int $maxWidth, ?int $maxHeight, string $base, string $backupPrefix = '', int $webpQuality = ImageOptimizer::WEBP_QUALITY): void
     {
         $key = realpath($file) ?: $file;
         if (isset($this->seen[$key])) {
@@ -282,7 +300,7 @@ class OptimizeSiteImages extends Command
         $quality = str_ends_with(strtolower($file), '.webp') ? ImageOptimizer::WEBP_QUALITY : self::QUALITY;
 
         try {
-            $result = ImageOptimizer::optimizeFile($file, $maxWidth, $maxHeight, $quality, $this->dryRun, $this->backupUsing($base, $backupPrefix));
+            $result = ImageOptimizer::optimizeFile($file, $maxWidth, $maxHeight, $quality, $this->dryRun, $this->backupUsing($base, $backupPrefix), $webpQuality);
         } catch (\Throwable $e) {
             $result = ['status' => 'error', 'note' => Str::limit($e->getMessage(), 200)] + $this->emptyResult();
         }
@@ -377,7 +395,7 @@ class OptimizeSiteImages extends Command
         try {
             DB::connection()->getPdo();
 
-            return $this->database = Schema::hasTable('portfolio_categories') && Schema::hasTable('team_members');
+            return $this->database = true;
         } catch (\Throwable $e) {
             $this->warnings++;
             $this->warn('Database unreachable - DB-referenced files and remote covers skipped ('.Str::limit($e->getMessage(), 150).').');

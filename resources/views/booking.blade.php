@@ -34,7 +34,7 @@
                     <div class="booking-calendar-wrapper">
                         <div class="cal-header">
                             <button type="button" class="cal-nav" id="calPrev" aria-label="Предишен месец">&larr;</button>
-                            <h3 class="cal-month-title" id="calTitle"></h3>
+                            <h2 class="cal-month-title" id="calTitle"></h2>
                             <button type="button" class="cal-nav" id="calNext" aria-label="Следващ месец">&rarr;</button>
                         </div>
                         <div class="cal-weekdays">

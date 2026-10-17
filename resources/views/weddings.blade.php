@@ -8,7 +8,8 @@
 @section('og_image', asset('css/img/Сватба.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/weddings.css') }}">
 @endpush
 
@@ -19,6 +20,9 @@
 @section('preload')
     @if($heroUrl)
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
+    @else
+        {{-- Fallback hero from weddings.css .wedding-hero (image-set picks the WebP): same URL, so it downloads once --}}
+        <link rel="preload" href="{{ asset('css/img/Сватба.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -104,7 +108,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-lg-6 m-auto">
-                    <x-picture :src="asset('css/img/Сватба.jpg')" class="w-100 rounded shadow" alt="Сватбен момент" />
+                    <x-picture :src="asset('css/img/Сватба.jpg')" class="w-100 rounded shadow intro-photo" alt="Сватбен момент" />
                 </div>
             </div>
         </div>
@@ -325,9 +329,9 @@
                             @endif
 
                             <!-- ЕКИП -->
-                            <h4 class="mb-4"><i class="fas fa-users me-2 text-warning"></i> Екип</h4>
+                            <h3 class="fs-4 mb-4"><i class="fas fa-users me-2 text-warning"></i> Екип</h3>
 
-                            <h6 class="calc-sub-header">Видео Оператори</h6>
+                            <h4 class="calc-sub-header">Видео Оператори</h4>
                             <div class="row g-2 g-md-3 mb-4">
                                 <!-- None Option -->
                                 <div class="col-4 col-md-4 px-1 px-md-2">
@@ -369,7 +373,7 @@
                                 @endforeach
                             </div>
 
-                            <h6 class="calc-sub-header">Фотографи</h6>
+                            <h4 class="calc-sub-header">Фотографи</h4>
                             <div class="row g-2 g-md-3 mb-4">
                                 <!-- None Option -->
                                 <div class="col-4 col-md-4 px-1 px-md-2">
@@ -412,7 +416,7 @@
                             </div>
 
                             <!-- ФОТО ДОБАВКИ -->
-                            <h4 class="mb-4 mt-5"><i class="fas fa-camera me-2 text-warning"></i> Фото Добавки</h4>
+                            <h3 class="fs-4 mb-4 mt-5"><i class="fas fa-camera me-2 text-warning"></i> Фото Добавки</h3>
                             <div class="row g-3">
                                 @foreach($photoExtras as $extra)
                                 <div class="col-md-6">
@@ -447,10 +451,10 @@
                             </div>
 
                             <!-- ВИДЕО ДОБАВКИ -->
-                            <h4 class="mb-4 mt-5"><i class="fas fa-video me-2 text-warning"></i> Видео Добавки</h4>
+                            <h3 class="fs-4 mb-4 mt-5"><i class="fas fa-video me-2 text-warning"></i> Видео Добавки</h3>
                             <div class="row g-3">
                                 <!-- Film Length -->
-                                <div class="col-12"><h6 class="calc-sub-header">Дължина на филма</h6></div>
+                                <div class="col-12"><h4 class="calc-sub-header">Дължина на филма</h4></div>
                                 @foreach($filmLength as $extra)
                                 <div class="col-md-4">
                                     @php
@@ -483,7 +487,7 @@
                                 @endforeach
 
                                 <!-- Resolution -->
-                                <div class="col-12 mt-4"><h6 class="calc-sub-header">Резолюция на Видеото</h6></div>
+                                <div class="col-12 mt-4"><h4 class="calc-sub-header">Резолюция на Видеото</h4></div>
                                 @foreach($resolution as $extra)
                                 <div class="col-md-6">
                                     @php
@@ -516,7 +520,7 @@
                                 @endforeach
 
                                 <!-- Допълнителни Екстри -->
-                                <div class="col-12 mt-4"><h6 class="calc-sub-header">Допълнителни Видео Екстри</h6></div>
+                                <div class="col-12 mt-4"><h4 class="calc-sub-header">Допълнителни Видео Екстри</h4></div>
                                 @foreach($videoExtras as $extra)
                                 <div class="col-md-4">
                                     @php
@@ -549,7 +553,7 @@
                             </div>
 
                             <!-- DELIVERY -->
-                            <h4 class="mb-4 mt-5"><i class="fas fa-gift me-2 text-warning"></i> Получаване</h4>
+                            <h3 class="fs-4 mb-4 mt-5"><i class="fas fa-gift me-2 text-warning"></i> Получаване</h3>
                             <div class="row g-3">
                                 @foreach($delivery as $extra)
                                 <div class="@if($loop->first) col-md-12 @else col-md-6 @endif">
@@ -588,7 +592,7 @@
                     <!-- RIGHT COLUMN: RESULT -->
                     <div class="col-lg-4">
                         <div class="total-price-box">
-                            <h5 class="text-uppercase text-white-50">Обща Сума</h5>
+                            <h4 class="text-uppercase text-white-50 total-price-label">Обща Сума</h4>
                             <div class="price-display">€ <span id="finalPrice">0</span></div>
                             <div class="section-divider" style="background: #444; width: 100%;"></div>
 

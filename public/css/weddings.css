@@ -107,7 +107,9 @@ h4 {
 /* Хедър секция */
 .wedding-hero {
     min-height: 60vh;
-    background-image: url('https://taketwostudio1603.com/css/img/Сватба.jpg');
+    /* Same photo, self-hosted path + WebP (fallback hero when no Filament hero image is set; preloaded by weddings.blade.php) */
+    background-image: url('../css/img/Сватба.jpg');
+    background-image: image-set(url('../css/img/Сватба.webp') type('image/webp'), url('../css/img/Сватба.jpg') type('image/jpeg'));
     background-size: cover;
     background-position: center 30%;
     position: relative;
@@ -209,6 +211,11 @@ h4 {
     transform: scale(1.05);
 }
 
+/* Intro photo (css/img/Сватба.jpg / .webp, 1600x1067): reserve its box before it loads (CLS), own ratio after */
+.intro-photo {
+    aspect-ratio: auto 1600 / 1067;
+}
+
 /* --- CALCULATOR STYLES --- */
 .calc-section {
     background-color: var(--gray-light);
@@ -232,6 +239,9 @@ h4 {
     padding-bottom: 10px;
     font-weight: 600;
     margin-top: 20px;
+    /* now an <h4> (heading order): keep the old <h6> look, h1-h4 are uppercase + letter-spaced */
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 /* Radio Labels */
@@ -354,6 +364,14 @@ h4 {
     position: sticky;
     top: 100px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* "Обща Сума" is an <h4> (heading order): keep the old <h5> look */
+.total-price-label {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    margin-bottom: 0;
 }
 
 .price-display {

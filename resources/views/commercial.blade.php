@@ -8,7 +8,8 @@
 @section('og_image', asset('css/img/реклама.jpg'))
 
 @push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}"></noscript>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/commercial.css') }}">
 @endpush
 
@@ -19,6 +20,9 @@
 @section('preload')
     @if($heroUrl)
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
+    @else
+        {{-- Fallback hero from commercial.css .commercial-hero (image-set picks the WebP): same URL, so it downloads once --}}
+        <link rel="preload" href="{{ asset('css/img/ads/moonlight.webp') }}" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -86,37 +90,37 @@
             <div class="row g-4">
                 <div class="col-md-6 col-lg-4" data-aos="fade-up">
                     <div class="service-card"><i class="fas fa-video service-icon"></i>
-                        <h5>Рекламни Клипове</h5>
+                        <h3>Рекламни Клипове</h3>
                         <p>Динамични видеа за социалните мрежи.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="service-card"><i class="fas fa-box-open service-icon"></i>
-                        <h5>Продуктова Фотография</h5>
+                        <h3>Продуктова Фотография</h3>
                         <p>Качествени кадри за вашия каталог.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="service-card"><i class="fas fa-briefcase service-icon"></i>
-                        <h5>Корпоративни Събития</h5>
+                        <h3>Корпоративни Събития</h3>
                         <p>Репортажно заснемане на събития.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up">
                     <div class="service-card"><i class="fas fa-helicopter service-icon"></i>
-                        <h5>Дрон Заснемане</h5>
+                        <h3>Дрон Заснемане</h3>
                         <p>Впечатляващи въздушни кадри.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="service-card"><i class="fas fa-id-card service-icon"></i>
-                        <h5>Видео Визитки</h5>
+                        <h3>Видео Визитки</h3>
                         <p>Кратко представяне на вашия бизнес.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="service-card"><i class="fas fa-camera-retro service-icon"></i>
-                        <h5>Имиджови Сесии</h5>
+                        <h3>Имиджови Сесии</h3>
                         <p>Бизнес портрети и интериор.</p>
                     </div>
                 </div>
@@ -160,7 +164,7 @@
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
                                     @if($item->alt_text)
-                                        <h4 class="portfolio-title">{{ $item->alt_text }}</h4>
+                                        <h3 class="portfolio-title">{{ $item->alt_text }}</h3>
                                     @endif
                                     <span class="portfolio-subtitle">{{ $displayCategory }}</span>
                                     @if($item->description)

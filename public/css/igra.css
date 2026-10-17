@@ -249,7 +249,7 @@ a { color: var(--accent); }
 .rv-title.rv-glitch-once { animation: rv-glitch-once .5s steps(1, end) both; }
 .rv-text { color: var(--dim); }
 .rv-brand { text-align: center; padding: 6px 0; }
-.rv-logo { width: clamp(140px, 42vw, 220px); height: auto; display: block; margin: 0 auto; }
+.rv-logo { width: clamp(140px, 42vw, 220px); height: auto; aspect-ratio: auto 787 / 389; display: block; margin: 0 auto; } /* logo-tts-white.webp */
 .rv-rule { display: block; width: 56px; height: 1px; background: var(--gold); margin: 12px auto 0; }
 .rv-card { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--panel); display: flex; flex-direction: column; gap: 10px; }
 .rv-badge { display: inline-block; align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: var(--gold); color: #111; font: 700 .8rem/1.2 var(--font); letter-spacing: .12em; }

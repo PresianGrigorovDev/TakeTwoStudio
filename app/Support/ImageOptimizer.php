@@ -19,7 +19,7 @@ class ImageOptimizer
     /** Re-encode a file that already fits only when it gets at least this much smaller. */
     public const MIN_SAVING = 0.10;
 
-    /** Quality of the generated .webp siblings (same as Images::makeWebp). */
+    /** Default quality of the generated .webp siblings (same as Images::makeWebp). */
     public const WEBP_QUALITY = 80;
 
     /**
@@ -27,13 +27,13 @@ class ImageOptimizer
      * $maxHeight only the width is limited (the original behaviour); with it the
      * image is fitted inside the $maxWidth x $maxHeight box.
      */
-    public static function optimize(string $disk, string $path, int $maxWidth = 2200, int $quality = 82, ?int $maxHeight = null): void
+    public static function optimize(string $disk, string $path, int $maxWidth = 2200, int $quality = 82, ?int $maxHeight = null, int $webpQuality = self::WEBP_QUALITY): void
     {
         if ($path === '' || preg_match('#^https?://#i', $path)) {
             return;
         }
 
-        self::optimizeFile(Storage::disk($disk)->path($path), $maxWidth, $maxHeight, $quality);
+        self::optimizeFile(Storage::disk($disk)->path($path), $maxWidth, $maxHeight, $quality, false, null, $webpQuality);
     }
 
     /**
@@ -54,6 +54,7 @@ class ImageOptimizer
         int $quality = 82,
         bool $dryRun = false,
         ?callable $beforeWrite = null,
+        int $webpQuality = self::WEBP_QUALITY,
     ): array {
         $result = [
             'status' => 'ok', 'note' => '', 'before' => 0, 'after' => 0,
@@ -189,7 +190,7 @@ class ImageOptimizer
             }
 
             if ($stale) {
-                $webpTmp = self::encode($image, IMAGETYPE_WEBP, self::WEBP_QUALITY);
+                $webpTmp = self::encode($image, IMAGETYPE_WEBP, $webpQuality);
 
                 if ($webpTmp !== null) {
                     $result['webp_after'] = (int) filesize($webpTmp);
@@ -390,7 +391,7 @@ class ImageOptimizer
     }
 
     /** Make sure $bytes more can be allocated, raising memory_limit when the host allows it. */
-    private static function ensureMemory(int $bytes): bool
+    public static function ensureMemory(int $bytes): bool
     {
         $limit = self::iniBytes((string) ini_get('memory_limit'));
         if ($limit <= 0) {

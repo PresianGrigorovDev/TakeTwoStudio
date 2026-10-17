@@ -263,11 +263,6 @@
     </section>
 
     <!-- Modals -->
-    <div id="lightbox" class="lightbox" onclick="this.style.display='none'">
-        <span class="position-absolute top-0 end-0 m-4 text-white fs-1 cursor-pointer">×</span>
-        <img id="lightbox-img" src="" style="max-height: 90vh; max-width: 90vw;" loading="lazy" decoding="async">
-    </div>
-
     @foreach($teamMembers as $member)
         <div class="modal fade" id="modalTeam{{ $member->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

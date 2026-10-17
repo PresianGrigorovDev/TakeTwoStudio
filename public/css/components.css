@@ -135,6 +135,7 @@
     display: block;
     object-fit: contain;
     max-height: 420px;
+    aspect-ratio: auto 16 / 10; /* recommended banner 800x500 (Filament); reserves the box while it loads */
     transition: opacity 0.2s;
 }
 .promo-popup-image-link:hover .promo-popup-image {
@@ -379,7 +380,7 @@
 .audience-list a:hover { background: #D4AF37; color: #111; }
 .letter-spaced { letter-spacing: 2px; }
 .client-logos { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: center; }
-.client-logo { height: 48px; width: auto; max-width: 160px; object-fit: contain; filter: grayscale(1); opacity: 0.8; }
+.client-logo { height: 48px; width: auto; max-width: 160px; aspect-ratio: auto 3 / 2; object-fit: contain; filter: grayscale(1); opacity: 0.8; } /* aspect-ratio: placeholder width while loading, own ratio once loaded */
 .client-logo:hover { filter: none; opacity: 1; }
 
 /* ---- Utility classes replacing repeated inline styles ---- */

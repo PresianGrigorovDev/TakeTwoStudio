@@ -31,13 +31,13 @@
                     @if($posts->isEmpty())
                         <div class="blog-empty">
                             <i class="fas fa-newspaper"></i>
-                            <h3>Няма публикации в тази категория все още</h3>
+                            <h2>Няма публикации в тази категория все още</h2>
                             <p><a href="{{ route('blog.index') }}">Вижте всички публикации</a></p>
                         </div>
                     @else
                         <div class="blog-grid">
                             @foreach($posts as $post)
-                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->first])
+                                @include('blog.partials.card', ['post' => $post, 'aboveFold' => $loop->index < 3, 'lcp' => $loop->first, 'titleTag' => 'h2'])
                             @endforeach
                         </div>
 

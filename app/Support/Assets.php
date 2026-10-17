@@ -4,8 +4,9 @@ namespace App\Support;
 
 /**
  * Cache busting for self-hosted assets on shared hosting: public/.htaccess
- * caches css/js for a month and there is no build step, so the file mtime
- * (which changes on every git checkout) is appended as ?v=.
+ * caches css/js for a year as immutable and there is no build step, so the
+ * file mtime (which changes on every git checkout) is appended as ?v=.
+ * Every local css/js URL must go through this helper.
  */
 final class Assets
 {

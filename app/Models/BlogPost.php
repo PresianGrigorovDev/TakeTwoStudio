@@ -31,6 +31,12 @@ class BlogPost extends Model
         'author_team_member_id',
     ];
 
+    /**
+     * Covers are shown in 16:10 cards (~410 css px wide on phones) and as the post hero
+     * background behind a 50-70% dark gradient: fit inside this box (px).
+     */
+    public const COVER_MAX = 1600;
+
     protected $casts = [
         'published_at' => 'datetime',
         'is_published' => 'boolean',
@@ -57,7 +63,7 @@ class BlogPost extends Model
 
         static::saved(function (BlogPost $post) {
             if (($post->wasRecentlyCreated || $post->wasChanged('cover_image')) && ! empty($post->cover_image)) { // wasChanged() is false on create
-                ImageOptimizer::optimize('public', $post->cover_image);
+                ImageOptimizer::optimize('public', $post->cover_image, self::COVER_MAX, 82, self::COVER_MAX);
             }
         });
     }
