@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\PortfolioCategoryResource;
+use App\Filament\Resources\TeamMemberResource;
 use App\Models\BlogPost;
 use App\Models\PortfolioCategory;
 use App\Models\TeamMember;
+use App\Models\User;
 use App\Support\ImageOptimizer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
@@ -194,6 +197,23 @@ class OptimizeSiteImagesTest extends TestCase
         TeamMember::create(['name' => 'Легаси', 'role_bg' => 'Видео', 'image_path' => 'https://taketwostudio1603.com/css/img/PG.png']);
         TeamMember::create(['name' => 'Липсва', 'role_bg' => 'Видео', 'image_path' => 'team/missing.jpg']);
         Http::assertNothingSent();
+    }
+
+    public function test_admin_upload_fields_resize_in_the_browser_and_accept_camera_photos(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        // FilePond checks maxSize on the ORIGINAL file, before its client-side resize:
+        // 20 MB lets 6-11 MB camera photos through, the resize brings them down.
+        $this->actingAs($admin)->get(TeamMemberResource::getUrl('create'))->assertOk()
+            ->assertSee('imageResizeTargetWidth: JSON.parse(\'"600"\')', false)
+            ->assertSee('imageCropAspectRatio: JSON.parse(\'"1:1"\')', false)
+            ->assertSee('maxSize: JSON.parse(\'"20480KB"\')', false);
+
+        $this->actingAs($admin)->get(PortfolioCategoryResource::getUrl('create'))->assertOk()
+            ->assertSee('imageResizeMode: JSON.parse(\'"contain"\')', false)
+            ->assertSee('imageResizeTargetWidth: JSON.parse(\'"1200"\')', false)
+            ->assertSee('maxSize: JSON.parse(\'"20480KB"\')', false);
     }
 
     public function test_exif_orientation_is_applied_before_the_metadata_is_dropped(): void
