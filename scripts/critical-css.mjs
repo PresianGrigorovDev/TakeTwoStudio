@@ -130,15 +130,26 @@ const withoutNot = (sel) => {
     return out;
 };
 
+// Pseudo-elements that only exist on some input types: the rule matters only when such an input is critical.
+const INPUT_PSEUDO = [
+    [/::?-webkit-(datetime-edit[\w-]*|calendar-picker-indicator|date-and-time-value)\b/, 'input:is([type=date],[type=time],[type=datetime-local],[type=month],[type=week])'],
+    [/::?(file-selector-button|-webkit-file-upload-button)\b/, 'input[type=file]'],
+    [/::?-webkit-(inner|outer)-spin-button\b/, 'input[type=number]'],
+    [/::?-webkit-search-[\w-]+/, 'input[type=search]'],
+    [/::?-webkit-color-swatch[\w-]*/, 'input[type=color]'],
+];
+
 // The selector used to test "does this rule style a critical element?" (null = interaction-only rule).
 function matchForm(sel) {
     if (/:(hover|focus|focus-visible|focus-within|active|visited|target|-moz-focusring)\b/.test(withoutNot(sel))) return null;
+    const input = INPUT_PSEUDO.find(([re]) => re.test(sel));
     let s = sel
         .replace(/::?(before|after|first-line|first-letter|marker|placeholder|selection|backdrop|file-selector-button)\b/g, '')
         .replace(/::?-(webkit|moz|ms)-[\w-]+(\([^)]*\))?/g, '')
         .trim();
-    if (s === '' || /[>+~]$/.test(s)) s += '*';
-    return s;
+    const bare = s === '' || /[>+~]$/.test(s);
+    if (input) return bare ? s + input[1] : `${s}:is(${input[1]})`;
+    return bare ? s + '*' : s;
 }
 
 // ---------------------------------------------------------------- minimal Chrome DevTools protocol client
@@ -253,25 +264,23 @@ function bootstrapSubset(tree, keep) {
     }).filter(Boolean);
     out.push(...walk(tree));
 
-    // Drop :root custom properties nothing uses (Bootstrap, the site CSS or inline styles in the views).
-    const decls = (body) => splitDecls(body);
-    const used = new Set();
+    // Drop custom properties nothing in the subset uses (nor the site CSS / inline styles in the views): most of
+    // Bootstrap's weight is component variables for hover/active/disabled states that are not critical.
+    const used = new Set(['--bs-position']); // read by bootstrap.bundle.min.js (dropdown placement)
     const scan = (text) => { for (const m of text.matchAll(/var\(\s*(--[\w-]+)/g)) used.add(m[1]); };
-    const isRoot = (n) => n.type === 'rule' && n.selectors.every((s) => s === ':root' || s === '[data-bs-theme=light]');
     const visit = (nodes, fn) => nodes.forEach((n) => (n.type === 'group' ? visit(n.children, fn) : fn(n)));
-    visit(out, (n) => { if (!isRoot(n)) scan(n.body); });
-    for (const dir of ['public/css', 'resources/views']) scanDir(path.join(ROOT, dir), (text) => scan(text));
-    const rootDefs = new Map();
-    visit(out, (n) => { if (isRoot(n)) decls(n.body).forEach((d) => { const [k, v] = splitProp(d); if (k.startsWith('--')) rootDefs.set(k, v); }); });
-    for (let grew = true; grew;) {
-        grew = false;
-        for (const [k, v] of rootDefs) if (used.has(k)) for (const m of v.matchAll(/var\(\s*(--[\w-]+)/g)) if (!used.has(m[1])) { used.add(m[1]); grew = true; }
+    const defs = [];
+    visit(out, (n) => splitDecls(n.body).forEach((d) => { const [k, v] = splitProp(d); k.startsWith('--') ? defs.push([k, v]) : scan(v); }));
+    for (const dir of ['public/css', 'resources/views']) scanDir(path.join(ROOT, dir), scan);
+    for (let size = -1; size !== used.size;) {
+        size = used.size;
+        for (const [k, v] of defs) if (used.has(k)) scan(v);
     }
-    visit(out, (n) => {
-        if (isRoot(n)) n.body = decls(n.body).filter((d) => { const [k] = splitProp(d); return !k.startsWith('--') || used.has(k); }).join(';');
-    });
-    const ser = (nodes) => nodes.filter((n) => n.type !== 'rule' || n.body !== '')
-        .map((n) => (n.type === 'group' ? `${n.prelude}{${ser(n.children)}}` : `${n.selectors.join(',')}{${n.body}}`)).join('');
+    visit(out, (n) => { n.body = splitDecls(n.body).filter((d) => !d.startsWith('--') || used.has(splitProp(d)[0])).join(';'); });
+    const ser = (nodes) => nodes.map((n) => {
+        if (n.type === 'group') { const inner = ser(n.children); return inner && `${n.prelude}{${inner}}`; }
+        return n.body && `${n.selectors.join(',')}{${n.body}}`;
+    }).join('');
     return ser(out);
 }
 
@@ -284,9 +293,9 @@ function splitDecls(body) {
         if (c === '"' || c === "'") quote = c;
         else if (c === '(') depth++;
         else if (c === ')') depth--;
-        else if (c === ';' && depth === 0) { if (body.slice(start, i).trim()) out.push(body.slice(start, i).trim()); start = i + 1; }
+        else if (c === ';' && depth === 0) { if (body.slice(start, i).trim()) out.push(body.slice(start, i).trimStart()); start = i + 1; }
     }
-    if (body.slice(start).trim()) out.push(body.slice(start).trim());
+    if (body.slice(start).trim()) out.push(body.slice(start).trimStart()); // keep "--x: " (empty value) intact
     return out;
 }
 const splitProp = (d) => { const i = d.indexOf(':'); return [d.slice(0, i).trim(), d.slice(i + 1).trim()]; };
@@ -295,7 +304,7 @@ function scanDir(dir, fn) {
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const p = path.join(dir, e.name);
         if (e.isDirectory()) { if (!['filament', 'guava', 'img'].includes(e.name)) scanDir(p, fn); }
-        else if (/\.(css|php)$/.test(e.name)) fn(fs.readFileSync(p, 'utf8'));
+        else if (/\.(css|php)$/.test(e.name) && p !== OUT) fn(fs.readFileSync(p, 'utf8'));
     }
 }
 

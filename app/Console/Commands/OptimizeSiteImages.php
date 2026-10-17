@@ -180,7 +180,7 @@ class OptimizeSiteImages extends Command
             }
 
             $target = 'portfolio/categories/'.(Str::slug((string) $category->slug) ?: 'category-'.$category->id).'-cover.jpg';
-            $label = "storage/{$target} <- ".Str::limit($url, 70);
+            $label = "storage/{$target} <- ".parse_url($url, PHP_URL_HOST);
 
             if ($this->dryRun) {
                 $this->rows[] = [$label, ['status' => 'download', 'note' => 'would download it and point cover_image at it'] + $this->emptyResult()];
@@ -218,7 +218,7 @@ class OptimizeSiteImages extends Command
     /** Download an image into $fullPath (always a JPEG). Returns [remote bytes, remote dimensions]. */
     private function download(string $url, string $fullPath, string $base): array
     {
-        $response = Http::timeout(30)->connectTimeout(10)
+        $response = Http::timeout(20)->connectTimeout(5)
             ->withUserAgent('Mozilla/5.0 (compatible; TakeTwoStudio image localiser; +https://taketwostudio1603.com)')
             ->get($url);
 
