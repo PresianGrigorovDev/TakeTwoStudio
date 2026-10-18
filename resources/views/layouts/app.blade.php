@@ -210,7 +210,9 @@
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(function () { requestAnimationFrame(initAos); }, { timeout: 1000 });
             } else {
-                window.addEventListener('load', function () { requestAnimationFrame(initAos); });
+                // Safari/iOS have no requestIdleCallback; waiting for `load` there kept every
+                // [data-aos] section invisible until all images had downloaded.
+                setTimeout(function () { requestAnimationFrame(initAos); }, 200);
             }
         });
     </script>
