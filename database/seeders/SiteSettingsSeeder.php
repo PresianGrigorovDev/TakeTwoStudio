@@ -21,8 +21,8 @@ class SiteSettingsSeeder extends Seeder
             ['setting_key' => 'site_instagram',             'setting_value' => 'https://www.instagram.com/taketwostudio1603', 'description' => 'Instagram профил'],
             ['setting_key' => 'site_facebook',              'setting_value' => 'https://www.facebook.com/taketwostudio1603',  'description' => 'Facebook страница'],
             ['setting_key' => 'site_tiktok',                'setting_value' => 'https://www.tiktok.com/@taketwostudio1603',   'description' => 'TikTok профил'],
-            ['setting_key' => 'site_youtube',               'setting_value' => '',                                            'description' => 'YouTube канал (пълен URL) - попълни!'],
-            ['setting_key' => 'site_google_maps',           'setting_value' => '',                                            'description' => 'Google Maps / Business Profile URL - попълни!'],
+            ['setting_key' => 'site_youtube',               'setting_value' => 'https://www.youtube.com/@taketwostudiobg',    'description' => 'YouTube канал (пълен URL)'],
+            ['setting_key' => 'site_google_maps',           'setting_value' => 'https://www.google.com/maps?cid=8495326525195229286', 'description' => 'Google Business Profile (Maps URL с cid)'],
         ];
         foreach ($settings as $setting) {
             DB::table('site_settings')->updateOrInsert(

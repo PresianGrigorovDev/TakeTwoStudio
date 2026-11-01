@@ -20,6 +20,9 @@ class SettingsTest extends TestCase
         $this->assertSame('taketwostudio1603@gmail.com', Settings::email());
         $this->assertSame('ж.к. Възраждане IV 1603', Settings::streetAddress());
         $this->assertArrayHasKey('instagram', Settings::socialLinks());
+        $this->assertSame('https://www.youtube.com/@taketwostudiobg', Settings::socialLinks()['youtube']);
+
+        SiteSetting::where('setting_key', 'site_youtube')->first()->update(['setting_value' => '']);
         $this->assertArrayNotHasKey('youtube', Settings::socialLinks(), 'empty URLs must be skipped');
 
         SiteSetting::where('setting_key', 'site_phone')->first()->update(['setting_value' => '089 111 2233']);
