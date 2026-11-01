@@ -12,12 +12,15 @@ class BookingCalendarWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $pendingCount = Booking::pending()->count();
-        $confirmedThisMonth = Booking::confirmed()
+        // Client engagements only; personal busy time and closed days are not bookings.
+        $clients = fn () => Booking::where('kind', Booking::KIND_CLIENT);
+
+        $pendingCount = $clients()->pending()->count();
+        $confirmedThisMonth = $clients()->confirmed()
             ->whereBetween('event_date', [now()->startOfMonth(), now()->endOfMonth()])
             ->count();
-        $nextBooking = Booking::confirmed()
-            ->where('event_date', '>=', now())
+        $nextBooking = $clients()->confirmed()
+            ->whereDate('event_date', '>=', today())
             ->orderBy('event_date')
             ->first();
 
@@ -31,7 +34,7 @@ class BookingCalendarWidget extends BaseWidget
                 ->color('success')
                 ->icon('heroicon-o-calendar-days'),
             Stat::make('Следваща резервация', $nextBooking ? $nextBooking->event_date->format('d.m.Y') : 'Няма')
-                ->description($nextBooking ? $nextBooking->service_type . ' - ' . $nextBooking->name : '')
+                ->description($nextBooking ? trim(($nextBooking->service_type ? $nextBooking->service_type . ' - ' : '') . $nextBooking->name) : '')
                 ->icon('heroicon-o-arrow-right'),
         ];
     }

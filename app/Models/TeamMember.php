@@ -23,6 +23,18 @@ class TeamMember extends Model
         });
     }
 
+    /** Calendar entries (engagements, busy time) this person is assigned to. */
+    public function bookings()
+    {
+        return $this->belongsToMany(Booking::class, 'booking_team_member')->withTimestamps();
+    }
+
+    /** Colour of this person in the team calendar (team_members.calendar_color). */
+    public function getCalendarColorOrDefaultAttribute(): string
+    {
+        return $this->calendar_color ?: '#64748b';
+    }
+
     private function optimizeImage(): void
     {
         if (! empty($this->image_path)) {

@@ -146,13 +146,15 @@ class OrderResource extends Resource
 
     private static function getBusyMemberIds(string $eventDate, string $startTime, string $endTime, ?Order $record): \Illuminate\Support\Collection
     {
-        $busyFromBookings = Booking::where('event_date', $eventDate)
-            ->whereIn('status', ['confirmed', 'pending'])
-            ->whereNotNull('team_member_id')
+        // People already in the team calendar at that time (other than this order's own entry).
+        $busyFromCalendar = Booking::active()
+            ->overlappingDays($eventDate, $eventDate)
             ->where('start_time', '<', $endTime)
             ->where('end_time', '>', $startTime)
-            ->when($record, fn ($q) => $q->where('order_id', '!=', $record->id))
-            ->pluck('team_member_id');
+            ->when($record, fn ($q) => $q->where(fn ($q) => $q->whereNull('order_id')->orWhere('order_id', '!=', $record->id)))
+            ->with('teamMembers')
+            ->get()
+            ->flatMap(fn (Booking $booking) => $booking->teamMembers->modelKeys());
 
         $busyFromOrders = Order::where('event_date', $eventDate)
             ->whereNotIn('status', ['cancelled'])
@@ -165,7 +167,7 @@ class OrderResource extends Resource
             ->get()
             ->flatMap(fn ($order) => $order->teamMembers->pluck('id'));
 
-        return $busyFromBookings->merge($busyFromOrders)->unique();
+        return $busyFromCalendar->merge($busyFromOrders)->unique();
     }
 
     public static function table(Table $table): Table
@@ -251,40 +253,21 @@ class OrderResource extends Resource
                         && $record->end_time
                         && !$record->booking()->exists())
                     ->action(function (Order $record) {
-                        $teamMemberIds = $record->teamMembers()->pluck('team_members.id');
-
-                        if ($teamMemberIds->isEmpty()) {
-                            // Create one booking without a team member
-                            Booking::create([
-                                'name' => $record->name,
-                                'phone' => $record->phone,
-                                'email' => $record->email,
-                                'event_date' => $record->event_date,
-                                'start_time' => $record->start_time,
-                                'end_time' => $record->end_time,
-                                'service_type' => $record->service_type,
-                                'message' => $record->details,
-                                'status' => 'confirmed',
-                                'order_id' => $record->id,
-                            ]);
-                        } else {
-                            // Create a booking for each assigned team member
-                            foreach ($teamMemberIds as $memberId) {
-                                Booking::create([
-                                    'name' => $record->name,
-                                    'phone' => $record->phone,
-                                    'email' => $record->email,
-                                    'event_date' => $record->event_date,
-                                    'start_time' => $record->start_time,
-                                    'end_time' => $record->end_time,
-                                    'service_type' => $record->service_type,
-                                    'message' => $record->details,
-                                    'status' => 'confirmed',
-                                    'order_id' => $record->id,
-                                    'team_member_id' => $memberId,
-                                ]);
-                            }
-                        }
+                        // One calendar entry for the whole order, with every assigned person.
+                        $booking = Booking::create([
+                            'kind' => Booking::KIND_CLIENT,
+                            'name' => $record->name,
+                            'phone' => $record->phone,
+                            'email' => $record->email,
+                            'event_date' => $record->event_date,
+                            'start_time' => $record->start_time,
+                            'end_time' => $record->end_time,
+                            'service_type' => $record->service_type,
+                            'message' => $record->details,
+                            'status' => 'confirmed',
+                            'order_id' => $record->id,
+                        ]);
+                        $booking->teamMembers()->sync($record->teamMembers()->pluck('team_members.id'));
 
                         $record->update(['status' => 'accepted']);
 

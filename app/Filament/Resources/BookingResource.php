@@ -3,167 +3,313 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
+use App\Http\Controllers\BookingController;
 use App\Models\Booking;
+use App\Support\TeamCalendar;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 
+/**
+ * Entries of the internal team calendar (dashboard): client engagements (incl. the
+ * website booking requests), personal busy time and studio-closed days.
+ */
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationGroup = 'Резервации';
-    protected static ?string $navigationLabel = 'Резервации';
-    protected static ?string $modelLabel = 'Резервация';
-    protected static ?string $pluralModelLabel = 'Резервации';
+    protected static ?string $navigationGroup = 'Календар';
+    protected static ?string $navigationLabel = 'Ангажименти';
+    protected static ?string $modelLabel = 'Ангажимент';
+    protected static ?string $pluralModelLabel = 'Ангажименти';
+    protected static ?int $navigationSort = 1;
+
+    public const SERVICE_TYPES = [
+        'Сватба' => 'Сватба',
+        'Абитуриентски Бал' => 'Абитуриентски Бал',
+        'Свето Кръщене' => 'Свето Кръщене',
+        'Изпращане' => 'Изпращане',
+        'Реклама и Бизнес' => 'Реклама и Бизнес',
+    ];
+
+    public const STATUSES = [
+        'pending' => 'Чакаща',
+        'confirmed' => 'Потвърдена',
+        'rejected' => 'Отказана',
+        'cancelled' => 'Отменена',
+    ];
 
     public static function form(Form $form): Form
     {
+        $isClient = fn (Get $get) => ($get('kind') ?? Booking::KIND_CLIENT) === Booking::KIND_CLIENT;
+
         return $form->schema([
-            Forms\Components\TextInput::make('name')
-                ->label('Име на клиента')
-                ->required()
-                ->maxLength(255),
-            Forms\Components\TextInput::make('phone')
-                ->label('Телефон')
-                ->tel()
-                ->required()
-                ->maxLength(20),
-            Forms\Components\TextInput::make('email')
-                ->label('Имейл')
-                ->email()
-                ->maxLength(255),
-            Forms\Components\DatePicker::make('event_date')
-                ->label('Дата на събитието')
-                ->required()
-                ->minDate(now()),
-            Forms\Components\Select::make('start_time')
-                ->label('Начален час')
-                ->options(fn () => array_combine(
-                    \App\Http\Controllers\BookingController::getWorkingHours(),
-                    \App\Http\Controllers\BookingController::getWorkingHours()
-                ))
-                ->required(),
-            Forms\Components\Select::make('end_time')
-                ->label('Краен час')
-                ->options(function () {
-                    $hours = [];
-                    for ($h = \App\Http\Controllers\BookingController::getWorkStart() + 1; $h <= \App\Http\Controllers\BookingController::getWorkEnd(); $h++) {
-                        $val = str_pad($h, 2, '0', STR_PAD_LEFT) . ':00';
-                        $hours[$val] = $val;
-                    }
-                    return $hours;
-                })
-                ->required(),
-            Forms\Components\Select::make('service_type')
-                ->label('Тип услуга')
-                ->options([
-                    'Сватба' => 'Сватба',
-                    'Абитуриентски Бал' => 'Абитуриентски Бал',
-                    'Свето Кръщене' => 'Свето Кръщене',
-                    'Изпращане' => 'Изпращане',
-                    'Реклама и Бизнес' => 'Реклама и Бизнес',
+            Forms\Components\Section::make()
+                ->schema([
+                    Forms\Components\ToggleButtons::make('kind')
+                        ->label('Тип')
+                        ->options(Booking::KINDS)
+                        ->colors([Booking::KIND_CLIENT => 'primary', Booking::KIND_BUSY => 'gray', Booking::KIND_CLOSED => 'danger'])
+                        ->icons([Booking::KIND_CLIENT => 'heroicon-o-camera', Booking::KIND_BUSY => 'heroicon-o-user-minus', Booking::KIND_CLOSED => 'heroicon-o-no-symbol'])
+                        ->default(fn () => in_array(request()->query('kind'), array_keys(Booking::KINDS), true) ? request()->query('kind') : Booking::KIND_CLIENT)
+                        ->inline()
+                        ->live()
+                        ->required()
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('name')
+                        ->label(fn (Get $get) => $isClient($get) ? 'Клиент / заглавие' : 'Причина')
+                        ->placeholder(fn (Get $get) => $isClient($get) ? 'Сватба – Мария и Иван' : 'Отпуск')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\CheckboxList::make('teamMembers')
+                        ->label('Хора')
+                        ->relationship('teamMembers', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('display_order'))
+                        ->default(fn () => request()->integer('member') ? [request()->integer('member')] : [])
+                        ->helperText(fn (Get $get) => match ($get('kind')) {
+                            Booking::KIND_CLOSED => 'Студиото е затворено за всички; хора не са нужни.',
+                            Booking::KIND_BUSY => 'Кой е зает.',
+                            default => 'Може повече от един човек. Ангажимент без хора заема едно място, докато не го разпределите.',
+                        })
+                        ->required(fn (Get $get) => $get('kind') === Booking::KIND_BUSY)
+                        ->hidden(fn (Get $get) => $get('kind') === Booking::KIND_CLOSED)
+                        ->live()
+                        ->columns(3)
+                        ->columnSpanFull(),
                 ])
-                ->required(),
-            Forms\Components\Select::make('status')
-                ->label('Статус')
-                ->options([
-                    'pending' => 'Чакаща',
-                    'confirmed' => 'Потвърдена',
-                    'rejected' => 'Отказана',
-                    'cancelled' => 'Отменена',
+                ->columns(2),
+
+            Forms\Components\Section::make('Кога')
+                ->schema([
+                    Forms\Components\DatePicker::make('event_date')
+                        ->label('Дата')
+                        ->native(false)
+                        ->displayFormat('d.m.Y')
+                        ->default(fn () => request()->query('date'))
+                        ->required()
+                        ->live(),
+                    Forms\Components\DatePicker::make('end_date')
+                        ->label('До дата (по избор)')
+                        ->helperText('За няколко поредни дни, напр. отпуск. Часовете важат за всеки ден.')
+                        ->native(false)
+                        ->displayFormat('d.m.Y')
+                        ->afterOrEqual('event_date')
+                        ->live(),
+                    Forms\Components\Select::make('start_time')
+                        ->label('От')
+                        ->options(fn () => array_combine(BookingController::getWorkingHours(), BookingController::getWorkingHours()))
+                        ->default(sprintf('%02d:00', BookingController::getWorkStart()))
+                        ->required()
+                        ->live(),
+                    Forms\Components\Select::make('end_time')
+                        ->label('До')
+                        ->options(function () {
+                            $hours = [];
+                            for ($h = BookingController::getWorkStart() + 1; $h <= BookingController::getWorkEnd(); $h++) {
+                                $hours[sprintf('%02d:00', $h)] = sprintf('%02d:00', $h);
+                            }
+
+                            return $hours;
+                        })
+                        ->default(sprintf('%02d:00', BookingController::getWorkEnd()))
+                        ->rule(fn (Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
+                            // "HH:00" strings compare correctly as text.
+                            if ($get('start_time') && (string) $value <= (string) $get('start_time')) {
+                                $fail('Крайният час трябва да е след началния.');
+                            }
+                        })
+                        ->required()
+                        ->live(),
+                    Forms\Components\Placeholder::make('conflicts')
+                        ->hiddenLabel()
+                        ->content(fn (Get $get, ?Booking $record) => self::conflictWarning($get, $record))
+                        ->visible(fn (Get $get, ?Booking $record) => self::conflictWarning($get, $record) !== null)
+                        ->columnSpanFull(),
                 ])
-                ->required()
-                ->default('pending'),
-            Forms\Components\Textarea::make('message')
-                ->label('Съобщение от клиента')
-                ->columnSpanFull(),
+                ->columns(2),
+
+            Forms\Components\Section::make('Клиент')
+                ->schema([
+                    Forms\Components\Select::make('service_type')
+                        ->label('Тип услуга')
+                        ->options(self::SERVICE_TYPES),
+                    Forms\Components\Select::make('status')
+                        ->label('Статус')
+                        ->options(self::STATUSES)
+                        ->required()
+                        ->default('confirmed'),
+                    Forms\Components\TextInput::make('phone')
+                        ->label('Телефон')
+                        ->tel()
+                        ->maxLength(20),
+                    Forms\Components\TextInput::make('email')
+                        ->label('Имейл')
+                        ->email()
+                        ->maxLength(255),
+                    Forms\Components\Select::make('order_id')
+                        ->label('Свързана поръчка')
+                        ->relationship('order', 'name')
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\Textarea::make('message')
+                        ->label('Съобщение от клиента')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2)
+                ->visible($isClient),
+
             Forms\Components\Textarea::make('admin_notes')
                 ->label('Вътрешни бележки')
                 ->columnSpanFull(),
-            Forms\Components\Select::make('team_member_id')
-                ->label('Назначен фотограф')
-                ->relationship('teamMember', 'name')
-                ->searchable()
-                ->preload(),
-            Forms\Components\Select::make('order_id')
-                ->label('Свързана поръчка')
-                ->relationship('order', 'name')
-                ->searchable()
-                ->preload(),
         ]);
+    }
+
+    /**
+     * Internal entries (busy / closed) have no client data and are always confirmed;
+     * a closed studio has no people. Called by the create and edit pages.
+     */
+    public static function normalizeData(array $data): array
+    {
+        if (($data['kind'] ?? Booking::KIND_CLIENT) !== Booking::KIND_CLIENT) {
+            $data['status'] = 'confirmed';
+            foreach (['service_type', 'phone', 'email', 'message', 'order_id'] as $field) {
+                $data[$field] = null;
+            }
+        }
+        if (! empty($data['end_date']) && substr((string) $data['end_date'], 0, 10) <= substr((string) $data['event_date'], 0, 10)) {
+            $data['end_date'] = null;
+        }
+
+        return $data;
+    }
+
+    /** Notification after saving when somebody is double-booked (saving is still allowed). */
+    public static function notifyConflicts(Booking $record): void
+    {
+        if ($record->kind === Booking::KIND_CLOSED) {
+            $record->teamMembers()->detach();
+
+            return;
+        }
+
+        $memberIds = $record->teamMembers()->pluck('team_members.id')->all();
+        $lines = TeamCalendar::describeConflicts(
+            TeamCalendar::conflicts($record->event_date->toDateString(), $record->end_date?->toDateString(), $record->start_time, $record->end_time, $memberIds, $record->id),
+            $memberIds
+        );
+
+        if ($lines) {
+            \Filament\Notifications\Notification::make()
+                ->title('Внимание: двойна заетост')
+                ->body(implode("\n", $lines))
+                ->warning()
+                ->persistent()
+                ->send();
+        }
+    }
+
+    /** Live warning when a chosen person (or the closed studio) is already taken. */
+    public static function conflictWarning(Get $get, ?Booking $record): ?HtmlString
+    {
+        $date = $get('event_date');
+        $start = $get('start_time');
+        $end = $get('end_time');
+
+        if (! $date || ! $start || ! $end || $start >= $end || $get('kind') === Booking::KIND_CLOSED) {
+            return null;
+        }
+
+        $memberIds = (array) $get('teamMembers');
+        $lines = TeamCalendar::describeConflicts(
+            TeamCalendar::conflicts(substr((string) $date, 0, 10), $get('end_date') ? substr((string) $get('end_date'), 0, 10) : null, $start, $end, $memberIds, $record?->id),
+            $memberIds
+        );
+
+        if (! $lines) {
+            return null;
+        }
+
+        return new HtmlString(
+            '<div class="tt-conflict-warning"><strong>Внимание: двойна заетост</strong><ul>'
+            .collect($lines)->map(fn ($l) => '<li>'.e($l).'</li>')->implode('')
+            .'</ul><span>Можете да запишете въпреки това.</span></div>'
+        );
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Клиент')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->label('Телефон')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('event_date')
                     ->label('Дата')
-                    ->date('d.m.Y')
+                    ->formatStateUsing(fn (Booking $record) => $record->event_date->format('d.m.Y')
+                        .($record->end_date && $record->end_date->gt($record->event_date) ? ' – '.$record->end_date->format('d.m.Y') : ''))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Час')
-                    ->formatStateUsing(fn ($state, $record) => $record->start_time . ' – ' . $record->end_time)
-                    ->sortable(),
+                    ->formatStateUsing(fn ($state, Booking $record) => $record->start_time.' – '.$record->end_time),
+                Tables\Columns\TextColumn::make('kind')
+                    ->label('Тип')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state) => Booking::KINDS[$state] ?? $state)
+                    ->color(fn (string $state) => match ($state) {
+                        Booking::KIND_BUSY => 'gray',
+                        Booking::KIND_CLOSED => 'danger',
+                        default => 'primary',
+                    }),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Клиент / заглавие')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('teamMembers.name')
+                    ->label('Хора')
+                    ->badge()
+                    ->color('info')
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('service_type')
                     ->label('Услуга')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('teamMember.name')
-                    ->label('Фотограф')
-                    ->default('-')
-                    ->badge()
-                    ->color('info'),
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('Телефон')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Статус')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pending' => 'Чакаща',
-                        'confirmed' => 'Потвърдена',
-                        'rejected' => 'Отказана',
-                        'cancelled' => 'Отменена',
-                        default => $state,
-                    })
+                    ->formatStateUsing(fn (string $state): string => self::STATUSES[$state] ?? $state)
                     ->color(fn (string $state): string => match ($state) {
                         'pending' => 'warning',
                         'confirmed' => 'success',
                         'rejected' => 'danger',
-                        'cancelled' => 'gray',
                         default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Създадена')
-                    ->dateTime()
+                    ->dateTime('d.m.Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('event_date', 'desc')
             ->filters([
+                Tables\Filters\Filter::make('upcoming')
+                    ->label('Само предстоящи')
+                    ->query(fn (Builder $query) => $query->where(fn ($q) => $q->whereDate('event_date', '>=', today())->orWhereDate('end_date', '>=', today())))
+                    ->default(),
+                Tables\Filters\SelectFilter::make('kind')
+                    ->label('Тип')
+                    ->options(Booking::KINDS),
+                Tables\Filters\SelectFilter::make('teamMembers')
+                    ->label('Човек')
+                    ->relationship('teamMembers', 'name'),
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Статус')
-                    ->options([
-                        'pending' => 'Чакаща',
-                        'confirmed' => 'Потвърдена',
-                        'rejected' => 'Отказана',
-                        'cancelled' => 'Отменена',
-                    ]),
+                    ->options(self::STATUSES),
                 Tables\Filters\SelectFilter::make('service_type')
                     ->label('Услуга')
-                    ->options([
-                        'Сватба' => 'Сватба',
-                        'Абитуриентски Бал' => 'Абитуриентски Бал',
-                        'Свето Кръщене' => 'Свето Кръщене',
-                        'Изпращане' => 'Изпращане',
-                        'Реклама и Бизнес' => 'Реклама и Бизнес',
-                    ]),
+                    ->options(self::SERVICE_TYPES),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

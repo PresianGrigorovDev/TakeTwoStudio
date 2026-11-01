@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Support\Assets;
 use App\Support\Seo\Seo;
+use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Pagination\Paginator;
@@ -48,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
         FilamentAsset::register([
             Js::make('qrcode-generator', Assets::versioned('vendor/qrcode/qrcode.min.js')),
             Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
+            // Dashboard team calendar + double-booking warning (Календар → Ангажименти).
+            Css::make('team-calendar', Assets::versioned('css/admin/team-calendar.css')),
         ], package: 'taketwo');
     }
 
