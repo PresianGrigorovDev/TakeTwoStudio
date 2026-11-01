@@ -5,7 +5,7 @@ namespace App\Support;
 use App\Http\Controllers\BookingController;
 use App\Models\Booking;
 use App\Models\TeamMember;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 
 /**
@@ -135,7 +135,7 @@ final class TeamCalendar
     }
 
     /** Days of [$from, $to] as 'Y-m-d' strings. */
-    public static function days(Carbon $from, Carbon $to): array
+    public static function days(CarbonInterface $from, CarbonInterface $to): array
     {
         $days = [];
         for ($d = $from->copy()->startOfDay(); $d->lte($to); $d->addDay()) {
