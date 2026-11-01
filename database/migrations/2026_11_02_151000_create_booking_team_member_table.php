@@ -51,7 +51,8 @@ return new class extends Migration
 
         Schema::table('bookings', function (Blueprint $table) use ($foreignKeys) {
             foreach ($foreignKeys as $name) {
-                $table->dropForeign($name);
+                // MySQL needs the real constraint name; SQLite (tests) only drops by column.
+                $table->dropForeign(DB::getDriverName() === 'sqlite' ? ['team_member_id'] : $name);
             }
         });
 
