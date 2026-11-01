@@ -283,19 +283,13 @@
                         <p class="text-muted mb-3">
                             {{ $member->bio_bg }}
                         </p>
-                        @if($member->phone || $member->instagram_url)
+                        {{-- Personal phones are not published: one studio number everywhere (2026-11-02). --}}
+                        @if($member->instagram_url)
                             <div class="mt-3 pt-3 border-top d-flex justify-content-center gap-3 flex-wrap">
-                                @if($member->phone)
-                                    <a href="tel:{{ $member->phone }}" class="btn btn-outline-dark btn-sm rounded-0">
-                                        <i class="fas fa-phone me-1"></i> {{ $member->phone }}
-                                    </a>
-                                @endif
-                                @if($member->instagram_url)
-                                    <a href="{{ $member->instagram_url }}" target="_blank"
-                                        class="btn btn-outline-dark btn-sm rounded-0">
-                                        <i class="fab fa-instagram me-1"></i> Instagram
-                                    </a>
-                                @endif
+                                <a href="{{ $member->instagram_url }}" target="_blank"
+                                    class="btn btn-outline-dark btn-sm rounded-0">
+                                    <i class="fab fa-instagram me-1"></i> Instagram
+                                </a>
                             </div>
                         @endif
                     </div>

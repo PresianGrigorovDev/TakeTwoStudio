@@ -321,6 +321,8 @@
     @endif
 
     <!-- CONTACT -->
+    @include('partials.faq-section')
+
     <section id="contact" class="py-5 bg-light text-center">
         <div class="container">
             <h2 class="mb-3">Свържете се с нас</h2>

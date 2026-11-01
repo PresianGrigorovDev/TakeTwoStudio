@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
-@section('title', ($post->meta_title ?: $post->title) . ' | Блог Take Two Studio 1603')
+@php
+    // Keep <title> within ~60 characters: the brand suffix is added only when it fits.
+    $postTitle = $post->meta_title ?: $post->title;
+    $postTitle = mb_strlen($postTitle . ' | Take Two Studio 1603') <= 60 ? $postTitle . ' | Take Two Studio 1603' : $postTitle;
+@endphp
+@section('title', $postTitle)
 @section('meta_title', $post->meta_title ?: $post->title)
 @section('meta_description', $post->meta_description ?: \Illuminate\Support\Str::limit(strip_tags($post->excerpt), 160))
 @section('meta_keywords', $post->meta_keywords ?: '')
@@ -73,6 +78,7 @@
                                 'heading' => 'Абитуриент сте?',
                                 'text' => 'Разгледайте нашите предложения за бал и пред-балните фотосесии.',
                                 'label' => 'Към балните фотосесии',
+                                'secondary' => ['url' => route('pages.prom-guide'), 'label' => 'Гид за бала във Варна'],
                             ],
                             'photoshoot-style' => [
                                 'url' => url('/portrait'),
@@ -109,6 +115,9 @@
                                 <p>{{ $categoryCta['text'] }}</p>
                                 <div class="blog-post__cta-buttons">
                                     <a href="{{ $categoryCta['url'] }}" class="btn btn-primary">{{ $categoryCta['label'] }}</a>
+                                    @isset($categoryCta['secondary'])
+                                        <a href="{{ $categoryCta['secondary']['url'] }}" class="btn btn-outline">{{ $categoryCta['secondary']['label'] }}</a>
+                                    @endisset
                                 </div>
                             @else
                                 <h3>Хареса ви статията?</h3>

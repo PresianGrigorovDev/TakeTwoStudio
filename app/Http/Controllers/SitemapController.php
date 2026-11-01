@@ -154,6 +154,11 @@ class SitemapController extends Controller
                     $query->where('is_visible', true);
                 }
 
+                // Photos of hidden wedding galleries are not shown on /weddings.
+                if ($table === 'wedding_gallery_photos') {
+                    $query->whereIn('wedding_gallery_id', DB::table('wedding_galleries')->where('is_active', true)->select('id'));
+                }
+
                 foreach ($query->limit(1000)->pluck('image_path') as $path) {
                     $images[] = $this->imageUrl($path);
                 }
@@ -231,9 +236,9 @@ class SitemapController extends Controller
         return $date?->toDateString();
     }
 
-    private function imageUrl(string $path): ?string
+    private function imageUrl(?string $path): ?string
     {
-        $path = trim($path);
+        $path = trim((string) $path);
 
         if ($path === '') {
             return null;

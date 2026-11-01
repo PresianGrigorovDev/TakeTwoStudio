@@ -54,6 +54,12 @@ class ServiceResource extends Resource
                 Forms\Components\Textarea::make('description_bg')
                     ->label('Описание (БГ)')
                     ->columnSpanFull(),
+                Forms\Components\TextInput::make('delivery_days')
+                    ->label('Срок за доставка (работни дни, максимум)')
+                    ->helperText('Показва се в llms.txt за AI асистентите. Дръж го еднакъв с отговорите в FAQ.')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(365),
                 // Fitted inside 1920x1920 in the browser before upload (the size check above
                 // runs on the original file); Service also optimises the saved file.
                 Forms\Components\FileUpload::make('hero_image')

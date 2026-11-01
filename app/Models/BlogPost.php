@@ -234,8 +234,12 @@ class BlogPost extends Model
         return 'published';
     }
 
+    /**
+     * Query-builder increment so a page view never touches updated_at
+     * (which feeds dateModified and the sitemap lastmod).
+     */
     public function incrementViews(): void
     {
-        $this->increment('views_count');
+        static::whereKey($this->getKey())->toBase()->increment('views_count');
     }
 }

@@ -36,7 +36,7 @@ final class JsonLdGraph
             '@id' => $orgId,
             'name' => $name,
             'url' => $root.'/',
-            'logo' => ['@type' => 'ImageObject', 'url' => asset('css/img/logo-tts-white.webp'), 'width' => 787, 'height' => 389],
+            'logo' => ['@type' => 'ImageObject', 'url' => asset('css/img/logo-tts-black.png'), 'width' => 787, 'height' => 389],
             'email' => Settings::email(),
             'telephone' => Settings::phone(),
             'contactPoint' => $this->contactPoints(),
@@ -45,12 +45,12 @@ final class JsonLdGraph
         ]);
 
         $business = array_filter([
-            '@type' => ['LocalBusiness', 'ProfessionalService'],
+            '@type' => 'LocalBusiness',
             '@id' => $bizId,
             'name' => $name,
             'description' => 'Фото и видео студио във Варна: сватби, абитуриентски балове, кръщенета, семейни и портретни фотосесии, рекламна, автомобилна и архитектурна фотография, заснемане на събития, дрон кадри и 4K видео.',
             'image' => asset('css/img/about.webp'),
-            'logo' => asset('css/img/logo-tts-white.webp'),
+            'logo' => asset('css/img/logo-tts-black.png'),
             'url' => $root.'/',
             'telephone' => Settings::phone(),
             'email' => Settings::email(),
@@ -68,8 +68,8 @@ final class JsonLdGraph
             'openingHoursSpecification' => [
                 '@type' => 'OpeningHoursSpecification',
                 'dayOfWeek' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-                'opens' => '09:00',
-                'closes' => '18:00',
+                'opens' => Settings::opensAt(),
+                'closes' => Settings::closesAt(),
             ],
             'sameAs' => $social ?: null,
             'parentOrganization' => ['@id' => $orgId],
@@ -129,7 +129,7 @@ final class JsonLdGraph
                 'creditText' => $name,
                 'copyrightNotice' => '© '.date('Y').' '.$name,
                 'license' => route('legal.terms'),
-                'acquireLicensePage' => $root.'/#contact',
+                'acquireLicensePage' => $root.'/kontakti',
             ];
         }
 
@@ -160,17 +160,8 @@ final class JsonLdGraph
             'availableLanguage' => ['bg', 'en'],
         ]];
 
-        if ($secondary = Settings::phoneSecondary()) {
-            $points[] = array_filter([
-                '@type' => 'ContactPoint',
-                'contactType' => 'sales',
-                'name' => Settings::phoneSecondaryLabel(),
-                'telephone' => $secondary,
-                'areaServed' => 'BG',
-                'availableLanguage' => ['bg'],
-            ]);
-        }
-
+        // One public number everywhere (owner decision 2026-11-02); the
+        // site_phone_secondary setting is intentionally not published.
         return $points;
     }
 

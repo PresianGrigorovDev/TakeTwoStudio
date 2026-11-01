@@ -1,7 +1,12 @@
 # Take Two Studio 1603 - https://taketwostudio1603.com
-# All crawlers (search engines and AI assistants such as Googlebot, Bingbot,
-# GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot) are welcome.
+# Search engines and AI assistants that fetch pages to answer users
+# (Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User, Claude-SearchBot,
+# Claude-User, PerplexityBot) are welcome.
+# OpenAI model training (GPTBot) is opted out; ChatGPT search is not affected.
 # Only the admin panel and internal JSON endpoints are off-limits.
+
+User-agent: GPTBot
+Disallow: /
 
 User-agent: *
 Disallow: /admin

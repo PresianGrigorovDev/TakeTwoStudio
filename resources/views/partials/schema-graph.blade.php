@@ -5,4 +5,4 @@
     $seoImage = trim($__env->yieldContent('og_image', asset('css/img/social-share-cover.jpg'))) ?: null;
     $seoGraph = app(\App\Support\Seo\JsonLdGraph::class)->toArray($seoTitle, $seoDescription, $seoImage);
 @endphp
-<script type="application/ld+json">{!! json_encode($seoGraph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+<script type="application/ld+json">{!! json_encode($seoGraph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>

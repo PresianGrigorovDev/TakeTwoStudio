@@ -155,9 +155,10 @@
                         <li><span>📍</span> {{ \App\Support\Settings::address() }}</li>
                         <li><span>📞</span> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></li>
                         <li><span>✉️</span> <a href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a></li>
-                        <li><span>🕒</span> Понеделник - Неделя</li>
+                        <li><span>🕒</span> Понеделник - Неделя, {{ \App\Support\Settings::opensAt() }}–{{ \App\Support\Settings::closesAt() }}</li>
                         <li><span>📝</span> <a href="{{ route('blog.index') }}">Блог</a></li>
                         <li><span>💶</span> <a href="{{ route('pages.prices') }}">Цени</a></li>
+                        <li><span>🎓</span> <a href="{{ route('pages.prom-guide') }}">Абитуриентски бал Варна {{ \App\Support\Seo\PromSeason::year() }}: гид</a></li>
                         <li><span>👥</span> <a href="{{ route('pages.about') }}">За нас</a> &bull; <a href="{{ route('pages.contact') }}">Контакти</a></li>
                     </ul>
                 </div>

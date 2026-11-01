@@ -94,6 +94,24 @@ final class Settings
     }
 
     /** Full address as shown to visitors, e.g. "ж.к. Възраждане IV 1603, Варна". */
+    /** Daily opening time (site_hours_opens), "HH:MM". */
+    public static function opensAt(): string
+    {
+        return self::get('site_hours_opens', '09:00');
+    }
+
+    /** Daily closing time (site_hours_closes), "HH:MM". */
+    public static function closesAt(): string
+    {
+        return self::get('site_hours_closes', '18:00');
+    }
+
+    /** Visible text, e.g. "всеки ден, 09:00–18:00". */
+    public static function openingHoursText(): string
+    {
+        return 'всеки ден, '.self::opensAt().'–'.self::closesAt();
+    }
+
     public static function address(): string
     {
         return self::get('site_address', self::DEFAULT_ADDRESS);

@@ -3,8 +3,7 @@
         Изчисли Цена & Запази Час
     </a>
     @php
-        $isProm = request()->is('proms*') || request()->is('graduation*');
-        $phoneE164 = $isProm ? (\App\Support\Settings::phoneSecondary() ?? \App\Support\Settings::phone()) : \App\Support\Settings::phone();
+        $phoneE164 = \App\Support\Settings::phone();
         $phone = \App\Support\Settings::phoneDisplay($phoneE164);
         $cleanPhone = \App\Support\Settings::phoneHref($phoneE164);
     @endphp

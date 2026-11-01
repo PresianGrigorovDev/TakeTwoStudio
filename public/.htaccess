@@ -73,6 +73,9 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+    # HTTPS only (the root .htaccess 301s every http request). No includeSubDomains/preload.
+    Header always set Strict-Transport-Security "max-age=31536000"
+
     <FilesMatch "\.(ico|jpe?g|png|gif|webp|avif|svg|woff2?|ttf|css|js)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>

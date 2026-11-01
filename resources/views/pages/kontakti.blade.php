@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Контакти | Take Two Studio 1603 – фотограф Варна')
-@section('meta_description', 'Take Two Studio 1603, Варна: телефон, имейл, адрес ж.к. Възраждане IV 1603, работно време всеки ден 09:00–18:00. Запазете дата за фото и видео.')
+@section('meta_description', 'Take Two Studio 1603, Варна: телефон, имейл, адрес ж.к. Възраждане IV 1603, работно време '.\App\Support\Settings::openingHoursText().'. Запазете дата за фото и видео.')
 @section('og_title', 'Контакти | Take Two Studio 1603')
 @section('og_description', 'Телефон, имейл, адрес и работно време на фото и видео студио Take Two Studio 1603 във Варна.')
 
@@ -9,7 +9,7 @@
     <section class="page-hero">
         <div class="container">
             <h1>{{ $text->get('hero', 'title', 'Контакти: фотограф и видеооператор във Варна') }}</h1>
-            <p class="page-hero__subtitle">{{ $text->get('hero', 'subtitle', 'Отговаряме всеки ден от 09:00 до 18:00 ч.') }}</p>
+            <p class="page-hero__subtitle">{{ $text->get('hero', 'subtitle', 'Отговаряме всеки ден от '.\App\Support\Settings::opensAt().' до '.\App\Support\Settings::closesAt().' ч.') }}</p>
         </div>
     </section>
     @include('partials.breadcrumbs')
@@ -19,11 +19,7 @@
             <div class="row g-4 justify-content-center text-center mb-4">
                 <div class="col-md-4">
                     <i class="fas fa-phone mb-3 text-black fa-2x"></i>
-                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:{{ \App\Support\Settings::phoneHref($phone) }}">{{ \App\Support\Settings::phoneDisplay($phone) }}</a></div>
-                    @if($phoneSecondary && $phoneSecondary !== $phone)
-                        <div class="small text-muted mt-1">{{ $phoneSecondaryLabel ?: 'Втори телефон' }}: <a class="text-muted" href="tel:{{ \App\Support\Settings::phoneHref($phoneSecondary) }}">{{ \App\Support\Settings::phoneDisplay($phoneSecondary) }}</a></div>
-                    @endif
-                </div>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="tel:{{ \App\Support\Settings::phoneHref($phone) }}">{{ \App\Support\Settings::phoneDisplay($phone) }}</a></div>                </div>
                 <div class="col-md-4">
                     <i class="far fa-envelope mb-3 text-black fa-2x"></i>
                     <div class="fs-6 fw-bold"><a class="text-black text-decoration-none" href="mailto:{{ $email }}">{{ $email }}</a></div>
@@ -31,7 +27,7 @@
                 <div class="col-md-4">
                     <i class="fas fa-map-marker-alt mb-3 text-black fa-2x"></i>
                     <address class="fs-6 fw-bold mb-0">{{ $address }}</address>
-                    <div class="small text-muted mt-1">Понеделник – Неделя, 09:00 – 18:00</div>
+                    <div class="small text-muted mt-1">Понеделник – Неделя, {{ \App\Support\Settings::opensAt() }} – {{ \App\Support\Settings::closesAt() }}</div>
                 </div>
             </div>
 

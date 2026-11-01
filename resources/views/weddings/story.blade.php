@@ -3,8 +3,14 @@
 @php
     $place = $gallery->place_label;
     $dateText = $gallery->event_date?->translatedFormat('d.m.Y');
-    $pageTitle = \Illuminate\Support\Str::limit('Сватбата на ' . $gallery->title . ($place ? ' – ' . $place : '') . ' | Take Two Studio', 60, '');
-    $pageDescription = \Illuminate\Support\Str::limit('Фото и видео от сватбата на ' . $gallery->title . ($place ? ' в ' . $place : ' във Варна') . ($dateText ? ' (' . $dateText . ')' : '') . '. Реален пример за работата на Take Two Studio 1603, сватбен фотограф и видеооператор във Варна.', 155, '');
+    $couple = trim(preg_replace('/\s+/u', ' ', (string) $gallery->title));
+    // "във" before в/ф ("във Варна"), "в" otherwise.
+    $in = fn (string $where) => (preg_match('/^[ВвФф]/u', $where) ? 'във ' : 'в ') . $where;
+    $baseTitle = 'Сватбата на ' . $couple . ($place ? ' – ' . $place : '');
+    $pageTitle = mb_strlen($baseTitle . ' | Take Two Studio') <= 60
+        ? $baseTitle . ' | Take Two Studio'
+        : \Illuminate\Support\Str::limit($baseTitle, 60, '', preserveWords: true);
+    $pageDescription = \Illuminate\Support\Str::limit('Фото и видео от сватбата на ' . $couple . ' ' . $in($place ?: 'Варна') . ($dateText ? ' (' . $dateText . ')' : '') . '. Реален пример за работата на Take Two Studio 1603, сватбен фотограф и видеооператор във Варна.', 155, '…', preserveWords: true);
 @endphp
 @section('title', $pageTitle)
 @section('meta_description', $pageDescription)
@@ -23,7 +29,7 @@
         <div class="container position-relative">
             <p class="story-hero__kicker">Реална
                 сватба{{ $place ? ' · ' . $place : ' · Варна' }}{{ $dateText ? ' · ' . $dateText : '' }}</p>
-            <h1>Сватбата на {{ $gallery->title }}{{ $place ? ' – ' . $place : ' във Варна' }}</h1>
+            <h1>Сватбата на {{ $couple }}{{ $place ? ' – ' . $place : ' във Варна' }}</h1>
         </div>
     </section>
     @include('partials.breadcrumbs')
@@ -34,7 +40,7 @@
                 <div class="col-lg-9">
                     <p class="lead answer-capsule">
                         Сватбата на
-                        {{ $gallery->title }}{{ $place ? ' в ' . $place : ' във Варна' }}{{ $dateText ? ', ' . $dateText : '' }}:
+                        {{ $couple }} {{ $in($place ?: 'Варна') }}{{ $dateText ? ', ' . $dateText : '' }}:
                         снимки{{ $videoId ? ' и сватбен филм' : '' }} от Take Two Studio 1603, сватбен фотограф и
                         видеооператор във Варна. Един екип за фото и видео, дрон кадри при подходящо време и доставка в
                         онлайн галерия.
@@ -82,7 +88,7 @@
 
     <section class="py-5 px-1 bg-light text-center">
         <div class="container">
-            <h2 class="mb-3">Планирате сватба{{ $gallery->location ? ' в ' . $gallery->location : ' във Варна' }}?</h2>
+            <h2 class="mb-3">Планирате сватба {{ $in($gallery->location ?: 'Варна') }}?</h2>
             <div class="section-divider"></div>
             <p class="text-muted mb-4">Вижте пакетите за фото и видео или запазете дата.</p>
             <a href="{{ url('/weddings') }}" class="btn-custom-full me-2">Сватбено фото и видео</a>

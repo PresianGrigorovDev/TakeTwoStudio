@@ -16,6 +16,9 @@ class BlogController extends Controller
             ->latest('published_at')
             ->paginate(9);
 
+        // ?page=99 must not be an indexable empty page (soft 404).
+        abort_if($posts->isEmpty() && $posts->currentPage() > 1, 404);
+
         $categories = BlogCategory::where('is_visible', true)
             ->orderBy('display_order')
             ->withCount(['publishedPosts'])
@@ -38,6 +41,11 @@ class BlogController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        // The DB collation is case-insensitive: /blog/SLUG would be a duplicate URL.
+        if ($post->slug !== $slug) {
+            return redirect()->route('blog.show', $post->slug, 301);
+        }
+
         $post->incrementViews();
 
         $relatedPosts = BlogPost::published()
@@ -58,11 +66,17 @@ class BlogController extends Controller
             ->where('is_visible', true)
             ->firstOrFail();
 
+        if ($category->slug !== $slug) {
+            return redirect()->route('blog.category', $category->slug, 301);
+        }
+
         $posts = BlogPost::published()
             ->with('category')
             ->where('category_id', $category->id)
             ->latest('published_at')
             ->paginate(9);
+
+        abort_if($posts->isEmpty() && $posts->currentPage() > 1, 404);
 
         $categories = BlogCategory::where('is_visible', true)
             ->orderBy('display_order')

@@ -2,87 +2,113 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\Settings;
-use App\Models\TeamMember;
-use App\Models\Service;
-use App\Models\PromPackage;
-use App\Models\GraduationPackage;
-use App\Models\FamilyPackage;
-use App\Models\PortraitPackage;
-use App\Models\AutomotivePackage;
-use App\Models\ArchitecturalPackage;
-use App\Models\EventPackage;
+use App\Models\BlogPost;
 use App\Models\Faq;
+use App\Models\Service;
+use App\Models\TeamMember;
 use App\Models\Testimonial;
+use App\Models\WeddingGallery;
+use App\Support\PriceList;
+use App\Support\Seo\PromSeason;
+use App\Support\Seo\ServiceCatalog;
+use App\Support\Settings;
+use Illuminate\Support\Carbon;
 
+/**
+ * /llms.txt and /llms-full.txt: plain-text summaries for AI assistants.
+ * Prices come from PriceList (same data as /ceni) and FAQs from the faqs
+ * table, so nothing here can drift from the visible site.
+ */
 class LLMController extends Controller
 {
+    /** FAQ groups printed in llms-full.txt, in this order. */
+    private const FAQ_PAGES = [
+        'ceni' => 'Цени',
+        'abiturientski-bal-varna' => 'Абитуриентски бал Варна',
+        'proms' => 'Абитуриентски балове',
+        'weddings' => 'Сватби',
+        'baptism' => 'Кръщене',
+        'commercial' => 'Рекламна и бизнес фотография',
+        'family' => 'Семейни фотосесии',
+        'portrait' => 'Портретна фотография',
+        'automotive' => 'Автомобилна фотография',
+        'architectural' => 'Архитектурна фотография',
+        'events' => 'Събития',
+    ];
+
     public function index()
     {
-        $phone = Settings::phoneDisplay(Settings::phone());
-        $email = Settings::email();
-        $address = Settings::address();
-        $tagline = Settings::tagline();
-        $siteName = Settings::siteName();
-
-        $social = Settings::socialLinks();
-        $instagram = $social['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
-        $facebook = $social['facebook'] ?? 'https://www.facebook.com/taketwostudio1603';
-        $tiktok = $social['tiktok'] ?? 'https://www.tiktok.com/@taketwostudio1603';
-
-        return response()->view('llms.index', compact(
-            'siteName', 'tagline', 'phone', 'email', 'address', 
-            'instagram', 'facebook', 'tiktok'
-        ))->header('Content-Type', 'text/plain; charset=UTF-8')->header('Cache-Control', 'public, max-age=3600');
+        return $this->plainText(view('llms.index', $this->common() + [
+            'stories' => $this->stories(),
+            'posts' => $this->latestPosts(15),
+        ]));
     }
 
     public function full()
     {
-        $phone = Settings::phoneDisplay(Settings::phone());
-        $email = Settings::email();
-        $address = Settings::address();
-        $tagline = Settings::tagline();
-        $siteName = Settings::siteName();
+        $priceList = PriceList::build();
 
-        $social = Settings::socialLinks();
-        $instagram = $social['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
-        $facebook = $social['facebook'] ?? 'https://www.facebook.com/taketwostudio1603';
-        $tiktok = $social['tiktok'] ?? 'https://www.tiktok.com/@taketwostudio1603';
+        $faqs = collect(self::FAQ_PAGES)
+            ->map(fn (string $title, string $slug) => ['title' => $title, 'items' => Faq::forPageVisible($slug)])
+            ->filter(fn (array $group) => $group['items']->isNotEmpty());
 
-        // Load team members
-        $team = TeamMember::where('is_active', true)->orderBy('display_order')->get();
+        return $this->plainText(view('llms.full', $this->common() + [
+            'team' => TeamMember::where('is_active', true)->orderBy('display_order')->get(),
+            'testimonials' => Testimonial::where('is_active', true)->latest()->get(),
+            'priceGroups' => $priceList['groups'],
+            'pricesUpdatedAt' => $priceList['updatedAt'],
+            'faqs' => $faqs,
+            'stories' => $this->stories(),
+            'posts' => $this->latestPosts(30),
+        ]));
+    }
 
-        // Load testimonials
-        $testimonials = Testimonial::where('is_active', true)->latest()->get();
+    /** @return array<string,mixed> */
+    private function common(): array
+    {
+        return [
+            'siteName' => Settings::siteName(),
+            'tagline' => Settings::tagline(),
+            'phone' => Settings::phoneDisplay(Settings::phone()),
+            'email' => Settings::email(),
+            'address' => Settings::address(),
+            'social' => array_filter(Settings::socialLinks()),
+            'season' => PromSeason::year(),
+            'openingHours' => Settings::openingHoursText(),
+            // Max delivery time per service (services.delivery_days, edited in Filament).
+            'delivery' => Service::where('is_active', true)->whereNotNull('delivery_days')->orderBy('sort_order')->get(['name_bg', 'slug', 'delivery_days']),
+            'areas' => ServiceCatalog::AREA_SERVED,
+            'updatedAt' => $this->updatedAt(),
+            // Plain-text output: decode entities, drop tags, collapse whitespace.
+            'plain' => fn ($value) => trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8'))),
+        ];
+    }
 
-        // Load services and packages dynamically
-        $weddingsService = Service::where('slug', 'weddings')->first();
-        $weddingsPackages = $weddingsService ? $weddingsService->packages : collect();
-        
-        $baptismService = Service::where('slug', 'baptism')->first();
-        $baptismPackages = $baptismService ? $baptismService->packages : collect();
+    private function stories()
+    {
+        return WeddingGallery::where('is_active', true)->whereNotNull('slug')->orderByDesc('event_date')->get();
+    }
 
-        $promPackages = PromPackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $graduationPackages = GraduationPackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $familyPackages = FamilyPackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $portraitPackages = PortraitPackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $automotivePackages = AutomotivePackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $architecturalPackages = ArchitecturalPackage::where('is_visible', true)->orderBy('sort_order')->get();
-        $eventPackages = EventPackage::where('is_visible', true)->orderBy('sort_order')->get();
+    private function latestPosts(int $limit)
+    {
+        return BlogPost::published()->latest('published_at')->take($limit)->get(['title', 'slug', 'excerpt', 'published_at']);
+    }
 
-        // Load FAQs dynamically
-        $weddingFaqs = Faq::forPageVisible('weddings');
-        $promFaqs = Faq::forPageVisible('proms'); // includes the former graduation FAQs
-        $graduationFaqs = collect();
-        $baptismFaqs = Faq::forPageVisible('baptism');
-        $commercialFaqs = Faq::forPageVisible('commercial');
+    private function updatedAt(): ?Carbon
+    {
+        $dates = collect([
+            Faq::max('updated_at'),
+            BlogPost::published()->max('published_at'),
+            PriceList::build()['updatedAt'],
+        ])->filter()->map(fn ($d) => Carbon::parse($d));
 
-        return response()->view('llms.full', compact(
-            'siteName', 'tagline', 'phone', 'email', 'address', 
-            'instagram', 'facebook', 'tiktok', 'team', 'testimonials',
-            'weddingsPackages', 'baptismPackages', 'promPackages', 'graduationPackages',
-            'familyPackages', 'portraitPackages', 'automotivePackages', 'architecturalPackages',
-            'eventPackages', 'weddingFaqs', 'promFaqs', 'graduationFaqs', 'baptismFaqs', 'commercialFaqs'
-        ))->header('Content-Type', 'text/plain; charset=UTF-8')->header('Cache-Control', 'public, max-age=3600');
+        return $dates->max();
+    }
+
+    private function plainText($view)
+    {
+        return response($view->render())
+            ->header('Content-Type', 'text/plain; charset=UTF-8')
+            ->header('Cache-Control', 'public, max-age=3600');
     }
 }

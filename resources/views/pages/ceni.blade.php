@@ -77,7 +77,7 @@
                                 </ul>
                             </details>
                         @endif
-                        <p class="mb-5"><a href="{{ $group['url'] }}" class="btn-custom">Виж страницата и калкулатора</a></p>
+                        <p class="mb-5"><a href="{{ $group['url'] }}" class="btn-custom">Виж страницата и калкулатора</a>@if($group['id'] === 'abiturienti') <a href="{{ route('pages.prom-guide') }}" class="ms-3">Гид: абитуриентски бал Варна</a>@endif</p>
                     </div>
                 </div>
             @empty

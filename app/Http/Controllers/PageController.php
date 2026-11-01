@@ -199,7 +199,10 @@ class PageController extends Controller
         $url = url($slug);
         $name = $service?->name_bg ?: ServiceCatalog::get($slug, 'name');
 
-        $offers = collect($packages)->map(function ($package) use ($url) {
+        // Prom packages are priced per student, not per class.
+        $unit = $slug === 'proms' ? 'на ученик' : null;
+
+        $offers = collect($packages)->map(function ($package) use ($url, $unit) {
             $price = $package->price_eur ?? null;
             $title = $package->name_bg ?? $package->name ?? null;
 
@@ -214,8 +217,14 @@ class PageController extends Controller
                 'price' => number_format((float) $price, 2, '.', ''),
                 'priceCurrency' => 'EUR',
                 'availability' => 'https://schema.org/InStock',
+                'priceSpecification' => $unit ? [
+                    '@type' => 'UnitPriceSpecification',
+                    'price' => number_format((float) $price, 2, '.', ''),
+                    'priceCurrency' => 'EUR',
+                    'unitText' => $unit,
+                ] : null,
                 'eligibleRegion' => ['@type' => 'Country', 'name' => 'BG'],
-                'url' => $url.'#packages',
+                'url' => $url.'#calculator',
             ]);
         })->filter()->values()->all();
 
@@ -236,7 +245,8 @@ class PageController extends Controller
 
         if ($service?->video_url && preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|shorts/|watch\?v=|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})%i', $service->video_url, $m)) {
             $videoId = $m[1];
-            $uploaded = $service->video_uploaded_at ?? $service->updated_at;
+            // created_at is stable; updated_at moves on every edit of the service.
+            $uploaded = $service->video_uploaded_at ?? $service->created_at;
 
             $seo->addNode(array_filter([
                 '@type' => 'VideoObject',
@@ -246,7 +256,6 @@ class PageController extends Controller
                 'thumbnailUrl' => ["https://i.ytimg.com/vi/{$videoId}/maxresdefault.jpg", "https://i.ytimg.com/vi/{$videoId}/hqdefault.jpg"],
                 'uploadDate' => $uploaded?->toDateString(),
                 'embedUrl' => "https://www.youtube.com/embed/{$videoId}",
-                'contentUrl' => $service->video_url,
                 'publisher' => ['@id' => Seo::rootId('organization')],
             ]));
         }

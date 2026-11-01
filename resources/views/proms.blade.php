@@ -361,14 +361,11 @@
             <h3 class="fs-4">Запази своето място още сега!</h3>
             <div class="mt-4">
                 @php
-                    $promPhone = \App\Support\Settings::phoneSecondary() ?? \App\Support\Settings::phone();
+                    $promPhone = \App\Support\Settings::phone();
                     $instagramUrl = \App\Support\Settings::socialLinks()['instagram'] ?? 'https://www.instagram.com/taketwostudio1603';
                 @endphp
                 <h4 class="mb-2"><strong>Instagram:</strong> <a href="{{ $instagramUrl }}" target="_blank" rel="noopener" class="text-dark text-decoration-none hover-gold">@taketwostudio1603</a></h4>
-                <h4 class="mb-2"><strong>Телефон{{ \App\Support\Settings::phoneSecondaryLabel() ? ' (' . \App\Support\Settings::phoneSecondaryLabel() . ')' : '' }}:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref($promPhone) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay($promPhone) }}</a></h4>
-                @if ($promPhone !== \App\Support\Settings::phone())
-                <h4 class="mb-0"><strong>Студио:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a></h4>
-                @endif
+                <h4 class="mb-0"><strong>Телефон:</strong> <a href="tel:{{ \App\Support\Settings::phoneHref($promPhone) }}" class="text-dark text-decoration-none hover-gold">{{ \App\Support\Settings::phoneDisplay($promPhone) }}</a></h4>
             </div>
         </div>
     </section>

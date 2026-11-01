@@ -16,6 +16,11 @@ class WeddingStoryController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        // Case-insensitive collation: send /svatbi/Name to the canonical slug.
+        if ($gallery->slug !== $slug) {
+            return redirect()->route('weddings.story', $gallery->slug, 301);
+        }
+
         $related = WeddingGallery::where('is_active', true)
             ->whereNotNull('slug')
             ->where('id', '!=', $gallery->id)
@@ -77,9 +82,9 @@ class WeddingStoryController extends Controller
                 'name' => 'Сватбен филм: '.$gallery->title.($gallery->place_label ? ' – '.$gallery->place_label : ''),
                 'description' => Str::limit(strip_tags((string) $gallery->description), 300) ?: 'Сватбен филм от Take Two Studio 1603, Варна.',
                 'thumbnailUrl' => ["https://i.ytimg.com/vi/{$videoId}/maxresdefault.jpg", "https://i.ytimg.com/vi/{$videoId}/hqdefault.jpg"],
-                'uploadDate' => ($gallery->event_date ?? $gallery->created_at)?->toDateString(),
+                // The film is published after the wedding, so the event date is not the upload date.
+                'uploadDate' => $gallery->created_at?->toDateString(),
                 'embedUrl' => "https://www.youtube.com/embed/{$videoId}",
-                'contentUrl' => $gallery->video_url,
                 'publisher' => ['@id' => Seo::rootId('organization')],
             ]));
         }

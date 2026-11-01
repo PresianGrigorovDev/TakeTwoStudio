@@ -19,6 +19,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-9 guide-body">
+                    @if($updatedAt)
+                        <p class="text-muted small mb-3">Актуализирано на <time datetime="{{ $updatedAt->toDateString() }}">{{ $updatedAt->format('d.m.Y') }}</time></p>
+                    @endif
                     <p class="lead answer-capsule">{{ $text->get('intro', 'capsule', "Баловете на випуск {$season} във Варна са в края на май и през юни, а изпращането от училище е обикновено около 24 май. Класовете, които искат добра зала и добър екип за снимки и видео, резервират между септември и февруари. Този гид събира на едно място какво да планирате, в какъв ред и с какъв бюджет на ученик, с примери от практиката на Take Two Studio 1603, фото и видео студио във Варна, което заснема балове за цели класове.") }}</p>
 
                     <h2 id="dati">{{ $text->get('dates', 'title', "Кога е балът и изпращането във Варна през {$season}") }}</h2>

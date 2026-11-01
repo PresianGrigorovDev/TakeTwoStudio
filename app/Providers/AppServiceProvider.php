@@ -7,6 +7,7 @@ use App\Support\Seo\Seo;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        // The site is Bulgarian-only: translatedFormat() must print "05 септември 2026",
+        // not "05 September 2026". APP_LOCALE stays as is (it also drives validation messages).
+        Carbon::setLocale('bg');
 
         $this->forceCanonicalUrls();
         $this->registerAdminAssets();
