@@ -1,0 +1,99 @@
+/* {{variable}} dropdown for admin text fields (public/js/admin/content-variables.js). */
+
+.tt-var-menu {
+    --tt-v-bg: #ffffff;
+    --tt-v-border: #e5e7eb;
+    --tt-v-muted: #6b7280;
+    --tt-v-active: #eff6ff;
+    --tt-v-accent: #2563eb;
+    position: fixed;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    max-height: 340px;
+    border: 1px solid var(--tt-v-border);
+    border-radius: 10px;
+    background: var(--tt-v-bg);
+    color: #111827;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+    font-size: 0.8125rem;
+    overflow: hidden;
+}
+
+.dark .tt-var-menu {
+    --tt-v-bg: #18181b;
+    --tt-v-border: rgba(255, 255, 255, 0.12);
+    --tt-v-muted: #a1a1aa;
+    --tt-v-active: rgba(59, 130, 246, 0.18);
+    --tt-v-accent: #60a5fa;
+    color: #f4f4f5;
+}
+
+.tt-var-menu[hidden] { display: none; }
+
+.tt-var-menu__groups {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.4rem;
+    border-bottom: 1px solid var(--tt-v-border);
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.tt-var-menu__groups button {
+    flex-shrink: 0;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--tt-v-border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tt-var-menu__groups button.is-active {
+    border-color: var(--tt-v-accent);
+    color: var(--tt-v-accent);
+    font-weight: 600;
+}
+
+.tt-var-menu__list { overflow-y: auto; }
+
+.tt-var-menu__heading {
+    padding: 0.45rem 0.65rem 0.2rem;
+    color: var(--tt-v-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.tt-var-menu__item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.75rem;
+    padding: 0.35rem 0.65rem;
+    cursor: pointer;
+}
+
+.tt-var-menu__item.is-active, .tt-var-menu__item:hover { background: var(--tt-v-active); }
+
+.tt-var-menu__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tt-var-menu__value { font-weight: 600; white-space: nowrap; }
+
+.tt-var-menu__key {
+    grid-column: 1 / -1;
+    color: var(--tt-v-muted);
+    font-size: 0.6875rem;
+}
+
+.tt-var-menu__empty, .tt-var-menu__hint {
+    padding: 0.5rem 0.65rem;
+    color: var(--tt-v-muted);
+}
+
+.tt-var-menu__hint {
+    border-top: 1px solid var(--tt-v-border);
+    font-size: 0.6875rem;
+    flex-shrink: 0;
+}

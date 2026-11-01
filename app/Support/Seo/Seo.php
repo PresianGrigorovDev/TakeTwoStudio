@@ -79,8 +79,9 @@ final class Seo
         $this->faqs = collect($faqs)
             ->map(function ($faq) {
                 $faq = is_array($faq) ? (object) $faq : $faq;
-                $q = trim((string) ($faq->question ?? $faq->question_bg ?? $faq->q ?? ''));
-                $a = trim((string) ($faq->answer ?? $faq->answer_bg ?? $faq->a ?? ''));
+                // {{variables}} (prices, delivery days...) are filled from the database.
+                $q = trim(\App\Support\ContentVariables::render($faq->question ?? $faq->question_bg ?? $faq->q ?? ''));
+                $a = trim(\App\Support\ContentVariables::render($faq->answer ?? $faq->answer_bg ?? $faq->a ?? ''));
 
                 return $q !== '' && $a !== '' ? ['question' => $q, 'answer' => $a] : null;
             })

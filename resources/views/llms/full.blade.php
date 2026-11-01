@@ -62,8 +62,8 @@
 
 ### {{ $group['title'] }}
 @foreach($group['items'] as $faq)
-- Въпрос: {!! $plain($faq->question) !!}
-  Отговор: {!! $plain($faq->answer) !!}
+- Въпрос: {!! $plain($faq->display_question) !!}
+  Отговор: {!! $plain($faq->display_answer) !!}
 @endforeach
 @endforeach
 @if($stories->isNotEmpty())

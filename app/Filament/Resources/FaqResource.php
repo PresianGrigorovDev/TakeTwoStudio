@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\FaqResource\Pages;
 use App\Models\Faq;
+use App\Support\ContentVariables;
+use Illuminate\Support\HtmlString;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,6 +28,16 @@ class FaqResource extends Resource
 
     protected static ?string $modelLabel = 'Въпрос и отговор';
 
+    /** Rejects {{keys}} that do not exist (typo, deleted package). */
+    private static function knownVariablesRule(): \Closure
+    {
+        return function (string $attribute, $value, \Closure $fail) {
+            if ($unknown = ContentVariables::unknownKeys($value)) {
+                $fail('Непозната променлива: {{'.implode('}}, {{', $unknown).'}}. Изберете от списъка след „{{“.');
+            }
+        };
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -43,12 +55,23 @@ class FaqResource extends Resource
                     ->label('Въпрос')
                     ->required()
                     ->rows(2)
+                    ->extraInputAttributes(fn () => ['data-tt-variables' => json_encode(ContentVariables::forEditor(), JSON_UNESCAPED_UNICODE)])
+                    ->rule(fn () => self::knownVariablesRule())
+                    ->live(onBlur: true)
                     ->columnSpanFull(),
                 Forms\Components\Textarea::make('answer')
                     ->label('Отговор')
                     ->required()
                     ->rows(5)
-                    ->helperText('Идеалният отговор е до 60 думи, започва с директния отговор и споменава Варна / услугата / цена, където има смисъл.')
+                    ->helperText(new HtmlString('Идеалният отговор е до 60 думи, започва с директния отговор и споменава Варна / услугата / цена, където има смисъл. <strong>Цени, срокове и контакти не се пишат на ръка:</strong> напишете <code>{{</code> и изберете от списъка (напр. <code>{{prom.price.min}}</code>), стойността идва от базата и се обновява сама.'))
+                    ->extraInputAttributes(fn () => ['data-tt-variables' => json_encode(ContentVariables::forEditor(), JSON_UNESCAPED_UNICODE)])
+                    ->rule(fn () => self::knownVariablesRule())
+                    ->live(onBlur: true)
+                    ->columnSpanFull(),
+                Forms\Components\Placeholder::make('preview')
+                    ->label('Как ще изглежда на сайта')
+                    ->content(fn (Forms\Get $get) => new HtmlString('<strong>'.e(ContentVariables::render($get('question'))).'</strong><br>'.nl2br(e(ContentVariables::render($get('answer'))))))
+                    ->visible(fn (Forms\Get $get) => str_contains((string) $get('question').(string) $get('answer'), '{{'))
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_visible')
                     ->label('Видим')

@@ -12,13 +12,13 @@
                                     <button class="accordion-button {{ $i > 0 ? 'collapsed' : '' }}" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#faq-{{ $faq->id }}"
                                         aria-expanded="{{ $i === 0 ? 'true' : 'false' }}" aria-controls="faq-{{ $faq->id }}">
-                                        {{ $faq->question }}
+                                        {{ $faq->display_question }}
                                     </button>
                                 </h3>
                                 <div id="faq-{{ $faq->id }}" class="accordion-collapse collapse {{ $i === 0 ? 'show' : '' }}"
                                     data-bs-parent="#faqAccordion">
                                     <div class="accordion-body text-muted">
-                                        {{ $faq->answer }}
+                                        {{ $faq->display_answer }}
                                     </div>
                                 </div>
                             </div>

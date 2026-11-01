@@ -67,6 +67,18 @@ class Faq extends Model
         return $query->orderBy('sort_order')->orderBy('id');
     }
 
+    /** Question with {{variables}} filled in (raw text stays editable in Filament). */
+    public function getDisplayQuestionAttribute(): string
+    {
+        return \App\Support\ContentVariables::render($this->question);
+    }
+
+    /** Answer with {{variables}} (prices, delivery days, phone...) filled in. */
+    public function getDisplayAnswerAttribute(): string
+    {
+        return \App\Support\ContentVariables::render($this->answer);
+    }
+
     /** Visible, ordered FAQs for a page. */
     public static function forPageVisible(string $slug)
     {

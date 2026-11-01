@@ -51,6 +51,9 @@ class AppServiceProvider extends ServiceProvider
             Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
             // Dashboard team calendar + double-booking warning (Календар → Ангажименти).
             Css::make('team-calendar', Assets::versioned('css/admin/team-calendar.css')),
+            // {{variable}} dropdown in FAQ texts (App\Support\ContentVariables).
+            Js::make('content-variables', Assets::versioned('js/admin/content-variables.js')),
+            Css::make('content-variables', Assets::versioned('css/admin/content-variables.css')),
         ], package: 'taketwo');
     }
 
