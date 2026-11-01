@@ -40,7 +40,7 @@ class GameStickerResource extends Resource
 
     protected static ?string $pluralModelLabel = 'QR стикери';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'name';
 

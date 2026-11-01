@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class GraduationPortfolioPhotoResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = GraduationPortfolioPhoto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';

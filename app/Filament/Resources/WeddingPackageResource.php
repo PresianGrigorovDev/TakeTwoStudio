@@ -8,6 +8,7 @@ use App\Filament\Support\ServiceScopedPackageResource;
 /** Сватби → Пакети и цени: the packages of the "weddings" service (service_packages). */
 class WeddingPackageResource extends ServiceScopedPackageResource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static string $serviceSlug = 'weddings';
 
     protected static ?string $navigationGroup = 'Сватби';

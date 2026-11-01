@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class NavigationItemResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?int $navigationSort = 6;
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Меню Навигация';
     protected static ?string $pluralModelLabel = 'Елементи в менюто';
     protected static ?string $modelLabel = 'Елемент от менюто';

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class WeddingGalleryResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = WeddingGallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';

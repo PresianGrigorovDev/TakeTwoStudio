@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServiceExtraResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Добавки на услуги';
     protected static ?string $pluralModelLabel = 'Добавки на услуги';
     protected static ?string $modelLabel = 'Добавка на услуга';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $model = ServiceExtra::class;
 

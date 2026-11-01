@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TestimonialResource extends Resource
 {
-    protected static ?string $navigationGroup = 'За Нас';
+    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Съдържание';
     protected static ?string $navigationLabel = 'Отзиви';
     protected static ?string $pluralModelLabel = 'Отзиви от клиенти';
     protected static ?string $modelLabel = 'Отзив';

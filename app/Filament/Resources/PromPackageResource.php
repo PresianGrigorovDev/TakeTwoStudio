@@ -19,6 +19,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 class PromPackageResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = PromPackage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';

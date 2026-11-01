@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class EventPortfolioPhotoResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = EventPortfolioPhoto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';

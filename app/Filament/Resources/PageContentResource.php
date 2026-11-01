@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PageContentResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Съдържание';
     protected static ?string $navigationLabel = 'Текстове по страници';
     protected static ?string $pluralModelLabel = 'Текстово съдържание';
     protected static ?string $modelLabel = 'Текст';

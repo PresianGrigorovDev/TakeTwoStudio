@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServicePackageResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Пакети на услуги';
     protected static ?string $pluralModelLabel = 'Пакети на услуги';
     protected static ?string $modelLabel = 'Пакет на услуга';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $model = ServicePackage::class;
 

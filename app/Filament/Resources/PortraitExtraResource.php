@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class PortraitExtraResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = ServiceExtra::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-puzzle-piece';

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AutomotiveGalleryResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = AutomotiveGallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';

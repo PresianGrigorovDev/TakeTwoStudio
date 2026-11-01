@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SocialMediaResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?int $navigationSort = 7;
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Социални мрежи';
     protected static ?string $pluralModelLabel = 'Социални мрежи';
     protected static ?string $modelLabel = 'Социална мрежа';

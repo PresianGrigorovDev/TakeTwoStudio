@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class InquiryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Запитвания';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Работа';
     protected static ?string $navigationLabel = 'Запитвания';
     protected static ?string $pluralModelLabel = 'Запитвания';
     protected static ?string $modelLabel = 'Запитване';

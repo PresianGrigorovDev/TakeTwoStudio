@@ -17,8 +17,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PortfolioCategoryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
-    protected static ?string $navigationLabel = 'Категории';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Настройки';
+    protected static ?string $navigationLabel = 'Категории (меню и начална)';
     protected static ?string $pluralModelLabel = 'Категории портфолио';
     protected static ?string $modelLabel = 'Категория';
 

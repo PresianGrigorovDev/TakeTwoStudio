@@ -23,7 +23,7 @@ class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationGroup = 'Календар';
+    protected static ?string $navigationGroup = 'Работа';
     protected static ?string $navigationLabel = 'Ангажименти';
     protected static ?string $modelLabel = 'Ангажимент';
     protected static ?string $pluralModelLabel = 'Ангажименти';

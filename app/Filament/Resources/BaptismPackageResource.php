@@ -8,6 +8,7 @@ use App\Filament\Support\ServiceScopedPackageResource;
 /** Кръщения → Пакети и цени: the packages of the "baptism" service (service_packages). */
 class BaptismPackageResource extends ServiceScopedPackageResource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static string $serviceSlug = 'baptism';
 
     protected static ?string $navigationGroup = 'Кръщения';

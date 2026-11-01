@@ -38,7 +38,7 @@ class GameStats extends Page implements HasForms
 
     protected static ?string $navigationGroup = 'Маркетинг';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $slug = 'game-stats';
 

@@ -19,6 +19,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 class FamilyPackageResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = FamilyPackage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';

@@ -29,8 +29,8 @@ class ContractGenerator extends Page implements HasForms
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Генератор на Договори';
     protected static ?string $title = 'Генератор на Договори';
-    protected static ?string $navigationGroup = 'Настройки на сайта';
-    protected static ?int $navigationSort = 100;
+    protected static ?string $navigationGroup = 'Работа';
+    protected static ?int $navigationSort = 4;
 
     protected static string $view = 'filament.pages.contract-generator';
 

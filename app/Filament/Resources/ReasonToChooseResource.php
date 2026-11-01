@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReasonToChooseResource extends Resource
 {
-    protected static ?string $navigationGroup = 'За Нас';
+    protected static ?int $navigationSort = 8;
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Защо да ни изберете';
     protected static ?string $pluralModelLabel = 'Причини за избор';
     protected static ?string $modelLabel = 'Причина';

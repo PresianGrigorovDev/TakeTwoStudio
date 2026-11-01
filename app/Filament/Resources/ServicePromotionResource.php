@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ServicePromotionResource extends Resource
 {
+    protected static ?int $navigationSort = 3;
     protected static ?string $model = ServicePromotion::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-gift';

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class CommercialPortfolioPhotoResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = CommercialPortfolioPhoto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-film';

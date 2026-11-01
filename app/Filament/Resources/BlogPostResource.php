@@ -16,8 +16,8 @@ use Illuminate\Support\Str;
 
 class BlogPostResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Блог';
-    protected static ?string $navigationLabel = 'Публикации';
+    protected static ?string $navigationGroup = 'Съдържание';
+    protected static ?string $navigationLabel = 'Блог – публикации';
     protected static ?string $pluralModelLabel = 'Публикации';
     protected static ?string $modelLabel = 'Публикация';
 

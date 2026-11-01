@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PartnerResource extends Resource
 {
-    protected static ?string $navigationGroup = 'За Нас';
+    protected static ?int $navigationSort = 7;
+    protected static ?string $navigationGroup = 'Съдържание';
     protected static ?string $navigationLabel = 'Партньори';
     protected static ?string $pluralModelLabel = 'Партньори';
     protected static ?string $modelLabel = 'Партньор';

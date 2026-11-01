@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ArchitecturalGalleryResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $model = ArchitecturalGallery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';

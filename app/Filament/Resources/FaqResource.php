@@ -18,11 +18,11 @@ class FaqResource extends Resource
 
     protected static ?string $navigationGroup = 'Съдържание';
 
-    protected static ?string $navigationLabel = 'Често задавани въпроси';
+    protected static ?string $navigationLabel = 'Въпроси (FAQ) – всички';
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $pluralModelLabel = 'Въпроси и отговори';
 

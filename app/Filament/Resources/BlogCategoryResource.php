@@ -14,8 +14,8 @@ use Illuminate\Support\Str;
 
 class BlogCategoryResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Блог';
-    protected static ?string $navigationLabel = 'Категории';
+    protected static ?string $navigationGroup = 'Съдържание';
+    protected static ?string $navigationLabel = 'Блог – категории';
     protected static ?string $pluralModelLabel = 'Категории на блога';
     protected static ?string $modelLabel = 'Категория';
 

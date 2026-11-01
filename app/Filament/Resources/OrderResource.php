@@ -14,7 +14,8 @@ use Filament\Tables\Table;
 
 class OrderResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Запитвания';
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Работа';
     protected static ?string $navigationLabel = 'Поръчки';
     protected static ?string $pluralModelLabel = 'Поръчки';
     protected static ?string $modelLabel = 'Поръчка';

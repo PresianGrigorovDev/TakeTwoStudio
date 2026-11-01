@@ -6,6 +6,9 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use App\Filament\Support\ServiceHub;
+use Filament\Facades\Filament;
+use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
@@ -21,6 +24,14 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        // Услуги → one entry per service from the database (needs a request, so not in panel()).
+        Filament::serving(function () {
+            Filament::getCurrentPanel()?->navigationItems(ServiceHub::navigationItems());
+        });
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -41,6 +52,14 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+            ])
+            // Daily work first, then one page per service, then the rest; settings start collapsed.
+            ->navigationGroups([
+                NavigationGroup::make('Работа'),
+                NavigationGroup::make('Услуги'),
+                NavigationGroup::make('Съдържание'),
+                NavigationGroup::make('Маркетинг'),
+                NavigationGroup::make('Настройки')->collapsed(),
             ])
             ->navigationItems([
                 NavigationItem::make('Към сайта')

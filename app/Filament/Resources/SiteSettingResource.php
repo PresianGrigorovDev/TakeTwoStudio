@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SiteSettingResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
-    protected static ?string $navigationLabel = 'SEO текстове';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Настройки';
+    protected static ?string $navigationLabel = 'Контакти и данни на сайта';
     protected static ?string $pluralModelLabel = 'SEO текстове ( Само Пресо пипа тук )';
     protected static ?string $modelLabel = 'Настройка';
 

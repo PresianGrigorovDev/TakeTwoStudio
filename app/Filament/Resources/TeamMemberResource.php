@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TeamMemberResource extends Resource
 {
-    protected static ?string $navigationGroup = 'За Нас';
+    protected static ?int $navigationSort = 6;
+    protected static ?string $navigationGroup = 'Съдържание';
     protected static ?string $navigationLabel = 'Екип';
     protected static ?string $pluralModelLabel = 'Членове на екипа';
     protected static ?string $modelLabel = 'Член на екипа';

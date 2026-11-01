@@ -15,8 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ServiceResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Настройки на сайта';
-    protected static ?string $navigationLabel = 'Услуги';
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Настройки';
+    protected static ?string $navigationLabel = 'Услуги (общ списък)';
+
+    /** Pretty URLs for the service pages: /admin/services/weddings/manage. */
+    protected static ?string $recordRouteKeyName = 'slug';
     protected static ?string $pluralModelLabel = 'Услуги';
     protected static ?string $modelLabel = 'Услуга';
 
@@ -164,6 +168,10 @@ class ServiceResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('manage')
+                    ->label('Отвори')
+                    ->icon('heroicon-o-squares-2x2')
+                    ->url(fn (Service $record) => static::getUrl('manage', ['record' => $record])),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -187,6 +195,7 @@ class ServiceResource extends Resource
             'index' => Pages\ListServices::route('/'),
             'create' => Pages\CreateService::route('/create'),
             'edit' => Pages\EditService::route('/{record}/edit'),
+            'manage' => Pages\ManageService::route('/{record}/manage'),
         ];
     }
 }

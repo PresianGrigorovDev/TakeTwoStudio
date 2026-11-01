@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ActivityLogResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Система';
+    protected static ?string $navigationGroup = 'Настройки';
     protected static ?string $navigationLabel = 'Дневник на промените';
     protected static ?string $pluralModelLabel = 'Дневник на промените';
     protected static ?string $modelLabel = 'Запис';
-    protected static ?int $navigationSort = 999;
+    protected static ?int $navigationSort = 9;
 
     protected static ?string $model = ActivityLog::class;
 

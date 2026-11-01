@@ -12,9 +12,10 @@ use Filament\Tables\Table;
 
 class LegalPageResource extends Resource
 {
+    protected static ?int $navigationSort = 8;
     protected static ?string $model = LegalPage::class;
 
-    protected static ?string $navigationGroup = 'Настройки на сайта';
+    protected static ?string $navigationGroup = 'Съдържание';
     protected static ?string $navigationLabel = 'Правни страници';
     protected static ?string $pluralModelLabel = 'Правни страници';
     protected static ?string $modelLabel = 'Правна страница';
