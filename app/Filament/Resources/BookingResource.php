@@ -221,6 +221,30 @@ class BookingResource extends Resource
         }
     }
 
+    /**
+     * "Добави в календар" menu: Google Calendar (prefilled event) and Apple / Outlook (.ics).
+     * Built for both table and page actions (same API, different classes).
+     *
+     * @param class-string $group
+     * @param class-string $action
+     */
+    public static function addToCalendarActions(string $group, string $action)
+    {
+        return $group::make([
+            $action::make('google_calendar')
+                ->label('Google Calendar')
+                ->icon('heroicon-o-calendar')
+                ->url(fn (Booking $record) => \App\Support\CalendarExport::googleUrl($record), shouldOpenInNewTab: true),
+            $action::make('apple_calendar')
+                ->label('Apple / iPhone / Outlook (.ics)')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(fn (Booking $record) => route('admin.booking.ics', $record)),
+        ])
+            ->label('Добави в календар')
+            ->icon('heroicon-o-calendar-days')
+            ->tooltip('Добави в Google или Apple календар');
+    }
+
     /** Google Maps search link for a free-text location (null when empty). */
     public static function mapsUrl(?string $location): ?string
     {
@@ -337,6 +361,7 @@ class BookingResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                self::addToCalendarActions(Tables\Actions\ActionGroup::class, Tables\Actions\Action::class),
                 Tables\Actions\Action::make('confirm')
                     ->label('Потвърди')
                     ->icon('heroicon-o-check-circle')

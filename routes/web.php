@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CalendarExportController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\GameController;
@@ -78,6 +79,9 @@ Route::get('/booking', [BookingController::class, 'showCalendar']);
 Route::post('/submit-booking', [BookingController::class, 'submitBooking'])->middleware('throttle:6,1');
 Route::get('/api/booking-availability', [BookingController::class, 'getAvailability'])->middleware('throttle:60,1');
 Route::get('/api/booking-hours', [BookingController::class, 'getAvailableHours'])->middleware('throttle:60,1');
+
+// "Добави в Apple календар": .ics of one team calendar entry, admins only.
+Route::get('/admin/ics/{booking}.ics', [CalendarExportController::class, 'ics'])->whereNumber('booking')->name('admin.booking.ics');
 
 // Registration Routes
 // Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'show'])->name('register');

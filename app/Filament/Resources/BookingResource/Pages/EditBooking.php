@@ -13,6 +13,9 @@ class EditBooking extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            BookingResource::addToCalendarActions(Actions\ActionGroup::class, Actions\Action::class)
+                ->button()
+                ->color('gray'),
             Actions\DeleteAction::make(),
         ];
     }
