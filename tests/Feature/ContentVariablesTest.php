@@ -80,6 +80,27 @@ class ContentVariablesTest extends TestCase
         $this->get('/llms-full.txt')->assertOk()->assertSee('Цените започват от 140 € на ученик.');
     }
 
+    public function test_wedding_faq_seeder_uses_only_existing_variables_and_is_idempotent(): void
+    {
+        Service::where('slug', 'weddings')->update(['delivery_days' => 100]);
+
+        $this->seed(\Database\Seeders\WeddingFaqSeeder::class);
+        $this->seed(\Database\Seeders\WeddingFaqSeeder::class);
+
+        $faqs = Faq::where('page_slug', 'weddings')->where('question', 'like', '%')->get();
+        $seeded = $faqs->where('question', 'Колко струва сватбен фотограф и видеооператор във Варна?');
+        $this->assertCount(1, $seeded, 'running twice does not duplicate');
+
+        foreach ($faqs as $faq) {
+            $this->assertSame([], ContentVariables::unknownKeys($faq->question.' '.$faq->answer), $faq->question);
+        }
+
+        $html = $this->get('/weddings')->assertOk()->getContent();
+        $this->assertStringContainsString('Колко струва сватбен фотограф и видеооператор във Варна?', $html);
+        $this->assertStringContainsString('до 100 работни дни', $html);
+        $this->assertStringNotContainsString('{{', $html);
+    }
+
     public function test_faq_form_offers_variables_and_rejects_unknown_ones(): void
     {
         PromPackage::create(['name' => 'Парти', 'price' => 0, 'price_eur' => 130, 'features' => [], 'is_visible' => true, 'sort_order' => 1]);
