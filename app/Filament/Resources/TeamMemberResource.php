@@ -45,6 +45,10 @@ class TeamMemberResource extends Resource
                     ->numeric()
                     ->minValue(1980)
                     ->maxValue((int) date('Y')),
+                Forms\Components\ColorPicker::make('calendar_color')
+                    ->label('Цвят в календара')
+                    ->helperText('С този цвят човекът се вижда в календара на таблото.')
+                    ->regex('/^#[0-9a-fA-F]{6}$/'),
                 // Cropped to a square and resized to 600x600 in the browser before upload.
                 // maxSize is checked by FilePond on the ORIGINAL file (before that resize),
                 // so it must let 6-11 MB camera photos through; TeamMember also optimises on save.

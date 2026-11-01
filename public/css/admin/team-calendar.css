@@ -249,7 +249,14 @@
 @media (max-width: 767px) {
     .tt-cal__grid { display: none; }
     .tt-cal__agenda { display: block; }
+    .tt-cal__nav { flex-wrap: wrap; }
+    .tt-cal__title { min-width: 0; font-size: 1rem; }
+    .tt-cal__agenda .tt-cal__name { white-space: normal; }
 }
+
+/* Never wider than the dashboard column (phones). */
+.tt-cal, .tt-cal__agenda, .tt-cal__entry { min-width: 0; max-width: 100%; }
+.tt-cal__chip { max-width: 100%; }
 
 /* Double-booking warning in the booking form */
 .tt-conflict-warning {
