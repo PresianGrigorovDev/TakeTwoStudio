@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Frequently asked question shown (and emitted as FAQPage schema) on the page
- * identified by page_slug: weddings, proms, baptism, commercial, family,
- * portrait, automotive, architectural, events or general.
+ * identified by page_slug: weddings, proms, graduation, baptism, commercial,
+ * family, portrait, automotive, architectural, events or general.
  */
 class Faq extends Model
 {
@@ -37,6 +37,7 @@ class Faq extends Model
         'abiturientski-bal-varna' => 'Гид: абитуриентски бал Варна',
         'weddings' => 'Сватби',
         'proms' => 'Абитуриентски балове',
+        'graduation' => 'Пред-бална фотосесия (/graduation)',
         'baptism' => 'Кръщенета',
         'commercial' => 'Рекламна фотография',
         'family' => 'Семейни фотосесии',

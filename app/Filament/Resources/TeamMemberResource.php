@@ -39,6 +39,12 @@ class TeamMemberResource extends Resource
                 Forms\Components\TextInput::make('role_en')
                     ->label('Роля (EN)')
                     ->maxLength(100),
+                Forms\Components\TextInput::make('career_start_year')
+                    ->label('В професията от (година)')
+                    ->helperText('Показва се като „В професията от 2013 г.“ в „За нас“ и за AI асистентите (llms.txt).')
+                    ->numeric()
+                    ->minValue(1980)
+                    ->maxValue((int) date('Y')),
                 // Cropped to a square and resized to 600x600 in the browser before upload.
                 // maxSize is checked by FilePond on the ORIGINAL file (before that resize),
                 // so it must let 6-11 MB camera photos through; TeamMember also optimises on save.

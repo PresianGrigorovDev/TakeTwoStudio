@@ -26,6 +26,7 @@ class LLMController extends Controller
         'ceni' => 'Цени',
         'abiturientski-bal-varna' => 'Абитуриентски бал Варна',
         'proms' => 'Абитуриентски балове',
+        'graduation' => 'Пред-бална фотосесия',
         'weddings' => 'Сватби',
         'baptism' => 'Кръщене',
         'commercial' => 'Рекламна и бизнес фотография',

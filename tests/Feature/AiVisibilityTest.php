@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
+use App\Models\Faq;
 use App\Models\FamilyPackage;
 use App\Models\Service;
 use App\Models\SiteSetting;
@@ -113,6 +114,51 @@ class AiVisibilityTest extends TestCase
         $this->assertMatchesRegularExpression('/User-agent: GPTBot\s+Disallow: \//', $robots);
         $this->assertStringNotContainsString('OAI-SearchBot\nDisallow', $robots);
         $this->assertMatchesRegularExpression('/User-agent: \*\s+Disallow: \/admin/', $robots);
+    }
+
+    public function test_faq_migration_aligns_the_live_answers_with_the_owner_facts(): void
+    {
+        Faq::query()->delete();
+        $live = [
+            ['proms', 'Кога трябва да запазим дата за бала?', 'Препоръчваме да запазите дата минимум 7–8 месеца предварително.'],
+            ['proms', 'Кога получаваме готовите снимки и видео?', 'Обработените материали се предават до 50 работни дни след събитието.'],
+            ['proms', 'Кога трябва да резервирам?', 'Препоръчваме резервация поне 3–4 седмици преди бала.'],
+            ['proms', 'Колко снимки ще получим и кога?', 'Получавате достъп до онлайн галерия в рамките на 5 работни дни след сесията.'],
+            ['baptism', 'Кога получаваме снимките и видеото?', 'Стандартният срок е до 30 работни дни.'],
+            ['baptism', 'Кога получаваме готовите снимки и видео?', 'Стандартният срок е до 20 работни дни.'],
+            ['baptism', 'Колко време трае самото кръщене?', 'Дубликат.'],
+            ['commercial', 'Кога трябва да резервирам?', 'Не е въпрос за бал и не се пипа.'],
+        ];
+        foreach ($live as $i => [$slug, $question, $answer]) {
+            Faq::create(['page_slug' => $slug, 'question' => $question, 'answer' => $answer, 'sort_order' => $i]);
+        }
+
+        $migration = require database_path('migrations/2026_11_02_130000_align_faq_facts_with_owner_answers.php');
+        $migration->up();
+
+        $proms = Faq::forPageVisible('proms')->pluck('answer')->implode(' ');
+        $this->assertStringContainsString('Няма краен срок', $proms);
+        $this->assertStringContainsString('до 70 работни дни', $proms);
+        $this->assertStringNotContainsString('3–4 седмици', $proms, 'pre-prom answers left /proms');
+        $this->assertStringNotContainsString('50 работни дни', $proms);
+
+        $this->assertStringContainsString('до 20 работни дни', Faq::forPageVisible('graduation')->pluck('answer')->implode(' '));
+        $this->assertSame(['Кога получаваме снимките и видеото?'], Faq::forPageVisible('baptism')->pluck('question')->all());
+        $this->assertSame('Не е въпрос за бал и не се пипа.', Faq::where('page_slug', 'commercial')->value('answer'));
+
+        $migration->down();
+        $this->assertSame(3, Faq::forPageVisible('baptism')->count(), 'down() restores the hidden rows');
+        $this->assertSame(0, Faq::forPageVisible('graduation')->count());
+    }
+
+    public function test_team_experience_years_come_from_the_database(): void
+    {
+        $member = TeamMember::where('is_active', true)->orderBy('display_order')->first();
+        $member->update(['career_start_year' => 2013]);
+
+        $this->get('/za-nas')->assertOk()->assertSee('В професията от 2013 г.');
+        $this->get('/llms-full.txt')->assertOk()->assertSee('Екипът снима професионално от 2013 г.')->assertSee('в професията от 2013 г.');
+        $this->get('/')->assertOk()->assertDontSee('twitter:site', false);
     }
 
     private function makePost(string $slug): BlogPost

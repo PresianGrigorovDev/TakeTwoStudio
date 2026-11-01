@@ -279,7 +279,10 @@
                         @endphp
                         <img class="team-img team-modal-img mb-3 lazy-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                             data-src="{{ \App\Support\Images::webpUrl($modalImg) ?? $modalImg }}" alt="{{ $member->name }}">
-                        <p class="role-text mb-3">{{ $member->role_bg }}</p>
+                        <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>
+                        @if($member->career_start_year)
+                            <p class="small text-muted mb-3">В професията от {{ $member->career_start_year }} г.</p>
+                        @endif
                         <p class="text-muted mb-3">
                             {{ $member->bio_bg }}
                         </p>

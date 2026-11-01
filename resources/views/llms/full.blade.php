@@ -49,8 +49,11 @@
 @endforeach
 
 ## 4. Екип
+@if($team->min('career_start_year'))
+Екипът снима професионално от {{ $team->min('career_start_year') }} г.
+@endif
 @foreach($team as $member)
-- {!! $plain($member->name) !!} ({!! $plain($member->role_bg) !!}): {!! $plain($member->bio_bg) !!}
+- {!! $plain($member->name) !!} ({!! $plain($member->role_bg) !!}{{ $member->career_start_year ? ', в професията от '.$member->career_start_year.' г.' : '' }}): {!! $plain($member->bio_bg) !!}
 @endforeach
 - Повече: {{ url('/za-nas') }}
 

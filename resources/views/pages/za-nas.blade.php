@@ -46,7 +46,10 @@
                             <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
                                  alt="{{ $member->name }} – {{ $member->role_bg }}" class="team-img mb-3" width="180" height="180" />
                             <h3 class="h5 fw-bold mb-1">{{ $member->name }}</h3>
-                            <p class="role-text mb-3">{{ $member->role_bg }}</p>
+                            <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>
+                            @if($member->career_start_year)
+                                <p class="small text-muted mb-3">В професията от {{ $member->career_start_year }} г.</p>
+                            @endif
                             @if($member->bio_bg)
                                 <p class="small text-muted text-start">{{ strip_tags($member->bio_bg) }}</p>
                             @endif

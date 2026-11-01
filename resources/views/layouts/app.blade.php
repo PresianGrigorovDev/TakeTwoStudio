@@ -31,7 +31,6 @@
     <meta property="og:site_name" content="Take Two Studio 1603">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@@taketwostudio1603">
     <meta name="twitter:title" content="@yield('og_title', 'Сватбен фотограф и Видеозаснемане Варна | Take Two Studio 1603')">
     <meta name="twitter:description" content="@yield('og_description', 'Запазете вашите спомени с нас! Професионално заснемане на сватби, балове и кръщенета във Варна и цяла България.')">
     <meta name="twitter:image" content="@yield('og_image', asset('css/img/social-share-cover.jpg'))">
