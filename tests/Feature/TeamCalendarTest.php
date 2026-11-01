@@ -194,6 +194,30 @@ class TeamCalendarTest extends TestCase
         );
     }
 
+    public function test_pivot_migration_recovers_from_the_half_finished_production_run(): void
+    {
+        [$simeon, $presian] = $this->team;
+        $a = $this->entry(['name' => 'А', 'start_time' => '10:00', 'end_time' => '12:00'], [$simeon]);
+        $b = $this->entry(['name' => 'Б', 'start_time' => '12:00', 'end_time' => '14:00']);
+
+        // Production state on 2026-11-02: pivot created and filled, then the drop failed;
+        // bookings.team_member_id still there with an index but WITHOUT a foreign key.
+        \Illuminate\Support\Facades\Schema::table('bookings', function (\Illuminate\Database\Schema\Blueprint $table) {
+            $table->unsignedBigInteger('team_member_id')->nullable();
+            $table->index('team_member_id', 'bookings_team_member_id_foreign');
+        });
+        DB::table('bookings')->where('id', $a->id)->update(['team_member_id' => $simeon->id]);
+        DB::table('bookings')->where('id', $b->id)->update(['team_member_id' => $presian->id]);
+
+        $migration = require database_path('migrations/2026_11_02_151000_create_booking_team_member_table.php');
+        $migration->up();
+        $migration->up(); // and once more: must be a no-op
+
+        $this->assertFalse(\Illuminate\Support\Facades\Schema::hasColumn('bookings', 'team_member_id'));
+        $this->assertSame([$simeon->id], $a->fresh()->teamMembers->modelKeys(), 'no duplicate pivot rows');
+        $this->assertSame([$presian->id], $b->fresh()->teamMembers->modelKeys(), 'rows not copied before are copied now');
+    }
+
     public function test_order_copies_are_merged_into_one_entry_with_both_people(): void
     {
         [$simeon, $presian] = $this->team;
