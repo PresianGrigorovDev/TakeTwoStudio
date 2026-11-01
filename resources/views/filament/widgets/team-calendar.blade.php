@@ -20,6 +20,7 @@
                         <span class="tt-cal__dot" style="background: {{ $person->calendar_color_or_default }}"></span>{{ $person->name }}
                     </button>
                 @endforeach
+                <span class="tt-cal__hint"><span class="tt-cal__swatch is-session"></span>📷 фотосесия</span>
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-pending"></span>чакаща заявка</span>
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-busy"></span>лично зает</span>
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-closed"></span>студиото е затворено</span>

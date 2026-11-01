@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 /**
  * Who is busy when, computed from the calendar entries (bookings):
- *  - client engagement: its people; one with nobody assigned yet still takes one person,
+ *  - client engagement / photo session: its people; nobody assigned yet still takes one person,
  *  - busy: its people (vacation, sick leave...),
  *  - closed: the whole studio.
  * Capacity = number of active team members (Filament → Екип), not a constant.
@@ -61,7 +61,7 @@ final class TeamCalendar
                     $hours[$hour]['closed'] = true;
                 } elseif ($memberIds) {
                     $hours[$hour]['members'] = array_values(array_unique(array_merge($hours[$hour]['members'], $memberIds)));
-                } elseif ($entry->kind === Booking::KIND_CLIENT) {
+                } elseif (Booking::isClientKind($entry->kind)) {
                     $hours[$hour]['unassigned']++;
                 }
             }

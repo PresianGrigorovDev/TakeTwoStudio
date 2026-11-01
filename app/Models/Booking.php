@@ -19,15 +19,22 @@ class Booking extends Model
 
     public const KIND_CLIENT = 'client';
 
+    /** Client work that is a photo session (e.g. a prom session) rather than a whole engagement. */
+    public const KIND_SESSION = 'session';
+
     public const KIND_BUSY = 'busy';
 
     public const KIND_CLOSED = 'closed';
 
     public const KINDS = [
         self::KIND_CLIENT => 'Ангажимент',
+        self::KIND_SESSION => 'Фотосесия',
         self::KIND_BUSY => 'Лично зает (отпуск, болничен…)',
         self::KIND_CLOSED => 'Студиото е затворено',
     ];
+
+    /** Kinds with a client (name, phone, service, status) - work, not internal time. */
+    public const CLIENT_KINDS = [self::KIND_CLIENT, self::KIND_SESSION];
 
     /** Statuses that occupy people in the calendar. */
     public const ACTIVE_STATUSES = ['pending', 'confirmed'];
@@ -41,6 +48,7 @@ class Booking extends Model
         'end_date',
         'start_time',
         'end_time',
+        'location',
         'service_type',
         'message',
         'status',
@@ -107,11 +115,23 @@ class Booking extends Model
         return $this->event_date->toDateString() <= $date && $this->last_date->toDateString() >= $date;
     }
 
-    /** Hours "HH:00" this entry occupies on each of its days. */
+    public static function isClientKind(?string $kind): bool
+    {
+        return in_array($kind ?? self::KIND_CLIENT, self::CLIENT_KINDS, true);
+    }
+
+    /**
+     * Hour slots "HH:00" this entry touches on each of its days; times may have
+     * minutes (13:30-15:15 occupies 13:00, 14:00 and 15:00).
+     */
     public function occupiedHours(): array
     {
+        [$sh, $sm] = array_map('intval', explode(':', (string) $this->start_time) + [1 => 0]);
+        [$eh, $em] = array_map('intval', explode(':', (string) $this->end_time) + [1 => 0]);
+        $lastHour = $em > 0 ? $eh : $eh - 1;
+
         $hours = [];
-        for ($h = (int) substr((string) $this->start_time, 0, 2); $h < (int) substr((string) $this->end_time, 0, 2); $h++) {
+        for ($h = $sh; $h <= $lastHour; $h++) {
             $hours[] = sprintf('%02d:00', $h);
         }
 

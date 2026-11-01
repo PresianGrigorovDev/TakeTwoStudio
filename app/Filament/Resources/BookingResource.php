@@ -46,7 +46,7 @@ class BookingResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $isClient = fn (Get $get) => ($get('kind') ?? Booking::KIND_CLIENT) === Booking::KIND_CLIENT;
+        $isClient = fn (Get $get) => Booking::isClientKind($get('kind'));
 
         return $form->schema([
             Forms\Components\Section::make()
@@ -54,8 +54,8 @@ class BookingResource extends Resource
                     Forms\Components\ToggleButtons::make('kind')
                         ->label('Тип')
                         ->options(Booking::KINDS)
-                        ->colors([Booking::KIND_CLIENT => 'primary', Booking::KIND_BUSY => 'gray', Booking::KIND_CLOSED => 'danger'])
-                        ->icons([Booking::KIND_CLIENT => 'heroicon-o-camera', Booking::KIND_BUSY => 'heroicon-o-user-minus', Booking::KIND_CLOSED => 'heroicon-o-no-symbol'])
+                        ->colors([Booking::KIND_CLIENT => 'primary', Booking::KIND_SESSION => 'info', Booking::KIND_BUSY => 'gray', Booking::KIND_CLOSED => 'danger'])
+                        ->icons([Booking::KIND_CLIENT => 'heroicon-o-briefcase', Booking::KIND_SESSION => 'heroicon-o-camera', Booking::KIND_BUSY => 'heroicon-o-user-minus', Booking::KIND_CLOSED => 'heroicon-o-no-symbol'])
                         ->default(fn () => in_array(request()->query('kind'), array_keys(Booking::KINDS), true) ? request()->query('kind') : Booking::KIND_CLIENT)
                         ->inline()
                         ->live()
@@ -63,7 +63,11 @@ class BookingResource extends Resource
                         ->columnSpanFull(),
                     Forms\Components\TextInput::make('name')
                         ->label(fn (Get $get) => $isClient($get) ? 'Клиент / заглавие' : 'Причина')
-                        ->placeholder(fn (Get $get) => $isClient($get) ? 'Сватба – Мария и Иван' : 'Отпуск')
+                        ->placeholder(fn (Get $get) => match ($get('kind')) {
+                            Booking::KIND_SESSION => 'Абитуриентска фотосесия – Мария',
+                            Booking::KIND_BUSY, Booking::KIND_CLOSED => 'Отпуск',
+                            default => 'Сватба – Мария и Иван',
+                        })
                         ->required()
                         ->maxLength(255),
                     Forms\Components\CheckboxList::make('teamMembers')
@@ -99,31 +103,31 @@ class BookingResource extends Resource
                         ->displayFormat('d.m.Y')
                         ->afterOrEqual('event_date')
                         ->live(),
-                    Forms\Components\Select::make('start_time')
+                    Forms\Components\TimePicker::make('start_time')
                         ->label('От')
-                        ->options(fn () => array_combine(BookingController::getWorkingHours(), BookingController::getWorkingHours()))
+                        ->seconds(false)
                         ->default(sprintf('%02d:00', BookingController::getWorkStart()))
                         ->required()
-                        ->live(),
-                    Forms\Components\Select::make('end_time')
+                        ->live(onBlur: true),
+                    Forms\Components\TimePicker::make('end_time')
                         ->label('До')
-                        ->options(function () {
-                            $hours = [];
-                            for ($h = BookingController::getWorkStart() + 1; $h <= BookingController::getWorkEnd(); $h++) {
-                                $hours[sprintf('%02d:00', $h)] = sprintf('%02d:00', $h);
-                            }
-
-                            return $hours;
-                        })
+                        ->seconds(false)
                         ->default(sprintf('%02d:00', BookingController::getWorkEnd()))
                         ->rule(fn (Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
-                            // "HH:00" strings compare correctly as text.
-                            if ($get('start_time') && (string) $value <= (string) $get('start_time')) {
+                            // "HH:MM" strings compare correctly as text.
+                            if ($get('start_time') && substr((string) $value, 0, 5) <= substr((string) $get('start_time'), 0, 5)) {
                                 $fail('Крайният час трябва да е след началния.');
                             }
                         })
                         ->required()
-                        ->live(),
+                        ->live(onBlur: true),
+                    Forms\Components\TextInput::make('location')
+                        ->label('Локация')
+                        ->placeholder('Ресторант „Морско конче“, Варна')
+                        ->helperText('Къде трябва да отидем – вижда се в календара и води към Google Maps.')
+                        ->maxLength(255)
+                        ->hidden(fn (Get $get) => $get('kind') === Booking::KIND_CLOSED)
+                        ->columnSpanFull(),
                     Forms\Components\Placeholder::make('conflicts')
                         ->hiddenLabel()
                         ->content(fn (Get $get, ?Booking $record) => self::conflictWarning($get, $record))
@@ -174,10 +178,15 @@ class BookingResource extends Resource
      */
     public static function normalizeData(array $data): array
     {
-        if (($data['kind'] ?? Booking::KIND_CLIENT) !== Booking::KIND_CLIENT) {
+        if (! Booking::isClientKind($data['kind'] ?? null)) {
             $data['status'] = 'confirmed';
             foreach (['service_type', 'phone', 'email', 'message', 'order_id'] as $field) {
                 $data[$field] = null;
+            }
+        }
+        foreach (['start_time', 'end_time'] as $field) {
+            if (! empty($data[$field])) {
+                $data[$field] = substr((string) $data[$field], 0, 5);
             }
         }
         if (! empty($data['end_date']) && substr((string) $data['end_date'], 0, 10) <= substr((string) $data['event_date'], 0, 10)) {
@@ -212,12 +221,19 @@ class BookingResource extends Resource
         }
     }
 
+    /** Google Maps search link for a free-text location (null when empty). */
+    public static function mapsUrl(?string $location): ?string
+    {
+        return filled($location) ? 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($location) : null;
+    }
+
     /** Live warning when a chosen person (or the closed studio) is already taken. */
     public static function conflictWarning(Get $get, ?Booking $record): ?HtmlString
     {
         $date = $get('event_date');
-        $start = $get('start_time');
-        $end = $get('end_time');
+        // Time pickers may hold "13:30:00"; entries are stored as "HH:MM".
+        $start = $get('start_time') ? substr((string) $get('start_time'), 0, 5) : null;
+        $end = $get('end_time') ? substr((string) $get('end_time'), 0, 5) : null;
 
         if (! $date || ! $start || ! $end || $start >= $end || $get('kind') === Booking::KIND_CLOSED) {
             return null;
@@ -257,6 +273,7 @@ class BookingResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (string $state) => Booking::KINDS[$state] ?? $state)
                     ->color(fn (string $state) => match ($state) {
+                        Booking::KIND_SESSION => 'info',
                         Booking::KIND_BUSY => 'gray',
                         Booking::KIND_CLOSED => 'danger',
                         default => 'primary',
@@ -264,6 +281,13 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Клиент / заглавие')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('location')
+                    ->label('Локация')
+                    ->icon('heroicon-o-map-pin')
+                    ->url(fn (Booking $record) => self::mapsUrl($record->location), shouldOpenInNewTab: true)
+                    ->placeholder('—')
+                    ->limit(40)
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('teamMembers.name')
                     ->label('Хора')
                     ->badge()

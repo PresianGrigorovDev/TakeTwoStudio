@@ -30,6 +30,9 @@ class TeamCalendarWidget extends Widget
     /** Show only this person's entries (null = everybody). */
     public ?int $member = null;
 
+    /** Where it is shown: 'dashboard' or 'page' (Работа → Календар); saving returns there. */
+    public string $origin = 'dashboard';
+
     public function mount(): void
     {
         $this->year = now()->year;
@@ -74,6 +77,7 @@ class TeamCalendarWidget extends Widget
         $members = TeamMember::where('is_active', true)->orderBy('display_order')->get();
         $today = now()->toDateString();
         $fullDay = [sprintf('%02d:00', BookingController::getWorkStart()), sprintf('%02d:00', BookingController::getWorkEnd())];
+        $from = $this->origin === 'page' ? 'calendar-page' : 'calendar';
 
         $days = [];
         foreach (TeamCalendar::days($gridStart, $gridEnd) as $date) {
@@ -83,15 +87,16 @@ class TeamCalendarWidget extends Widget
                 'inMonth' => substr($date, 0, 7) === $first->format('Y-m'),
                 'isToday' => $date === $today,
                 'isPast' => $date < $today,
-                'createUrl' => BookingResource::getUrl('create', array_filter(['date' => $date, 'member' => $this->member, 'from' => 'calendar'])),
+                'createUrl' => BookingResource::getUrl('create', array_filter(['date' => $date, 'member' => $this->member, 'from' => $from])),
                 'entries' => $entries->filter(fn (Booking $e) => $e->coversDate($date))->map(fn (Booking $e) => [
                     'kind' => $e->kind,
                     'title' => $e->name,
+                    'location' => $e->location,
                     'time' => [$e->start_time, $e->end_time] === $fullDay ? 'цял ден' : $e->start_time.'–'.$e->end_time,
                     'pending' => $e->status === 'pending',
                     'multiDay' => $e->end_date && $e->end_date->gt($e->event_date),
                     'people' => $e->teamMembers->map(fn (TeamMember $m) => ['name' => $m->name, 'color' => $m->calendar_color_or_default])->all(),
-                    'url' => BookingResource::getUrl('edit', ['record' => $e->id, 'from' => 'calendar']),
+                    'url' => BookingResource::getUrl('edit', ['record' => $e->id, 'from' => $from]),
                 ])->values()->all(),
             ];
         }
@@ -102,7 +107,7 @@ class TeamCalendarWidget extends Widget
             'agenda' => array_values(array_filter($days, fn ($d) => $d['inMonth'] && $d['entries'])),
             'members' => $members,
             'weekdays' => ['Пон', 'Вт', 'Ср', 'Чет', 'Пет', 'Съб', 'Нед'],
-            'createUrl' => BookingResource::getUrl('create', array_filter(['member' => $this->member, 'from' => 'calendar'])),
+            'createUrl' => BookingResource::getUrl('create', array_filter(['member' => $this->member, 'from' => $from])),
         ];
     }
 }

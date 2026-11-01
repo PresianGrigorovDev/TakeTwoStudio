@@ -27,17 +27,21 @@ class EditBooking extends EditRecord
         BookingResource::notifyConflicts($this->record);
     }
 
-    /** Opened from the dashboard calendar: go back there after saving. */
-    public bool $fromCalendar = false;
+    /** Opened from a calendar ('calendar' = dashboard, 'calendar-page' = Работа → Календар): go back there after saving. */
+    public ?string $returnTo = null;
 
     public function mount(int|string $record): void
     {
         parent::mount($record);
-        $this->fromCalendar = request()->query('from') === 'calendar';
+        $this->returnTo = in_array(request()->query('from'), ['calendar', 'calendar-page'], true) ? request()->query('from') : null;
     }
 
     protected function getRedirectUrl(): ?string
     {
-        return $this->fromCalendar ? \Filament\Pages\Dashboard::getUrl() : parent::getRedirectUrl();
+        return match ($this->returnTo) {
+            'calendar' => \Filament\Pages\Dashboard::getUrl(),
+            'calendar-page' => \App\Filament\Pages\Calendar::getUrl(),
+            default => parent::getRedirectUrl(),
+        };
     }
 }

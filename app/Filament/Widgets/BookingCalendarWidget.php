@@ -12,8 +12,8 @@ class BookingCalendarWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        // Client engagements only; personal busy time and closed days are not bookings.
-        $clients = fn () => Booking::where('kind', Booking::KIND_CLIENT);
+        // Client engagements and photo sessions; personal busy time and closed days are not bookings.
+        $clients = fn () => Booking::whereIn('kind', Booking::CLIENT_KINDS);
 
         $pendingCount = $clients()->pending()->count();
         $confirmedThisMonth = $clients()->confirmed()

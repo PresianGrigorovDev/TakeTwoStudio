@@ -12,6 +12,7 @@
     --tt-busy-bg: repeating-linear-gradient(45deg, #f3f4f6, #f3f4f6 6px, #e5e7eb 6px, #e5e7eb 12px);
     --tt-closed-bg: #fee2e2;
     --tt-closed-text: #991b1b;
+    --tt-session-bg: #eff6ff;
     color: var(--tt-text);
 }
 
@@ -25,6 +26,7 @@
     --tt-busy-bg: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06) 6px, rgba(255, 255, 255, 0.12) 6px, rgba(255, 255, 255, 0.12) 12px);
     --tt-closed-bg: rgba(220, 38, 38, 0.2);
     --tt-closed-text: #fca5a5;
+    --tt-session-bg: rgba(59, 130, 246, 0.14);
 }
 
 .tt-cal__toolbar {
@@ -100,6 +102,7 @@
 .tt-cal__swatch.is-pending { border: 1px dashed var(--tt-muted); }
 .tt-cal__swatch.is-busy { background: var(--tt-busy-bg); }
 .tt-cal__swatch.is-closed { background: var(--tt-closed-bg); }
+.tt-cal__swatch.is-session { background: var(--tt-session-bg); }
 
 /* Month grid */
 .tt-cal__grid {
@@ -190,6 +193,7 @@
 .tt-cal__entry.is-pending { border: 1px dashed var(--tt-muted); }
 .tt-cal__entry.is-busy { background: var(--tt-busy-bg); }
 .tt-cal__entry.is-closed { background: var(--tt-closed-bg); color: var(--tt-closed-text); }
+.tt-cal__entry.is-session { background: var(--tt-session-bg); }
 .tt-cal__entry.is-closed::before { background: #dc2626; }
 
 .tt-cal__time { display: block; font-weight: 600; white-space: nowrap; }
@@ -200,6 +204,17 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.tt-cal__location {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--tt-muted);
+    font-size: 0.6875rem;
+}
+
+.tt-cal__agenda .tt-cal__location { white-space: normal; font-size: 0.8125rem; }
 
 .tt-cal__people {
     display: flex;
