@@ -290,3 +290,61 @@
 
 .tt-conflict-warning ul { margin: 0.35rem 0; padding-left: 1.1rem; list-style: disc; }
 .tt-conflict-warning span { opacity: 0.85; }
+
+/* "Кой е свободен" (App\Filament\Widgets\TeamAvailabilityWidget) */
+.tt-free__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.tt-free__filters label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8125rem; font-weight: 500; }
+
+.tt-free__list { display: flex; flex-direction: column; transition: opacity 0.15s; }
+.tt-free__list.is-loading { opacity: 0.5; }
+
+.tt-free__person {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(127, 127, 127, 0.15);
+}
+
+.tt-free__name { display: inline-flex; align-items: center; gap: 0.45rem; min-width: 11rem; font-weight: 600; }
+.tt-free__name .tt-cal__dot { width: 0.65rem; height: 0.65rem; border-radius: 50%; display: inline-block; }
+
+.tt-free__status {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.tt-free__status.is-free { background: #dcfce7; color: #166534; }
+.tt-free__status.is-busy { background: #fee2e2; color: #991b1b; }
+.dark .tt-free__status.is-free { background: rgba(34, 197, 94, 0.18); color: #86efac; }
+.dark .tt-free__status.is-busy { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+
+.tt-free__busy { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.875rem; flex-basis: 100%; padding-left: 1.1rem; }
+.tt-free__busy a { text-decoration: none; color: inherit; }
+.tt-free__busy a:hover { text-decoration: underline; }
+.tt-free__busy small { opacity: 0.7; }
+
+.tt-free__closed {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 0.875rem;
+}
+
+.dark .tt-free__closed { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+.tt-free__note { font-size: 0.875rem; opacity: 0.75; }
+
+@media (min-width: 768px) {
+    .tt-free__busy { flex-basis: auto; padding-left: 0; }
+}

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Filament\Resources\BookingResource\Pages\CreateBooking;
+use App\Filament\Widgets\TeamAvailabilityWidget;
 use App\Filament\Widgets\TeamCalendarWidget;
 use App\Models\Booking;
 use App\Models\TeamMember;
@@ -176,6 +177,85 @@ class TeamCalendarTest extends TestCase
             ->fillForm(['kind' => Booking::KIND_CLIENT, 'name' => 'Сватба', 'event_date' => $this->day, 'start_time' => '14:00', 'end_time' => '10:00'])
             ->call('create')
             ->assertHasFormErrors(['end_time']);
+    }
+
+    public function test_photo_session_is_client_work_with_minutes_and_location(): void
+    {
+        [$simeon] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+
+        Livewire::test(CreateBooking::class)
+            ->fillForm([
+                'kind' => Booking::KIND_SESSION,
+                'name' => 'Абитуриентска фотосесия – Мария',
+                'phone' => '0888123456',
+                'status' => 'confirmed',
+                'teamMembers' => [$simeon->id],
+                'event_date' => $this->day,
+                'start_time' => '13:30',
+                'end_time' => '15:15',
+                'location' => 'Морска градина, Варна',
+            ])
+            ->call('create')
+            ->assertHasNoFormErrors();
+
+        $session = Booking::where('kind', Booking::KIND_SESSION)->sole();
+        $this->assertSame(['0888123456', '13:30', '15:15', 'Морска градина, Варна'], [$session->phone, $session->start_time, $session->end_time, $session->location]);
+        $this->assertSame(['13:00', '14:00', '15:00'], $session->occupiedHours());
+
+        $this->assertCount(1, TeamCalendar::conflicts($this->day, null, '15:00', '16:00', [$simeon->id]), '15:00 overlaps 13:30–15:15');
+        $this->assertCount(0, TeamCalendar::conflicts($this->day, null, '15:15', '16:00', [$simeon->id]), 'back-to-back at 15:15 is fine');
+
+        $date = now()->addDays(10);
+        Livewire::test(TeamCalendarWidget::class)
+            ->set('year', $date->year)
+            ->set('month', $date->month)
+            ->assertSee('📷')
+            ->assertSee('Морска градина, Варна')
+            ->assertSee('13:30–15:15');
+    }
+
+    public function test_unassigned_photo_session_still_takes_a_place(): void
+    {
+        foreach (range(1, 3) as $i) {
+            $this->entry(['kind' => Booking::KIND_SESSION, 'name' => "Сесия $i", 'start_time' => '09:00', 'end_time' => '10:00']);
+        }
+
+        $this->assertNotContains('09:00', TeamCalendar::availableHours($this->day));
+    }
+
+    public function test_calendar_page_shows_who_is_free_and_where_the_others_are(): void
+    {
+        [$simeon, $presian] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $this->entry(['name' => 'Сватба – Мария и Иван', 'start_time' => '12:00', 'end_time' => '20:00', 'location' => 'Ресторант „Морско конче“'], [$simeon]);
+
+        $this->get(\App\Filament\Pages\Calendar::getUrl())->assertOk()->assertSee('Календар на екипа');
+
+        Livewire::test(TeamAvailabilityWidget::class)
+            ->set('date', $this->day)
+            ->set('from', '13:00')
+            ->set('to', '15:00')
+            ->assertSee('Сватба – Мария и Иван')
+            ->assertSee('Ресторант „Морско конче“')
+            ->assertSee('Свободен')
+            ->assertSee('member='.$presian->id, false)
+            ->set('from', '20:00')
+            ->set('to', '21:00')
+            ->assertDontSee('Сватба – Мария и Иван');
+    }
+
+    public function test_saving_from_the_calendar_page_returns_to_it(): void
+    {
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+
+        Livewire::withQueryParams(['from' => 'calendar-page', 'date' => $this->day, 'start' => '10:30', 'end' => '12:00'])
+            ->test(CreateBooking::class)
+            ->assertFormSet(['start_time' => '10:30', 'end_time' => '12:00'])
+            ->fillForm(['kind' => Booking::KIND_CLIENT, 'name' => 'Клиент'])
+            ->call('create')
+            ->assertHasNoFormErrors()
+            ->assertRedirect(\App\Filament\Pages\Calendar::getUrl());
     }
 
     public function test_blocked_dates_become_closed_entries(): void

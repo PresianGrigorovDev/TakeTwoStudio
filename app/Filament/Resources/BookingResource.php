@@ -106,13 +106,13 @@ class BookingResource extends Resource
                     Forms\Components\TimePicker::make('start_time')
                         ->label('От')
                         ->seconds(false)
-                        ->default(sprintf('%02d:00', BookingController::getWorkStart()))
+                        ->default(fn () => preg_match('/^\d{2}:\d{2}$/', (string) request()->query('start')) ? request()->query('start') : sprintf('%02d:00', BookingController::getWorkStart()))
                         ->required()
                         ->live(onBlur: true),
                     Forms\Components\TimePicker::make('end_time')
                         ->label('До')
                         ->seconds(false)
-                        ->default(sprintf('%02d:00', BookingController::getWorkEnd()))
+                        ->default(fn () => preg_match('/^\d{2}:\d{2}$/', (string) request()->query('end')) ? request()->query('end') : sprintf('%02d:00', BookingController::getWorkEnd()))
                         ->rule(fn (Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
                             // "HH:MM" strings compare correctly as text.
                             if ($get('start_time') && substr((string) $value, 0, 5) <= substr((string) $get('start_time'), 0, 5)) {
