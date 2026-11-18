@@ -259,7 +259,7 @@ class ViewsPerformanceTest extends TestCase
             }
         }
 
-        $files = array_map(fn ($url) => strtok(substr($url, strlen(url('/')) + 1), '?'), $seen);
+        $files = array_map(fn ($url) => ltrim((string) parse_url($url, PHP_URL_PATH), '/'), $seen);
         foreach (['css/weddings.css', 'css/proms.css', 'css/baptism.css', 'css/commercial.css', 'css/booking.css', 'css/blog.css',
             'vendor/glightbox/glightbox.min.css', 'vendor/glightbox/glightbox.min.js', 'js/calculators/wedding.js', 'js/calculators/prom.js',
             'js/calculators/baptism.js', 'js/calculators/generic.js', 'js/commercial.js', 'js/booking-calendar.js'] as $file) {
@@ -298,7 +298,7 @@ class ViewsPerformanceTest extends TestCase
     private function localAssetUrls(string $html): array
     {
         $base = preg_quote(rtrim(url('/'), '/'), '#');
-        preg_match_all('#<(?:link|script)\b[^>]*\b(?:href|src)="('.$base.'/(?:css|js|vendor|fonts)/[^"]+?\.(?:css|js)(?:\?[^"]*)?)"#', $html, $m);
+        preg_match_all('#<(?:link|script)\b[^>]*\b(?:href|src)="((?:'.$base.')?/(?:css|js|vendor|fonts)/[^"]+?\.(?:css|js)(?:\?[^"]*)?)"#', $html, $m);
 
         return array_values(array_unique($m[1]));
     }
