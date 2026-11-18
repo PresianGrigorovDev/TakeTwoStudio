@@ -9,6 +9,7 @@ use App\Models\TeamMember;
 use App\Support\TeamCalendar;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 /**
  * Month calendar of the whole team on the admin dashboard: every engagement, personal
@@ -17,6 +18,11 @@ use Illuminate\Support\Carbon;
  */
 class TeamCalendarWidget extends Widget
 {
+    // A displayed month can include dates from its neighbouring years.
+    public const MIN_YEAR = 1001;
+
+    public const MAX_YEAR = 9998;
+
     protected static string $view = 'filament.widgets.team-calendar';
 
     protected static ?int $sort = -4;
@@ -55,6 +61,25 @@ class TeamCalendarWidget extends Widget
         $this->month = now()->month;
     }
 
+    public function selectPeriod(mixed $month = null, mixed $year = null): void
+    {
+        $period = validator([
+            'month' => $month ?? $this->month,
+            'year' => $year ?? $this->year,
+        ], [
+            'month' => 'required|integer|between:1,12',
+            'year' => 'required|integer|between:'.self::MIN_YEAR.','.self::MAX_YEAR,
+        ], [
+            'month.*' => 'Изберете валиден месец.',
+            'year.*' => 'Въведете година между :min и :max.',
+            'year.required' => 'Въведете година.',
+            'year.integer' => 'Въведете цяла година.',
+        ])->validate();
+
+        $this->month = (int) $period['month'];
+        $this->year = (int) $period['year'];
+    }
+
     public function filterMember(?int $memberId): void
     {
         $this->member = $this->member === $memberId ? null : $memberId;
@@ -63,6 +88,10 @@ class TeamCalendarWidget extends Widget
     private function shift(int $months): void
     {
         $date = Carbon::create($this->year, $this->month, 1)->addMonths($months);
+        if ($date->year < self::MIN_YEAR || $date->year > self::MAX_YEAR) {
+            return;
+        }
+
         $this->year = $date->year;
         $this->month = $date->month;
     }
@@ -102,7 +131,11 @@ class TeamCalendarWidget extends Widget
         }
 
         return [
-            'title' => $first->translatedFormat('F Y'),
+            'title' => Str::ucfirst($first->translatedFormat('F Y')),
+            'monthNames' => array_map(
+                fn (int $month) => Str::ucfirst($first->copy()->month($month)->translatedFormat('F')),
+                range(1, 12),
+            ),
             'weeks' => array_chunk($days, 7),
             'agenda' => array_values(array_filter($days, fn ($d) => $d['inMonth'] && $d['entries'])),
             'members' => $members,

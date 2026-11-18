@@ -4,13 +4,41 @@
             {{-- Toolbar: month navigation, person filter, new entry --}}
             <div class="tt-cal__toolbar">
                 <div class="tt-cal__nav">
-                    <x-filament::icon-button icon="heroicon-m-chevron-left" color="gray" wire:click="previousMonth" label="Предишен месец" />
-                    <h2 class="tt-cal__title">{{ $title }}</h2>
-                    <x-filament::icon-button icon="heroicon-m-chevron-right" color="gray" wire:click="nextMonth" label="Следващ месец" />
-                    <x-filament::button size="xs" color="gray" wire:click="currentMonth">Днес</x-filament::button>
+                    <h2 class="sr-only" aria-live="polite">{{ $title }}</h2>
+                    <div class="tt-cal__period">
+                        <x-filament::input.wrapper>
+                            <x-filament::input.select aria-label="Месец" wire:change="selectPeriod($event.target.value)">
+                                @foreach($monthNames as $index => $name)
+                                    <option value="{{ $index + 1 }}" @selected($month === $index + 1)>{{ $name }}</option>
+                                @endforeach
+                            </x-filament::input.select>
+                        </x-filament::input.wrapper>
+                        <x-filament::input.wrapper :valid="! $errors->has('year')">
+                            <x-filament::input
+                                wire:key="calendar-year-{{ $year }}-{{ $month }}"
+                                type="number"
+                                inputmode="numeric"
+                                aria-label="Година"
+                                :aria-invalid="$errors->has('year') ? 'true' : 'false'"
+                                :min="$this::MIN_YEAR"
+                                :max="$this::MAX_YEAR"
+                                :value="$year"
+                                wire:change="selectPeriod(null, $event.target.value)"
+                                x-on:keydown.enter.prevent="$el.blur()"
+                            />
+                        </x-filament::input.wrapper>
+                    </div>
+                    <div class="tt-cal__nav-actions">
+                        <x-filament::icon-button icon="heroicon-m-chevron-left" color="gray" wire:click="previousMonth" label="Предишен месец" :disabled="$year === $this::MIN_YEAR && $month === 1" />
+                        <x-filament::icon-button icon="heroicon-m-chevron-right" color="gray" wire:click="nextMonth" label="Следващ месец" :disabled="$year === $this::MAX_YEAR && $month === 12" />
+                        <x-filament::button size="xs" color="gray" wire:click="currentMonth">Днес</x-filament::button>
+                    </div>
                 </div>
                 <x-filament::button size="sm" icon="heroicon-m-plus" tag="a" :href="$createUrl">Нов запис</x-filament::button>
             </div>
+            @error('year')
+                <p class="tt-cal__period-error" role="alert">{{ $message }}</p>
+            @enderror
 
             {{-- Legend = person filter --}}
             <div class="tt-cal__legend" role="group" aria-label="Филтър по човек">
