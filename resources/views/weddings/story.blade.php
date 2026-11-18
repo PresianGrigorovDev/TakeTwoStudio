@@ -16,7 +16,7 @@
 @section('meta_description', $pageDescription)
 @section('og_title', 'Сватбата на ' . $gallery->title . ($place ? ' – ' . $place : ''))
 @section('og_description', $pageDescription)
-@section('og_image', $gallery->cover_url ?: asset('css/img/best-wedding-cover.jpg'))
+@section('og_image', \App\Support\Images::absoluteUrl($gallery->cover_url) ?: asset('css/img/best-wedding-cover.jpg'))
 
 @push('styles')
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/glightbox/glightbox.min.css') }}" media="print" onload="this.media='all'">
@@ -72,7 +72,7 @@
 
             <div class="row g-3 mt-4 story-grid">
                 @foreach($gallery->photos as $index => $photo)
-                    @php $url = preg_match('#^https?://#i', $photo->image_path) ? $photo->image_path : asset('storage/' . $photo->image_path); @endphp
+                    @php $url = \App\Support\Images::url($photo->image_path); @endphp
                     <div class="col-6 col-md-4">
                         <a href="{{ $url }}" class="glightbox story-photo" data-gallery="wedding-{{ $gallery->id }}"
                             data-title="Сватбата на {{ $gallery->title }}">

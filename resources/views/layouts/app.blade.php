@@ -41,8 +41,8 @@
     <meta name="ICBM" content="43.21405, 27.914733">
 
     {{-- Montserrat is a variable font: all weight files of a subset are the same file, so these two cover every weight. --}}
-    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/montserrat/montserrat-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/montserrat/montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
     @yield('preload')
 
     {{-- All CSS/JS/fonts are self-hosted: no third-party origins before the visitor consents to anything.
@@ -58,11 +58,11 @@
         <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('vendor/fontawesome/css/all.min.css') }}">
     </noscript>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('css/img/favicon_io/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('css/img/favicon_io/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('css/img/favicon_io/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/img/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/img/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/css/img/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
 
     @include('partials.schema-graph')
 
@@ -78,7 +78,7 @@
         <div class="container h-100">
             {{-- Logo file is 787x389: the width/height keep that ratio so the space is reserved before it loads. --}}
             <a class="navbar-brand d-lg-none" href="/">
-                <img src="{{ asset('css/img/logo-tts-white.webp') }}" alt="Take Two Studio" class="logo-mobile" width="81" height="40">
+                <img src="/css/img/logo-tts-white.webp" alt="Take Two Studio" class="logo-mobile" width="81" height="40">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Отвори навигационното меню">
@@ -96,7 +96,7 @@
 
                     <div class="nav-item d-none d-lg-flex align-items-center mx-auto">
                         <a class="navbar-brand m-0" href="/">
-                            <img src="{{ asset('css/img/logo-tts-white.webp') }}" alt="Take Two Studio" class="logo-desktop" width="111" height="55">
+                            <img src="/css/img/logo-tts-white.webp" alt="Take Two Studio" class="logo-desktop" width="111" height="55">
                         </a>
                     </div>
 

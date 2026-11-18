@@ -30,7 +30,7 @@ class ViewsPerformanceTest extends TestCase
         $html = $this->get('/')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression('#<header class="hero">\s*<img [^>]*class="hero-bg-img"#', $html, 'the hero background <img> must be the first child of .hero');
-        $this->assertMatchesRegularExpression('#<img(?=[^>]*class="hero-bg-img")(?=[^>]*fetchpriority="high")(?=[^>]*src="'.preg_quote(asset('css/img/header.webp'), '#').'")[^>]*>#', $html);
+        $this->assertMatchesRegularExpression('#<img(?=[^>]*class="hero-bg-img")(?=[^>]*fetchpriority="high")(?=[^>]*src="'.preg_quote('/css/img/header.webp', '#').'")[^>]*>#', $html);
         $this->assertDoesNotMatchRegularExpression('#<img[^>]*class="hero-bg-img"[^>]*loading="lazy"#', $html);
         $this->assertMatchesRegularExpression('#<div class="hero-content">#', $html);
         $this->assertDoesNotMatchRegularExpression('#class="hero-content"[^>]*data-aos#', $html);
@@ -39,7 +39,7 @@ class ViewsPerformanceTest extends TestCase
         if (preg_match_all('#<link rel="preload"[^>]*as="image"[^>]*>#', $html, $preloads)) {
             foreach ($preloads[0] as $preload) {
                 if (str_contains($preload, 'header.')) {
-                    $this->assertStringContainsString('href="'.asset('css/img/header.webp').'"', $preload);
+                    $this->assertStringContainsString('href="/css/img/header.webp"', $preload);
                 }
             }
         }
@@ -190,7 +190,7 @@ class ViewsPerformanceTest extends TestCase
         $html = $this->get($path)->assertOk()->getContent();
 
         $this->assertFileExists(public_path($image));
-        $this->assertStringContainsString('<link rel="preload" href="'.asset($image).'" as="image" type="image/webp" fetchpriority="high">', $html);
+        $this->assertStringContainsString('<link rel="preload" href="/'.$image.'" as="image" type="image/webp" fetchpriority="high">', $html);
         $this->assertStringContainsString("url('../".$image."') type('image/webp')", file_get_contents(public_path('css/'.$css)), "$css no longer uses $image: update the preload in the view");
     }
 
@@ -226,7 +226,7 @@ class ViewsPerformanceTest extends TestCase
             $this->assertDoesNotMatchRegularExpression('#\s(style|width|height)=#', $body, 'the modal photo is sized by .team-modal-img in style.css');
         }
 
-        $this->assertStringContainsString('data-src="'.asset('css/img/prom.webp').'"', $html);
+        $this->assertStringContainsString('data-src="/css/img/prom.webp"', $html);
         $this->assertStringContainsString("addEventListener('show.bs.modal'", $html);
     }
 
@@ -259,7 +259,7 @@ class ViewsPerformanceTest extends TestCase
             }
         }
 
-        $files = array_map(fn ($url) => strtok(substr($url, strlen(url('/')) + 1), '?'), $seen);
+        $files = array_map(fn ($url) => ltrim((string) parse_url($url, PHP_URL_PATH), '/'), $seen);
         foreach (['css/weddings.css', 'css/proms.css', 'css/baptism.css', 'css/commercial.css', 'css/booking.css', 'css/blog.css',
             'vendor/glightbox/glightbox.min.css', 'vendor/glightbox/glightbox.min.js', 'js/calculators/wedding.js', 'js/calculators/prom.js',
             'js/calculators/baptism.js', 'js/calculators/generic.js', 'js/commercial.js', 'js/booking-calendar.js'] as $file) {
@@ -298,7 +298,7 @@ class ViewsPerformanceTest extends TestCase
     private function localAssetUrls(string $html): array
     {
         $base = preg_quote(rtrim(url('/'), '/'), '#');
-        preg_match_all('#<(?:link|script)\b[^>]*\b(?:href|src)="('.$base.'/(?:css|js|vendor|fonts)/[^"]+?\.(?:css|js)(?:\?[^"]*)?)"#', $html, $m);
+        preg_match_all('#<(?:link|script)\b[^>]*\b(?:href|src)="((?:'.$base.')?/(?:css|js|vendor|fonts)/[^"]+?\.(?:css|js)(?:\?[^"]*)?)"#', $html, $m);
 
         return array_values(array_unique($m[1]));
     }

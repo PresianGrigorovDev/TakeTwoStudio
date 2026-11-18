@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from baptism.css .baptism-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/krustene.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/krustene.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -110,10 +110,11 @@
             </div>
             <div class="row g-4">
                 @foreach($galleries as $gallery)
+                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? '/css/img/default-placeholder.webp'; @endphp
                     <div class="col-md-6 col-lg-4">
                         <div class="baptism-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}">
                             <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm gallery-cover-h">
-                                <x-picture :src="asset('storage/' . $gallery->cover_image)" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
+                                <x-picture :src="$coverUrl" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
                             </div>
                             <div class="text-center mt-3 p-2">
                                 <h4 class="fw-bold mb-2">{{ $gallery->title }}</h4>
@@ -131,11 +132,11 @@
                                         <div id="carouselGallery{{ $gallery->id }}" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
-                                                    <x-picture :src="asset('storage/' . $gallery->cover_image)" class="d-block w-100 object-fit-contain carousel-img" alt="Интериорна снимка на {{ $gallery->title }} - Take Two Studio" />
+                                                    <x-picture :src="$coverUrl" class="d-block w-100 object-fit-contain carousel-img" alt="Интериорна снимка на {{ $gallery->title }} - Take Two Studio" />
                                                 </div>
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <x-picture :src="asset('storage/' . $photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Архитектурна фотография Варна - {{ $gallery->title }} - интериорен фотограф" />
+                                                    <x-picture :src="\App\Support\Images::url($photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Архитектурна фотография Варна - {{ $gallery->title }} - интериорен фотограф" />
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -147,9 +148,9 @@
                                             </button>
                                         </div>
                                         <div class="d-flex overflow-auto p-3 custom-scrollbar thumb-strip">
-                                            <x-picture :src="asset('storage/' . $gallery->cover_image)" class="gallery-thumbnail hover-border gallery-thumb" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0" />
+                                            <x-picture :src="$coverUrl" class="gallery-thumbnail hover-border gallery-thumb" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0" />
                                             @foreach($gallery->photos as $index => $photo)
-                                            <x-picture :src="asset('storage/' . $photo->image_path)" class="gallery-thumbnail hover-border gallery-thumb" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" />
+                                            <x-picture :src="\App\Support\Images::url($photo->image_path)" class="gallery-thumbnail hover-border gallery-thumb" data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" />
                                             @endforeach
                                         </div>
                                     </div>

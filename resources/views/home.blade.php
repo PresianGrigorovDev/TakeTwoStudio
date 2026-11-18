@@ -8,13 +8,13 @@
 @section('og_image', asset('css/img/social-share-cover.jpg'))
 
 @section('preload')
-    <link rel="preload" href="{{ asset('css/img/header.webp') }}" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="/css/img/header.webp" as="image" type="image/webp" fetchpriority="high">
 @endsection
 
 @section('content')
 
     <header class="hero">
-        <img src="{{ asset('css/img/header.webp') }}" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
+        <img src="/css/img/header.webp" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>Фотограф и Видеозаснемане Варна</h1>
@@ -41,7 +41,7 @@
         <div class="container py-5">
             <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two"
+                    <x-picture src="/css/img/about.webp" alt="Екипът на Take Two"
                         class="about-img-main falling-item" />
                 </div>
                 <div class="col-lg-6 text-center text-lg-start">
@@ -65,7 +65,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
                         data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
-                        <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img falling-item" />
+                        <x-picture :src="\App\Support\Images::url($member->image_path) ?? '/css/img/default-avatar.png'" alt="{{ $member->name }}" class="team-img falling-item" />
                         <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
                         <p class="role-text">{{ $member->role_bg }}</p>
                         <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
@@ -76,25 +76,7 @@
         </div>
     </section>
 
-    <section class="brands-section">
-        <div class="container mb-4">
-            <div class="brands-header">
-                <h2 class="text-center">Довериха ни се</h2>
-                <div class="section-divider"></div>
-                <p class="text-muted text-uppercase text-center" style="letter-spacing: 2px;">Партньори и Клиенти</p>
-            </div>
-        </div>
-        <div class="brands-track">
-            @foreach($partners as $partner)
-                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
-            @endforeach
-
-            <!-- Duplicated for scrolling effect -->
-            @foreach($partners as $partner)
-                <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
-            @endforeach
-        </div>
-    </section>
+    @include('partials.partner-brands', ['portfolioUrl' => '/commercial#portfolio'])
 
     <section class="py-5 px-1 bg-white" data-aos="fade-up">
         <div class="container pb-5 text-center">
@@ -144,7 +126,7 @@
                         <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
                             <a href="{{ url($category->slug) }}" class="text-decoration-none">
                                 <div class="portfolio-item falling-item">
-                                    <x-picture :src="$category->cover_image ? (str_starts_with($category->cover_image, 'http') ? $category->cover_image : asset('storage/' . $category->cover_image)) : asset('css/img/default-placeholder.jpg')" class="portfolio-img"
+                                    <x-picture :src="\App\Support\Images::url($category->cover_image) ?? '/css/img/default-placeholder.jpg'" class="portfolio-img"
                                         alt="{{ $category->name_bg }}" />
                                     <div class="portfolio-overlay">
                                         <div class="portfolio-info">
@@ -162,7 +144,7 @@
         </div>
     </section>
 
-    <section class="py-5 px-1 bg-light">
+    <section id="testimonials" class="py-5 px-1 bg-light">
         <div class="container text-center">
             <h2 class="mb-3">Какво казват клиентите</h2>
             <div class="section-divider"></div>
@@ -233,23 +215,35 @@
 
             <div class="row g-4">
                 <div class="col-lg-6">
-                    @if(session('success'))
-                        <div class="alert alert-success mb-4 text-center">
-                            {{ session('success') }}
+                    @if(session('homeInquirySuccess') || session('success'))
+                        <div class="alert alert-success mb-4 text-center" role="status">
+                            {{ session('homeInquirySuccess') ?? session('success') }}
+                        </div>
+                    @endif
+                    @if($errors->getBag('homeInquiry')->any())
+                        <div class="alert alert-danger mb-4" role="alert">
+                            <p>Проверете отбелязаните полета и опитайте отново.</p>
+                            @foreach($errors->getBag('homeInquiry')->getMessages() as $field => $messages)
+                                @continue($field === 'gdpr_consent')
+                                <p>{{ $messages[0] }}</p>
+                            @endforeach
                         </div>
                     @endif
                     <form action="{{ url('/submit-contact') }}" method="post"
                         class="h-100 p-4 border rounded shadow-sm bg-white">
                         @csrf
+                        <input type="hidden" name="form" value="home-inquiry">
+                        <input type="hidden" name="orderType" value="Запитване от началната страница">
                         <div class="row g-3">
                             <div class="col-md-6"><input type="text" class="form-control rounded-0 p-3 bg-light border-0"
-                                    placeholder="Име" name="name" required></div>
-                            <div class="col-md-6"><input type="text" class="form-control rounded-0 p-3 bg-light border-0"
-                                    placeholder="Телефон" name="phone" required></div>
+                                    placeholder="Име" aria-label="Име" name="name" value="{{ old('name') }}" required></div>
+                            <div class="col-md-6"><input type="tel" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Телефон" aria-label="Телефон" name="phone" value="{{ old('phone') }}" required></div>
                             <div class="col-12"><input type="email" class="form-control rounded-0 p-3 bg-light border-0"
-                                    placeholder="Email" name="email" required></div>
+                                    placeholder="Email" aria-label="Имейл" name="email" value="{{ old('email') }}" required></div>
                             <div class="col-12"><textarea class="form-control rounded-0 p-3 bg-light border-0" rows="5"
-                                    placeholder="Съобщение..." name="message"></textarea></div>
+                                    placeholder="Съобщение..." aria-label="Съобщение" name="message">{{ old('message') }}</textarea></div>
+                            <div class="col-12">@include('partials.gdpr-consent', ['consentId' => 'home', 'consentErrorBag' => 'homeInquiry'])</div>
                             <div class="col-12"><button type="submit" class="btn-submit mt-2">Изпрати запитване</button>
                             </div>
                         </div>
@@ -275,7 +269,7 @@
                         {{-- Not requested until the modal opens (data-src -> src on show.bs.modal, script below).
                              data-src is the same URL the team grid already downloaded (WebP sibling when it exists). --}}
                         @php
-                            $modalImg = $member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png');
+                            $modalImg = \App\Support\Images::url($member->image_path) ?? '/css/img/default-avatar.png';
                         @endphp
                         <img class="team-img team-modal-img mb-3 lazy-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                             data-src="{{ \App\Support\Images::webpUrl($modalImg) ?? $modalImg }}" alt="{{ $member->name }}">

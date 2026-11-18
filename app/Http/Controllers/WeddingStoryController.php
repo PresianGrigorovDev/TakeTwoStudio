@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WeddingGallery;
+use App\Support\Images;
 use App\Support\Seo\Seo;
 use Illuminate\Support\Str;
 
@@ -60,7 +61,7 @@ class WeddingStoryController extends Controller
         }
 
         foreach ($gallery->photos->take(30) as $i => $photo) {
-            $url = preg_match('#^https?://#i', $photo->image_path) ? $photo->image_path : asset('storage/'.$photo->image_path);
+            $url = Images::absoluteUrl($photo->image_path);
             $seo->addNode([
                 '@type' => 'ImageObject',
                 '@id' => $current.'#photo-'.($i + 1),

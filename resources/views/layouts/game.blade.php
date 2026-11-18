@@ -29,14 +29,14 @@
     <meta name="twitter:description" content="@yield('meta_description')">
     <meta name="twitter:image" content="{{ asset('css/img/social-share-cover.jpg') }}">
 
-    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-400-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ asset('fonts/montserrat/montserrat-700-cyrillic.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/montserrat/montserrat-400-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/montserrat/montserrat-700-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('fonts/montserrat/montserrat.css') }}">
     <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/igra.css') }}">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('css/img/favicon_io/favicon-32x32.png') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('css/img/favicon_io/apple-touch-icon.png') }}">
-    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/img/favicon_io/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/img/favicon_io/apple-touch-icon.png">
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
     @stack('head')
 </head>
 <body class="igra" data-target="{{ $target }}" data-screen="intro">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
+use App\Support\Images;
 use App\Support\Seo\ServiceCatalog;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -140,7 +141,7 @@ class SitemapController extends Controller
             $images = [];
 
             if ($hero = DB::table('services')->where('slug', $slug)->value('hero_image')) {
-                $images[] = $this->imageUrl($hero);
+                $images[] = Images::absoluteUrl($hero);
             }
 
             foreach ($tables as $table) {
@@ -160,7 +161,7 @@ class SitemapController extends Controller
                 }
 
                 foreach ($query->limit(1000)->pluck('image_path') as $path) {
-                    $images[] = $this->imageUrl($path);
+                    $images[] = Images::absoluteUrl($path);
                 }
             }
 
@@ -172,7 +173,7 @@ class SitemapController extends Controller
         }
 
         foreach (\App\Models\WeddingGallery::with('photos')->where('is_active', true)->whereNotNull('slug')->get() as $gallery) {
-            $images = array_values(array_filter(array_map(fn ($p) => $this->imageUrl($p), array_merge([$gallery->cover_image], $gallery->photos->pluck('image_path')->all()))));
+            $images = array_values(array_filter(array_map([Images::class, 'absoluteUrl'], array_merge([$gallery->cover_image], $gallery->photos->pluck('image_path')->all()))));
             if ($images) {
                 $entries[] = ['loc' => route('weddings.story', $gallery->slug), 'lastmod' => $this->fmt($gallery->updated_at), 'images' => $images];
             }
@@ -236,20 +237,10 @@ class SitemapController extends Controller
         return $date?->toDateString();
     }
 
-    private function imageUrl(?string $path): ?string
-    {
-        $path = trim((string) $path);
-
-        if ($path === '') {
-            return null;
-        }
-
-        return preg_match('#^https?://#i', $path) ? $path : asset('storage/'.ltrim($path, '/'));
-    }
-
     private function xml(string $view, callable $data, string $cacheKey): Response
     {
-        $body = Cache::remember("sitemap.{$cacheKey}.v2", self::TTL, fn () => view($view, $data())->render());
+        $origin = hash('sha256', url('/').'|'.asset('/'));
+        $body = Cache::remember("sitemap.{$cacheKey}.v3.{$origin}", self::TTL, fn () => view($view, $data())->render());
 
         return response($body, 200, [
             'Content-Type' => 'application/xml; charset=UTF-8',

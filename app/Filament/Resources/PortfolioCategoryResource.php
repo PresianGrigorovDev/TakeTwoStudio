@@ -63,6 +63,8 @@ class PortfolioCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('cover_image')
+                    ->getStateUsing(static fn () => null)
+                    ->defaultImageUrl(fn (PortfolioCategory $record) => \App\Support\Images::url($record->cover_image))
                     ->label('Корица'),
                 Tables\Columns\TextColumn::make('name_bg')
                     ->label('Име')

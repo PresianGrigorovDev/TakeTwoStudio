@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
+use App\Support\Images;
 use App\Support\Seo\Seo;
 use Illuminate\Support\Str;
 
@@ -112,7 +113,7 @@ class BlogController extends Controller
             '@id' => $current.'#article',
             'headline' => $post->title,
             'description' => $post->meta_description ?: Str::limit(strip_tags((string) $post->excerpt), 160),
-            'image' => $post->cover_image_url ? [$post->cover_image_url] : null,
+            'image' => $post->cover_image_url ? [Images::absoluteUrl($post->cover_image_url)] : null,
             'datePublished' => $post->published_at?->toIso8601String(),
             'dateModified' => $post->updated_at?->toIso8601String(),
             'author' => ['@id' => $author ? Seo::rootId('person-'.$author->id) : Seo::rootId('organization')],

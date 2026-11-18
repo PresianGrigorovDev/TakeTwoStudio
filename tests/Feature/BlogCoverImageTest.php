@@ -26,10 +26,10 @@ class BlogCoverImageTest extends TestCase
     public function test_static_cover_resolves_or_falls_back(): void
     {
         $post = new BlogPost(['cover_image' => 'css/img/events-cover.jpg']);
-        $this->assertSame(asset('css/img/events-cover.jpg'), $post->cover_image_url);
+        $this->assertSame('/css/img/events-cover.jpg', $post->cover_image_url);
 
         $post = new BlogPost(['cover_image' => 'css/img/does-not-exist.jpg']);
-        $this->assertSame(asset(BlogPost::FALLBACK_COVER), $post->cover_image_url);
+        $this->assertSame('/'.BlogPost::FALLBACK_COVER, $post->cover_image_url);
         $this->assertSame(asset(BlogPost::FALLBACK_COVER), $post->og_image_url);
     }
 
@@ -38,8 +38,8 @@ class BlogCoverImageTest extends TestCase
         Storage::fake('public');
         Storage::disk('public')->put('blog/real.jpg', 'x');
 
-        $this->assertSame(asset('storage/blog/real.jpg'), (new BlogPost(['cover_image' => 'blog/real.jpg']))->cover_image_url);
-        $this->assertSame(asset(BlogPost::FALLBACK_COVER), (new BlogPost(['cover_image' => 'blog/gone.jpg']))->cover_image_url);
+        $this->assertSame('/storage/blog/real.jpg', (new BlogPost(['cover_image' => 'blog/real.jpg']))->cover_image_url);
+        $this->assertSame('/'.BlogPost::FALLBACK_COVER, (new BlogPost(['cover_image' => 'blog/gone.jpg']))->cover_image_url);
         $this->assertNull((new BlogPost(['cover_image' => null]))->cover_image_url);
         $this->assertSame('https://cdn.example/x.jpg', (new BlogPost(['cover_image' => 'https://cdn.example/x.jpg']))->cover_image_url);
     }

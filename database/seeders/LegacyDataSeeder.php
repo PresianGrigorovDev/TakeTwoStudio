@@ -32,12 +32,12 @@ class LegacyDataSeeder extends Seeder
 
         \App\Models\SiteSetting::create([
             'setting_key' => 'logo_white',
-            'setting_value' => 'https://taketwostudio1603.com/css/img/logo-tts-white.webp',
+            'setting_value' => 'css/img/logo-tts-white.webp',
             'description' => 'White Logo Path'
         ]);
         \App\Models\SiteSetting::create([
             'setting_key' => 'logo_dark',
-            'setting_value' => 'https://taketwostudio1603.com/css/img/logo-tts-dark.webp',
+            'setting_value' => 'css/img/logo-tts-black.png',
             'description' => 'Dark Logo Path'
         ]);
 
@@ -46,21 +46,21 @@ class LegacyDataSeeder extends Seeder
             'name' => 'Симеон Тодоров',
             'role_bg' => 'Фотограф / Бизнес Развитие',
             'bio_bg' => 'С над 10 години професионален опит във фотографията, Симеон е движещата сила зад Take Two Studio. Той съчетава организационния усет с артистичното виждане.',
-            'image_path' => 'https://taketwostudio1603.com/css/img/ST.png',
+            'image_path' => 'css/img/ST.png',
             'display_order' => 1
         ]);
         \App\Models\TeamMember::create([
             'name' => 'Християна Гинчева',
             'role_bg' => 'Фотограф / Графичен Дизайнер',
             'bio_bg' => 'Християна е визуалният магьосник на екипа. С професионалния си опит в графичния дизайн, тя вижда детайли, които другите пропускат.',
-            'image_path' => 'https://taketwostudio1603.com/css/img/HG.jpg',
+            'image_path' => 'css/img/HG.jpg',
             'display_order' => 2
         ]);
         \App\Models\TeamMember::create([
             'name' => 'Пресиан Григоров',
             'role_bg' => 'Видеограф / Дрон пилот',
             'bio_bg' => 'Пресиан има над 10 години опит в създаването на завладяващи видео разкази. Професионалният му път преминава през киното и телевизията.',
-            'image_path' => 'https://taketwostudio1603.com/css/img/PG.png',
+            'image_path' => 'css/img/PG.png',
             'display_order' => 3
         ]);
 
@@ -349,21 +349,21 @@ class LegacyDataSeeder extends Seeder
             'slug' => 'proms',
             'name_bg' => 'Балове',
             'subtitle_bg' => 'Енергията на новия ден',
-            'cover_image' => 'https://taketwostudio1603.com/css/img/prom.jpg'
+            'cover_image' => 'css/img/prom.jpg'
         ]);
         \App\Models\PortfolioCategory::create([
             'id' => 3,
             'slug' => 'baptism',
             'name_bg' => 'Кръщенета',
             'subtitle_bg' => 'Спомени за цял живот',
-            'cover_image' => 'https://taketwostudio1603.com/css/img/krustene.jpg'
+            'cover_image' => 'css/img/krustene.jpg'
         ]);
         \App\Models\PortfolioCategory::create([
             'id' => 4,
             'slug' => 'commercial',
             'name_bg' => 'Реклама',
             'subtitle_bg' => 'Продавай със стил',
-            'cover_image' => 'https://taketwostudio1603.com/css/img/реклама.jpg'
+            'cover_image' => 'css/img/реклама.jpg'
         ]);
 
         // 7. PORTFOLIO ITEMS
@@ -447,9 +447,9 @@ class LegacyDataSeeder extends Seeder
         \App\Models\PortfolioItem::create(['category_id' => 1, 'file_path' => 'https://images.pixieset.com/73162136/c1166a22ee5105bc15f5eff4404e5492-xxlarge.JPG']);
 
         // Baptism Portfolio
-        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'https://taketwostudio1603.com/css/img/krustene.jpg']);
-        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'https://taketwostudio1603.com/css/img/krustene.jpg']);
-        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'https://taketwostudio1603.com/css/img/krustene.jpg']);
+        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'css/img/krustene.jpg']);
+        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'css/img/krustene.jpg']);
+        \App\Models\PortfolioItem::create(['category_id' => 3, 'file_path' => 'css/img/krustene.jpg']);
 
         // Proms Portfolio
         \App\Models\PortfolioItem::create(['category_id' => 2, 'file_path' => 'https://images.pixieset.com/68309375/ed17c1d3bd0de0d96671e76927b2f09f-xlarge.jpeg']);
@@ -603,16 +603,16 @@ class LegacyDataSeeder extends Seeder
         \App\Models\SocialMedia::create(['platform_name' => 'Instagram', 'url' => 'https://www.instagram.com/taketwostudio1603', 'icon_class' => 'fab fa-instagram', 'display_order' => 2]);
 
         // 13. PARTNERS
-        \App\Models\Partner::create(['name' => 'Ardes', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png', 'display_order' => 1]);
-        \App\Models\Partner::create(['name' => 'Boxeroff', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/boxeroff.png', 'display_order' => 2]);
-        \App\Models\Partner::create(['name' => 'Hotel Continental', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/hotel-continental.png', 'display_order' => 3]);
-        \App\Models\Partner::create(['name' => 'Aspal', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/aspal.png', 'display_order' => 4]);
-        \App\Models\Partner::create(['name' => 'Cheers', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/Cheers%20loog.jpg', 'display_order' => 5]);
-        \App\Models\Partner::create(['name' => 'Drivably', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/drivably%20logo.png', 'display_order' => 6]);
-        \App\Models\Partner::create(['name' => 'Senshi', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/senshi-logo-big.png', 'display_order' => 7]);
-        \App\Models\Partner::create(['name' => 'Kamenitza', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/Каменица.png', 'display_order' => 8]);
-        \App\Models\Partner::create(['name' => 'Maxsuda', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/maxsuda.jpeg', 'display_order' => 9]);
-        \App\Models\Partner::create(['name' => 'Moonlight', 'logo_path' => 'https://taketwostudio1603.com/css/img/Logos/moonlight%20logo.jpg', 'display_order' => 10]);
+        \App\Models\Partner::create(['name' => 'Ardes', 'logo_path' => 'css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png', 'display_order' => 1]);
+        \App\Models\Partner::create(['name' => 'Boxeroff', 'logo_path' => 'css/img/Logos/boxeroff.png', 'display_order' => 2]);
+        \App\Models\Partner::create(['name' => 'Hotel Continental', 'logo_path' => 'css/img/Logos/hotel-continental.png', 'display_order' => 3]);
+        \App\Models\Partner::create(['name' => 'Aspal', 'logo_path' => 'css/img/Logos/aspal.png', 'display_order' => 4]);
+        \App\Models\Partner::create(['name' => 'Cheers', 'logo_path' => 'css/img/Logos/Cheers%20loog.jpg', 'display_order' => 5]);
+        \App\Models\Partner::create(['name' => 'Drivably', 'logo_path' => 'css/img/Logos/drivably%20logo.png', 'display_order' => 6]);
+        \App\Models\Partner::create(['name' => 'Senshi', 'logo_path' => 'css/img/Logos/senshi-logo-big.png', 'display_order' => 7]);
+        \App\Models\Partner::create(['name' => 'Kamenitza', 'logo_path' => 'css/img/Logos/Каменица.png', 'display_order' => 8]);
+        \App\Models\Partner::create(['name' => 'Maxsuda', 'logo_path' => 'css/img/Logos/maxsuda.jpeg', 'display_order' => 9]);
+        \App\Models\Partner::create(['name' => 'Moonlight', 'logo_path' => 'css/img/Logos/moonlight%20logo.jpg', 'display_order' => 10]);
 
         // 14. TESTIMONIALS
         \App\Models\Testimonial::create(['client_name' => 'Неделина и Християн', 'content_bg' => 'Страхотни професионалисти! Направиха сватбения ни ден незабравим.']);

@@ -19,7 +19,7 @@
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two Studio 1603 на снимачна площадка" class="about-img-main img-fluid rounded" />
+                    <x-picture src="/css/img/about.webp" alt="Екипът на Take Two Studio 1603 на снимачна площадка" class="about-img-main img-fluid rounded" />
                 </div>
                 <div class="col-lg-6">
                     <h2 class="mb-3">{{ $text->get('story', 'title', 'Кои сме ние') }}</h2>
@@ -43,7 +43,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-6 col-lg-4" id="person-{{ $member->id }}">
                         <article class="team-card h-100 p-4 bg-white rounded shadow-sm text-center">
-                            <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
+                            <x-picture :src="\App\Support\Images::url($member->image_path) ?? '/css/img/default-avatar.png'"
                                  alt="{{ $member->name }} – {{ $member->role_bg }}" class="team-img mb-3" width="180" height="180" />
                             <h3 class="h5 fw-bold mb-1">{{ $member->name }}</h3>
                             <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>

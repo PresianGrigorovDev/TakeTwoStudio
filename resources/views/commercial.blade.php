@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from commercial.css .commercial-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/ads/moonlight.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/ads/moonlight.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -68,19 +68,9 @@
                 </ul>
             </div>
         </div>
-        @if(isset($partners) && $partners->isNotEmpty())
-            <div class="row justify-content-center mt-4">
-                <div class="col-lg-10 text-center">
-                    <p class="text-muted text-uppercase small mb-3 letter-spaced">Клиенти и партньори</p>
-                    <div class="client-logos">
-                        @foreach($partners as $partner)
-                            <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" alt="{{ $partner->name }}" class="client-logo" height="48" />
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endif
     </section>
+
+    @include('partials.partner-brands', ['portfolioUrl' => '#portfolio'])
 
     <!-- Services Grid -->
     <section id="services" class="py-5 bg-gray-light">
@@ -159,7 +149,7 @@
                     @endphp
                     <div class="masonry-item {{ $item->sub_category }}">
                         <div class="portfolio-item" onclick="openLightbox(this)">
-                            <x-picture :src="str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path)" class="portfolio-img"
+                            <x-picture :src="\App\Support\Images::url($item->image_path)" class="portfolio-img"
                                 alt="{{ $item->alt_text ?? $displayCategory }}" />
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
@@ -174,7 +164,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <a href="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}"
+                            <a href="{{ \App\Support\Images::url($item->image_path) }}"
                                 class="glightbox d-none" data-title="{{ $item->alt_text ?? $displayCategory }}"
                                 data-description="{{ $item->description ?? '' }}"></a>
                         </div>

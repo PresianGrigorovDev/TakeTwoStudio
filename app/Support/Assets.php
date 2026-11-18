@@ -10,13 +10,15 @@ namespace App\Support;
  */
 final class Assets
 {
-    public static function versioned(string $path): string
+    public static function versioned(string $path, bool $absolute = false): string
     {
         $file = public_path($path);
 
         // is_file() guard: a filemtime() warning becomes an ErrorException in tests.
         $version = is_file($file) ? (string) filemtime($file) : '0';
 
-        return asset($path).'?v='.$version;
+        $url = $absolute ? asset($path) : '/'.ltrim($path, '/');
+
+        return $url.'?v='.$version;
     }
 }

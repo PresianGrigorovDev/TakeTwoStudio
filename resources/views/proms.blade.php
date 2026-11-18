@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from proms.css .prom-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/proms-hero.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/proms-hero.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -83,7 +83,7 @@
                     <p><b>Албуми:</b> Класически или персонализирани фотокниги - запази спомените завинаги.</p>
                 </div>
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/prom.jpg')" class="w-100 rounded shadow-sm intro-photo" alt="Абитуриентска Фотосесия" />
+                    <x-picture src="/css/img/prom.jpg" class="w-100 rounded shadow-sm intro-photo" alt="Абитуриентска Фотосесия" />
                 </div>
             </div>
         </div>
@@ -140,8 +140,8 @@
                 @foreach($promPortfolioPhotos as $i => $photo)
                 <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
                     <div class="portfolio-item">
-                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
-                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна - Фотосесия {{ $i + 1 }} - Take Two Studio">
+                        <a href="{{ \App\Support\Images::url($photo->image_path) }}" class="glightbox">
+                            <img loading="lazy" src="{{ \App\Support\Images::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна - Фотосесия {{ $i + 1 }} - Take Two Studio">
                         </a>
                     </div>
                 </div>

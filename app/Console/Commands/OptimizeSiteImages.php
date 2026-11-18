@@ -7,6 +7,7 @@ use App\Models\PortfolioCategory;
 use App\Models\Service;
 use App\Models\TeamMember;
 use App\Support\ImageOptimizer;
+use App\Support\Images;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -77,9 +78,6 @@ class OptimizeSiteImages extends Command
     public const STORAGE_WEBP_QUALITY = [
         'hero-images' => Service::HERO_WEBP_QUALITY,
     ];
-
-    /** Absolute URLs on these hosts are our own files, not something to download. */
-    private const OWN_HOSTS = ['taketwostudio1603.com', 'www.taketwostudio1603.com'];
 
     private const QUALITY = 82;
 
@@ -380,10 +378,9 @@ class OptimizeSiteImages extends Command
             return false;
         }
 
-        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
-        $own = array_merge(self::OWN_HOSTS, [strtolower((string) parse_url((string) config('app.url'), PHP_URL_HOST))]);
+        $host = parse_url($url, PHP_URL_HOST);
 
-        return $host !== '' && ! in_array($host, $own, true);
+        return filled($host) && ! Images::isSiteHost($host);
     }
 
     private function database(): bool

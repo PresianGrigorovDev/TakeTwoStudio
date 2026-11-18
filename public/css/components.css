@@ -379,9 +379,53 @@
 .audience-list a { display: inline-block; padding: 6px 12px; border: 1px solid #D4AF37; border-radius: 999px; color: #222; text-decoration: none; font-size: 0.85rem; }
 .audience-list a:hover { background: #D4AF37; color: #111; }
 .letter-spaced { letter-spacing: 2px; }
-.client-logos { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; align-items: center; }
-.client-logo { height: 48px; width: auto; max-width: 160px; aspect-ratio: auto 3 / 2; object-fit: contain; filter: grayscale(1); opacity: 0.8; } /* aspect-ratio: placeholder width while loading, own ratio once loaded */
-.client-logo:hover { filter: none; opacity: 1; }
+/* ---- Клиенти и партньори ---- */
+.brands-grid {
+    --brand-gap: clamp(.75rem, 2.8vw, 1.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .85rem var(--brand-gap);
+    max-width: 60rem;
+    margin-inline: auto;
+}
+
+.brand-item {
+    flex: 0 1 8rem;
+    max-width: calc((100% - var(--brand-gap)) / 2);
+    min-width: 0;
+}
+
+.brand-mark {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+    aspect-ratio: 2 / 1;
+}
+
+.brand-logo {
+    width: 100%;
+    height: 100%;
+    max-width: 7rem;
+    max-height: 3.5rem;
+    object-fit: contain;
+    filter: grayscale(1) drop-shadow(0 0 1px #211b16b3);
+}
+
+.brand-name {
+    display: block;
+    padding-top: .25rem;
+    overflow-wrap: anywhere;
+}
+
+.brands-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 44px;
+}
+
+.brands-link:focus-visible { outline: 2px solid #211f1c; outline-offset: 4px; }
 
 /* ---- Utility classes replacing repeated inline styles ---- */
 .cursor-pointer { cursor: pointer; }
