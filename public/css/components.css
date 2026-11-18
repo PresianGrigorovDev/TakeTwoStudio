@@ -386,7 +386,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: .85rem var(--brand-gap);
-    max-width: 55rem;
+    max-width: 60rem;
     margin-inline: auto;
 }
 
