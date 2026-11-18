@@ -35,6 +35,8 @@ h5 {
     margin: 0 auto 25px;
 }
 
+#portfolio { scroll-margin-top: 80px; }
+
 /* --- NAV --- */
 .navbar {
     background-color: var(--dark-bg) !important;

@@ -409,7 +409,7 @@
 .brands-heading h2 {
     max-width: 10ch;
     color: var(--brands-ink);
-    font-size: clamp(2.15rem, 5vw, 4.35rem);
+    font-size: clamp(2.15rem, 4.3vw, 3.65rem);
     font-weight: 700;
     line-height: 1.02;
     letter-spacing: -.05em;
@@ -475,7 +475,7 @@
 .brand-logo {
     display: block;
     width: 100%;
-    height: clamp(2.55rem, 5vw, 4.35rem);
+    height: clamp(3.25rem, 5vw, 4.35rem);
     object-fit: contain;
     filter: drop-shadow(0 1px 1px #2b24208c);
 }
