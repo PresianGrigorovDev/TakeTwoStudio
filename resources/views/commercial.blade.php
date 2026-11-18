@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from commercial.css .commercial-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/ads/moonlight.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/ads/moonlight.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 

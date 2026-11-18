@@ -229,7 +229,7 @@ class PageController extends Controller
             ]);
         })->filter()->values()->all();
 
-        $heroImage = Images::url($service?->hero_image);
+        $heroImage = Images::absoluteUrl($service?->hero_image);
 
         $seo->addNode(array_filter([
             '@type' => 'Service',
@@ -269,7 +269,7 @@ class PageController extends Controller
     /** schema.org Person for a team member (E-E-A-T). */
     public static function personNode(\App\Models\TeamMember $member): array
     {
-        $image = Images::url($member->image_path);
+        $image = Images::absoluteUrl($member->image_path);
 
         return array_filter([
             '@type' => 'Person',

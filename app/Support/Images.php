@@ -8,12 +8,16 @@ namespace App\Support;
  */
 final class Images
 {
-    /** Resolve uploaded files, bundled assets and legacy URLs for the current deployment. */
+    /** Browser URL: local files are relative to the current origin. */
     public static function url(?string $value): ?string
     {
         $value = trim((string) $value);
         if ($value === '') {
             return null;
+        }
+
+        if (preg_match('#^(?:data|blob):#i', $value)) {
+            return $value;
         }
 
         $path = ltrim($value, '/');
@@ -33,7 +37,17 @@ final class Images
 
         $path = preg_replace('#^public/(?=(?:css|img|storage)/)#', '', $path);
 
-        return asset(preg_match('#^(?:css|img|storage)/#', $path) ? $path : 'storage/'.$path);
+        return preg_match('#^(?:css|img|storage)/#', $path) ? '/'.$path : '/storage/'.$path;
+    }
+
+    /** Absolute image address for metadata and XML feeds. */
+    public static function absoluteUrl(?string $value): ?string
+    {
+        $path = self::url($value);
+
+        return $path !== null && str_starts_with($path, '/') && ! str_starts_with($path, '//')
+            ? url($path)
+            : $path;
     }
 
     public static function isSiteHost(?string $host): bool

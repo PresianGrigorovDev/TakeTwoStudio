@@ -8,13 +8,13 @@
 @section('og_image', asset('css/img/social-share-cover.jpg'))
 
 @section('preload')
-    <link rel="preload" href="{{ asset('css/img/header.webp') }}" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="/css/img/header.webp" as="image" type="image/webp" fetchpriority="high">
 @endsection
 
 @section('content')
 
     <header class="hero">
-        <img src="{{ asset('css/img/header.webp') }}" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
+        <img src="/css/img/header.webp" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>Фотограф и Видеозаснемане Варна</h1>
@@ -41,7 +41,7 @@
         <div class="container py-5">
             <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
                 <div class="col-lg-6">
-                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two"
+                    <x-picture src="/css/img/about.webp" alt="Екипът на Take Two"
                         class="about-img-main falling-item" />
                 </div>
                 <div class="col-lg-6 text-center text-lg-start">
@@ -65,7 +65,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
                         data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
-                        <x-picture :src="\App\Support\Images::url($member->image_path) ?? asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img falling-item" />
+                        <x-picture :src="\App\Support\Images::url($member->image_path) ?? '/css/img/default-avatar.png'" alt="{{ $member->name }}" class="team-img falling-item" />
                         <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
                         <p class="role-text">{{ $member->role_bg }}</p>
                         <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
@@ -144,7 +144,7 @@
                         <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
                             <a href="{{ url($category->slug) }}" class="text-decoration-none">
                                 <div class="portfolio-item falling-item">
-                                    <x-picture :src="\App\Support\Images::url($category->cover_image) ?? asset('css/img/default-placeholder.jpg')" class="portfolio-img"
+                                    <x-picture :src="\App\Support\Images::url($category->cover_image) ?? '/css/img/default-placeholder.jpg'" class="portfolio-img"
                                         alt="{{ $category->name_bg }}" />
                                     <div class="portfolio-overlay">
                                         <div class="portfolio-info">
@@ -287,7 +287,7 @@
                         {{-- Not requested until the modal opens (data-src -> src on show.bs.modal, script below).
                              data-src is the same URL the team grid already downloaded (WebP sibling when it exists). --}}
                         @php
-                            $modalImg = \App\Support\Images::url($member->image_path) ?? asset('css/img/default-avatar.png');
+                            $modalImg = \App\Support\Images::url($member->image_path) ?? '/css/img/default-avatar.png';
                         @endphp
                         <img class="team-img team-modal-img mb-3 lazy-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                             data-src="{{ \App\Support\Images::webpUrl($modalImg) ?? $modalImg }}" alt="{{ $member->name }}">

@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from baptism.css .baptism-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/krustene.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/krustene.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -113,7 +113,7 @@
 
             <div class="row g-4">
                 @foreach($galleries as $gallery)
-                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? asset('css/img/default-placeholder.webp'); @endphp
+                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? '/css/img/default-placeholder.webp'; @endphp
                     <div class="col-md-6 col-lg-4">
                         <div class="baptism-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}">
                             <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm gallery-cover-h">

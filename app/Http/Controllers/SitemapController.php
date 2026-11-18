@@ -141,7 +141,7 @@ class SitemapController extends Controller
             $images = [];
 
             if ($hero = DB::table('services')->where('slug', $slug)->value('hero_image')) {
-                $images[] = Images::url($hero);
+                $images[] = Images::absoluteUrl($hero);
             }
 
             foreach ($tables as $table) {
@@ -161,7 +161,7 @@ class SitemapController extends Controller
                 }
 
                 foreach ($query->limit(1000)->pluck('image_path') as $path) {
-                    $images[] = Images::url($path);
+                    $images[] = Images::absoluteUrl($path);
                 }
             }
 
@@ -173,7 +173,7 @@ class SitemapController extends Controller
         }
 
         foreach (\App\Models\WeddingGallery::with('photos')->where('is_active', true)->whereNotNull('slug')->get() as $gallery) {
-            $images = array_values(array_filter(array_map([Images::class, 'url'], array_merge([$gallery->cover_image], $gallery->photos->pluck('image_path')->all()))));
+            $images = array_values(array_filter(array_map([Images::class, 'absoluteUrl'], array_merge([$gallery->cover_image], $gallery->photos->pluck('image_path')->all()))));
             if ($images) {
                 $entries[] = ['loc' => route('weddings.story', $gallery->slug), 'lastmod' => $this->fmt($gallery->updated_at), 'images' => $images];
             }

@@ -47,13 +47,13 @@ class AppServiceProvider extends ServiceProvider
     private function registerAdminAssets(): void
     {
         FilamentAsset::register([
-            Js::make('qrcode-generator', Assets::versioned('vendor/qrcode/qrcode.min.js')),
-            Js::make('game-qr', Assets::versioned('js/admin/game-qr.js')),
+            Js::make('qrcode-generator', Assets::versioned('vendor/qrcode/qrcode.min.js', absolute: true)),
+            Js::make('game-qr', Assets::versioned('js/admin/game-qr.js', absolute: true)),
             // Dashboard team calendar + double-booking warning (Календар → Ангажименти).
-            Css::make('team-calendar', Assets::versioned('css/admin/team-calendar.css')),
+            Css::make('team-calendar', Assets::versioned('css/admin/team-calendar.css', absolute: true)),
             // {{variable}} dropdown in FAQ texts (App\Support\ContentVariables).
-            Js::make('content-variables', Assets::versioned('js/admin/content-variables.js')),
-            Css::make('content-variables', Assets::versioned('css/admin/content-variables.css')),
+            Js::make('content-variables', Assets::versioned('js/admin/content-variables.js', absolute: true)),
+            Css::make('content-variables', Assets::versioned('css/admin/content-variables.css', absolute: true)),
         ], package: 'taketwo');
     }
 

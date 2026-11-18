@@ -199,7 +199,7 @@ class BlogPost extends Model
 
     public function getOgImageUrlAttribute(): ?string
     {
-        return $this->resolveImageUrl($this->og_image ?: $this->cover_image);
+        return Images::absoluteUrl($this->resolveImageUrl($this->og_image ?: $this->cover_image));
     }
 
     /** Shown instead of a broken image when a cover file has gone missing on disk. */
@@ -216,11 +216,11 @@ class BlogPost extends Model
         $path = preg_replace('#^public/(?=(?:css|img|storage)/)#', '', $path);
         // Static public assets (seeded placeholders)
         if (str_starts_with($path, 'css/') || str_starts_with($path, 'img/')) {
-            return is_file(public_path($path)) ? $url : asset(self::FALLBACK_COVER);
+            return is_file(public_path($path)) ? $url : '/'.self::FALLBACK_COVER;
         }
 
         // Filament uploads land in storage/app/public/
-        return Storage::disk('public')->exists(Str::chopStart($path, 'storage/')) ? $url : asset(self::FALLBACK_COVER);
+        return Storage::disk('public')->exists(Str::chopStart($path, 'storage/')) ? $url : '/'.self::FALLBACK_COVER;
     }
 
     public function getStatusAttribute(): string

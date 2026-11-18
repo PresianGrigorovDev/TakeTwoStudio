@@ -61,7 +61,7 @@ class WeddingStoryController extends Controller
         }
 
         foreach ($gallery->photos->take(30) as $i => $photo) {
-            $url = Images::url($photo->image_path);
+            $url = Images::absoluteUrl($photo->image_path);
             $seo->addNode([
                 '@type' => 'ImageObject',
                 '@id' => $current.'#photo-'.($i + 1),

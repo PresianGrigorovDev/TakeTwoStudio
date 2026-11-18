@@ -23,7 +23,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from baptism.css .baptism-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/krustene.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/krustene.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 

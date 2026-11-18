@@ -22,7 +22,7 @@
         <link rel="preload" href="{{ $heroWebp ?? $heroUrl }}" as="image" fetchpriority="high">
     @else
         {{-- Fallback hero from weddings.css .wedding-hero (image-set picks the WebP): same URL, so it downloads once --}}
-        <link rel="preload" href="{{ asset('css/img/Сватба.webp') }}" as="image" type="image/webp" fetchpriority="high">
+        <link rel="preload" href="/css/img/Сватба.webp" as="image" type="image/webp" fetchpriority="high">
     @endif
 @endsection
 
@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 col-lg-6 m-auto">
-                    <x-picture :src="asset('css/img/Сватба.jpg')" class="w-100 rounded shadow intro-photo" alt="Сватбен момент" />
+                    <x-picture src="/css/img/Сватба.jpg" class="w-100 rounded shadow intro-photo" alt="Сватбен момент" />
                 </div>
             </div>
         </div>
@@ -158,7 +158,7 @@
                     Сватбеният ден е изпълнен с неподправени емоции и магия. Вижте нашето кратко видео, което показва нашия подход, динамика и стил на заснемане на терен.
                 </p>
                 <div class="video-cover-card mx-auto position-relative rounded shadow-lg overflow-hidden" style="max-width: 800px; aspect-ratio: 16/9;">
-                    <x-picture :src="!empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : asset('css/img/best-wedding-cover.jpg')" class="w-100 h-100 object-fit-cover" alt="Видео превю" />
+                    <x-picture :src="!empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : '/css/img/best-wedding-cover.jpg'" class="w-100 h-100 object-fit-cover" alt="Видео превю" />
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0, 0, 0, 0.45);">
                         <a href="{{ $service->video_url }}" class="glightbox video-play-btn-large">
                             <span class="play-btn-ring"></span>
@@ -181,7 +181,7 @@
 
             <div class="row g-4 justify-content-center">
                 @foreach($weddingGalleries as $gallery)
-                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? asset('css/img/default-placeholder.webp'); @endphp
+                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? '/css/img/default-placeholder.webp'; @endphp
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
                         <div class="wedding-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}">

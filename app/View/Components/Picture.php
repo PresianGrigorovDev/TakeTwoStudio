@@ -7,7 +7,7 @@ use Illuminate\View\Component;
 use Illuminate\View\View;
 
 /**
- * <x-picture :src="asset('storage/' . $photo)" alt="..." class="..." sizes="..." />
+ * <x-picture :src="$photo" alt="..." class="..." sizes="..." />
  * Emits <picture> with a WebP <source> when photo.webp exists next to the
  * original and defaults to loading="lazy" decoding="async". Pass eager="true"
  * (+ fetchpriority) for the above-the-fold image.
@@ -27,7 +27,8 @@ class Picture extends Component
         public ?string $sizes = null,
         public ?string $fetchpriority = null,
     ) {
-        $this->webp = Images::webpUrl($src);
+        $this->src = Images::url($src) ?? '';
+        $this->webp = Images::webpUrl($this->src);
     }
 
     public function render(): View

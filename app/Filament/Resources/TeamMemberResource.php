@@ -113,7 +113,8 @@ class TeamMemberResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image_path')
-                    ->getStateUsing(fn (TeamMember $record) => \App\Support\Images::url($record->image_path))
+                    ->getStateUsing(static fn () => null)
+                    ->defaultImageUrl(fn (TeamMember $record) => \App\Support\Images::url($record->image_path))
                     ->label('Снимка')
                     ->circular(),
                 Tables\Columns\TextColumn::make('name')
