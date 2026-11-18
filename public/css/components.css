@@ -460,7 +460,10 @@
 
 .brand-mark {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     place-items: center;
+    width: 100%;
+    min-width: 0;
     aspect-ratio: 2 / 1;
     min-height: 4.75rem;
     max-height: 7.5rem;
