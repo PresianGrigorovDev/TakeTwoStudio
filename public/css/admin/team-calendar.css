@@ -40,16 +40,29 @@
 
 .tt-cal__nav {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.tt-cal__period {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 0.375rem;
+    width: min(100%, 14rem);
+}
+
+.tt-cal__nav-actions {
+    display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
-.tt-cal__title {
-    min-width: 9.5rem;
-    text-align: center;
-    font-size: 1.125rem;
-    font-weight: 600;
-    text-transform: capitalize;
+.tt-cal__period-error {
+    margin-bottom: 0.75rem;
+    color: var(--tt-closed-text);
+    font-size: 0.875rem;
 }
 
 .tt-cal__legend {
@@ -264,8 +277,6 @@
 @media (max-width: 767px) {
     .tt-cal__grid { display: none; }
     .tt-cal__agenda { display: block; }
-    .tt-cal__nav { flex-wrap: wrap; }
-    .tt-cal__title { min-width: 0; font-size: 1rem; }
     .tt-cal__agenda .tt-cal__name { white-space: normal; }
 }
 

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Filament\Resources\BookingResource\Pages\CreateBooking;
 use App\Filament\Widgets\TeamAvailabilityWidget;
 use App\Filament\Widgets\TeamCalendarWidget;
+use App\Http\Controllers\BookingController;
 use App\Models\Booking;
 use App\Models\TeamMember;
 use App\Models\User;
@@ -109,7 +110,12 @@ class TeamCalendarTest extends TestCase
 
     public function test_public_booking_api_reads_the_team_calendar(): void
     {
-        $this->entry(['kind' => Booking::KIND_CLOSED, 'name' => 'Затворено', 'start_time' => '08:00', 'end_time' => '21:00']);
+        $this->entry([
+            'kind' => Booking::KIND_CLOSED,
+            'name' => 'Затворено',
+            'start_time' => sprintf('%02d:00', BookingController::getWorkStart()),
+            'end_time' => sprintf('%02d:00', BookingController::getWorkEnd()),
+        ]);
 
         $this->getJson('/api/booking-hours?date='.$this->day)->assertOk()->assertExactJson([]);
 
@@ -143,6 +149,40 @@ class TeamCalendarTest extends TestCase
             ->call('filterMember', $simeon->id)
             ->assertSee('Сватба – Мария и Иван')
             ->assertDontSee('15:00–16:00');
+    }
+
+    public function test_calendar_can_jump_to_a_month_and_year_without_losing_the_person_filter(): void
+    {
+        [$simeon, $presian] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+
+        $year = now()->year + 3;
+        $attributes = ['event_date' => $year.'-01-12', 'start_time' => '10:00', 'end_time' => '14:00'];
+        $this->entry(['name' => 'Сватба в избрания месец'] + $attributes, [$simeon]);
+        $this->entry(['name' => 'Фотосесия на колега'] + $attributes, [$presian]);
+
+        Livewire::test(TeamCalendarWidget::class, ['origin' => 'page'])
+            ->assertSee('aria-label="Месец"', false)
+            ->assertSee('aria-label="Година"', false)
+            ->call('filterMember', $simeon->id)
+            ->call('selectPeriod', '1')
+            ->call('selectPeriod', null, (string) $year)
+            ->assertSet('year', $year)
+            ->assertSet('month', 1)
+            ->assertSet('member', $simeon->id)
+            ->assertSee('Януари '.$year)
+            ->assertSee('Сватба в избрания месец')
+            ->assertDontSee('Фотосесия на колега')
+            ->call('selectPeriod', null, '')
+            ->assertHasErrors('year')
+            ->assertSet('year', $year)
+            ->call('previousMonth')
+            ->assertHasNoErrors()
+            ->assertSet('month', 12)
+            ->assertSet('year', $year - 1)
+            ->call('currentMonth')
+            ->assertSet('month', now()->month)
+            ->assertSet('year', now()->year);
     }
 
     public function test_admin_can_create_personal_busy_time_without_client_fields(): void
