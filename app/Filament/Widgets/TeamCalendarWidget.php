@@ -102,7 +102,7 @@ class TeamCalendarWidget extends Widget
 
     protected function getViewData(): array
     {
-        $first = Carbon::create($this->year, $this->month, 1);
+        $first = Carbon::create($this->year, $this->month, 1)->locale('bg');
         $gridStart = $first->copy()->startOfWeek(Carbon::MONDAY);
         $gridEnd = $first->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
 

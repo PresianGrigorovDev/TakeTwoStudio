@@ -8,13 +8,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-use App\Traits\LogsActivity;
 use App\Support\ImageOptimizer;
 use App\Support\Images;
 
 class BlogPost extends Model
 {
-    use LogsActivity;
     protected $fillable = [
         'title',
         'slug',

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Observers\AdminActivityObserver;
 use App\Support\Assets;
 use App\Support\Seo\Seo;
 use Filament\Support\Assets\Css;
@@ -35,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->forceCanonicalUrls();
         $this->registerAdminAssets();
+
+        foreach (array_keys(AdminActivityObserver::SUBJECTS) as $model) {
+            $model::observe(AdminActivityObserver::class);
+        }
     }
 
     /**
