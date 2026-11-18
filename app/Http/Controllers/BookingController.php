@@ -15,7 +15,7 @@ class BookingController extends Controller
     const WORK_START = 8;   // 08:00
 
     /** Краен час на работния ден */
-    const WORK_END = 21;    // 21:00
+    const WORK_END = 24;    // 24:00
 
     public static function getWorkStart(): int
     {
