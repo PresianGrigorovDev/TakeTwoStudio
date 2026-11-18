@@ -69,6 +69,7 @@ class PictureComponentTest extends TestCase
         Partner::query()->where('display_order', 1)->update([
             'logo_path' => $master.'/public/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png',
         ]);
+        Partner::query()->where('name', 'Kamenitza')->update(['logo_path' => $master.'/css/img/Logos/Каменица.png']);
         TeamMember::query()->where('display_order', 1)->update(['image_path' => $master.'/css/img/ST.png']);
         $gallery = WeddingGallery::create([
             'title' => 'Тестова сватба',
@@ -81,11 +82,16 @@ class PictureComponentTest extends TestCase
 
         $this->get($preview.'/')->assertOk()
             ->assertSee('src="/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png"', false)
+            ->assertSee('src="/css/img/Logos/'.rawurlencode('Каменица.png').'"', false)
+            ->assertSee('<span class="brand-name">Kamenitza</span>', false)
             ->assertSee('src="/css/img/header.webp"', false)
             ->assertSee('href="/css/style.css?v=', false)
             ->assertDontSee('src="'.$lara, false)
             ->assertSee('data-src="/css/img/ST.webp"', false)
             ->assertDontSee($master, false);
+        $this->get($preview.'/commercial')->assertOk()
+            ->assertSee('<span class="brand-name">Kamenitza</span>', false)
+            ->assertSee('href="#portfolio"', false);
         $this->get($preview.'/za-nas')->assertOk()
             ->assertSee('srcset="/css/img/ST.webp"', false)
             ->assertSee('src="/css/img/ST.png"', false);

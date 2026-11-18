@@ -20,18 +20,21 @@ final class Images
             return $value;
         }
 
-        $path = ltrim($value, '/');
-        if (preg_match('#^(?:https?:)?//#i', $value)) {
-            if (! self::isSiteHost(parse_url($value, PHP_URL_HOST))) {
-                return $value;
-            }
+        $absolute = preg_match('#^(?:https?:)?//#i', $value);
+        if ($absolute && ! self::isSiteHost(parse_url($value, PHP_URL_HOST))) {
+            return $value;
+        }
 
-            $path = ltrim((string) parse_url($value, PHP_URL_PATH), '/');
+        // Encode raw UTF-8 and spaces before parsing legacy addresses. Keep existing % escapes.
+        $encoded = preg_replace_callback('/[^\x21-\x7e]+/', static fn (array $match): string => rawurlencode($match[0]), $value);
+        $path = ltrim($encoded, '/');
+        if ($absolute) {
+            $path = ltrim((string) parse_url($encoded, PHP_URL_PATH), '/');
             if (! preg_match('#^(?:public/)?(?:css|img|storage)/#', $path)) {
                 return $value;
             }
 
-            $suffix = strpbrk($value, '?#');
+            $suffix = strpbrk($encoded, '?#');
             $path .= $suffix === false ? '' : $suffix;
         }
 

@@ -68,19 +68,9 @@
                 </ul>
             </div>
         </div>
-        @if(isset($partners) && $partners->isNotEmpty())
-            <div class="row justify-content-center mt-4">
-                <div class="col-lg-10 text-center">
-                    <p class="text-muted text-uppercase small mb-3 letter-spaced">Клиенти и партньори</p>
-                    <div class="client-logos">
-                        @foreach($partners as $partner)
-                            <x-picture :src="\App\Support\Images::url($partner->logo_path)" alt="{{ $partner->name }}" class="client-logo" height="48" />
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endif
     </section>
+
+    @include('partials.partner-brands', ['portfolioUrl' => '#portfolio'])
 
     <!-- Services Grid -->
     <section id="services" class="py-5 bg-gray-light">

@@ -53,8 +53,7 @@ class CssContractTest extends TestCase
             'game reveal logo' => ['igra.css', '.rv-logo', 'auto 787 / 389', 'css/img/logo-tts-white.webp'],
             'promo banner (800x500 recommended in Filament)' => ['components.css', '.promo-popup-image', 'auto 16 / 10', null],
             'proms/portrait masonry photos' => ['proms.css', '.masonry .portfolio-img', 'auto 2 / 3', null],
-            'home partner logos' => ['style.css', '.brand-logo', 'auto 3 / 2', null],
-            'commercial client logos' => ['components.css', '.client-logo', 'auto 3 / 2', null],
+            'partner logo tiles' => ['components.css', '.brand-mark', '2 / 1', null],
         ];
     }
 

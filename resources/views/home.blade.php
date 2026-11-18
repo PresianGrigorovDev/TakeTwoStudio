@@ -76,25 +76,7 @@
         </div>
     </section>
 
-    <section class="brands-section">
-        <div class="container mb-4">
-            <div class="brands-header">
-                <h2 class="text-center">Довериха ни се</h2>
-                <div class="section-divider"></div>
-                <p class="text-muted text-uppercase text-center" style="letter-spacing: 2px;">Партньори и Клиенти</p>
-            </div>
-        </div>
-        <div class="brands-track">
-            @foreach($partners as $partner)
-                <x-picture :src="\App\Support\Images::url($partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
-            @endforeach
-
-            <!-- Duplicated for scrolling effect -->
-            @foreach($partners as $partner)
-                <x-picture :src="\App\Support\Images::url($partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
-            @endforeach
-        </div>
-    </section>
+    @include('partials.partner-brands', ['portfolioUrl' => '/commercial#portfolio'])
 
     <section class="py-5 px-1 bg-white" data-aos="fade-up">
         <div class="container pb-5 text-center">
