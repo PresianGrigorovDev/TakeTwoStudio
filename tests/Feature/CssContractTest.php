@@ -8,39 +8,21 @@ use Tests\TestCase;
 /**
  * PageSpeed (mobile) guarantees that live in public/css (docs/PAGESPEED-PLAN.md, phases 1.2 and 2.2):
  * the home hero photo is an <img> sized by CSS (not a CSS background the browser discovers late),
- * the team modal photo is sized by a class, and the text colours fixed for WCAG AA contrast
+ * photo space is reserved before loading, and the text colours fixed for WCAG AA contrast
  * (Lighthouse accessibility) do not slide back to gold/grey that fails on their background.
  * Phase 4 (CLS): photos carry no width/height attributes (owner's decision, see PictureComponentTest),
  * so the images that used to collapse while loading reserve their box with CSS `aspect-ratio: auto W / H`.
  */
 class CssContractTest extends TestCase
 {
-    public function test_home_hero_photo_is_an_img_layer_not_a_css_background(): void
+    public function test_home_hero_photo_reserves_space_in_the_layout(): void
     {
-        $hero = $this->declarations('style.css', '.hero');
-        $this->assertArrayNotHasKey('background-image', $hero, '.hero must not download the LCP photo as a CSS background (it is <img class="hero-bg-img">)');
-        $this->assertSame('hidden', $hero['overflow'] ?? null);
-        $this->assertSame('75vh', $hero['min-height'] ?? null, 'mobile hero height must stay as before');
-
-        $img = $this->declarations('style.css', '.hero-bg-img');
-        foreach (['position' => 'absolute', 'width' => '100%', 'height' => '100%', 'object-fit' => 'cover', 'z-index' => '0'] as $prop => $value) {
-            $this->assertSame($value, $img[$prop] ?? null, ".hero-bg-img $prop");
-        }
-
-        $this->assertSame('1', $this->declarations('style.css', '.hero .hero-overlay')['z-index'] ?? null);
-        $this->assertSame('2', $this->declarations('style.css', '.hero-content')['z-index'] ?? null, 'hero text must stay above the overlay');
-        // A global z-index on .hero-overlay would cover the position:relative title of /svatbi/{slug}.
-        $this->assertArrayNotHasKey('z-index', $this->declarations('style.css', '.hero-overlay'));
-
-        $this->assertFileExists(public_path('css/img/header.webp'));
-    }
-
-    public function test_team_modal_photo_is_sized_by_css(): void
-    {
-        $rule = $this->declarations('style.css', '.team-img.team-modal-img');
-        $this->assertSame('120px', $rule['width'] ?? null);
-        $this->assertSame('120px', $rule['height'] ?? null);
-        $this->assertSame('cover', $rule['object-fit'] ?? null);
+        $photo = $this->declarations('home.css', '.home-hero-photo');
+        $this->assertArrayNotHasKey('background-image', $photo);
+        $this->assertSame('4 / 3', $photo['aspect-ratio'] ?? null);
+        $this->assertSame('100%', $photo['width'] ?? null);
+        $this->assertSame('cover', $photo['object-fit'] ?? null);
+        $this->assertFileExists(public_path('css/img/prom.webp'));
     }
 
     /** @return array<string, array{string, string, string, ?string}> file, selector, aspect-ratio, the single photo it is reserved for (its real size must match) */

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
+use App\Models\PortfolioCategory;
 use App\Models\PortfolioItem;
 use App\Models\Service;
+use App\Models\WeddingGallery;
 use App\Support\Seo\Seo;
 use App\Support\Seo\ServiceCatalog;
 use Illuminate\Support\Str;
@@ -20,14 +22,28 @@ class PageController extends Controller
             $seo->addNode($this->personNode($member));
         }
 
+        $categories = PortfolioCategory::visibleCached()->keyBy('slug');
+        $otherServices = Service::where('is_active', true)
+            ->whereIn('slug', array_diff(array_keys(ServiceCatalog::SERVICES), ['proms', 'weddings', 'commercial']))
+            ->orderBy('sort_order')
+            ->get()
+            ->toBase()
+            ->keyBy('slug')
+            ->merge($categories->except(['proms', 'weddings', 'commercial', 'graduation']));
+
         return view('home', [
-            'services' => Service::where('is_active', true)->orderBy('sort_order')->get(),
             'teamMembers' => $teamMembers,
-            'testimonials' => \App\Models\Testimonial::where('is_active', true)->latest()->get(),
-            'partners' => \App\Models\Partner::orderBy('display_order')->get(),
-            'portfolioCategories' => \App\Models\PortfolioCategory::orderBy('display_order')->get(),
-            'workStart' => BookingController::WORK_START,
-            'workEnd' => BookingController::WORK_END,
+            'testimonials' => \App\Models\Testimonial::where('is_active', true)->latest()->take(3)->get(),
+            'partners' => \App\Models\Partner::orderBy('display_order')->take(6)->get(),
+            'otherServices' => $otherServices,
+            'showBusiness' => $categories->has('commercial'),
+            'featuredStory' => WeddingGallery::where('is_active', true)
+                ->whereNotNull('slug')
+                ->whereNotNull('cover_image')
+                ->with(['photos' => fn ($query) => $query->limit(3)])
+                ->orderByDesc('event_date')
+                ->orderByDesc('id')
+                ->first(),
         ]);
     }
 

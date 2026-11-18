@@ -58,7 +58,7 @@
             </div>
 
             @if($videoId)
-                <div class="row justify-content-center mt-4">
+                <div class="row justify-content-center mt-4" id="wedding-film">
                     <div class="col-lg-9">
                         <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
                             <iframe src="https://www.youtube-nocookie.com/embed/{{ $videoId }}"

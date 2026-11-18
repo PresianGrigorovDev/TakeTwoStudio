@@ -74,17 +74,34 @@
 
 <body>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark" aria-label="Основно меню">
+    @php $homeNavigation = View::hasSection('home-navigation'); @endphp
+    @if($homeNavigation)
+        <a class="home-skip" href="#main-content">Към основното съдържание</a>
+    @endif
+    <nav class="navbar navbar-expand-lg fixed-top {{ $homeNavigation ? 'home-nav navbar-light' : 'navbar-dark' }}" aria-label="Основно меню">
         <div class="container h-100">
             {{-- Logo file is 787x389: the width/height keep that ratio so the space is reserved before it loads. --}}
-            <a class="navbar-brand d-lg-none" href="/">
-                <img src="{{ asset('css/img/logo-tts-white.webp') }}" alt="Take Two Studio" class="logo-mobile" width="81" height="40">
+            <a class="navbar-brand {{ $homeNavigation ? 'home-logo' : 'd-lg-none' }}" href="/">
+                <img src="{{ asset($homeNavigation ? 'css/img/logo-tts-black.png' : 'css/img/logo-tts-white.webp') }}"
+                    alt="Take Two Studio" class="logo-mobile" width="81" height="40">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Отвори навигационното меню">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+            @if($homeNavigation)
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li><a class="nav-link" href="{{ url('/') }}#services">Услуги</a></li>
+                        <li><a class="nav-link" href="{{ url('/') }}#portfolio">Портфолио</a></li>
+                        <li><a class="nav-link" href="{{ url('/') }}#about">За нас</a></li>
+                        <li><a class="nav-link" href="{{ route('blog.index') }}">Блог</a></li>
+                        <li><a class="nav-link" href="{{ route('pages.contact') }}">Контакти</a></li>
+                    </ul>
+                    <a class="home-button home-nav-action" href="{{ url('/') }}#contact">Изпрати запитване</a>
+                </div>
+            @else
             <div class="collapse navbar-collapse justify-content-center h-100" id="navbarNav">
                 {{-- Two link lists around the centred desktop logo (a <ul> may only contain <li>, so the wrapper is a div). --}}
                 <div class="navbar-nav align-items-center w-100 justify-content-between h-100">
@@ -119,6 +136,7 @@
                     </ul>
                 </div>
             </div>
+            @endif
         </div>
     </nav>
 
@@ -188,8 +206,10 @@
 
     @include('partials.cookie-banner')
     @include('partials.promo-popup')
-    @include('partials.mobile-sticky-cta')
-    @include('partials.quick-lead-modal')
+    @unless($homeNavigation)
+        @include('partials.mobile-sticky-cta')
+        @include('partials.quick-lead-modal')
+    @endunless
 
     <script src="{{ \App\Support\Assets::versioned('vendor/bootstrap/bootstrap.bundle.min.js') }}" defer></script>
     <script src="{{ \App\Support\Assets::versioned('vendor/aos/aos.js') }}" defer></script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use App\Models\PromoCode;
 use App\Support\GameVoucher;
 
@@ -131,19 +132,48 @@ class OrderController extends Controller
 
     public function submitContact(Request $request)
     {
-        $validated = $request->validate([
+        $homeInquiry = $request->input('form') === 'home-inquiry';
+        $rules = [
             'name'        => 'required|string|max:255',
             'phone'       => 'required|string|max:20',
             'email'       => 'nullable|email|max:255',
             'message'     => 'nullable|string',
             'orderType'   => 'nullable|string',
             'gdpr_consent' => 'required|accepted',
-        ], [
+        ];
+        $messages = [
             'gdpr_consent.required' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
             'gdpr_consent.accepted' => 'Трябва да приемете Политиката за поверителност и Общите условия.',
-        ]);
+        ];
+
+        if ($homeInquiry) {
+            $rules['event_period'] = 'nullable|string|max:120';
+            $rules['orderType'] = 'required|string|max:255';
+            $messages += [
+                'orderType.required' => 'Изберете вид услуга.',
+                'name.required' => 'Въведете името си.',
+                'name.max' => 'Името може да е до 255 знака.',
+                'phone.required' => 'Въведете телефон за връзка.',
+                'phone.max' => 'Телефонът може да е до 20 знака.',
+                'event_period.max' => 'Датата или периодът може да е до 120 знака.',
+            ];
+        }
+
+        try {
+            $validated = $request->validateWithBag($homeInquiry ? 'homeInquiry' : 'default', $rules, $messages);
+        } catch (ValidationException $exception) {
+            if ($homeInquiry) {
+                $exception->redirectTo(url('/').'#contact');
+            }
+
+            throw $exception;
+        }
 
         $orderType = $validated['orderType'] ?? 'Бърза Оферта';
+        $message = $validated['message'] ?? null;
+        if (isset($validated['event_period'])) {
+            $message = trim('Дата или период: '.$validated['event_period']."\n\n".$message);
+        }
 
         // Save to Database
         $inquiry = \App\Models\Inquiry::create([
@@ -151,7 +181,7 @@ class OrderController extends Controller
             'customer_phone' => $validated['phone'],
             'customer_email' => $validated['email'] ?? 'без имейл',
             'service_type'   => $orderType,
-            'message'        => $validated['message'] ?? 'Бързо запитване от Hero модален прозорец.',
+            'message'        => $message ?? ($homeInquiry ? 'Запитване от началната страница.' : 'Бързо запитване от Hero модален прозорец.'),
             'status'         => 'new',
         ]);
 
@@ -161,6 +191,10 @@ class OrderController extends Controller
             Mail::to(config('mail.admin_email'))->send(new \App\Mail\NewInquiryNotification($inquiry));
         } catch (\Exception $e) {
             Log::error("Failed to send contact inquiry email: " . $e->getMessage());
+        }
+
+        if ($homeInquiry) {
+            return redirect(url('/').'#contact')->with('homeInquirySuccess', 'Запитването ви е изпратено. Ще се свържем с вас на посочения телефон.');
         }
 
         return back()->with('success', 'Благодарим ви! Съобщението е изпратено.');

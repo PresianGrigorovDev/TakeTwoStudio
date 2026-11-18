@@ -183,29 +183,6 @@ h4 {
     }
 }
 
-/* HERO (home): the photo is a real <img class="hero-bg-img" fetchpriority="high"> (LCP), not a CSS background */
-.hero {
-    min-height: 75vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    margin-top: -1px;
-}
-
-.hero-bg-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 0;
-    pointer-events: none;
-}
-
 .hero-overlay {
     position: absolute;
     top: 0;
@@ -213,51 +190,6 @@ h4 {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.4);
-}
-
-/* Scoped to the home hero: on /svatbi/{slug} the title container is position:relative without z-index
-   and must stay above its .hero-overlay. */
-.hero .hero-overlay {
-    z-index: 1;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 20px;
-    max-width: 900px;
-}
-
-.hero h1 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    color: #ffffff !important;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.hero-subtitle {
-    font-size: 1rem;
-    text-transform: none;
-    font-weight: 500;
-    margin-bottom: 35px;
-    color: #ffffff !important;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
-    opacity: 1;
-    display: block;
-    margin-top: 10px;
-}
-
-@media (min-width: 992px) {
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-    }
 }
 
 .btn-custom,
@@ -378,51 +310,12 @@ h4 {
     line-height: 1.8;
 }
 
-/* BRANDS */
-.brands-section {
-    background: #e9ecef;
-    padding: 60px 0;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
-}
-
-.brands-track {
-    display: flex;
-    align-items: center;
-    width: max-content;
-    animation: slide 40s linear infinite;
-}
-
-.brands-track:hover {
-    animation-play-state: paused;
-}
-
+/* Partner logos */
 .brand-logo {
-    height: 100px;
     width: 100%;
     max-width: 150px;
-    aspect-ratio: auto 3 / 2; /* placeholder width while loading; each logo keeps its own ratio once loaded */
-    margin: 0 50px;
-    opacity: 1;
-    filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.4));
+    aspect-ratio: auto 3 / 2;
     object-fit: contain;
-    transition: transform 0.3s;
-}
-
-.brand-logo:hover {
-    transform: scale(1.1);
-}
-
-@keyframes slide {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-50%);
-    }
 }
 
 /* PROCESS */
@@ -968,8 +861,7 @@ footer ul li a:hover {
 }
 
 @media (max-width: 767.98px) {
-    .hero-title h1,
-    .hero h1 {
+    .hero-title h1 {
         font-size: 1.5rem !important;
     }
 
