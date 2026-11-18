@@ -10,7 +10,7 @@ class HomeInquiryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_home_inquiry_keeps_service_period_and_shows_confirmation(): void
+    public function test_home_inquiry_keeps_the_message_and_shows_confirmation(): void
     {
         Mail::fake();
 
@@ -18,15 +18,15 @@ class HomeInquiryTest extends TestCase
             'form' => 'home-inquiry',
             'name' => 'Мария',
             'phone' => '0888123456',
-            'orderType' => 'Абитуриентски бал за целия клас',
-            'event_period' => 'май 2027',
-            'message' => 'Заснемане на изпращането и бала.',
+            'orderType' => 'Запитване от началната страница',
+            'email' => 'maria@example.test',
+            'message' => 'Заснемане на изпращането и бала през май.',
             'gdpr_consent' => '1',
         ])->assertRedirect(url('/').'#contact');
 
         $this->assertDatabaseHas('inquiries', [
-            'service_type' => 'Абитуриентски бал за целия клас',
-            'message' => "Дата или период: май 2027\n\nЗаснемане на изпращането и бала.",
+            'service_type' => 'Запитване от началната страница',
+            'message' => 'Заснемане на изпращането и бала през май.',
         ]);
 
         $this->get('/')->assertOk()->assertSee('Запитването ви е изпратено.');
@@ -37,14 +37,14 @@ class HomeInquiryTest extends TestCase
         $this->post('/submit-contact', [
             'form' => 'home-inquiry',
             'name' => 'Мария',
-            'event_period' => 'май 2027',
+            'message' => 'Заснемане през май',
         ])->assertRedirect(url('/').'#contact')
             ->assertSessionHasErrorsIn('homeInquiry', ['orderType', 'phone', 'gdpr_consent']);
 
         $this->get('/')->assertOk()
             ->assertSee('Проверете отбелязаните полета')
             ->assertSee('value="Мария"', false)
-            ->assertSee('value="май 2027"', false)
+            ->assertSee('Заснемане през май')
             ->assertSee('Изберете вид услуга.')
             ->assertSee('aria-describedby="gdpr_consent_home_error"', false);
     }

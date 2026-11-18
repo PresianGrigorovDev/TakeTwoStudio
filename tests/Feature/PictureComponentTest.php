@@ -77,6 +77,7 @@ class PictureComponentTest extends TestCase
 
         $this->get($lara.'/')->assertOk()
             ->assertSee($lara.'/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png', false)
+            ->assertSee('data-src="'.$lara.'/css/img/ST.webp"', false)
             ->assertDontSee($master, false);
         $this->get($lara.'/za-nas')->assertOk()
             ->assertSee('srcset="'.$lara.'/css/img/ST.webp"', false)

@@ -47,12 +47,11 @@
         gap: 20px;
         flex-wrap: wrap;
     }
-    .cookie-banner-text { flex: 1 1 60%; min-width: 0; font-size: 0.9rem; line-height: 1.5; }
+    .cookie-banner-text { flex: 1 1 60%; min-width: 280px; font-size: 0.9rem; line-height: 1.5; }
     .cookie-banner-text strong { display: block; margin-bottom: 4px; font-size: 1rem; }
     .cookie-banner-text a { color: #d4a849; text-decoration: underline; }
     .cookie-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-cookie {
-        min-height: 44px;
         padding: 10px 20px;
         border-radius: 4px;
         font-size: 0.88rem;
@@ -65,10 +64,9 @@
     .btn-cookie-primary { background: #b8860b; color: #111; } /* dark text: white on #b8860b was 3.25:1 */
     .btn-cookie-secondary { background: transparent; color: #fff; border: 1px solid #fff; }
     @media (max-width: 600px) {
-        .cookie-banner { padding: 12px 16px max(12px, env(safe-area-inset-bottom)); }
-        .cookie-banner-inner { flex-direction: column; align-items: stretch; gap: 10px; }
+        .cookie-banner-inner { flex-direction: column; align-items: stretch; }
         .cookie-banner-actions { justify-content: stretch; }
-        .btn-cookie { flex: 1; padding-inline: 8px; }
+        .btn-cookie { flex: 1; }
     }
 
 /* ---- Promo popup ---- */
@@ -345,8 +343,7 @@
 .price-anchors { display: flex; flex-wrap: wrap; gap: 8px; }
 .price-anchor { display: inline-block; padding: 6px 12px; border: 1px solid #D4AF37; border-radius: 999px; color: #222; text-decoration: none; font-size: 0.85rem; }
 .price-anchor:hover { background: #D4AF37; color: #111; }
-.price-group,
-#wedding-film { scroll-margin-top: 90px; }
+.price-group { scroll-margin-top: 90px; }
 .price-table th, .price-table td { vertical-align: top; }
 .price-table thead th { border-bottom: 2px solid #D4AF37; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .price-table__featured { background: rgba(212, 175, 55, 0.08); }

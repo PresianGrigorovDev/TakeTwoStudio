@@ -27,7 +27,7 @@
                     <p class="lead answer-capsule">{{ $text->get('story', 'capsule', 'Take Two Studio 1603 е фото и видео студио във Варна. Заснемаме сватби, абитуриентски балове, кръщенета, семейни и портретни фотосесии, продукти, автомобили, интериори и събития във Варна, Добрич, Шумен, Балчик и по цялото Северно Черноморие. Работим като един екип от фотограф, видеооператор и дрон пилот, така че снимките и филмът са в единен стил и се доставят заедно.') }}</p>
                     <p class="text-muted">{{ $text->get('story', 'text', 'Името идва от квартала, в който започнахме: ж.к. Възраждане IV, блок 1603. Оттогава сме заснели стотици събития в цяла България, но Варна и региона остават нашият дом и мястото, което познаваме най-добре: залите, плажовете, светлината в различните сезони.') }}</p>
                     @if($testimonialCount > 0)
-                        <p class="small text-muted mb-0"><a href="{{ url('/#testimonials') }}">Прочетете избрани отзиви от клиенти</a>.</p>
+                        <p class="small text-muted mb-0">{{ $testimonialCount }} публикувани отзива от клиенти на <a href="{{ url('/#testimonials') }}">началната страница</a>.</p>
                     @endif
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-6 col-lg-4" id="person-{{ $member->id }}">
                         <article class="team-card h-100 p-4 bg-white rounded shadow-sm text-center">
-                            <x-picture :src="$member->image_path ? (\App\Support\Images::url($member->image_path)) : asset('css/img/default-avatar.png')"
+                            <x-picture :src="\App\Support\Images::url($member->image_path) ?? asset('css/img/default-avatar.png')"
                                  alt="{{ $member->name }} – {{ $member->role_bg }}" class="team-img mb-3" width="180" height="180" />
                             <h3 class="h5 fw-bold mb-1">{{ $member->name }}</h3>
                             <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>

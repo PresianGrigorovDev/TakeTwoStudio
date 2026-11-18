@@ -7,249 +7,321 @@
 @section('og_description', 'Професионален фотограф и видеооператор във Варна от Take Two Studio 1603. Сватби, балове, събития, портрети, семейна и дрон фотография.')
 @section('og_image', asset('css/img/social-share-cover.jpg'))
 
-@section('home-navigation', '1')
-
 @section('preload')
-    <link rel="preload" href="{{ asset('css/img/prom.webp') }}" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="{{ asset('css/img/header.webp') }}" as="image" type="image/webp" fetchpriority="high">
 @endsection
 
-@push('styles')
-    <link rel="stylesheet" href="{{ \App\Support\Assets::versioned('css/home.css') }}">
-@endpush
-
 @section('content')
-    @php
-        $businessInquiry = 'Реклама и бизнес';
-        $inquiryServices = [
-            'Абитуриентски бал за целия клас',
-            'Предбална фотосесия',
-            'Сватба',
-            $businessInquiry,
-            ...$otherServices->pluck('name_bg')->all(),
-            'Друго',
-        ];
-        $inquiryErrors = $errors->getBag('homeInquiry');
-    @endphp
 
-    <div class="home-page">
-        <header class="home-hero home-wrap">
-            <div class="home-hero-copy">
-                <h1>Фотография и видео във Варна</h1>
-                <p>Един екип за снимките и филма на вашия бал, сватба или събитие.</p>
-                <div class="home-actions">
-                    <a class="home-button" href="#contact">Изпрати запитване</a>
-                    <a class="home-link" href="#portfolio">Виж нашата работа</a>
+    <header class="hero">
+        <img src="{{ asset('css/img/header.webp') }}" alt="Фотограф и Видеозаснемане Варна - Take Two Studio 1603" class="hero-bg-img" width="1920" height="1277" fetchpriority="high" decoding="sync">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Фотограф и Видеозаснемане Варна</h1>
+            <span class="hero-subtitle">Сватби, абитуриентски балове, кръщенета, семейни и събитийни фотосесии във Варна и
+                цяла България</span>
+
+            <!-- Desktop Buttons -->
+            <div class="d-none d-md-flex flex-wrap justify-content-center gap-2 mt-4">
+                <a href="#portfolio" class="btn-custom-full">Портфолио</a>
+                <a href="#contact" class="btn-custom">Свържи се с нас</a>
+            </div>
+
+            <!-- Mobile Buttons -->
+            <div class="d-flex d-md-none flex-wrap justify-content-center gap-2 mt-4">
+                <a href="#portfolio" class="btn-custom-full">Услуги</a>
+                <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#quickLeadModal"
+                    style="background: var(--accent, #d4af37); color: #000; font-weight: 700; border: none;">Бърза
+                    Оферта</button>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center g-5 mb-5" data-aos="fade-up">
+                <div class="col-lg-6">
+                    <x-picture :src="asset('css/img/about.webp')" alt="Екипът на Take Two"
+                        class="about-img-main falling-item" />
+                </div>
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h2 class="mb-3">Професионално фото и видео студио</h2>
+                    <div class="section-divider start"></div>
+
+                    <p class="text-muted mb-4">
+                        Търсите ли качество и емоция? В <b>Take Two Studio 1603</b> сме специализирани в
+                        <b>професионална сватбена фотография</b> и <b>видеозаснемане</b>.
+                        Базирани във <b>Варна</b>, ние отразяваме вашите най-специални поводи -
+                        от сватби и <b>абитуриентски балове</b> до свето <b>кръщение</b> и корпоративни събития.
+                    </p>
+                    <p class="text-muted">
+                        С над десетилетие опит и стотици доволни клиенти в цялата страна, нашата мисия е да запечатаме
+                        емоциите ви в кадри с кинематографично качество.
+                    </p>
                 </div>
             </div>
-            <img class="home-hero-photo" src="{{ asset('css/img/prom.webp') }}"
-                alt="Усмихнат абитуриент вдига ръце сред музиканти и гости" fetchpriority="high" decoding="async">
-        </header>
 
-        <section id="services" class="home-wrap home-section">
-            <h2>Какво снимаме</h2>
-            <div class="home-service-pair">
-                <article class="home-service">
-                    <a href="{{ url('/proms') }}#calculator">
-                        <x-picture :src="asset('css/img/proms-hero.webp')" alt="" class="home-service-photo" />
-                        <div class="home-card-copy">
-                            <h3>Абитуриентски балове</h3>
-                            <p>Фото и видео за целия клас</p>
-                            <span class="home-link">Вижте пакетите за класа</span>
-                        </div>
-                    </a>
-                </article>
-                <article class="home-service">
-                    <a href="{{ $featuredStory ? $featuredStory->url : url('/weddings') }}">
-                        <x-picture :src="asset('css/img/best-wedding-cover.webp')" alt="" class="home-service-photo" />
-                        <div class="home-card-copy">
-                            <h3>Сватби</h3>
-                            <p>Сватбена фотография и филм</p>
-                            <span class="home-link">Вижте сватбени истории</span>
-                        </div>
-                    </a>
-                </article>
-            </div>
-        </section>
-
-        <section id="portfolio" class="home-section home-band">
-            <div class="home-wrap">
-                @if($featuredStory)
-                    <div class="home-section-heading">
-                        <div>
-                            <h2>Сватбата на {{ $featuredStory->title }}</h2>
-                            @if($featuredStory->place_label)
-                                <p>{{ $featuredStory->place_label }}</p>
-                            @endif
-                        </div>
-                        <div class="home-actions">
-                            <a class="home-link" href="{{ $featuredStory->url }}">Вижте цялата история</a>
-                            @if($featuredStory->video_id)
-                                <a class="home-link" href="{{ $featuredStory->url }}#wedding-film">Гледайте филма</a>
-                            @endif
-                        </div>
+            <div class="row g-4 justify-content-center text-center" data-aos="fade-up">
+                @foreach($teamMembers as $member)
+                    <div class="col-md-4 col-sm-6 team-member" data-bs-toggle="modal"
+                        data-bs-target="#modalTeam{{ $member->id }}" title="Кликнете за повече инфо">
+                        <x-picture :src="\App\Support\Images::url($member->image_path) ?? asset('css/img/default-avatar.png')" alt="{{ $member->name }}" class="team-img falling-item" />
+                        <h3 class="fw-bold mb-1 h5">{{ $member->name }}</h3>
+                        <p class="role-text">{{ $member->role_bg }}</p>
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;"><i
+                                class="fas fa-plus-circle me-1"></i> Прочети повече</small>
                     </div>
-                    @if($featuredStory->description)
-                        <p class="home-story-description">{{ \Illuminate\Support\Str::limit(strip_tags($featuredStory->description), 200) }}</p>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="brands-section">
+        <div class="container mb-4">
+            <div class="brands-header">
+                <h2 class="text-center">Довериха ни се</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted text-uppercase text-center" style="letter-spacing: 2px;">Партньори и Клиенти</p>
+            </div>
+        </div>
+        <div class="brands-track">
+            @foreach($partners as $partner)
+                <x-picture :src="\App\Support\Images::url($partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
+            @endforeach
+
+            <!-- Duplicated for scrolling effect -->
+            @foreach($partners as $partner)
+                <x-picture :src="\App\Support\Images::url($partner->logo_path)" class="brand-logo" alt="{{ $partner->name }}" />
+            @endforeach
+        </div>
+    </section>
+
+    <section class="py-5 px-1 bg-white" data-aos="fade-up">
+        <div class="container pb-5 text-center">
+            <h2 class="mb-3">Как работим</h2>
+            <div class="section-divider"></div>
+            <p class="text-muted mb-5" style="max-width: 700px; margin: 0 auto;">
+                Вярваме, че добрата фотография започва далеч преди натискането на бутона.
+            </p>
+
+            <div class="row g-4 g-md-5 process-steps-mobile-slider">
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
+                        <div class="process-icon-wrap"><i class="far fa-comments"></i></div>
+                        <h3 class="fw-bold h5 mt-3">Опознаване</h3>
+                        <p class="text-muted small mb-0">Преди камерата да заработи, искаме да чуем вашата история.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
+                        <div class="process-icon-wrap"><i class="fas fa-camera-retro"></i></div>
+                        <h3 class="fw-bold h5 mt-3">В деня на събитието</h3>
+                        <p class="text-muted small mb-0">Улавяме истинските емоции и спонтанни моменти.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 process-step-col">
+                    <div class="process-step falling-item h-100">
+                        <div class="process-icon-wrap"><i class="fas fa-magic"></i></div>
+                        <h3 class="fw-bold h5 mt-3">Вечният спомен</h3>
+                        <p class="text-muted small mb-0">Предаваме ви не просто файлове, а цялостна история.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="pb-5">
+        <div class="container pb-5">
+            <div class="text-center mb-5 portfolio-header">
+                <h2>Портфолио</h2>
+                <div class="section-divider"></div>
+                <p>Разгледайте избрани моменти от нашите проекти.</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                @foreach($portfolioCategories as $index => $category)
+                    @if ($category->is_visible)
+                        <div class="col-md-6" data-aos="fade-up" {!! $index % 2 != 0 ? 'data-aos-delay="100"' : '' !!}>
+                            <a href="{{ url($category->slug) }}" class="text-decoration-none">
+                                <div class="portfolio-item falling-item">
+                                    <x-picture :src="\App\Support\Images::url($category->cover_image) ?? asset('css/img/default-placeholder.jpg')" class="portfolio-img"
+                                        alt="{{ $category->name_bg }}" />
+                                    <div class="portfolio-overlay">
+                                        <div class="portfolio-info">
+                                            <h3 class="portfolio-title">{{ $category->name_bg }}</h3>
+                                            <p class="portfolio-subtitle">{{ $category->subtitle_bg }}</p>
+                                        </div>
+                                        <div class="view-more-btn">Виж Още</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     @endif
-                    <div class="home-story-photos">
-                        @php
-                            $storyPhotos = $featuredStory->photos->pluck('image_path')
-                                ->prepend($featuredStory->cover_image)->filter()->unique()->take(3);
-                        @endphp
-                        @foreach($storyPhotos as $path)
-                            <x-picture :src="\App\Support\Images::url($path)"
-                                :alt="'Сватбата на ' . $featuredStory->title . ' – кадър ' . $loop->iteration" />
-                        @endforeach
-                    </div>
-                @else
-                    <div class="home-story-fallback">
-                        <x-picture :src="asset('css/img/header.webp')" alt="Сватбена прегръдка с букет в преден план" />
-                        <div>
-                            <h2>Вижте ни в действие</h2>
-                            <p>Разгледайте сватбените ни галерии и филми.</p>
-                            <a class="home-link" href="{{ url('/weddings') }}">Към сватбеното портфолио</a>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="py-5 px-1 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-3">Какво казват клиентите</h2>
+            <div class="section-divider"></div>
+            <div class="row justify-content-center mt-5 testimonials-mobile-slider">
+                @foreach($testimonials as $index => $testimonial)
+                    <div class="col-md-4 testimonial-col" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                        <div class="testimonial-card falling-item h-100">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <div class="testimonial-stars text-warning mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fa-star {{ $i <= ($testimonial->rating ?? 5) ? 'fas' : 'far' }}"></i>
+                                @endfor
+                            </div>
+                            <p>"{{ $testimonial->content_bg }}"</p>
+                            <div class="mt-3 fw-bold h6">- {{ $testimonial->client_name_bg ?? $testimonial->client_name }}</div>
                         </div>
                     </div>
-                @endif
+                @endforeach
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="testimonials" class="home-wrap home-section home-trust">
-            <div id="about" class="home-about">
-                <x-picture :src="asset('css/img/about.webp')"
-                    alt="Двама от екипа на Take Two Studio преглеждат кадър на камерата" class="about-img-main" />
-                <div>
-                    <h2>Екипът зад камерата</h2>
-                    <p>Снимаме фото и видео като един екип. Преди събитието уточняваме кои моменти са важни за вас и как да ги заснемем.</p>
-                    @if($teamMembers->isNotEmpty())
-                        <p class="home-team-names">{{ $teamMembers->pluck('name')->join(', ', ' и ') }}</p>
+    <section id="services" class="py-5" aria-label="Фотографски услуги във Варна">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2>Нашите Услуги</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted">Професионална фотография и видеозаснемане за всеки повод - сватби, балове, събития,
+                    портрети и още</p>
+            </div>
+
+            <div class="row g-4 services-mobile-slider">
+                @foreach($services as $index => $service)
+                    <div class="col-md-4 col-sm-6 service-card-col" data-aos="fade-up" {!! $index % 3 == 1 ? 'data-aos-delay="100"' : ($index % 3 == 2 ? 'data-aos-delay="200"' : '') !!}>
+                        <a href="{{ url($service->slug) }}" class="text-decoration-none text-dark h-100 d-block">
+                            <div class="service-card bg-white {{ $service->slug }} falling-item h-100">
+                                <i class="{{ $service->icon_class ?? 'fas fa-star' }} service-icon"></i>
+                                <h3 class="fw-bold h5">{{ $service->name_bg }}</h3>
+                                <p class="small text-muted mb-0">{{ $service->description_bg }}</p>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-5 bg-light">
+        <div class="container py-5 text-center">
+            <h2 class="mb-3">Свържете се с нас</h2>
+            <div class="section-divider"></div>
+
+            <div class="row justify-content-center mb-5 g-4 mt-2">
+                <div class="col-md-4"><i class="fas fa-phone mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
+                            href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">{{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}</a>
+                    </div>
+                </div>
+                <div class="col-md-4"><i class="far fa-envelope mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold"><a class="text-black text-decoration-none"
+                            href="mailto:{{ \App\Support\Settings::email() }}">{{ \App\Support\Settings::email() }}</a>
+                    </div>
+                </div>
+                <div class="col-md-4"><i class="fas fa-map-marker-alt mb-3 text-black fa-2x"></i>
+                    <div class="fs-6 fw-bold">ж.к. Възраждане IV 1603, Варна</div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    @if(session('homeInquirySuccess') || session('success'))
+                        <div class="alert alert-success mb-4 text-center" role="status">
+                            {{ session('homeInquirySuccess') ?? session('success') }}
+                        </div>
                     @endif
-                    <a class="home-link" href="{{ route('pages.about') }}">Запознайте се с нас</a>
-                </div>
-            </div>
-            @if($testimonials->isNotEmpty())
-                <div class="home-reviews">
-                    <h2>Какво казват клиентите</h2>
-                    @foreach($testimonials as $testimonial)
-                        <blockquote>
-                            <p>„{{ $testimonial->content_bg }}“</p>
-                            <p class="home-review-author">{{ $testimonial->client_name_bg ?? $testimonial->client_name }}</p>
-                        </blockquote>
-                    @endforeach
-                </div>
-            @endif
-        </section>
-
-        <section class="home-section home-band">
-            <div class="home-wrap home-more">
-                <div>
-                    <h2>Още услуги</h2>
-                    <ul class="home-service-list">
-                        @foreach($otherServices as $service)
-                            <li><a class="home-link" href="{{ url($service->slug) }}">{{ $service->name_bg }}</a></li>
-                        @endforeach
-                        <li><a class="home-link" href="{{ route('pages.prices') }}">Вижте ценоразписа</a></li>
-                    </ul>
-                </div>
-
-                @if($showBusiness)
-                    <article class="home-business">
-                        <x-picture :src="asset('css/img/ads/subitie.webp')" alt="Говорител на сцена по време на събитие" />
-                        <div class="home-card-copy">
-                            <h3>Реклама и бизнес</h3>
-                            <p>Продуктова фотография, рекламно видео и фирмени събития.</p>
-                            <div class="home-actions">
-                                <a class="home-link" href="#contact" data-inquiry-service="{{ $businessInquiry }}">Поискайте оферта</a>
-                                <a class="home-link" href="{{ url('/commercial') }}#portfolio">Вижте проекти</a>
+                    @if($errors->getBag('homeInquiry')->any())
+                        <div class="alert alert-danger mb-4" role="alert">
+                            <p>Проверете отбелязаните полета и опитайте отново.</p>
+                            @foreach($errors->getBag('homeInquiry')->getMessages() as $field => $messages)
+                                @continue($field === 'gdpr_consent')
+                                <p>{{ $messages[0] }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+                    <form action="{{ url('/submit-contact') }}" method="post"
+                        class="h-100 p-4 border rounded shadow-sm bg-white">
+                        @csrf
+                        <input type="hidden" name="form" value="home-inquiry">
+                        <input type="hidden" name="orderType" value="Запитване от началната страница">
+                        <div class="row g-3">
+                            <div class="col-md-6"><input type="text" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Име" aria-label="Име" name="name" value="{{ old('name') }}" required></div>
+                            <div class="col-md-6"><input type="tel" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Телефон" aria-label="Телефон" name="phone" value="{{ old('phone') }}" required></div>
+                            <div class="col-12"><input type="email" class="form-control rounded-0 p-3 bg-light border-0"
+                                    placeholder="Email" aria-label="Имейл" name="email" value="{{ old('email') }}" required></div>
+                            <div class="col-12"><textarea class="form-control rounded-0 p-3 bg-light border-0" rows="5"
+                                    placeholder="Съобщение..." aria-label="Съобщение" name="message">{{ old('message') }}</textarea></div>
+                            <div class="col-12">@include('partials.gdpr-consent', ['consentId' => 'home', 'consentErrorBag' => 'homeInquiry'])</div>
+                            <div class="col-12"><button type="submit" class="btn-submit mt-2">Изпрати запитване</button>
                             </div>
                         </div>
-                    </article>
-                @endif
-
-                @if($partners->isNotEmpty())
-                    <div class="home-partners">
-                        <h3>Довериха ни се</h3>
-                        <ul>
-                            @foreach($partners as $partner)
-                                <li><x-picture :src="\App\Support\Images::url($partner->logo_path)"
-                                    :alt="$partner->name" class="brand-logo" /></li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    @include('partials.map-embed')
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="contact" class="home-wrap home-section home-contact">
-            <div>
-                <h2>Разкажете ни за събитието</h2>
-                <p>След запитването ще се свържем с вас, за да уточним датата и какво искате да заснемем.</p>
-                <ol class="home-contact-steps">
-                    <li>Уточняваме повода и датата.</li>
-                    <li>Предлагаме подходящ пакет.</li>
-                    <li>Потвърждаваме ангажимента.</li>
-                </ol>
-                <a class="home-link" href="tel:{{ \App\Support\Settings::phoneHref(\App\Support\Settings::phone()) }}">
-                    Обадете се на {{ \App\Support\Settings::phoneDisplay(\App\Support\Settings::phone()) }}
-                </a>
+    <!-- Modals -->
+    @foreach($teamMembers as $member)
+        <div class="modal fade" id="modalTeam{{ $member->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content custom-modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">{{ $member->name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        {{-- Not requested until the modal opens (data-src -> src on show.bs.modal, script below).
+                             data-src is the same URL the team grid already downloaded (WebP sibling when it exists). --}}
+                        @php
+                            $modalImg = \App\Support\Images::url($member->image_path) ?? asset('css/img/default-avatar.png');
+                        @endphp
+                        <img class="team-img team-modal-img mb-3 lazy-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                            data-src="{{ \App\Support\Images::webpUrl($modalImg) ?? $modalImg }}" alt="{{ $member->name }}">
+                        <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>
+                        @if($member->career_start_year)
+                            <p class="small text-muted mb-3">В професията от {{ $member->career_start_year }} г.</p>
+                        @endif
+                        <p class="text-muted mb-3">
+                            {{ $member->bio_bg }}
+                        </p>
+                        {{-- Personal phones are not published: one studio number everywhere (2026-11-02). --}}
+                        @if($member->instagram_url)
+                            <div class="mt-3 pt-3 border-top d-flex justify-content-center gap-3 flex-wrap">
+                                <a href="{{ $member->instagram_url }}" target="_blank"
+                                    class="btn btn-outline-dark btn-sm rounded-0">
+                                    <i class="fab fa-instagram me-1"></i> Instagram
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
-
-            <div class="home-form-panel">
-                @if(session('homeInquirySuccess'))
-                    <p class="home-feedback home-feedback-success" role="status" tabindex="-1">{{ session('homeInquirySuccess') }}</p>
-                @endif
-                @if($inquiryErrors->any())
-                    <p class="home-feedback home-feedback-error" role="alert" tabindex="-1">Проверете отбелязаните полета и опитайте отново.</p>
-                @endif
-                <form class="home-form" action="{{ url('/submit-contact') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="form" value="home-inquiry">
-                    <div>
-                        <label for="home-service">Вид услуга</label>
-                        <select id="home-service" name="orderType" required
-                            @error('orderType', 'homeInquiry') aria-invalid="true" aria-describedby="home-service-error" @enderror>
-                            <option value="">Изберете услуга</option>
-                            @foreach($inquiryServices as $serviceName)
-                                <option value="{{ $serviceName }}" @selected(old('orderType') === $serviceName)>{{ $serviceName }}</option>
-                            @endforeach
-                        </select>
-                        @error('orderType', 'homeInquiry') <p class="home-field-error" id="home-service-error">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label for="home-period">Дата или период <span>(по желание)</span></label>
-                        <input id="home-period" name="event_period" type="text" maxlength="120"
-                            value="{{ old('event_period') }}" placeholder="Напр. края на май"
-                            @error('event_period', 'homeInquiry') aria-invalid="true" aria-describedby="home-period-error" @enderror>
-                        @error('event_period', 'homeInquiry') <p class="home-field-error" id="home-period-error">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label for="home-name">Име</label>
-                        <input id="home-name" name="name" type="text" autocomplete="name" maxlength="255" value="{{ old('name') }}" required
-                            @error('name', 'homeInquiry') aria-invalid="true" aria-describedby="home-name-error" @enderror>
-                        @error('name', 'homeInquiry') <p class="home-field-error" id="home-name-error">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label for="home-phone">Телефон</label>
-                        <input id="home-phone" name="phone" type="tel" autocomplete="tel" maxlength="20" value="{{ old('phone') }}" required
-                            @error('phone', 'homeInquiry') aria-invalid="true" aria-describedby="home-phone-error" @enderror>
-                        @error('phone', 'homeInquiry') <p class="home-field-error" id="home-phone-error">{{ $message }}</p> @enderror
-                    </div>
-                    <div class="home-form-wide">
-                        <label for="home-message">Какво искате да заснемем? <span>(по желание)</span></label>
-                        <textarea id="home-message" name="message" rows="3"
-                            @error('message', 'homeInquiry') aria-invalid="true" aria-describedby="home-message-error" @enderror>{{ old('message') }}</textarea>
-                        @error('message', 'homeInquiry') <p class="home-field-error" id="home-message-error">{{ $message }}</p> @enderror
-                    </div>
-                    <div class="home-form-wide">
-                        @include('partials.gdpr-consent', ['consentId' => 'home', 'consentErrorBag' => 'homeInquiry'])
-                    </div>
-                    <button class="home-button" type="submit">Изпрати запитване</button>
-                </form>
-            </div>
-        </section>
-    </div>
+        </div>
+    @endforeach
 @endsection
 
 @push('scripts')
-    <script src="{{ \App\Support\Assets::versioned('js/home.js') }}" defer></script>
+    <script>
+        // Team modal photos load only when their modal opens (Bootstrap 5 modal events bubble to document).
+        document.addEventListener('show.bs.modal', function (event) {
+            event.target.querySelectorAll('img.lazy-modal-img[data-src]').forEach(function (img) {
+                img.src = img.getAttribute('data-src');
+                img.removeAttribute('data-src');
+            });
+        });
+    </script>
 @endpush

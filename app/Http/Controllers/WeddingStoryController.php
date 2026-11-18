@@ -29,7 +29,10 @@ class WeddingStoryController extends Controller
             ->take(3)
             ->get();
 
-        $videoId = $gallery->video_id;
+        $videoId = null;
+        if ($gallery->video_url && preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|shorts/|watch\?v=|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})%i', $gallery->video_url, $m)) {
+            $videoId = $m[1];
+        }
 
         $this->registerSeo($gallery, $videoId);
 

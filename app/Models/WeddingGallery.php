@@ -47,13 +47,4 @@ class WeddingGallery extends Model
     {
         return implode(', ', array_filter([$this->venue, $this->location])) ?: null;
     }
-
-    public function getVideoIdAttribute(): ?string
-    {
-        if ($this->video_url && preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|shorts/|watch\?v=|embed/)|youtu\.be/)([A-Za-z0-9_-]{11})%i', $this->video_url, $matches)) {
-            return $matches[1];
-        }
-
-        return null;
-    }
 }

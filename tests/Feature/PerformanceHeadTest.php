@@ -142,11 +142,7 @@ class PerformanceHeadTest extends TestCase
         );
         // Logo file is 787x389.
         $this->assertMatchesRegularExpression('#<img [^>]*class="logo-mobile" width="81" height="40">#', $html);
-        if ($path === '/') {
-            $this->assertStringContainsString('css/img/logo-tts-black.png', $html);
-        } else {
-            $this->assertMatchesRegularExpression('#<img [^>]*class="logo-desktop" width="111" height="55">#', $html);
-        }
+        $this->assertMatchesRegularExpression('#<img [^>]*class="logo-desktop" width="111" height="55">#', $html);
 
         $dom = new \DOMDocument;
         @$dom->loadHTML('<?xml encoding="UTF-8">'.$html);

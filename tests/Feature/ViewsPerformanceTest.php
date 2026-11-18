@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\BlogPost;
+use App\Models\TeamMember;
 use App\Models\WeddingGallery;
 use Database\Seeders\BlogCategorySeeder;
 use Database\Seeders\BlogPostSeeder;
@@ -20,18 +21,28 @@ class ViewsPerformanceTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
     public function test_home_hero_is_a_high_priority_img_and_not_hidden_by_aos(): void
     {
         $this->seed();
 
         $html = $this->get('/')->assertOk()->getContent();
 
-        $imageUrl = asset('css/img/prom.webp');
-        $this->assertStringContainsString('<header class="home-hero home-wrap">', $html);
-        $this->assertMatchesRegularExpression('#<img(?=[^>]*class="home-hero-photo")(?=[^>]*fetchpriority="high")(?=[^>]*src="'.preg_quote($imageUrl, '#').'")[^>]*>#', $html);
-        $this->assertDoesNotMatchRegularExpression('#<img[^>]*class="home-hero-photo"[^>]*(?:loading="lazy"|width=|height=)#', $html);
-        $this->assertStringContainsString('<link rel="preload" href="'.$imageUrl.'" as="image" type="image/webp" fetchpriority="high">', $html);
-        $this->assertNoAosOnHero($html, '/');
+        $this->assertMatchesRegularExpression('#<header class="hero">\s*<img [^>]*class="hero-bg-img"#', $html, 'the hero background <img> must be the first child of .hero');
+        $this->assertMatchesRegularExpression('#<img(?=[^>]*class="hero-bg-img")(?=[^>]*fetchpriority="high")(?=[^>]*src="'.preg_quote(asset('css/img/header.webp'), '#').'")[^>]*>#', $html);
+        $this->assertDoesNotMatchRegularExpression('#<img[^>]*class="hero-bg-img"[^>]*loading="lazy"#', $html);
+        $this->assertMatchesRegularExpression('#<div class="hero-content">#', $html);
+        $this->assertDoesNotMatchRegularExpression('#class="hero-content"[^>]*data-aos#', $html);
+
+        // The preload (if kept) must point at the very same URL, otherwise the hero downloads twice.
+        if (preg_match_all('#<link rel="preload"[^>]*as="image"[^>]*>#', $html, $preloads)) {
+            foreach ($preloads[0] as $preload) {
+                if (str_contains($preload, 'header.')) {
+                    $this->assertStringContainsString('href="'.asset('css/img/header.webp').'"', $preload);
+                }
+            }
+        }
     }
 
     public static function heroPages(): array
@@ -196,15 +207,27 @@ class ViewsPerformanceTest extends TestCase
         $this->assertNoAosOnHero($html, 'wedding story');
     }
 
-    public function test_home_team_section_loads_one_photo_and_links_to_biographies(): void
+    public function test_team_modal_photos_load_only_when_the_modal_opens(): void
     {
         $this->seed();
+        // A local photo with a WebP sibling: the modal must reuse the WebP URL the grid already downloaded.
+        TeamMember::create(['name' => 'Тест Екип', 'role_bg' => 'Фотограф', 'image_path' => asset('css/img/prom.jpg'), 'is_active' => true, 'display_order' => 99]);
+        $members = TeamMember::where('is_active', true)->get();
 
         $html = $this->get('/')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('#<img(?=[^>]*class="about-img-main")(?=[^>]*loading="lazy")[^>]*>#', $html);
-        $this->assertStringContainsString('href="'.route('pages.about').'"', $html);
-        $this->assertStringNotContainsString('team-modal-img', $html);
+        preg_match_all('#<div class="modal-body text-center">\s*(.*?)<p class="role-text#s', $html, $bodies);
+        $this->assertCount($members->count(), $bodies[1]);
+
+        foreach ($bodies[1] as $body) {
+            $this->assertStringNotContainsString('<picture', $body);
+            $this->assertStringNotContainsString('srcset', $body);
+            $this->assertMatchesRegularExpression('#<img class="team-img team-modal-img mb-3 lazy-modal-img" src="'.preg_quote(self::PIXEL, '#').'"\s+data-src="[^"]+"#', $body);
+            $this->assertDoesNotMatchRegularExpression('#\s(style|width|height)=#', $body, 'the modal photo is sized by .team-modal-img in style.css');
+        }
+
+        $this->assertStringContainsString('data-src="'.asset('css/img/prom.webp').'"', $html);
+        $this->assertStringContainsString("addEventListener('show.bs.modal'", $html);
     }
 
     public static function versionedPages(): array
