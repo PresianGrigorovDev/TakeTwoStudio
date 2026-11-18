@@ -1,16 +1,11 @@
 @if($partners->isNotEmpty())
     <section class="brands-section" aria-labelledby="brands-title">
         <div class="brands-inner">
-            <header class="brands-heading">
-                <h2 id="brands-title">Довериха <span>ни се</span></h2>
-                <a class="brands-link" href="{{ $portfolioUrl }}">
-                    Вижте бизнес проектите <span aria-hidden="true">→</span>
-                </a>
-            </header>
+            <h2 id="brands-title">Довериха ни се</h2>
 
             <ul class="brands-grid" role="list">
                 @foreach($partners as $partner)
-                    <li class="brand-card">
+                    <li class="brand-item">
                         @if($logo = \App\Support\Images::url($partner->logo_path))
                             <div class="brand-mark">
                                 <x-picture :src="$logo" alt="" class="brand-logo" />
@@ -20,6 +15,10 @@
                     </li>
                 @endforeach
             </ul>
+
+            <a class="brands-link" href="{{ $portfolioUrl }}">
+                Вижте бизнес проектите <span aria-hidden="true">→</span>
+            </a>
         </div>
     </section>
 @endif
