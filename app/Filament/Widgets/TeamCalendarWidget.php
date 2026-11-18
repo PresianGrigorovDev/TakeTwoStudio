@@ -41,8 +41,7 @@ class TeamCalendarWidget extends Widget
 
     public function mount(): void
     {
-        $this->year = now()->year;
-        $this->month = now()->month;
+        $this->currentMonth();
     }
 
     public function previousMonth(): void
@@ -57,8 +56,8 @@ class TeamCalendarWidget extends Widget
 
     public function currentMonth(): void
     {
-        $this->year = now()->year;
-        $this->month = now()->month;
+        $now = now();
+        $this->setPeriod($now->year, $now->month);
     }
 
     public function selectPeriod(mixed $month = null, mixed $year = null): void
@@ -71,13 +70,12 @@ class TeamCalendarWidget extends Widget
             'year' => 'required|integer|between:'.self::MIN_YEAR.','.self::MAX_YEAR,
         ], [
             'month.*' => 'Изберете валиден месец.',
-            'year.*' => 'Въведете година между :min и :max.',
+            'year.between' => 'Въведете година между :min и :max.',
             'year.required' => 'Въведете година.',
             'year.integer' => 'Въведете цяла година.',
         ])->validate();
 
-        $this->month = (int) $period['month'];
-        $this->year = (int) $period['year'];
+        $this->setPeriod((int) $period['year'], (int) $period['month']);
     }
 
     public function filterMember(?int $memberId): void
@@ -92,8 +90,14 @@ class TeamCalendarWidget extends Widget
             return;
         }
 
-        $this->year = $date->year;
-        $this->month = $date->month;
+        $this->setPeriod($date->year, $date->month);
+    }
+
+    private function setPeriod(int $year, int $month): void
+    {
+        $this->year = $year;
+        $this->month = $month;
+        $this->resetValidation(['year', 'month']);
     }
 
     protected function getViewData(): array
