@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -158,7 +158,7 @@
                     Сватбеният ден е изпълнен с неподправени емоции и магия. Вижте нашето кратко видео, което показва нашия подход, динамика и стил на заснемане на терен.
                 </p>
                 <div class="video-cover-card mx-auto position-relative rounded shadow-lg overflow-hidden" style="max-width: 800px; aspect-ratio: 16/9;">
-                    <x-picture :src="!empty($service->hero_image) ? asset('storage/' . $service->hero_image) : asset('css/img/best-wedding-cover.jpg')" class="w-100 h-100 object-fit-cover" alt="Видео превю" />
+                    <x-picture :src="!empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : asset('css/img/best-wedding-cover.jpg')" class="w-100 h-100 object-fit-cover" alt="Видео превю" />
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0, 0, 0, 0.45);">
                         <a href="{{ $service->video_url }}" class="glightbox video-play-btn-large">
                             <span class="play-btn-ring"></span>
@@ -181,11 +181,12 @@
 
             <div class="row g-4 justify-content-center">
                 @foreach($weddingGalleries as $gallery)
+                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? asset('css/img/default-placeholder.webp'); @endphp
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
                         <div class="wedding-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#galleryModal{{ $gallery->id }}">
                             <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm gallery-cover-h">
-                                <x-picture :src="asset('storage/' . $gallery->cover_image)" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
+                                <x-picture :src="$coverUrl" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
                             </div>
                             <div class="text-center mt-3 p-2">
                                 <span class="d-block text-muted small text-uppercase fw-bold mb-1 letter-spaced-1">Разгледай сватбата на</span>
@@ -211,12 +212,12 @@
                                             <div class="carousel-inner">
                                                 <!-- Cover Image first -->
                                                 <div class="carousel-item active">
-                                                    <x-picture :src="asset('storage/' . $gallery->cover_image)" class="d-block w-100 object-fit-contain carousel-img" alt="Сватбена снимка на {{ $gallery->title }} - Take Two Studio" />
+                                                    <x-picture :src="$coverUrl" class="d-block w-100 object-fit-contain carousel-img" alt="Сватбена снимка на {{ $gallery->title }} - Take Two Studio" />
                                                 </div>
                                                 <!-- Rest of the photos -->
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <x-picture :src="asset('storage/' . $photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Сватбена фотография от сватбата на {{ $gallery->title }} - сватбен фотограф Варна" />
+                                                    <x-picture :src="\App\Support\Images::url($photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Сватбена фотография от сватбата на {{ $gallery->title }} - сватбен фотограф Варна" />
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -231,13 +232,13 @@
                                         
                                         <!-- Thumbnails Slider Below -->
                                         <div class="d-flex overflow-auto p-3 custom-scrollbar thumb-strip">
-                                                <x-picture :src="asset('storage/' . $gallery->cover_image)" 
+                                                <x-picture :src="$coverUrl"
                                                     
                                                     class="gallery-thumbnail hover-border gallery-thumb"
                                                     data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="0" />
                                                 
                                                 @foreach($gallery->photos as $index => $photo)
-                                                <x-picture :src="asset('storage/' . $photo->image_path)" 
+                                                <x-picture :src="\App\Support\Images::url($photo->image_path)"
                                                     
                                                     class="gallery-thumbnail hover-border gallery-thumb"
                                                     data-bs-target="#carouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" />

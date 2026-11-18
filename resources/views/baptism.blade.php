@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -115,11 +115,12 @@
 
             <div class="row g-4 justify-content-center">
                 @foreach($baptismGalleries as $gallery)
+                    @php $coverUrl = \App\Support\Images::url($gallery->cover_image) ?? asset('css/img/default-placeholder.webp'); @endphp
                     <div class="col-md-6 col-lg-4">
                         <!-- Cover Card -->
                         <div class="baptism-gallery-card border-0 rounded position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#baptismGalleryModal{{ $gallery->id }}">
                             <div class="gallery-cover-wrapper overflow-hidden rounded shadow-sm gallery-cover-h">
-                                <x-picture :src="asset('storage/' . $gallery->cover_image)" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
+                                <x-picture :src="$coverUrl" alt="{{ $gallery->title }}" class="img-fluid w-100 h-100 object-fit-cover img-zoom" />
                             </div>
                             <div class="text-center mt-3 p-2">
                                 <span class="d-block text-muted small text-uppercase fw-bold mb-1 letter-spaced-1">Разгледай кръщенето на</span>
@@ -142,12 +143,12 @@
                                             <div class="carousel-inner">
                                                 <!-- Cover Image first -->
                                                 <div class="carousel-item active">
-                                                    <x-picture :src="asset('storage/' . $gallery->cover_image)" class="d-block w-100 object-fit-contain carousel-img" alt="Снимка от кръщенето на {{ $gallery->title }} - Take Two Studio" />
+                                                    <x-picture :src="$coverUrl" class="d-block w-100 object-fit-contain carousel-img" alt="Снимка от кръщенето на {{ $gallery->title }} - Take Two Studio" />
                                                 </div>
                                                 <!-- Rest of the photos -->
                                                 @foreach($gallery->photos as $photo)
                                                 <div class="carousel-item">
-                                                    <x-picture :src="asset('storage/' . $photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Детайл от кръщенето на {{ $gallery->title }} - фотограф Варна" />
+                                                    <x-picture :src="\App\Support\Images::url($photo->image_path)" class="d-block w-100 object-fit-contain carousel-img" alt="Детайл от кръщенето на {{ $gallery->title }} - фотограф Варна" />
                                                 </div>
                                                 @endforeach
                                             </div>
@@ -162,13 +163,13 @@
                                         
                                         <!-- Thumbnails Slider Below -->
                                         <div class="d-flex overflow-auto p-3 custom-scrollbar thumb-strip">
-                                                <x-picture :src="asset('storage/' . $gallery->cover_image)" 
+                                                <x-picture :src="$coverUrl"
                                                     
                                                     class="gallery-thumbnail hover-border gallery-thumb"
                                                     data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="0" />
                                                 
                                                 @foreach($gallery->photos as $index => $photo)
-                                                <x-picture :src="asset('storage/' . $photo->image_path)" 
+                                                <x-picture :src="\App\Support\Images::url($photo->image_path)"
                                                     
                                                     class="gallery-thumbnail hover-border gallery-thumb"
                                                     data-bs-target="#baptismCarouselGallery{{ $gallery->id }}" data-bs-slide-to="{{ $index + 1 }}" />

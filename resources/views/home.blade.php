@@ -97,7 +97,7 @@
                                 ->prepend($featuredStory->cover_image)->filter()->unique()->take(3);
                         @endphp
                         @foreach($storyPhotos as $path)
-                            <x-picture :src="str_starts_with($path, 'http') ? $path : asset('storage/' . $path)"
+                            <x-picture :src="\App\Support\Images::url($path)"
                                 :alt="'Сватбата на ' . $featuredStory->title . ' – кадър ' . $loop->iteration" />
                         @endforeach
                     </div>
@@ -171,7 +171,7 @@
                         <h3>Довериха ни се</h3>
                         <ul>
                             @foreach($partners as $partner)
-                                <li><x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)"
+                                <li><x-picture :src="\App\Support\Images::url($partner->logo_path)"
                                     :alt="$partner->name" class="brand-logo" /></li>
                             @endforeach
                         </ul>

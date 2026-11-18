@@ -56,7 +56,7 @@
                     </div>
 
                     <div class="blog-post__body">
-                        {!! $post->body !!}
+                        {!! \App\Support\Images::rebaseHtmlImages($post->body) !!}
                     </div>
 
                     @php

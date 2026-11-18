@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -74,7 +74,7 @@
                     <p class="text-muted text-uppercase small mb-3 letter-spaced">Клиенти и партньори</p>
                     <div class="client-logos">
                         @foreach($partners as $partner)
-                            <x-picture :src="str_starts_with($partner->logo_path, 'http') ? $partner->logo_path : asset('storage/' . $partner->logo_path)" alt="{{ $partner->name }}" class="client-logo" height="48" />
+                            <x-picture :src="\App\Support\Images::url($partner->logo_path)" alt="{{ $partner->name }}" class="client-logo" height="48" />
                         @endforeach
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     @endphp
                     <div class="masonry-item {{ $item->sub_category }}">
                         <div class="portfolio-item" onclick="openLightbox(this)">
-                            <x-picture :src="str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path)" class="portfolio-img"
+                            <x-picture :src="\App\Support\Images::url($item->image_path)" class="portfolio-img"
                                 alt="{{ $item->alt_text ?? $displayCategory }}" />
                             <div class="portfolio-overlay">
                                 <div class="portfolio-info">
@@ -174,7 +174,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <a href="{{ str_starts_with($item->image_path, 'css/') ? asset($item->image_path) : Storage::url($item->image_path) }}"
+                            <a href="{{ \App\Support\Images::url($item->image_path) }}"
                                 class="glightbox d-none" data-title="{{ $item->alt_text ?? $displayCategory }}"
                                 data-description="{{ $item->description ?? '' }}"></a>
                         </div>

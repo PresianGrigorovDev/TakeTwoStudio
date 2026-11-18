@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Partner;
+use App\Models\PromPortfolioPhoto;
+use App\Models\TeamMember;
+use App\Models\WeddingGallery;
 use App\Support\Images;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Blade;
@@ -48,5 +52,58 @@ class PictureComponentTest extends TestCase
             $this->assertStringNotContainsString('style="height: 65vh;', $html, $path);
             $this->assertStringNotContainsString('style="cursor: pointer;"', $html, $path);
         }
+    }
+
+    public function test_public_pages_rebase_legacy_images_and_gallery_links_to_the_current_host(): void
+    {
+        $this->seed();
+        $lara = 'https://lara.taketwostudio1603.com';
+        $master = 'https://www.taketwostudio1603.com';
+        $external = 'https://images.pixieset.com/example/photo.jpg';
+        config(['app.url' => $lara]);
+
+        Partner::query()->where('display_order', 1)->update([
+            'logo_path' => $master.'/public/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png',
+        ]);
+        TeamMember::query()->where('display_order', 1)->update(['image_path' => $master.'/css/img/ST.png']);
+        $gallery = WeddingGallery::create([
+            'title' => 'Тестова сватба',
+            'slug' => 'legacy-images',
+            'is_active' => true,
+            'cover_image' => $master.'/public/css/img/header.jpg',
+        ]);
+        $gallery->photos()->create(['image_path' => $external, 'sort_order' => 1]);
+        PromPortfolioPhoto::create(['image_path' => 'prom_portfolio_photos/class.jpg', 'is_visible' => true]);
+
+        $this->get($lara.'/')->assertOk()
+            ->assertSee($lara.'/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png', false)
+            ->assertDontSee($master, false);
+        $this->get($lara.'/za-nas')->assertOk()
+            ->assertSee('srcset="'.$lara.'/css/img/ST.webp"', false)
+            ->assertSee('src="'.$lara.'/css/img/ST.png"', false);
+        $this->get($lara.'/weddings')->assertOk()
+            ->assertSee('src="'.$lara.'/css/img/header.jpg"', false)
+            ->assertSee('src="'.$external.'"', false);
+        $this->get($lara.'/svatbi/legacy-images')->assertOk()
+            ->assertSee($lara.'/css/img/header.jpg', false)
+            ->assertSee('href="'.$external.'"', false);
+        $this->get($lara.'/proms')->assertOk()
+            ->assertSee('href="'.$lara.'/storage/prom_portfolio_photos/class.jpg"', false);
+        $this->get($lara.'/sitemap-images.xml')->assertOk()
+            ->assertSee($lara.'/css/img/header.jpg', false)
+            ->assertDontSee($master, false);
+    }
+
+    public function test_rebasing_inline_blog_images_preserves_query_values_and_external_links(): void
+    {
+        $source = 'https://taketwostudio1603.com/public/storage/blog/attachments/file%20name.jpg?v=1&amp;x=2#photo';
+        $html = '<a href="'.$source.'"><img alt="Снимка" src="'.$source.'"></a>'
+            .'<img src="https://cdn.example.com/photo.jpg">';
+
+        $result = Images::rebaseHtmlImages($html);
+
+        $this->assertStringContainsString('href="'.$source.'"', $result);
+        $this->assertStringContainsString('src="'.asset('storage/blog/attachments/file%20name.jpg?v=1&x=2#photo').'"', html_entity_decode($result));
+        $this->assertStringContainsString('src="https://cdn.example.com/photo.jpg"', $result);
     }
 }

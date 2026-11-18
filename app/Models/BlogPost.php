@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 use App\Traits\LogsActivity;
 use App\Support\ImageOptimizer;
+use App\Support\Images;
 
 class BlogPost extends Model
 {
@@ -206,21 +207,20 @@ class BlogPost extends Model
 
     private function resolveImageUrl(?string $path): ?string
     {
-        if (empty($path)) {
-            return null;
+        $url = Images::url($path);
+        if ($url === null || preg_match('#^(?:https?:)?//#i', trim($path))) {
+            return $url;
         }
 
-        if (preg_match('#^https?://#i', $path)) {
-            return $path;
-        }
-
+        $path = rawurldecode(ltrim(strtok($path, '?#'), '/'));
+        $path = preg_replace('#^public/(?=(?:css|img|storage)/)#', '', $path);
         // Static public assets (seeded placeholders)
         if (str_starts_with($path, 'css/') || str_starts_with($path, 'img/')) {
-            return is_file(public_path($path)) ? asset($path) : asset(self::FALLBACK_COVER);
+            return is_file(public_path($path)) ? $url : asset(self::FALLBACK_COVER);
         }
 
         // Filament uploads land in storage/app/public/
-        return Storage::disk('public')->exists($path) ? asset('storage/' . $path) : asset(self::FALLBACK_COVER);
+        return Storage::disk('public')->exists(Str::chopStart($path, 'storage/')) ? $url : asset(self::FALLBACK_COVER);
     }
 
     public function getStatusAttribute(): string

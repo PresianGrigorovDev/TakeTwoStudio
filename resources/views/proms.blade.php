@@ -14,7 +14,7 @@
 @endpush
 
 @php
-    $heroUrl = !empty($service->hero_image) ? asset('storage/' . $service->hero_image) : null;
+    $heroUrl = !empty($service->hero_image) ? \App\Support\Images::url($service->hero_image) : null;
     $heroWebp = \App\Support\Images::webpUrl($heroUrl);
 @endphp
 @section('preload')
@@ -140,8 +140,8 @@
                 @foreach($promPortfolioPhotos as $i => $photo)
                 <div class="masonry-item gallery-item @if($i >= $galleryLimit) gallery-hidden @endif">
                     <div class="portfolio-item">
-                        <a href="{{ Storage::url($photo->image_path) }}" class="glightbox">
-                            <img loading="lazy" src="{{ Storage::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна - Фотосесия {{ $i + 1 }} - Take Two Studio">
+                        <a href="{{ \App\Support\Images::url($photo->image_path) }}" class="glightbox">
+                            <img loading="lazy" src="{{ \App\Support\Images::url($photo->image_path) }}" class="portfolio-img" alt="Абитуриентски Бал Варна - Фотосесия {{ $i + 1 }} - Take Two Studio">
                         </a>
                     </div>
                 </div>

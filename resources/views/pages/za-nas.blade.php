@@ -43,7 +43,7 @@
                 @foreach($teamMembers as $member)
                     <div class="col-md-6 col-lg-4" id="person-{{ $member->id }}">
                         <article class="team-card h-100 p-4 bg-white rounded shadow-sm text-center">
-                            <x-picture :src="$member->image_path ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/' . $member->image_path)) : asset('css/img/default-avatar.png')"
+                            <x-picture :src="$member->image_path ? (\App\Support\Images::url($member->image_path)) : asset('css/img/default-avatar.png')"
                                  alt="{{ $member->name }} – {{ $member->role_bg }}" class="team-img mb-3" width="180" height="180" />
                             <h3 class="h5 fw-bold mb-1">{{ $member->name }}</h3>
                             <p class="role-text {{ $member->career_start_year ? 'mb-1' : 'mb-3' }}">{{ $member->role_bg }}</p>

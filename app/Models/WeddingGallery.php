@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Images;
 use App\Support\Seo\IndexNow;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,7 +39,7 @@ class WeddingGallery extends Model
 
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->cover_image ? (preg_match('#^https?://#i', $this->cover_image) ? $this->cover_image : asset('storage/'.$this->cover_image)) : null;
+        return Images::url($this->cover_image);
     }
 
     /** "Евксиноград, Варна" / "Варна" / null */

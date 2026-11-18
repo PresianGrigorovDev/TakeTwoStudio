@@ -20,13 +20,13 @@
         {{-- Banner image (clickable) --}}
         @if($activePromo->redirect_url)
             <a href="{{ $activePromo->redirect_url }}" class="promo-popup-image-link" id="promo-popup-link">
-                <img src="{{ asset('storage/' . $activePromo->image_path) }}"
+                <img src="{{ \App\Support\Images::url($activePromo->image_path) }}"
                      alt="{{ $activePromo->title }}"
                      class="promo-popup-image"
                      loading="eager">
             </a>
         @else
-            <img src="{{ asset('storage/' . $activePromo->image_path) }}"
+            <img src="{{ \App\Support\Images::url($activePromo->image_path) }}"
                  alt="{{ $activePromo->title }}"
                  class="promo-popup-image"
                  loading="eager">

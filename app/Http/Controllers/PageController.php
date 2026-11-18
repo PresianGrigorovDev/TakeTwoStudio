@@ -7,6 +7,7 @@ use App\Models\PortfolioCategory;
 use App\Models\PortfolioItem;
 use App\Models\Service;
 use App\Models\WeddingGallery;
+use App\Support\Images;
 use App\Support\Seo\Seo;
 use App\Support\Seo\ServiceCatalog;
 use Illuminate\Support\Str;
@@ -244,7 +245,7 @@ class PageController extends Controller
             ]);
         })->filter()->values()->all();
 
-        $heroImage = ! empty($service?->hero_image) ? asset('storage/'.$service->hero_image) : null;
+        $heroImage = Images::url($service?->hero_image);
 
         $seo->addNode(array_filter([
             '@type' => 'Service',
@@ -284,9 +285,7 @@ class PageController extends Controller
     /** schema.org Person for a team member (E-E-A-T). */
     public static function personNode(\App\Models\TeamMember $member): array
     {
-        $image = $member->image_path
-            ? (str_starts_with($member->image_path, 'http') ? $member->image_path : asset('storage/'.$member->image_path))
-            : null;
+        $image = Images::url($member->image_path);
 
         return array_filter([
             '@type' => 'Person',

@@ -54,6 +54,7 @@ class PartnerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('logo_path')
+                    ->getStateUsing(fn (Partner $record) => \App\Support\Images::url($record->logo_path))
                     ->label('Лого'),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Име')
