@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\Images;
-
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
+use App\Support\Images;
 use App\Support\Seo\Seo;
 use Illuminate\Support\Str;
 

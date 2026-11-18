@@ -9,6 +9,7 @@ use App\Models\WeddingGallery;
 use App\Support\Images;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class PictureComponentTest extends TestCase
@@ -22,8 +23,8 @@ class PictureComponentTest extends TestCase
         $html = Blade::render('<x-picture :src="asset(\'css/img/header.jpg\')" alt="Hero" class="w-100" />');
 
         $this->assertStringContainsString('<picture>', $html);
-        $this->assertStringContainsString('type="image/webp" srcset="'.asset('css/img/header.webp').'"', $html);
-        $this->assertStringContainsString('src="'.asset('css/img/header.jpg').'"', $html);
+        $this->assertStringContainsString('type="image/webp" srcset="/css/img/header.webp"', $html);
+        $this->assertStringContainsString('src="/css/img/header.jpg"', $html);
         $this->assertDoesNotMatchRegularExpression('/\s(width|height)="/', $html, 'CSS owns the sizing: no fixed width/height attributes');
         $this->assertStringContainsString('loading="lazy" decoding="async"', $html);
         $this->assertStringContainsString('class="w-100"', $html);
@@ -54,13 +55,16 @@ class PictureComponentTest extends TestCase
         }
     }
 
-    public function test_public_pages_rebase_legacy_images_and_gallery_links_to_the_current_host(): void
+    public function test_public_images_and_styles_are_same_origin_even_when_lara_is_configured(): void
     {
         $this->seed();
         $lara = 'https://lara.taketwostudio1603.com';
         $master = 'https://www.taketwostudio1603.com';
         $external = 'https://images.pixieset.com/example/photo.jpg';
-        config(['app.url' => $lara]);
+        $preview = 'https://preview.test';
+        config(['app.url' => $lara, 'app.force_canonical' => false]);
+        URL::forceRootUrl($lara);
+        URL::useAssetOrigin($lara);
 
         Partner::query()->where('display_order', 1)->update([
             'logo_path' => $master.'/public/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png',
@@ -75,22 +79,25 @@ class PictureComponentTest extends TestCase
         $gallery->photos()->create(['image_path' => $external, 'sort_order' => 1]);
         PromPortfolioPhoto::create(['image_path' => 'prom_portfolio_photos/class.jpg', 'is_visible' => true]);
 
-        $this->get($lara.'/')->assertOk()
-            ->assertSee($lara.'/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png', false)
-            ->assertSee('data-src="'.$lara.'/css/img/ST.webp"', false)
+        $this->get($preview.'/')->assertOk()
+            ->assertSee('src="/css/img/Logos/Ardes%20logo%20without%20slogan%20expanded@4x.png"', false)
+            ->assertSee('src="/css/img/header.webp"', false)
+            ->assertSee('href="/css/style.css?v=', false)
+            ->assertDontSee('src="'.$lara, false)
+            ->assertSee('data-src="/css/img/ST.webp"', false)
             ->assertDontSee($master, false);
-        $this->get($lara.'/za-nas')->assertOk()
-            ->assertSee('srcset="'.$lara.'/css/img/ST.webp"', false)
-            ->assertSee('src="'.$lara.'/css/img/ST.png"', false);
-        $this->get($lara.'/weddings')->assertOk()
-            ->assertSee('src="'.$lara.'/css/img/header.jpg"', false)
+        $this->get($preview.'/za-nas')->assertOk()
+            ->assertSee('srcset="/css/img/ST.webp"', false)
+            ->assertSee('src="/css/img/ST.png"', false);
+        $this->get($preview.'/weddings')->assertOk()
+            ->assertSee('src="/css/img/header.jpg"', false)
             ->assertSee('src="'.$external.'"', false);
-        $this->get($lara.'/svatbi/legacy-images')->assertOk()
-            ->assertSee($lara.'/css/img/header.jpg', false)
+        $this->get($preview.'/svatbi/legacy-images')->assertOk()
+            ->assertSee("url('/css/img/header.jpg')", false)
             ->assertSee('href="'.$external.'"', false);
-        $this->get($lara.'/proms')->assertOk()
-            ->assertSee('href="'.$lara.'/storage/prom_portfolio_photos/class.jpg"', false);
-        $this->get($lara.'/sitemap-images.xml')->assertOk()
+        $this->get($preview.'/proms')->assertOk()
+            ->assertSee('href="/storage/prom_portfolio_photos/class.jpg"', false);
+        $this->get($preview.'/sitemap-images.xml')->assertOk()
             ->assertSee($lara.'/css/img/header.jpg', false)
             ->assertDontSee($master, false);
     }
@@ -104,7 +111,7 @@ class PictureComponentTest extends TestCase
         $result = Images::rebaseHtmlImages($html);
 
         $this->assertStringContainsString('href="'.$source.'"', $result);
-        $this->assertStringContainsString('src="'.asset('storage/blog/attachments/file%20name.jpg?v=1&x=2#photo').'"', html_entity_decode($result));
+        $this->assertStringContainsString('src="/storage/blog/attachments/file%20name.jpg?v=1&x=2#photo"', html_entity_decode($result));
         $this->assertStringContainsString('src="https://cdn.example.com/photo.jpg"', $result);
     }
 }

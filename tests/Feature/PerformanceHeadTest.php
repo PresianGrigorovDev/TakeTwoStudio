@@ -104,8 +104,8 @@ class PerformanceHeadTest extends TestCase
 
         preg_match_all('#<link rel="preload" href="([^"]+\.woff2)" as="font" type="font/woff2" crossorigin>#', $html, $preloads);
         $this->assertSame([
-            asset('fonts/montserrat/montserrat-400-cyrillic.woff2'),
-            asset('fonts/montserrat/montserrat-400-latin.woff2'),
+            '/fonts/montserrat/montserrat-400-cyrillic.woff2',
+            '/fonts/montserrat/montserrat-400-latin.woff2',
         ], $preloads[1]);
 
         // Every weight file of a subset is the same variable font, so one @font-face per subset covers 300-700.
