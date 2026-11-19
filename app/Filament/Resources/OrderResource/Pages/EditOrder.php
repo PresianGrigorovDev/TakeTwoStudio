@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\OrderResource\Pages;
 
+use App\Filament\Resources\FinanceProjectResource;
 use App\Filament\Resources\OrderResource;
+use App\Models\FinanceProject;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -13,6 +15,9 @@ class EditOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('finance')->label('Финанси')->icon('heroicon-m-banknotes')->color('gray')
+                ->visible(fn () => FinanceProject::installed())
+                ->url(fn () => FinanceProjectResource::urlForSource($this->record)),
             Actions\DeleteAction::make(),
         ];
     }

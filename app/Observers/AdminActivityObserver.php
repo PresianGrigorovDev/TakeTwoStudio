@@ -33,6 +33,9 @@ class AdminActivityObserver
         Models\FamilyGallery::class => 'Семейна галерия',
         Models\FamilyGalleryPhoto::class => 'Снимка в семейна галерия',
         Models\FamilyPackage::class => 'Пакет за семейна фотография',
+        Models\FinanceAccount::class => 'Финансова сметка',
+        Models\FinanceMovement::class => 'Финансово движение',
+        Models\FinanceProject::class => 'Финансов проект',
         Models\Faq::class => 'Често задаван въпрос',
         Models\GameEvent::class => 'Запис от играта',
         Models\GameSticker::class => 'QR стикер',
@@ -157,7 +160,7 @@ class AdminActivityObserver
 
         if ($action === 'updated') {
             foreach (array_keys($changes) as $field) {
-                $redact = in_array($field, ['address', 'egn', 'email', 'phone', 'setting_value'], true)
+                $redact = in_array($field, ['address', 'egn', 'email', 'phone', 'setting_value', 'void_reason'], true)
                     || ($private && ! in_array($field, ['status', 'kind', 'event_date', 'end_date', 'start_time', 'end_time', 'team_member_id', 'order_id', 'redeemed_at'], true));
 
                 if ($redact) {

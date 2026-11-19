@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\ImageOptimizer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class TeamMember extends Model
 {
@@ -14,6 +15,13 @@ class TeamMember extends Model
 
     protected static function booted(): void
     {
+        static::created(fn (TeamMember $member) => $member->syncFinanceAccount());
+        static::updated(function (TeamMember $member) {
+            if ($member->wasChanged('name')) {
+                $member->syncFinanceAccount();
+            }
+        });
+
         // Safety net for photos that skip the Filament client-side resize (other forms, imports, SSH).
         static::created(fn (TeamMember $member) => $member->optimizeImage());
         static::updated(function (TeamMember $member) {
@@ -21,6 +29,17 @@ class TeamMember extends Model
                 $member->optimizeImage();
             }
         });
+    }
+
+    private function syncFinanceAccount(): void
+    {
+        if (Schema::hasTable('finance_accounts')) {
+            FinanceAccount::updateOrCreate(['key' => 'member:'.$this->id], [
+                'name' => $this->name,
+                'kind' => 'member',
+                'team_member_id' => $this->id,
+            ]);
+        }
     }
 
     /** Calendar entries (engagements, busy time) this person is assigned to. */

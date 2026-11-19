@@ -14,13 +14,17 @@ final class AdminDeletionEffects
         Models\AutomotiveGallery::class => [[Models\AutomotiveGalleryPhoto::class, 'automotive_gallery_id']],
         Models\BaptismGallery::class => [[Models\BaptismGalleryPhoto::class, 'baptism_gallery_id']],
         Models\BlogCategory::class => [[Models\BlogPost::class, 'category_id']],
-        Models\Booking::class => [[Models\TeamAssignment::class, 'booking_id', 'booking_team_member']],
+        Models\Booking::class => [
+            [Models\TeamAssignment::class, 'booking_id', 'booking_team_member'],
+            [Models\FinanceProject::class, 'booking_id'],
+        ],
         Models\EventGallery::class => [[Models\EventGalleryPhoto::class, 'event_gallery_id']],
         Models\FamilyGallery::class => [[Models\FamilyGalleryPhoto::class, 'family_gallery_id']],
         Models\NavigationItem::class => [[Models\NavigationItem::class, 'parent_id']],
         Models\Order::class => [
             [Models\Booking::class, 'order_id'],
             [Models\TeamAssignment::class, 'order_id', 'order_team_member'],
+            [Models\FinanceProject::class, 'order_id'],
         ],
         Models\PortfolioCategory::class => [[Models\PortfolioItem::class, 'category_id']],
         Models\PortraitGallery::class => [[Models\PortraitGalleryPhoto::class, 'portrait_gallery_id']],
@@ -33,6 +37,7 @@ final class AdminDeletionEffects
         Models\ServicePackage::class => [[Models\ServicePromotion::class, 'service_package_id']],
         Models\TeamMember::class => [
             [Models\BlogPost::class, 'author_team_member_id'],
+            [Models\FinanceAccount::class, 'team_member_id'],
             [Models\TeamAssignment::class, 'team_member_id', 'booking_team_member'],
             [Models\TeamAssignment::class, 'team_member_id', 'order_team_member'],
         ],
@@ -96,6 +101,9 @@ final class AdminDeletionEffects
         foreach (self::REFERENCES[$parent::class] ?? [] as $reference) {
             [$class, $foreignKey] = $reference;
             $related = new $class;
+            if (in_array($class, [Models\FinanceAccount::class, Models\FinanceProject::class], true) && ! Models\FinanceProject::installed()) {
+                continue;
+            }
             $table = $reference[2] ?? $related->getTable();
             $related->setTable($table);
 
