@@ -68,6 +68,7 @@ abstract class ServiceScopedPackageResource extends Resource
                 ->label('Поредност')
                 ->numeric()
                 ->default(0),
+            PackageShootPlan::items(),
         ]);
     }
 

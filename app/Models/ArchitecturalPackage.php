@@ -10,6 +10,7 @@ class ArchitecturalPackage extends Model
 
     protected $casts = [
         'features'    => 'array',
+        'shoot_plan'  => 'array',
         'is_featured' => 'boolean',
         'is_visible'  => 'boolean',
         'price'       => 'decimal:2',

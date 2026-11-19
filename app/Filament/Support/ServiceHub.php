@@ -79,6 +79,12 @@ final class ServiceHub
         'events' => 'heroicon-o-musical-note',
     ];
 
+    /** @return array<string, class-string<\Filament\Resources\Resource>> */
+    public static function packageResources(): array
+    {
+        return self::PACKAGES;
+    }
+
     /**
      * Tabs of a service page, in order.
      *

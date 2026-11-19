@@ -5,10 +5,12 @@ namespace App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\BookingResource\Pages\Concerns\ReturnsToCalendar;
 use App\Filament\Resources\FinanceProjectResource;
+use App\Filament\Resources\OrderResource;
 use App\Models\Booking;
 use App\Models\FinanceProject;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Validation\ValidationException;
 
 class EditBooking extends EditRecord
 {
@@ -19,6 +21,9 @@ class EditBooking extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('shoots')->label('Заснемания')->icon('heroicon-o-camera')->color('gray')
+                ->visible(fn () => $this->shootsUrl() !== null)
+                ->url($this->shootsUrl(...)),
             Actions\Action::make('finance')->label('Финанси')->icon('heroicon-m-banknotes')->color('gray')
                 ->visible(fn () => FinanceProject::installed() && Booking::isClientKind($this->record->kind))
                 ->url(fn () => FinanceProjectResource::urlForSource($this->record)),
@@ -31,6 +36,19 @@ class EditBooking extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $booking = Booking::query()->lockForUpdate()->findOrFail($this->record->id);
+        $shoot = $booking->orderShoot()->lockForUpdate()->first();
+        if ($shoot !== null) {
+            if (! in_array($data['kind'] ?? null, Booking::CLIENT_KINDS, true)) {
+                throw ValidationException::withMessages(['data.kind' => 'Изберете ангажимент или фотосесия за този запис.']);
+            }
+
+            $orderId = $data['order_id'] ?? null;
+            if (filled($orderId) && filter_var($orderId, FILTER_VALIDATE_INT) !== (int) $shoot->order_id) {
+                throw ValidationException::withMessages(['data.order_id' => 'Изберете поръчката на заснемането.']);
+            }
+        }
+
         return BookingResource::normalizeData($data);
     }
 
@@ -43,10 +61,23 @@ class EditBooking extends EditRecord
     {
         parent::mount($record);
         $this->rememberCalendar();
+
+        if (request()->query('from') === 'order-shoot') {
+            $this->calendarReturnUrl = $this->shootsUrl();
+        }
     }
 
     protected function getRedirectUrl(): ?string
     {
         return $this->calendarReturnUrl ?? parent::getRedirectUrl();
+    }
+
+    private function shootsUrl(): ?string
+    {
+        $shoot = $this->record->orderShoot;
+
+        return $shoot && OrderResource::canEdit($shoot->order)
+            ? OrderResource::getUrl('shoots', ['record' => $shoot->order_id])
+            : null;
     }
 }

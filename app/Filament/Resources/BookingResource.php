@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 
 /**
@@ -46,6 +47,7 @@ class BookingResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $fromShoot = fn ($livewire) => $livewire instanceof Pages\CreateBooking && $livewire->orderShootId !== null;
         $isClient = fn (Get $get) => Booking::isClientKind($get('kind'));
 
         return $form->schema([
@@ -53,10 +55,13 @@ class BookingResource extends Resource
                 ->schema([
                     Forms\Components\ToggleButtons::make('kind')
                         ->label('Тип')
-                        ->options(Booking::KINDS)
+                        ->options(fn (?Booking $record) => $record?->orderShoot
+                            ? Arr::only(Booking::KINDS, Booking::CLIENT_KINDS)
+                            : Booking::KINDS)
                         ->colors([Booking::KIND_CLIENT => 'primary', Booking::KIND_SESSION => 'info', Booking::KIND_BUSY => 'gray', Booking::KIND_CLOSED => 'danger'])
                         ->icons([Booking::KIND_CLIENT => 'heroicon-o-briefcase', Booking::KIND_SESSION => 'heroicon-o-camera', Booking::KIND_BUSY => 'heroicon-o-user-minus', Booking::KIND_CLOSED => 'heroicon-o-no-symbol'])
                         ->default(fn () => in_array(request()->query('kind'), array_keys(Booking::KINDS), true) ? request()->query('kind') : Booking::KIND_CLIENT)
+                        ->hidden($fromShoot)
                         ->inline()
                         ->live()
                         ->required()
@@ -140,7 +145,11 @@ class BookingResource extends Resource
                 ->schema([
                     Forms\Components\Select::make('service_type')
                         ->label('Тип услуга')
-                        ->options(self::SERVICE_TYPES),
+                        ->options(function (Get $get): array {
+                            $service = $get('service_type');
+
+                            return self::SERVICE_TYPES + (is_string($service) && filled($service) ? [$service => $service] : []);
+                        }),
                     Forms\Components\Select::make('status')
                         ->label('Статус')
                         ->options(self::STATUSES)
@@ -156,7 +165,9 @@ class BookingResource extends Resource
                         ->maxLength(255),
                     Forms\Components\Select::make('order_id')
                         ->label('Свързана поръчка')
-                        ->relationship('order', 'name')
+                        ->relationship('order', 'name', fn (Builder $query, ?Booking $record) => $query
+                            ->when($record?->orderShoot?->order_id, fn (Builder $query, int $orderId) => $query->whereKey($orderId)))
+                        ->disabled($fromShoot)
                         ->searchable()
                         ->preload(),
                     Forms\Components\Textarea::make('message')

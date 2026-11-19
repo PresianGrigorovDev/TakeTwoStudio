@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -70,6 +71,11 @@ class Booking extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function orderShoot(): HasOne
+    {
+        return $this->hasOne(OrderShoot::class);
+    }
+
     public function teamMembers()
     {
         return $this->belongsToMany(TeamMember::class, 'booking_team_member')
@@ -96,6 +102,11 @@ class Booking extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereIn('status', self::ACTIVE_STATUSES);
+    }
+
+    public function isActive(): bool
+    {
+        return in_array($this->status, self::ACTIVE_STATUSES, true);
     }
 
     /** Entries touching at least one day of [$from, $to]. */

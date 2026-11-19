@@ -16,6 +16,8 @@ class EditOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('shoots')->label('Заснемания')->icon('heroicon-o-camera')->color('gray')
+                ->url(fn () => OrderResource::getUrl('shoots', ['record' => $this->record])),
             OrderPaymentAction::onOrder(Actions\Action::make('recordPayment')),
             Actions\Action::make('finance')->label('Финанси')->icon('heroicon-m-banknotes')->color('gray')
                 ->visible(fn () => FinanceProject::installed())

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServicePackageResource\Pages;
+use App\Filament\Support\PackageShootPlan;
 use App\Filament\Resources\ServicePackageResource\RelationManagers;
 use App\Models\ServicePackage;
 use Filament\Forms;
@@ -46,6 +47,7 @@ class ServicePackageResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_default')
                     ->required(),
+                PackageShootPlan::items(),
             ]);
     }
 

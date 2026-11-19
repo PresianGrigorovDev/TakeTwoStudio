@@ -6,12 +6,14 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Support\OrderPaymentAction;
 use App\Models\Booking;
 use App\Models\Order;
+use App\Models\OrderShoot;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderResource extends Resource
 {
@@ -175,6 +177,11 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->withCount([
+                'shoots',
+                'shoots as remaining_sessions_count' => fn (Builder $shoots) => $shoots->remaining()->where('kind', OrderShoot::SESSION),
+                'shoots as remaining_events_count' => fn (Builder $shoots) => $shoots->remaining()->where('kind', OrderShoot::EVENT),
+            ]))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Клиент')
@@ -224,6 +231,25 @@ class OrderResource extends Resource
                         'cancelled' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('remaining_shoots')
+                    ->label('Оставащи заснемания')
+                    ->state(function (Order $record): ?string {
+                        if (! $record->shoots_count) {
+                            return null;
+                        }
+
+                        $sessions = (int) $record->remaining_sessions_count;
+                        $events = (int) $record->remaining_events_count;
+
+                        return $sessions || $events
+                            ? $sessions.($sessions === 1 ? ' фотосесия' : ' фотосесии')
+                                .' · '.$events.($events === 1 ? ' събитие' : ' събития')
+                            : 'Всичко е заснето';
+                    })
+                    ->url(fn (Order $record) => self::getUrl('shoots', ['record' => $record]))
+                    ->badge()
+                    ->color(fn (Order $record) => $record->remaining_sessions_count || $record->remaining_events_count ? 'info' : 'success')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Получена на')
                     ->dateTime('d.m.Y H:i')
@@ -240,6 +266,9 @@ class OrderResource extends Resource
                         'completed' => 'Завършена',
                         'cancelled' => 'Отказана',
                     ]),
+                Tables\Filters\Filter::make('remaining_shoots')
+                    ->label('С оставащи заснемания')
+                    ->query(fn (Builder $query) => $query->whereHas('shoots', fn (Builder $shoots) => $shoots->remaining())),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -298,6 +327,7 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'shoots' => Pages\ManageOrderShoots::route('/{record}/shoots'),
         ];
     }
 }

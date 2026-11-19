@@ -17,6 +17,7 @@ final class AdminDeletionEffects
         Models\Booking::class => [
             [Models\TeamAssignment::class, 'booking_id', 'booking_team_member'],
             [Models\FinanceProject::class, 'booking_id'],
+            [Models\OrderShoot::class, 'booking_id'],
         ],
         Models\EventGallery::class => [[Models\EventGalleryPhoto::class, 'event_gallery_id']],
         Models\FamilyGallery::class => [[Models\FamilyGalleryPhoto::class, 'family_gallery_id']],
@@ -25,6 +26,7 @@ final class AdminDeletionEffects
             [Models\Booking::class, 'order_id'],
             [Models\TeamAssignment::class, 'order_id', 'order_team_member'],
             [Models\FinanceProject::class, 'order_id'],
+            [Models\OrderShoot::class, 'order_id'],
         ],
         Models\PortfolioCategory::class => [[Models\PortfolioItem::class, 'category_id']],
         Models\PortraitGallery::class => [[Models\PortraitGalleryPhoto::class, 'portrait_gallery_id']],

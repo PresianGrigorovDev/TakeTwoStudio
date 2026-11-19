@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PromPackageResource\Pages;
+use App\Filament\Support\PackageShootPlan;
 use App\Models\PromPackage;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -73,6 +74,8 @@ class PromPackageResource extends Resource
             Toggle::make('is_visible')
                 ->label('Видим')
                 ->default(true),
+
+            PackageShootPlan::items(),
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AutomotivePackageResource\Pages;
+use App\Filament\Support\PackageShootPlan;
 use App\Models\AutomotivePackage;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -59,6 +60,7 @@ class AutomotivePackageResource extends Resource
             Toggle::make('is_visible')
                 ->label('Видим')
                 ->default(true),
+            PackageShootPlan::items(),
         ]);
     }
 
