@@ -52,7 +52,7 @@ final class UtilityBills
             $expense->update([
                 'amount_cents' => $amount,
                 'occurred_on' => $data['occurred_on'],
-                'from_account_id' => $data['from_account_id'],
+                'from_account_id' => FinanceAccount::canonicalId((int) $data['from_account_id']),
                 'handled_by_id' => $data['handled_by_id'] ?? null,
                 'method' => $data['method'],
                 'details' => array_replace($expense->details ?? [], ['shares' => $weights]),
@@ -75,7 +75,7 @@ final class UtilityBills
             'period_label' => $category ? $periodLabel : $bill->title,
             'amount' => Euro::decimal($expense->amount_cents),
             'occurred_on' => $expense->occurred_on->toDateString(),
-            'from_account_id' => $expense->from_account_id,
+            'from_account_id' => FinanceAccount::canonicalId($expense->from_account_id),
             'handled_by_id' => $expense->handled_by_id,
             'method' => $expense->method,
             'split_mode' => $equal ? 'equal' : 'custom',

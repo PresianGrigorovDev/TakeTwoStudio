@@ -5,7 +5,7 @@
     $methods = \App\Models\FinanceMovement::METHODS;
     $companyRate = (int) ($movement->details['company_reserve_bps'] ?? 0);
     $settlement = $movement->kind === \App\Models\FinanceMovement::SETTLEMENT;
-    $accounts = $settlement ? \App\Models\FinanceAccount::choices() : [];
+    $accounts = $settlement ? \App\Models\FinanceAccount::choices(includeLegacy: true) : [];
 @endphp
 
 <x-filament::section>

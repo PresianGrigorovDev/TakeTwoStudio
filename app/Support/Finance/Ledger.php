@@ -128,7 +128,8 @@ final class Ledger
 
         $balances = [];
         $unpaid = 0;
-        $bankAccountId = null;
+        $companyAccountId = FinanceAccount::companyId();
+        $legacyCashId = FinanceAccount::companyAccounts()[FinanceAccount::LEGACY_CASH] ?? null;
         foreach ($projects as $project) {
             $stats[$project->id] ??= self::emptyProject();
             $row = &$stats[$project->id];
@@ -136,15 +137,21 @@ final class Ledger
             $row['net'] = $row['paid'] - $row['expenses'];
             $row['remaining'] = $project->agreed_cents !== null ? $project->agreed_cents - $row['paid'] : null;
             $unpaid += max(0, $row['remaining'] ?? 0);
+            if ($legacyCashId && isset($row['held'][$legacyCashId])) {
+                self::add($row['held'], [$companyAccountId => $row['held'][$legacyCashId]]);
+                unset($row['held'][$legacyCashId]);
+            }
+            $row['distribution_pending'] = ! $project->isSharedExpense() && $project->shares === [];
             if (! $project->isSharedExpense()) {
                 $row['shares'] = self::split($row['net'] - $row['company_reserve'], $project->shares);
             }
 
-            $row['balance'] = $row['held'];
-            self::add($row['balance'], array_map(fn (int $value) => -$value, $row['shares']));
-            if ($row['company_reserve'] > 0) {
-                $bankAccountId ??= FinanceAccount::where('key', 'bank')->firstOrFail(['id'])->id;
-                self::add($row['balance'], [$bankAccountId => -$row['company_reserve']]);
+            if ($row['distribution_pending']) {
+                $row['balance'] = self::pendingReserve($row['held'], $companyAccountId, $row['company_reserve']);
+            } else {
+                $row['balance'] = $row['held'];
+                self::add($row['balance'], array_map(fn (int $value) => -$value, $row['shares']));
+                self::add($row['balance'], [$companyAccountId => -$row['company_reserve']]);
             }
             $row['balance'] = array_filter($row['balance']);
             ksort($row['balance']);
@@ -155,6 +162,22 @@ final class Ledger
         ksort($balances);
 
         return ['period' => $period, 'projects' => $stats, 'balances' => $balances, 'unpaid' => $unpaid, 'company_reserve' => $companyReserve];
+    }
+
+    private static function pendingReserve(array $held, int $company, int $reserve): array
+    {
+        $left = max(0, $reserve - ($held[$company] ?? 0));
+        $balances = [];
+        ksort($held);
+        foreach ($held as $account => $cents) {
+            if ($account !== $company && $cents > 0 && $left > 0) {
+                $balances[$account] = min($left, $cents);
+                $left -= $balances[$account];
+            }
+        }
+        $balances[$company] = -array_sum($balances);
+
+        return $balances;
     }
 
     private static function emptyProject(): array
@@ -210,7 +233,13 @@ final class Ledger
             'method' => [$fullUtilityShare ? 'nullable' : 'required', Rule::in(array_keys(FinanceMovement::METHODS))],
             'description' => ['nullable', 'string', 'max:500'],
             'company_percentage' => ['nullable'],
+            'company_deposit' => ['nullable', Rule::in(['pending', 'now'])],
         ])->validate();
+        $data['from_account_id'] = FinanceAccount::canonicalId(isset($data['from_account_id']) ? (int) $data['from_account_id'] : null);
+        $data['to_account_id'] = FinanceAccount::canonicalId(isset($data['to_account_id']) ? (int) $data['to_account_id'] : null);
+        if ($data['from_account_id'] !== null && $data['from_account_id'] === $data['to_account_id']) {
+            throw ValidationException::withMessages(['to_account_id' => 'Изберете различни сметки.']);
+        }
         $amount = Euro::parse($data['amount']);
         $companyRate = $data['kind'] === FinanceMovement::INCOME ? CompanyReserve::basisPoints($data['company_percentage'] ?? null) : 0;
 
@@ -243,7 +272,7 @@ final class Ledger
                 $details = ['shares' => $shares];
             }
 
-            return $project->movements()->create([
+            $movement = $project->movements()->create([
                 'kind' => $kind,
                 'payment_stage' => $kind === FinanceMovement::INCOME ? $data['payment_stage'] : null,
                 'occurred_on' => $data['occurred_on'],
@@ -256,6 +285,24 @@ final class Ledger
                 'details' => $details,
                 ...self::actorFields($actor),
             ]);
+
+            if ($kind === FinanceMovement::INCOME && ($data['company_deposit'] ?? null) === 'now' && $data['to_account_id'] !== FinanceAccount::companyId()) {
+                $reserve = CompanyReserve::cents($amount, $companyRate);
+                if ($reserve > 0) {
+                    $project->movements()->create([
+                        'kind' => FinanceMovement::TRANSFER,
+                        'occurred_on' => $data['occurred_on'],
+                        'amount_cents' => $reserve,
+                        'from_account_id' => $data['to_account_id'],
+                        'to_account_id' => FinanceAccount::companyId(),
+                        'description' => 'Фирмен дял от плащане №'.$movement->id,
+                        'details' => ['company_receipt_id' => $movement->id],
+                        ...self::actorFields($actor),
+                    ]);
+                }
+            }
+
+            return $movement;
         });
     }
 

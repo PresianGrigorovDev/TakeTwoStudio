@@ -18,7 +18,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Validation\ValidationException;
 
 class FinanceMovementResource extends Resource
 {
@@ -79,12 +78,6 @@ class FinanceMovementResource extends Resource
                 Forms\Components\Select::make('payment_stage')->label('Етап на плащането')
                     ->options(FinanceMovement::STAGES)->default('deposit')->required()
                     ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME),
-                FinanceForms::amount('company_percentage', 'Процент за фирмената сметка', '%')
-                    ->default('0')->maxLength(6)->live(onBlur: true)
-                    ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME),
-                Forms\Components\Placeholder::make('company_reserve_preview')->label('За фирмената сметка')
-                    ->content(fn (Forms\Get $get) => self::reservePreview($get))
-                    ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME && filled($get('amount')) && filled($get('company_percentage'))),
                 Forms\Components\Select::make('from_account_id')->label(fn (Forms\Get $get) => $get('kind') === FinanceMovement::TRANSFER
                     ? 'Кой даде парите' : 'Кой плати разхода или връщането')
                     ->options(fn () => FinanceAccount::choices())->required()->live()
@@ -92,6 +85,7 @@ class FinanceMovementResource extends Resource
                 Forms\Components\Select::make('to_account_id')->label('Кой получи парите')
                     ->options(fn () => FinanceAccount::choices())->required()->live()
                     ->visible(fn (Forms\Get $get) => in_array($get('kind'), [FinanceMovement::INCOME, FinanceMovement::TRANSFER], true)),
+                ...FinanceForms::companyFields(),
                 Forms\Components\Select::make('handled_by_id')->label('Кой извърши движението през общата сметка')
                     ->options(fn () => FinanceAccount::choices(true))
                     ->visible(fn (Forms\Get $get) => FinanceAccount::whereIn('id', array_filter([
@@ -102,15 +96,6 @@ class FinanceMovementResource extends Resource
                     ->placeholder('Например албум, транспорт или референция на превода')->rows(2)->columnSpanFull(),
             ]),
         ]);
-    }
-
-    private static function reservePreview(Forms\Get $get): string
-    {
-        try {
-            return Euro::format(CompanyReserve::cents(Euro::parse($get('amount')), CompanyReserve::basisPoints($get('company_percentage'))));
-        } catch (ValidationException $exception) {
-            return $exception->getMessage();
-        }
     }
 
     public static function movementKinds(int $project): array

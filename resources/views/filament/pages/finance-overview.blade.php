@@ -149,6 +149,9 @@
                         @endif
                     </div>
                 @endif
+                @if($projectRow && $projectRow['distribution_pending'])
+                    <p class="tt-finance__muted">Добавете участниците в проекта, за да видите дяловете на екипа.</p>
+                @endif
             </x-filament::section>
 
             <x-filament::section>

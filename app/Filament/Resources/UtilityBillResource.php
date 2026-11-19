@@ -135,7 +135,7 @@ class UtilityBillResource extends Resource
                         $balance = app(Ledger::class)->report($date, $date, $record)['projects'][$record->id]['held'];
                         $expense = $record->utilityExpense;
                         if ($expense && ! $expense->voided_at) {
-                            $previousPayer = $expense->from_account_id;
+                            $previousPayer = FinanceAccount::canonicalId($expense->from_account_id);
                             $balance[$previousPayer] = ($balance[$previousPayer] ?? 0) + $expense->amount_cents;
                         }
                     }
