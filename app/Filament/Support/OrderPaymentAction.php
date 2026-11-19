@@ -51,6 +51,9 @@ final class OrderPaymentAction
                 ->default(Ledger::today())->maxDate(Ledger::today())->required(),
             Forms\Components\Select::make('to_account_id')->label('Кой получи парите')
                 ->options(fn () => FinanceAccount::choices())->required()->live(),
+            Forms\Components\Select::make('handled_by_id')->label('Кой прие плащането по фирмената сметка')
+                ->options(fn () => FinanceAccount::choices(true))
+                ->visible(fn (Forms\Get $get) => FinanceAccount::canonicalId((int) $get('to_account_id')) === FinanceAccount::companyId()),
             Forms\Components\Select::make('method')->label('Начин на плащане')->options(FinanceMovement::METHODS)->required(),
             Forms\Components\Select::make('payment_stage')->label('Етап на плащането')
                 ->options(FinanceMovement::STAGES)->default($hasPayment ? 'installment' : 'deposit')->required(),

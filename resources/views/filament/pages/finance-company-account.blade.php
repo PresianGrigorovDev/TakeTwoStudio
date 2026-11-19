@@ -41,6 +41,9 @@
                                 {{ $movement->fromAccount?->display_name ?? 'Клиент' }} → {{ $movement->toAccount?->display_name ?? 'Получател' }}
                             </p>
                         @endif
+                        @if($movement->description)
+                            <p class="tt-finance__note">{{ $movement->description }}</p>
+                        @endif
                     </div>
                     <strong>
                         @if($row['incoming']) +{{ Euro::format($row['incoming']) }} @endif
