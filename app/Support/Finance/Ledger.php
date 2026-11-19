@@ -101,7 +101,7 @@ final class Ledger
                 $period[$field] += $amount;
             }
 
-            if ($project->isStudio() && $movement->kind === FinanceMovement::EXPENSE) {
+            if ($project->isSharedExpense() && $movement->kind === FinanceMovement::EXPENSE) {
                 self::add($row['shares'], self::split(-$amount, $movement->details['shares']));
             }
             unset($row);
@@ -116,7 +116,7 @@ final class Ledger
             $row['net'] = $row['paid'] - $row['expenses'];
             $row['remaining'] = $project->agreed_cents !== null ? $project->agreed_cents - $row['paid'] : null;
             $unpaid += max(0, $row['remaining'] ?? 0);
-            if (! $project->isStudio()) {
+            if (! $project->isSharedExpense()) {
                 $row['shares'] = self::split($row['net'], $project->shares);
             }
 
@@ -190,8 +190,12 @@ final class Ledger
         return $this->transaction(function () use ($project, $data, $amount, $actor) {
             $project->refresh();
             $kind = $data['kind'];
-            if ($project->isStudio() && ! in_array($kind, [FinanceMovement::EXPENSE, FinanceMovement::TRANSFER], true)) {
+            if ($project->isSharedExpense() && ! in_array($kind, [FinanceMovement::EXPENSE, FinanceMovement::TRANSFER], true)) {
                 throw ValidationException::withMessages(['kind' => 'Клиентските плащания се записват по конкретен проект.']);
+            }
+
+            if ($project->isUtility() && $kind === FinanceMovement::EXPENSE && $project->utilityExpense()->exists()) {
+                throw ValidationException::withMessages(['kind' => 'Тази битова сметка вече има запис на плащането. Можете да запишете възстановяване на сума.']);
             }
 
             if ($kind === FinanceMovement::REFUND) {
@@ -206,7 +210,7 @@ final class Ledger
             }
 
             $details = null;
-            if ($project->isStudio() && $kind === FinanceMovement::EXPENSE) {
+            if ($project->isSharedExpense() && $kind === FinanceMovement::EXPENSE) {
                 $shares = $project->shares ?: FinanceAccount::activeMembers()->pluck('id')->mapWithKeys(fn ($id) => [$id => 1])->all();
                 if ($shares === []) {
                     throw ValidationException::withMessages(['kind' => 'Добавете участници в общите разходи, преди да запишете разход.']);

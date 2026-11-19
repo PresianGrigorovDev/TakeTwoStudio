@@ -32,7 +32,7 @@ class FinanceProjectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function canAccess(): bool
     {
@@ -46,7 +46,7 @@ class FinanceProjectResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        return parent::getEloquentQuery()->where('kind', '!=', FinanceProject::UTILITY)
             ->withSum(['movements as received_cents' => fn ($query) => $query->posted()->where('kind', FinanceMovement::INCOME)], 'amount_cents')
             ->withSum(['movements as refunded_cents' => fn ($query) => $query->posted()->where('kind', FinanceMovement::REFUND)], 'amount_cents')
             ->withSum(['movements as expense_cents' => fn ($query) => $query->posted()->where('kind', FinanceMovement::EXPENSE)], 'amount_cents');

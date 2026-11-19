@@ -1,6 +1,7 @@
 @php
     use App\Filament\Resources\FinanceMovementResource;
     use App\Filament\Resources\FinanceProjectResource;
+    use App\Filament\Resources\UtilityBillResource;
     use App\Support\Finance\Euro;
 
     $period = $report['period'];
@@ -21,10 +22,29 @@
         @if($project)
             <div class="tt-finance__project">
                 <h2>{{ $project->title }}</h2>
-                <x-filament::link :href="FinanceProjectResource::getUrl('edit', ['record' => $project])">Към проекта</x-filament::link>
+                @if($project->isUtility())
+                    <x-filament::link :href="UtilityBillResource::getUrl('index')">Към битовите сметки</x-filament::link>
+                @else
+                    <x-filament::link :href="FinanceProjectResource::getUrl('edit', ['record' => $project])">Към проекта</x-filament::link>
+                @endif
             </div>
         @endif
 
+        @if($utilityExpense)
+            <x-filament::section>
+                <x-slot name="heading">Платена битова сметка</x-slot>
+                <dl class="tt-finance__metrics">
+                    <div><dt>Платил</dt><dd>{{ $utilityExpense->fromAccount->display_name }}</dd></div>
+                    <div><dt>Сума</dt><dd>{{ Euro::format($utilityExpense->amount_cents) }}</dd></div>
+                    <div><dt>Дата</dt><dd>{{ $utilityExpense->occurred_on->format('d.m.Y') }}</dd></div>
+                </dl>
+                @if($utilityExpense->voided_at)
+                    <p class="tt-finance__notice">Анулирана сметка</p>
+                @endif
+            </x-filament::section>
+        @endif
+
+        @if(! $project?->isUtility())
         <x-filament::section>
             <x-slot name="heading">Движения в избрания период</x-slot>
             <dl class="tt-finance__metrics">
@@ -52,6 +72,7 @@
                 </div>
             @endif
         </x-filament::section>
+        @endif
 
         <x-filament::section>
             <x-slot name="heading">Клиентски плащания</x-slot>
@@ -93,11 +114,11 @@
 
                 @if($projectRow && $projectRow['shares'])
                     <div class="tt-finance__summary">
-                        <h3>Дялове след разходите</h3>
+                        <h3>{{ $project->isSharedExpense() ? 'Дялове от разхода' : 'Дялове след разходите' }}</h3>
                         @foreach($projectRow['shares'] as $account => $amount)
                             <div class="tt-finance__row">
                                 <span>{{ $accounts[$account] }}</span>
-                                <strong>{{ Euro::format($amount) }}</strong>
+                                <strong>{{ Euro::format($project->isSharedExpense() ? -$amount : $amount) }}</strong>
                             </div>
                         @endforeach
                     </div>
@@ -117,7 +138,7 @@
                                 'from' => $transfer['from'],
                                 'to' => $transfer['to'],
                                 'amount' => Euro::decimal($transfer['cents']),
-                            ])">Запиши превод</x-filament::link>
+                            ])">{{ $project->isUtility() ? 'Запиши възстановяване' : 'Запиши превод' }}</x-filament::link>
                         @endif
                     </div>
                 @empty

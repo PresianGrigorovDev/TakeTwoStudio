@@ -24,9 +24,7 @@ class CreateFinanceMovement extends CreateRecord
 
         if ($project = FinanceProject::find(request()->integer('project'))) {
             $kind = request()->query('kind');
-            $allowed = $project->isStudio()
-                ? [FinanceMovement::EXPENSE, FinanceMovement::TRANSFER]
-                : [FinanceMovement::INCOME, FinanceMovement::EXPENSE, FinanceMovement::REFUND, FinanceMovement::TRANSFER];
+            $allowed = array_keys(FinanceMovementResource::movementKinds($project->id));
 
             $this->form->fill([
                 'finance_project_id' => $project->id,

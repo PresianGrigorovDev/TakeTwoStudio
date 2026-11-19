@@ -32,7 +32,7 @@ class FinanceMovementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     public static function canAccess(): bool
     {
@@ -96,13 +96,15 @@ class FinanceMovementResource extends Resource
         ]);
     }
 
-    private static function movementKinds(int $project): array
+    public static function movementKinds(int $project): array
     {
-        if ($project && FinanceProject::find($project)?->isStudio()) {
-            return array_intersect_key(FinanceMovement::KINDS, array_flip([FinanceMovement::EXPENSE, FinanceMovement::TRANSFER]));
-        }
+        $record = $project ? FinanceProject::find($project) : null;
 
-        return array_diff_key(FinanceMovement::KINDS, [FinanceMovement::SETTLEMENT => true]);
+        return match ($record?->kind) {
+            FinanceProject::UTILITY => [FinanceMovement::TRANSFER => 'Възстановяване на дял'],
+            FinanceProject::STUDIO => array_intersect_key(FinanceMovement::KINDS, array_flip([FinanceMovement::EXPENSE, FinanceMovement::TRANSFER])),
+            default => array_diff_key(FinanceMovement::KINDS, [FinanceMovement::SETTLEMENT => true]),
+        };
     }
 
     public static function infolist(Infolist $infolist): Infolist

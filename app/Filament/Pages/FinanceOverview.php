@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\FinanceMovementResource;
 use App\Filament\Resources\FinanceProjectResource;
+use App\Filament\Resources\UtilityBillResource;
 use App\Models\FinanceAccount;
 use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
@@ -141,8 +142,12 @@ class FinanceOverview extends Page
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('recordMovement')->label('Запиши движение')->icon('heroicon-m-plus')
+            Action::make('recordMovement')
+                ->label(fn () => $this->selectedProject?->isUtility() ? 'Запиши възстановяване' : 'Запиши движение')->icon('heroicon-m-plus')
                 ->url(fn () => FinanceMovementResource::getUrl('create', array_filter(['project' => $this->projectId]))),
+            Action::make('utilityBill')->label('Нова битова сметка')->color('gray')->icon('heroicon-m-document-text')
+                ->visible(fn () => $this->projectId === null)
+                ->url(fn () => UtilityBillResource::getUrl('create')),
             Action::make('listMovements')->label('История')->color('gray')
                 ->url(fn () => FinanceMovementResource::historyUrl($this->projectId)),
         ];
@@ -157,6 +162,7 @@ class FinanceOverview extends Page
             'report' => $report,
             'project' => $project,
             'projectRow' => $project ? $report['projects'][$project->id] : null,
+            'utilityExpense' => $project?->isUtility() ? $project->utilityExpense()->with('fromAccount.teamMember')->first() : null,
             'accounts' => FinanceAccount::choices(),
             'transfers' => Ledger::transfers($report['balances']),
             'studioUrl' => FinanceProjectResource::getUrl('edit', ['record' => FinanceProject::studio()]),

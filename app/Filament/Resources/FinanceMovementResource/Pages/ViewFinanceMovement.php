@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FinanceMovementResource\Pages;
 
+use App\Filament\Pages\FinanceOverview;
 use App\Filament\Resources\FinanceMovementResource;
 use App\Filament\Resources\FinanceProjectResource;
 use Filament\Actions\Action;
@@ -14,9 +15,12 @@ class ViewFinanceMovement extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('project')->label('Финансов проект')->color('gray')
+            Action::make('project')->color('gray')
+                ->label(fn () => $this->record->project?->isUtility() ? 'Към битовата сметка' : 'Финансов проект')
                 ->visible(fn () => filled($this->record->finance_project_id))
-                ->url(fn () => FinanceProjectResource::getUrl('edit', ['record' => $this->record->finance_project_id])),
+                ->url(fn () => $this->record->project?->isUtility()
+                    ? FinanceOverview::getUrl(['project' => $this->record->finance_project_id])
+                    : FinanceProjectResource::getUrl('edit', ['record' => $this->record->finance_project_id])),
             Action::make('history')->label('Към движенията')->color('gray')
                 ->url(fn () => FinanceMovementResource::historyUrl($this->record->finance_project_id)),
         ];

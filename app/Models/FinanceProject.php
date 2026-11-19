@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Schema;
 
 class FinanceProject extends Model
 {
     public const STUDIO = 'studio';
+
+    public const UTILITY = 'utility';
 
     protected $guarded = [];
 
@@ -34,9 +37,24 @@ class FinanceProject extends Model
         return $this->hasMany(FinanceMovement::class);
     }
 
+    public function utilityExpense(): HasOne
+    {
+        return $this->hasOne(FinanceMovement::class)->where('kind', FinanceMovement::EXPENSE);
+    }
+
     public function isStudio(): bool
     {
         return $this->kind === self::STUDIO;
+    }
+
+    public function isUtility(): bool
+    {
+        return $this->kind === self::UTILITY;
+    }
+
+    public function isSharedExpense(): bool
+    {
+        return $this->isStudio() || $this->isUtility();
     }
 
     public static function installed(): bool
