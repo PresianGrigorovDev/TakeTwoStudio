@@ -2,11 +2,11 @@
     @if ($payerName)
         <p class="tt-finance__muted">Платил · {{ $payerName }}</p>
     @endif
-    @if ($payerName && $shares !== null)
-        @forelse (array_filter(\Illuminate\Support\Arr::except($shares, [$payer])) as $account => $cents)
+    @if ($transfers !== null)
+        @forelse ($transfers as $transfer)
             <div class="tt-finance__row">
-                <span>{{ $accounts[$account] }} → {{ $payerName }}</span>
-                <strong>{{ \App\Support\Finance\Euro::format($cents) }}</strong>
+                <span>{{ $accounts[$transfer['from']] }} → {{ $accounts[$transfer['to']] }}</span>
+                <strong>{{ \App\Support\Finance\Euro::format($transfer['cents']) }}</strong>
             </div>
         @empty
             <p>Няма суми за възстановяване.</p>

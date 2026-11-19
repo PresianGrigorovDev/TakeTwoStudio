@@ -6,6 +6,8 @@ use App\Filament\Pages\FinanceOverview;
 use App\Filament\Resources\FinanceMovementResource\Pages\CreateFinanceMovement;
 use App\Filament\Resources\UtilityBillResource;
 use App\Filament\Resources\UtilityBillResource\Pages\CreateUtilityBill;
+use App\Filament\Resources\UtilityBillResource\Pages\EditUtilityBill;
+use App\Filament\Resources\UtilityBillResource\Pages\ListUtilityBills;
 use App\Models\FinanceAccount;
 use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
@@ -177,6 +179,74 @@ class AdminUtilityBillsTest extends TestCase
         $this->assertSame([], array_filter($this->report($bill)['balances']));
         $this->assertSame(['received' => 0, 'refunded' => 0, 'expenses' => 9000, 'transfers' => 6000], $this->report()['period']);
         $this->get(UtilityBillResource::getUrl())->assertOk()->assertSee('Уредена');
+    }
+
+    public function test_an_admin_marks_another_persons_share_paid_and_the_same_click_cannot_duplicate_it(): void
+    {
+        [$payer, $second, $third] = $this->accounts();
+        $creator = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($creator);
+        $bill = $this->bill($payer, $second, $third, $creator);
+        $this->actingAs($admin = User::factory()->create(['is_admin' => true, 'name' => 'Администратор']));
+
+        $arguments = ['from' => $second->id, 'to' => $payer->id, 'cents' => 3000];
+        $page = Livewire::withQueryParams(['project' => $bill->id])->test(FinanceOverview::class)
+            ->assertSee('Отбележи платено')
+            ->callAction('markSharePaid', data: ['occurred_on' => Ledger::today()], arguments: $arguments)
+            ->assertHasNoActionErrors();
+
+        $paid = $bill->movements()->where('kind', FinanceMovement::TRANSFER)->sole();
+        $this->assertSame($admin->id, $paid->recorded_by_id);
+        $this->assertSame('Администратор', $paid->recorded_by_name);
+        $this->assertSame($second->id, $paid->from_account_id);
+        $this->assertSame(3000, $paid->amount_cents);
+        $this->assertSame([$payer->id => -3000, $third->id => 3000], $this->report($bill)['balances']);
+
+        $page->callAction('markSharePaid', data: ['occurred_on' => Ledger::today()], arguments: $arguments)
+            ->assertNotified('Оставащият дял се промени. Проверете актуалното разпределение.');
+        $this->assertSame(2, $bill->movements()->count());
+    }
+
+    public function test_editing_and_removing_a_bill_preserve_real_repayments_and_recalculate_balances(): void
+    {
+        [$payer, $second, $third] = $this->accounts();
+        $this->actingAs($admin = User::factory()->create(['is_admin' => true]));
+        $bill = $this->bill($payer, $second, $third, $admin);
+        $expense = $bill->utilityExpense()->sole();
+        $payment = app(Ledger::class)->record($bill, [
+            'kind' => FinanceMovement::TRANSFER, 'from_account_id' => $second->id, 'to_account_id' => $payer->id,
+            'amount' => '30', 'occurred_on' => Ledger::today(), 'method' => 'cash',
+        ], $admin);
+
+        Livewire::test(EditUtilityBill::class, ['record' => $bill->id])
+            ->assertFormSet(['category' => 'electricity', 'period_label' => 'Ноември', 'amount' => '90.00'])
+            ->fillForm(['amount' => '120', 'period_label' => 'Октомври'])
+            ->assertSee('10,00 €')
+            ->call('save')->assertHasNoFormErrors();
+
+        $this->assertSame('Ток · Октомври', $bill->refresh()->title);
+        $this->assertSame(12000, $expense->refresh()->amount_cents);
+        $this->assertSame([$payer->id => -5000, $second->id => 1000, $third->id => 4000], $this->report($bill)['balances']);
+
+        Livewire::test(ListUtilityBills::class)
+            ->assertCanSeeTableRecords([$bill])
+            ->callTableAction('delete', $bill, data: ['void_reason' => 'Сметката е въведена два пъти'])
+            ->assertHasNoTableActionErrors()
+            ->assertCanNotSeeTableRecords([$bill])
+            ->filterTable('status', false)->assertCanSeeTableRecords([$bill]);
+
+        $this->assertNotNull($expense->refresh()->voided_at);
+        $this->assertNull($payment->refresh()->voided_at);
+        $this->assertSame([$payer->id => 3000, $second->id => -3000], $this->report($bill)['balances']);
+        $this->assertDatabaseHas('activity_logs', ['user_id' => $admin->id, 'subject_id' => $expense->id, 'subject_type' => FinanceMovement::class, 'action' => 'updated']);
+        $this->assertStringContainsString('Изтрита е битова сметка', \App\Models\ActivityLog::latest('id')->firstOrFail()->description);
+    }
+
+    private function bill(FinanceAccount $payer, FinanceAccount $second, FinanceAccount $third, User $admin): FinanceProject
+    {
+        return app(UtilityBills::class)->create($this->billFields($payer) + [
+            'split_mode' => 'equal', 'members' => [$payer->id, $second->id, $third->id],
+        ], $admin);
     }
 
     private function accounts(): array

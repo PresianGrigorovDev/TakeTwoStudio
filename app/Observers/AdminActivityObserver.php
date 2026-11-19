@@ -88,6 +88,14 @@ class AdminActivityObserver
             $changes[$field] = ['old' => $model->getRawOriginal($field), 'new' => $value];
         }
 
+        if ($model instanceof Models\FinanceMovement && isset($changes['voided_at']['new'])) {
+            $description = $model->kind === Models\FinanceMovement::EXPENSE && $model->project?->isUtility()
+                ? 'Изтрита е битова сметка' : 'Анулирано е финансово движение';
+            $this->changes($model, $changes, $description);
+
+            return;
+        }
+
         $this->changes($model, $changes);
     }
 

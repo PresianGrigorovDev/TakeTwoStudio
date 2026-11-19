@@ -210,6 +210,52 @@ class AdminFinanceTest extends TestCase
         $this->assertSame(3, $project->movements()->count());
     }
 
+    public function test_company_percentage_from_the_receipt_is_allocated_before_expenses(): void
+    {
+        $first = $this->member('Симеон');
+        $second = $this->member('Пресиан');
+        $bank = FinanceAccount::where('key', 'bank')->firstOrFail();
+        $this->actingAs($admin = User::factory()->create(['is_admin' => true]));
+        $project = app(Projects::class)->save(null, [
+            'order_id' => $this->order()->id, 'title' => 'Сватба', 'agreed' => '1500',
+            'participants' => [['account_id' => $first->id], ['account_id' => $second->id]],
+        ]);
+
+        $form = Livewire::withQueryParams(['project' => $project->id])->test(CreateFinanceMovement::class)
+            ->fillForm(['amount' => '1000', 'company_percentage' => '100,01', 'method' => 'cash', 'to_account_id' => $first->id]);
+        $form->call('create')->assertHasFormErrors(['company_percentage']);
+        $form->fillForm(['company_percentage' => '20'])->assertSee('200,00 €')->call('create')->assertHasNoFormErrors();
+        $receipt = $project->movements()->sole();
+        $this->move($project, $admin, ['kind' => FinanceMovement::EXPENSE, 'from_account_id' => $second->id, 'amount' => '200']);
+
+        $date = Ledger::today();
+        $report = app(Ledger::class)->report($date, $date, $project);
+        $this->assertSame(2000, $receipt->details['company_reserve_bps']);
+        $this->assertSame(20000, $report['company_reserve']);
+        $this->assertSame([$first->id => 30000, $second->id => 30000], $report['projects'][$project->id]['shares']);
+        $this->assertSame([$bank->id => -20000, $first->id => 70000, $second->id => -50000], $report['balances']);
+        $this->get(FinanceMovementResource::getUrl('view', ['record' => $receipt]))->assertOk()->assertSee('За фирмената сметка')->assertSee('200,00 €');
+    }
+
+    public function test_receipts_in_the_bank_and_refunds_use_the_right_company_reserve_for_each_payment(): void
+    {
+        $member = $this->member('Симеон');
+        $bank = FinanceAccount::where('key', 'bank')->firstOrFail();
+        $this->actingAs($admin = User::factory()->create(['is_admin' => true]));
+        $project = app(Projects::class)->save(null, [
+            'order_id' => $this->order()->id, 'title' => 'Сватба', 'participants' => [['account_id' => $member->id]],
+        ]);
+
+        $this->move($project, $admin, ['to_account_id' => $bank->id, 'amount' => '100', 'company_percentage' => '20,25', 'occurred_on' => '2026-01-03']);
+        $this->move($project, $admin, ['to_account_id' => $bank->id, 'amount' => '100', 'company_percentage' => '50', 'occurred_on' => '2026-01-04']);
+        $this->move($project, $admin, ['kind' => FinanceMovement::REFUND, 'from_account_id' => $bank->id, 'amount' => '150', 'occurred_on' => '2026-02-03']);
+
+        $report = app(Ledger::class)->report('2026-02-01', '2026-02-28', $project);
+        $this->assertSame(-4525, $report['company_reserve']);
+        $this->assertSame(2500, $report['projects'][$project->id]['company_reserve']);
+        $this->assertSame([$bank->id => 2500, $member->id => -2500], $report['balances']);
+    }
+
     public function test_deleting_the_source_keeps_finance_history_and_existing_shares_editable(): void
     {
         $first = $this->member('Симеон');

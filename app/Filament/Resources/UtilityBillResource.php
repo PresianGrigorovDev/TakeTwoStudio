@@ -105,17 +105,17 @@ class UtilityBillResource extends Resource
                     ->addActionLabel('Добави участник')->live()
                     ->visible(fn (Forms\Get $get) => $get('split_mode') === 'custom'),
                 Forms\Components\Placeholder::make('reimbursements')->label('Кой колко дължи')
-                    ->content(fn (Forms\Get $get) => self::preview($get)),
+                    ->content(fn (Forms\Get $get, ?FinanceProject $record) => self::preview($get, $record)),
             ]),
         ]);
     }
 
-    private static function preview(Forms\Get $get): View
+    private static function preview(Forms\Get $get, ?FinanceProject $record): View
     {
         $payer = (int) $get('from_account_id');
         $accounts = FinanceAccount::choices();
         $payerName = $accounts[$payer] ?? null;
-        $shares = null;
+        $transfers = null;
         $message = null;
         $splitMode = $get('split_mode');
         $allocations = $get('allocations') ?? [];
@@ -128,6 +128,24 @@ class UtilityBillResource extends Resource
                     'members' => $get('members'),
                     'allocations' => $allocations,
                 ]));
+                if ($payerName) {
+                    $balance = [];
+                    if ($record) {
+                        $date = Ledger::today();
+                        $balance = app(Ledger::class)->report($date, $date, $record)['projects'][$record->id]['held'];
+                        $expense = $record->utilityExpense;
+                        if ($expense && ! $expense->voided_at) {
+                            $previousPayer = $expense->from_account_id;
+                            $balance[$previousPayer] = ($balance[$previousPayer] ?? 0) + $expense->amount_cents;
+                        }
+                    }
+                    $balance[$payer] = ($balance[$payer] ?? 0) - $amount;
+                    foreach ($shares as $account => $cents) {
+                        $balance[$account] = ($balance[$account] ?? 0) + $cents;
+                    }
+                    ksort($balance);
+                    $transfers = Ledger::transfers($balance);
+                }
             } catch (ValidationException $exception) {
                 if ($splitMode === 'equal' || ($allocations && collect($allocations)->every(fn ($row) => filled($row['account_id'] ?? null) && filled($row['amount'] ?? null)))) {
                     $message = $exception->getMessage();
@@ -135,7 +153,7 @@ class UtilityBillResource extends Resource
             }
         }
 
-        return view('filament.finance.utility-bill-preview', compact('payer', 'payerName', 'accounts', 'shares', 'message'));
+        return view('filament.finance.utility-bill-preview', compact('payerName', 'accounts', 'transfers', 'message'));
     }
 
     public static function table(Table $table): Table
