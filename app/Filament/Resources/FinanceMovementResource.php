@@ -59,7 +59,7 @@ class FinanceMovementResource extends Resource
         return $form->schema([
             Forms\Components\Section::make()->columns(2)->schema([
                 Forms\Components\Select::make('finance_project_id')->label('Проект или общи разходи')
-                    ->relationship('project', 'title')->searchable()->preload()->required()->live()
+                    ->options(fn () => FinanceProject::orderBy('title')->pluck('title', 'id'))->searchable()->required()->live()
                     ->afterStateUpdated(function ($state, Forms\Get $get, Forms\Set $set) {
                         $kinds = self::movementKinds((int) $state);
                         if (! isset($kinds[$get('kind')])) {
@@ -154,6 +154,7 @@ class FinanceMovementResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->label('Преглед'),
                 Tables\Actions\Action::make('void')->label('Анулирай')->color('danger')
+                    ->databaseTransaction(false)
                     ->visible(fn (FinanceMovement $record) => ! $record->voided_at)
                     ->modalHeading('Анулирай движение')
                     ->modalDescription('Салдата ще се преизчислят. Записът и причината ще останат в историята.')

@@ -16,6 +16,8 @@ class CreateFinanceMovement extends CreateRecord
 
     protected static bool $canCreateAnother = false;
 
+    protected ?bool $hasDatabaseTransactions = false;
+
     public function mount(): void
     {
         parent::mount();

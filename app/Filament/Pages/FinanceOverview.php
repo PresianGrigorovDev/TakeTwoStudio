@@ -101,6 +101,7 @@ class FinanceOverview extends Page
     public function settlePeriodAction(): Action
     {
         return Action::make('settlePeriod')->label('Запиши общо изравняване')->icon('heroicon-m-check')
+            ->databaseTransaction(false)
             ->visible(fn () => ! $this->projectId && Ledger::settlementPlan($this->report)['adjustments'] !== [])
             ->mountUsing(function (Form $form) {
                 abort_if($this->projectId !== null, 403);

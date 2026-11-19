@@ -295,7 +295,7 @@ final class Ledger
     public function transaction(callable $callback): mixed
     {
         return (new FinanceProject)->getConnection()->transaction(function () use ($callback) {
-            // Serialize postings, changes to shares, and settlement previews against the same book.
+            // Lock before any consistent read. The Filament write pages delegate their transactions here.
             FinanceProject::where('kind', FinanceProject::STUDIO)->lockForUpdate()->firstOrFail(['id']);
 
             return $callback();

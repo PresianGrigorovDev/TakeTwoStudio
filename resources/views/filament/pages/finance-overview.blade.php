@@ -54,7 +54,10 @@
         </x-filament::section>
 
         <x-filament::section>
-            <x-slot name="heading">Клиентски плащания към {{ $dateLabel }}</x-slot>
+            <x-slot name="heading">Клиентски плащания</x-slot>
+            @if(! $project?->isStudio())
+                <x-slot name="description">Платено към {{ $dateLabel }} по текущите договорени суми.</x-slot>
+            @endif
             @if($project && ! $project->isStudio())
                 <dl class="tt-finance__metrics">
                     <div><dt>Договорено</dt><dd>{{ $project->agreed_cents === null ? '—' : Euro::format($project->agreed_cents) }}</dd></div>

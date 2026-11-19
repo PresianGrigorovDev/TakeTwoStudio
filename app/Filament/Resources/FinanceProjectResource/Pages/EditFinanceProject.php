@@ -16,6 +16,8 @@ class EditFinanceProject extends EditRecord
 {
     protected static string $resource = FinanceProjectResource::class;
 
+    protected ?bool $hasDatabaseTransactions = false;
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $shares = $this->record->shares;
