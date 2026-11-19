@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Filament\Support\ServiceHub;
+use App\Filament\Support\TableReorderAudit;
 use App\Models\Service;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -15,7 +16,9 @@ use Livewire\Component;
 class ServiceHubTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
-    use InteractsWithTable;
+    use InteractsWithTable {
+        reorderTable as private reorderFilamentTable;
+    }
 
     public int $serviceId;
 
@@ -29,6 +32,11 @@ class ServiceHubTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return ServiceHub::table($this->section, $this->service(), $table);
+    }
+
+    public function reorderTable(array $order): void
+    {
+        TableReorderAudit::run($this->getTable(), $order, $this->reorderFilamentTable(...));
     }
 
     public function render()

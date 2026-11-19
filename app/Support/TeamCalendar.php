@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\TeamMember;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use PDO;
 
 /**
  * Who is busy when, computed from the calendar entries (bookings):
@@ -35,6 +36,48 @@ final class TeamCalendar
             ->orderBy('event_date')
             ->orderBy('start_time')
             ->get();
+    }
+
+    /** Find client entries across the calendar, regardless of the displayed month and filters. */
+    public static function searchBookings(string $term): Collection
+    {
+        $term = mb_substr(trim($term), 0, 100);
+        if (mb_strlen($term) < 2) {
+            return collect();
+        }
+
+        $bookings = Booking::active()->whereIn('kind', Booking::CLIENT_KINDS);
+        $connection = $bookings->getConnection();
+        $lower = 'LOWER';
+        if ($connection->getDriverName() === 'sqlite') {
+            // SQLite's built-in LOWER only folds ASCII.
+            $lower = 'calendar_lower';
+            $connection->getReadPdo()->sqliteCreateFunction($lower, fn (?string $value) => mb_strtolower($value ?? ''), 1, PDO::SQLITE_DETERMINISTIC);
+        }
+
+        $text = '%'.strtr(mb_strtolower($term), ['!' => '!!', '%' => '!%', '_' => '!_']).'%';
+        $digits = preg_match('/^[0-9\s+().\/-]+$/', $term) ? preg_replace('/\D/', '', $term) : '';
+        $digits = preg_replace('/^(?:00359|359|0)(?=\d{3})/', '', $digits);
+
+        return $bookings->where(function ($query) use ($lower, $text, $digits) {
+            $query->whereRaw("$lower(name) LIKE ? ESCAPE '!'", [$text])
+                ->orWhereRaw("$lower(location) LIKE ? ESCAPE '!'", [$text]);
+
+            if (strlen($digits) >= 3) {
+                $phone = 'phone';
+                $separators = [' ', '+', '-', '(', ')', '.', '/', "\u{00A0}"];
+                foreach ($separators as $separator) {
+                    $phone = "REPLACE($phone, ?, '')";
+                }
+
+                $query->orWhereRaw("$phone LIKE ?", [...$separators, '%'.$digits.'%']);
+            }
+        })
+            ->orderByDesc('event_date')
+            ->orderBy('start_time')
+            ->orderByDesc('id')
+            ->limit(10)
+            ->get(['id', 'name', 'phone', 'location', 'event_date', 'start_time']);
     }
 
     /**

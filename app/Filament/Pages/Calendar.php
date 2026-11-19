@@ -25,7 +25,7 @@ class Calendar extends Page
 
     protected function getHeaderWidgets(): array
     {
-        return [TeamCalendarWidget::make(['origin' => 'page'])];
+        return [TeamCalendarWidget::make(['origin' => 'page', 'lazy' => false])];
     }
 
     protected function getFooterWidgets(): array

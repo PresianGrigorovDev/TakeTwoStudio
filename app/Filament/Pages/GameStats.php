@@ -99,12 +99,14 @@ class GameStats extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        foreach (self::FIELDS as $field => $def) {
-            SiteSetting::query()->updateOrCreate(
-                ['setting_key' => GameVoucher::SETTING_KEYS[$def['target']][$def['level']]],
-                ['setting_value' => (string) (int) $data[$field], 'description' => 'QR игра: '.$def['label'].' (%)'],
-            );
-        }
+        (new SiteSetting)->getConnection()->transaction(function () use ($data) {
+            foreach (self::FIELDS as $field => $def) {
+                SiteSetting::query()->updateOrCreate(
+                    ['setting_key' => GameVoucher::SETTING_KEYS[$def['target']][$def['level']]],
+                    ['setting_value' => (string) (int) $data[$field], 'description' => 'QR игра: '.$def['label'].' (%)'],
+                );
+            }
+        });
 
         Notification::make()
             ->title('Настройките на играта са запазени')

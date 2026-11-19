@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\FamilyPackageResource\Pages;
 
 use App\Filament\Resources\FamilyPackageResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListFamilyPackages extends ListRecords
+class ListFamilyPackages extends AuditedListRecords
 {
     protected static string $resource = FamilyPackageResource::class;
 

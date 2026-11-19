@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\WeddingExtraResource\Pages;
 
 use App\Filament\Resources\WeddingExtraResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListWeddingExtras extends ListRecords
+class ListWeddingExtras extends AuditedListRecords
 {
     protected static string $resource = WeddingExtraResource::class;
 

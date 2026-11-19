@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\AutomotivePackageResource\Pages;
 
 use App\Filament\Resources\AutomotivePackageResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListAutomotivePackages extends ListRecords
+class ListAutomotivePackages extends AuditedListRecords
 {
     protected static string $resource = AutomotivePackageResource::class;
 

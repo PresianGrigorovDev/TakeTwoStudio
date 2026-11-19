@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\TeamAssignment;
 use App\Observers\AdminActivityObserver;
+use App\Support\AdminDeletionEffects;
 use App\Support\Assets;
 use App\Support\Seo\Seo;
 use Filament\Support\Assets\Css;
@@ -21,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(Seo::class);
+        $this->app->scoped(AdminDeletionEffects::class);
     }
 
     /**
@@ -40,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
         foreach (array_keys(AdminActivityObserver::SUBJECTS) as $model) {
             $model::observe(AdminActivityObserver::class);
         }
+        TeamAssignment::observe(AdminActivityObserver::class);
     }
 
     /**

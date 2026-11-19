@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\FaqResource\Pages;
 use App\Models\Faq;
 use App\Support\ContentVariables;
@@ -102,7 +103,7 @@ class FaqResource extends Resource
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Подредба')
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_visible')
+                AuditedToggleColumn::make('is_visible')
                     ->label('Видим'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновен на')

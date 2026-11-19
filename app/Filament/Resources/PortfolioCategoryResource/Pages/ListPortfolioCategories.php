@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\PortfolioCategoryResource\Pages;
 
 use App\Filament\Resources\PortfolioCategoryResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListPortfolioCategories extends ListRecords
+class ListPortfolioCategories extends AuditedListRecords
 {
     protected static string $resource = PortfolioCategoryResource::class;
 

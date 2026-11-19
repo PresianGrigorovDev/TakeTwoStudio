@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\FamilyExtraResource\Pages;
 
 use App\Filament\Resources\FamilyExtraResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListFamilyExtras extends ListRecords
+class ListFamilyExtras extends AuditedListRecords
 {
     protected static string $resource = FamilyExtraResource::class;
 

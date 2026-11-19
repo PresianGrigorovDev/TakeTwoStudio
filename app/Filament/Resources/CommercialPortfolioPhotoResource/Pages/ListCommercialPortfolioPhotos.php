@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\CommercialPortfolioPhotoResource\Pages;
 
 use App\Filament\Resources\CommercialPortfolioPhotoResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListCommercialPortfolioPhotos extends ListRecords
+class ListCommercialPortfolioPhotos extends AuditedListRecords
 {
     protected static string $resource = CommercialPortfolioPhotoResource::class;
 

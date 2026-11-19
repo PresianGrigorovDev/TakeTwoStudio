@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\ServiceExtraResource\Pages;
 use App\Filament\Resources\ServiceExtraResource\RelationManagers;
 use App\Models\ServiceExtra;
@@ -84,7 +85,7 @@ class ServiceExtraResource extends Resource
                     ->label('Group'),
                 Tables\Columns\TextColumn::make('icon_class')
                     ->label('Icon'),
-                Tables\Columns\ToggleColumn::make('is_default')
+                AuditedToggleColumn::make('is_default')
                     ->label('Default'),
                 Tables\Columns\TextColumn::make('display_order')
                     ->sortable(),

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\CommercialExtraResource\Pages;
 
 use App\Filament\Resources\CommercialExtraResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListCommercialExtras extends ListRecords
+class ListCommercialExtras extends AuditedListRecords
 {
     protected static string $resource = CommercialExtraResource::class;
 

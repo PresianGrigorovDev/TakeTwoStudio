@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\BlogCategoryResource\Pages;
 
 use App\Filament\Resources\BlogCategoryResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListBlogCategories extends ListRecords
+class ListBlogCategories extends AuditedListRecords
 {
     protected static string $resource = BlogCategoryResource::class;
 

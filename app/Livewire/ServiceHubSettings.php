@@ -33,7 +33,8 @@ class ServiceHubSettings extends Component implements HasForms
 
     public function save(): void
     {
-        $this->service->update($this->form->getState());
+        $data = $this->form->getState();
+        $this->service->getConnection()->transaction(fn () => $this->service->update($data));
 
         Notification::make()->title('Запазено')->success()->send();
     }

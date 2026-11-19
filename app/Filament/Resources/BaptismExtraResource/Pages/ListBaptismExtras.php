@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\BaptismExtraResource\Pages;
 
 use App\Filament\Resources\BaptismExtraResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListBaptismExtras extends ListRecords
+class ListBaptismExtras extends AuditedListRecords
 {
     protected static string $resource = BaptismExtraResource::class;
 

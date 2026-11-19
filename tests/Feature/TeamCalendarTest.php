@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\Calendar;
+use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\BookingResource\Pages\CreateBooking;
+use App\Filament\Resources\BookingResource\Pages\EditBooking;
 use App\Filament\Widgets\TeamAvailabilityWidget;
 use App\Filament\Widgets\TeamCalendarWidget;
 use App\Http\Controllers\BookingController;
@@ -10,6 +13,7 @@ use App\Models\Booking;
 use App\Models\TeamMember;
 use App\Models\User;
 use App\Support\TeamCalendar;
+use Filament\Pages\Dashboard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
@@ -185,6 +189,124 @@ class TeamCalendarTest extends TestCase
             ->assertSet('year', now()->year);
     }
 
+    public function test_editing_an_entry_returns_to_the_active_calendar_period_and_filters(): void
+    {
+        [$simeon] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $booking = $this->entry([
+            'event_date' => '2031-08-15', 'start_time' => '10:00', 'end_time' => '12:00', 'status' => 'pending',
+        ], [$simeon]);
+        $context = ['year' => 2031, 'month' => 8, 'member' => $simeon->id, 'pending' => 1];
+
+        foreach ([['page', 'calendar-page', Calendar::getUrl($context)], ['dashboard', 'calendar', Dashboard::getUrl($context)]] as [$origin, $from, $return]) {
+            Livewire::withQueryParams([])->test(TeamCalendarWidget::class, ['origin' => $origin])
+                ->call('selectPeriod', 8, 2031)
+                ->call('filterMember', $simeon->id)
+                ->call('togglePending')
+                ->assertSee(BookingResource::getUrl('edit', ['record' => $booking, 'from' => $from] + $context));
+
+            Livewire::withQueryParams(['from' => $from] + $context)
+                ->test(EditBooking::class, ['record' => $booking->id])
+                ->assertSee($return)
+                ->fillForm(['name' => 'Редактиран ангажимент'])
+                ->call('save')
+                ->assertHasNoFormErrors()
+                ->assertRedirect($return);
+        }
+
+        Livewire::withQueryParams($context)->test(TeamCalendarWidget::class)
+            ->assertSet('year', 2031)
+            ->assertSet('month', 8)
+            ->assertSet('member', $simeon->id)
+            ->assertSet('pendingOnly', true)
+            ->assertSee('Редактиран ангажимент');
+
+        Livewire::withQueryParams(['year' => ['2031'], 'month' => 200])->test(TeamCalendarWidget::class)
+            ->assertSet('year', now()->year)
+            ->assertSet('month', now()->month);
+    }
+
+    public function test_a_calendar_day_sets_availability_even_without_bookings(): void
+    {
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $date = '2031-08-21';
+        $context = ['year' => 2031, 'month' => 8, 'availability' => $date];
+
+        Livewire::test(TeamCalendarWidget::class, ['origin' => 'page'])
+            ->call('selectPeriod', 8, 2031)
+            ->assertSee('Кой е свободен на 21 август 2031')
+            ->call('checkAvailability', '2031-02-30')
+            ->assertNotDispatched('calendar-availability-selected')
+            ->call('checkAvailability', $date)
+            ->assertDispatched('calendar-availability-selected', date: $date, context: $context);
+
+        Livewire::test(TeamAvailabilityWidget::class)
+            ->assertSet('to', '00:00')
+            ->dispatch('calendar-availability-selected', date: $date, context: $context)
+            ->assertSet('date', $date)
+            ->assertSee('Свободен')
+            ->assertSee('end=24%3A00', false)
+            ->assertDispatched('calendar-availability-ready');
+
+        Livewire::test(TeamCalendarWidget::class)
+            ->call('selectPeriod', 8, 2031)
+            ->call('checkAvailability', $date)
+            ->assertRedirect(Calendar::getUrl($context).'#team-availability');
+
+        Livewire::withQueryParams($context)->test(TeamAvailabilityWidget::class)->assertSet('date', $date);
+    }
+
+    public function test_follow_up_filters_show_only_matching_client_engagements(): void
+    {
+        [$simeon] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $day = ['event_date' => '2031-08-12', 'start_time' => '10:00', 'end_time' => '12:00'];
+        $this->entry(['name' => 'Чакащ с екип', 'status' => 'pending'] + $day, [$simeon]);
+        $this->entry(['name' => 'Чакащ без екип', 'status' => 'pending', 'kind' => Booking::KIND_SESSION] + $day);
+        $this->entry(['name' => 'Потвърден без екип'] + $day);
+        $this->entry(['name' => 'Затворено студио', 'kind' => Booking::KIND_CLOSED] + $day);
+
+        Livewire::test(TeamCalendarWidget::class)->call('selectPeriod', 8, 2031)
+            ->call('filterMember', $simeon->id)
+            ->call('togglePending')
+            ->assertSee('Чакащ с екип')
+            ->assertDontSee('Потвърден без екип')
+            ->call('toggleUnassigned')
+            ->assertSet('member', null)
+            ->assertSee('Чакащ без екип')
+            ->assertDontSee('Чакащ с екип')
+            ->assertDontSee('Потвърден без екип')
+            ->assertDontSee('Затворено студио')
+            ->call('togglePending')
+            ->assertSee('Потвърден без екип')
+            ->assertDontSee('Затворено студио');
+    }
+
+    public function test_search_by_name_formatted_phone_and_location_opens_the_matching_booking(): void
+    {
+        [$simeon, $presian] = $this->team;
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $booking = $this->entry([
+            'name' => 'Мария Иванова', 'phone' => '+359 (888) 12-34-56', 'location' => 'Ресторант Морско конче',
+            'event_date' => '2031-08-12', 'start_time' => '10:00', 'end_time' => '12:00',
+        ], [$presian]);
+        $this->entry(['name' => 'Мария Отказана', 'status' => 'rejected', 'start_time' => '10:00', 'end_time' => '12:00']);
+
+        Livewire::test(TeamCalendarWidget::class)->call('selectPeriod', 1, 2031)
+            ->call('filterMember', $simeon->id)
+            ->call('togglePending')
+            ->set('search', 'мария')->assertSee('Мария Иванова')->assertDontSee('Мария Отказана')
+            ->set('search', '0888 12 34 56')->assertSee('Мария Иванова')
+            ->set('search', 'морско конче')->assertSee('Мария Иванова')
+            ->call('selectBooking', $booking->id)
+            ->assertSet('search', '')
+            ->assertSet('year', 2031)->assertSet('month', 8)
+            ->assertSet('member', null)->assertSet('pendingOnly', false)
+            ->assertSet('selectedBooking', $booking->id)
+            ->assertSee('is-selected', false)
+            ->assertDispatched('calendar-booking-selected');
+    }
+
     public function test_admin_can_create_personal_busy_time_without_client_fields(): void
     {
         [$simeon] = $this->team;
@@ -279,7 +401,7 @@ class TeamCalendarTest extends TestCase
             ->assertSee('Сватба – Мария и Иван')
             ->assertSee('Ресторант „Морско конче“')
             ->assertSee('Свободен')
-            ->assertSee('member='.$presian->id, false)
+            ->assertSee('assignee='.$presian->id, false)
             ->set('from', '20:00')
             ->set('to', '21:00')
             ->assertDontSee('Сватба – Мария и Иван');

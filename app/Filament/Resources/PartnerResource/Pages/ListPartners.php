@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\PartnerResource\Pages;
 
 use App\Filament\Resources\PartnerResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListPartners extends ListRecords
+class ListPartners extends AuditedListRecords
 {
     protected static string $resource = PartnerResource::class;
 

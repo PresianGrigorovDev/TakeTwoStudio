@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\PromotionResource\Pages;
 use App\Models\Promotion;
 use App\Models\PromoCode;
@@ -121,7 +122,7 @@ class PromotionResource extends Resource
                     ->alignCenter()
                     ->suffix(' дни'),
 
-                Tables\Columns\ToggleColumn::make('is_active')
+                AuditedToggleColumn::make('is_active')
                     ->label('Активна'),
 
                 Tables\Columns\TextColumn::make('updated_at')

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\PromPackageResource\Pages;
 
 use App\Filament\Resources\PromPackageResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListPromPackages extends ListRecords
+class ListPromPackages extends AuditedListRecords
 {
     protected static string $resource = PromPackageResource::class;
 

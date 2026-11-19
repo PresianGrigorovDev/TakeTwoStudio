@@ -1,5 +1,10 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
+    <x-filament::section
+        id="team-availability"
+        tabindex="-1"
+        aria-label="Кой е свободен"
+        x-on:calendar-availability-ready.window="$nextTick(() => { $el.focus({ preventScroll: true }); $el.scrollIntoView({ block: 'start' }) })"
+    >
         <x-slot name="heading">Кой е свободен</x-slot>
         <x-slot name="description">Изберете ден и часове – виждате кой е свободен и къде са заетите.</x-slot>
 

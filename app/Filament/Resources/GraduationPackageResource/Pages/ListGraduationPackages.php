@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\GraduationPackageResource\Pages;
 
 use App\Filament\Resources\GraduationPackageResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListGraduationPackages extends ListRecords
+class ListGraduationPackages extends AuditedListRecords
 {
     protected static string $resource = GraduationPackageResource::class;
 

@@ -3,12 +3,15 @@
 namespace App\Observers;
 
 use App\Models;
+use App\Support\AdminDeletionEffects;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class AdminActivityObserver
 {
+    public function __construct(private AdminDeletionEffects $deletions) {}
+
     public const SUBJECTS = [
         Models\ArchitecturalGallery::class => 'Архитектурна галерия',
         Models\ArchitecturalGalleryPhoto::class => 'Снимка в архитектурна галерия',
@@ -66,50 +69,104 @@ class AdminActivityObserver
 
     public function created(Model $model): void
     {
+        if ($model instanceof Models\TeamAssignment) {
+            $this->assignment($model, true);
+
+            return;
+        }
+
         $this->record($model, 'created', 'Създаден е запис');
     }
 
     public function updated(Model $model): void
     {
-        $this->record($model, 'updated', 'Редактиран е запис');
+        $changes = [];
+        foreach (Arr::except($model->getChanges(), [$model->getUpdatedAtColumn()]) as $field => $value) {
+            $changes[$field] = ['old' => $model->getRawOriginal($field), 'new' => $value];
+        }
+
+        $this->changes($model, $changes);
+    }
+
+    public function deleting(Model $model): void
+    {
+        if (self::actor()) {
+            $this->deletions->capture($model);
+        }
     }
 
     public function deleted(Model $model): void
     {
-        $this->record($model, 'deleted', 'Изтрит е запис');
-    }
+        if ($model instanceof Models\TeamAssignment) {
+            $this->assignment($model, false);
 
-    private function record(Model $model, string $action, string $description): void
-    {
-        $user = Auth::user();
-        if (! $user instanceof Models\User || ! $user->isAdmin()) {
             return;
         }
 
+        foreach ($this->deletions->afterDelete($model) as [$related, $deleted, $changes]) {
+            if ($deleted && $related instanceof Models\TeamAssignment) {
+                $this->assignment($related, false);
+            } elseif ($deleted) {
+                $this->record($related, 'deleted', 'Изтрит е свързан запис');
+            } else {
+                $this->changes($related, $changes, 'Премахната е връзка след изтриване');
+            }
+        }
+
+        $this->record($model, 'deleted', 'Изтрит е запис');
+    }
+
+    public static function actor(): ?Models\User
+    {
+        $user = Auth::user();
+
+        return $user instanceof Models\User && $user->isAdmin() ? $user : null;
+    }
+
+    /** @param array<string, array{old: mixed, new: mixed}> $changes */
+    public function changes(Model $model, array $changes, string $description = 'Редактиран е запис'): void
+    {
+        if ($changes !== []) {
+            $this->record($model, 'updated', $description, $changes);
+        }
+    }
+
+    private function assignment(Models\TeamAssignment $assignment, bool $assigned): void
+    {
+        $booking = $assignment->getTable() === 'booking_team_member';
+        $subject = $booking ? new Models\Booking : new Models\Order;
+        $subject->setAttribute($subject->getKeyName(), $booking ? $assignment->booking_id : $assignment->order_id);
+        $member = (int) $assignment->team_member_id;
+
+        $this->changes($subject, [
+            'team_member_id' => ['old' => $assigned ? null : $member, 'new' => $assigned ? $member : null],
+        ], $assigned ? 'Назначен е член на екипа' : 'Премахнат е член на екипа');
+    }
+
+    private function record(Model $model, string $action, string $description, ?array $changes = null): void
+    {
+        $user = self::actor();
         $type = $model::class;
+        if (! $user || ! isset(self::SUBJECTS[$type])) {
+            return;
+        }
+
         $private = in_array($type, [
             Models\Booking::class, Models\Order::class, Models\Inquiry::class, Models\GameEvent::class,
         ], true);
 
-        $changes = null;
         if ($action === 'updated') {
-            $changes = [];
-            foreach (Arr::except($model->getChanges(), [$model->getUpdatedAtColumn()]) as $field => $value) {
+            foreach (array_keys($changes) as $field) {
                 $redact = in_array($field, ['address', 'egn', 'email', 'phone', 'setting_value'], true)
-                    || ($private && ! in_array($field, ['status', 'kind', 'event_date', 'end_date', 'start_time', 'end_time'], true));
+                    || ($private && ! in_array($field, ['status', 'kind', 'event_date', 'end_date', 'start_time', 'end_time', 'team_member_id', 'order_id', 'redeemed_at'], true));
 
-                $changes[$field] = [
-                    'old' => $redact ? 'Скрита стойност' : $model->getRawOriginal($field),
-                    'new' => $redact ? 'Скрита стойност' : $value,
-                ];
-            }
-
-            if ($changes === []) {
-                return;
+                if ($redact) {
+                    $changes[$field] = ['old' => 'Скрита стойност', 'new' => 'Скрита стойност'];
+                }
             }
         }
 
-        $name = $private ? null : ($model->name ?? $model->name_bg ?? $model->title ?? $model->question
+        $name = $private ? null : ($model->name ?? $model->name_bg ?? $model->title ?? $model->label_bg ?? $model->question
             ?? $model->client_name_bg ?? $model->client_name ?? $model->setting_key ?? $model->alt_text);
         $subject = self::SUBJECTS[$type].($name ? ' „'.$name.'“' : ' #'.$model->getKey());
 

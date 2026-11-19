@@ -26,7 +26,9 @@ class TeamMember extends Model
     /** Calendar entries (engagements, busy time) this person is assigned to. */
     public function bookings()
     {
-        return $this->belongsToMany(Booking::class, 'booking_team_member')->withTimestamps();
+        return $this->belongsToMany(Booking::class, 'booking_team_member')
+            ->using(TeamAssignment::class)
+            ->withTimestamps();
     }
 
     /** Colour of this person in the team calendar (team_members.calendar_color). */

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\GraduationPortfolioPhotoResource\Pages;
 
 use App\Filament\Resources\GraduationPortfolioPhotoResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListGraduationPortfolioPhotos extends ListRecords
+class ListGraduationPortfolioPhotos extends AuditedListRecords
 {
     protected static string $resource = GraduationPortfolioPhotoResource::class;
 

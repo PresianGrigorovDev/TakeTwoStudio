@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\PromoCodeResource\Pages;
 use App\Models\PromoCode;
 use Filament\Forms;
@@ -148,7 +149,7 @@ class PromoCodeResource extends Resource
                     ->placeholder('-')
                     ->sortable(),
 
-                Tables\Columns\ToggleColumn::make('is_active')
+                AuditedToggleColumn::make('is_active')
                     ->label('Активен'),
 
                 Tables\Columns\TextColumn::make('orders_count')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\PortfolioCategoryResource\Pages;
 use App\Filament\Resources\PortfolioCategoryResource\RelationManagers;
 use App\Models\PortfolioCategory;
@@ -86,7 +87,7 @@ class PortfolioCategoryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ToggleColumn::make('is_visible')
+                AuditedToggleColumn::make('is_visible')
                     ->label('Видим'),
             ])
             ->defaultSort('display_order')
