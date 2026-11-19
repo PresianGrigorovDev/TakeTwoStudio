@@ -62,7 +62,7 @@ class UtilityBillResource extends Resource
                 Forms\Components\Select::make('category')->label('Вид сметка')
                     ->options(UtilityBills::CATEGORIES)->required(),
                 Forms\Components\TextInput::make('period_label')->label('Период или бележка')
-                    ->placeholder('Например октомври 2026')->maxLength(150),
+                    ->placeholder('Месец и година')->maxLength(120),
                 FinanceForms::amount('amount', 'Сума')->required()->live(onBlur: true),
                 Forms\Components\DatePicker::make('occurred_on')->label('Дата на плащане')
                     ->default(Ledger::today())->maxDate(Ledger::today())->required(),

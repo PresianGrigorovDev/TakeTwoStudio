@@ -198,15 +198,12 @@ final class Ledger
                 throw ValidationException::withMessages(['kind' => 'Тази битова сметка вече има запис на плащането. Можете да запишете възстановяване на сума.']);
             }
 
-            if ($kind === FinanceMovement::REFUND) {
-                $receipts = $project->movements()->posted()->where('occurred_on', '<=', $data['occurred_on']);
-                $paid = (int) (clone $receipts)->where('kind', FinanceMovement::INCOME)->sum('amount_cents')
-                    - (int) (clone $receipts)->where('kind', FinanceMovement::REFUND)->sum('amount_cents');
-                $overall = (int) $project->movements()->posted()->where('kind', FinanceMovement::INCOME)->sum('amount_cents')
-                    - (int) $project->movements()->posted()->where('kind', FinanceMovement::REFUND)->sum('amount_cents');
-                if ($amount > min($paid, $overall)) {
-                    throw ValidationException::withMessages(['amount' => 'Сумата надвишава нетно полученото от клиента.']);
-                }
+            if ($kind === FinanceMovement::REFUND && $amount > self::availableRefund($project, $data['occurred_on'])) {
+                throw ValidationException::withMessages(['amount' => 'Сумата надвишава полученото след отчетените връщания от тази дата нататък.']);
+            }
+
+            if ($project->isUtility() && $kind === FinanceMovement::TRANSFER) {
+                $this->validateBillRepayment($project, $data, $amount);
             }
 
             $details = null;
@@ -232,6 +229,43 @@ final class Ledger
                 ...self::actorFields($actor),
             ]);
         });
+    }
+
+    private static function availableRefund(FinanceProject $project, string $date): int
+    {
+        $days = $project->movements()->posted()->whereIn('kind', [FinanceMovement::INCOME, FinanceMovement::REFUND])
+            ->select('occurred_on')->selectRaw('SUM(CASE WHEN kind = ? THEN amount_cents ELSE -amount_cents END) as net_cents', [FinanceMovement::INCOME])
+            ->groupBy('occurred_on')->orderBy('occurred_on')->toBase()->cursor();
+        $net = 0;
+        $available = null;
+        foreach ($days as $day) {
+            if ($day->occurred_on > $date && $available === null) {
+                $available = $net;
+            }
+            $net += (int) $day->net_cents;
+            if ($day->occurred_on >= $date) {
+                $available = min($available ?? $net, $net);
+            }
+        }
+
+        return $available ?? $net;
+    }
+
+    private function validateBillRepayment(FinanceProject $project, array $data, int $amount): void
+    {
+        $date = $data['occurred_on'];
+        $today = self::today();
+        $limit = $amount;
+        foreach (array_unique([$date, $today]) as $cutoff) {
+            $balances = $this->report($cutoff, $cutoff, $project)['balances'];
+            $limit = min($limit, $balances[$data['from_account_id']] ?? 0, -($balances[$data['to_account_id']] ?? 0));
+        }
+
+        if ($limit < $amount) {
+            throw ValidationException::withMessages(['amount' => $limit > 0
+                ? 'Между избраните сметки остава да се възстанови '.Euro::format($limit).'.'
+                : 'По тази сметка вече няма дължима сума между избраните хора.']);
+        }
     }
 
     public static function settlementPlan(array $report): array

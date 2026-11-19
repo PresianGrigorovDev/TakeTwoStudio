@@ -72,8 +72,6 @@
                 </div>
             @endif
         </x-filament::section>
-        @endif
-
         <x-filament::section>
             <x-slot name="heading">Клиентски плащания</x-slot>
             @if(! $project?->isStudio())
@@ -97,6 +95,7 @@
                 </div>
             @endif
         </x-filament::section>
+        @endif
 
         <div class="tt-finance__columns">
             <x-filament::section>

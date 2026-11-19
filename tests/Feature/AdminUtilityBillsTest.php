@@ -29,6 +29,9 @@ class AdminUtilityBillsTest extends TestCase
         Livewire::test(CreateUtilityBill::class)
             ->assertFormSet(['split_mode' => 'equal', 'members' => [$payer->id, $second->id, $third->id]])
             ->fillForm($this->billFields($payer))
+            ->assertSee('Платил · Симеон')
+            ->assertSee('Пресиан → Симеон')
+            ->assertSee('30,00 €')
             ->call('create')
             ->assertHasNoFormErrors();
 
@@ -119,15 +122,27 @@ class AdminUtilityBillsTest extends TestCase
             $this->report($bill)['balances'],
         );
 
+        $openReimbursement = Livewire::withQueryParams([
+            'project' => $bill->id,
+            'kind' => FinanceMovement::TRANSFER,
+            'from' => $second->id,
+            'to' => $payer->id,
+            'amount' => '17.66',
+        ])->test(CreateFinanceMovement::class)->fillForm(['method' => 'cash']);
+
         Livewire::withQueryParams([])->test(FinanceOverview::class)
             ->assertSee('47,66 €')
             ->callAction('settlePeriod', data: ['confirmed' => true, 'method' => 'bank_transfer'])
             ->assertHasNoActionErrors();
 
+        $openReimbursement->call('create')->assertHasFormErrors(['amount']);
+
         $settlement = FinanceMovement::where('kind', FinanceMovement::SETTLEMENT)->sole();
         $this->assertSame(4766, $settlement->amount_cents);
+        $this->assertDatabaseCount('finance_movements', 3);
         $this->assertSame([], array_filter($this->report($bill)['balances']));
         $this->assertSame(['received' => 0, 'refunded' => 0, 'expenses' => 9000, 'transfers' => 6000], $this->report()['period']);
+        $this->get(UtilityBillResource::getUrl())->assertOk()->assertSee('Уредена');
     }
 
     private function accounts(): array
