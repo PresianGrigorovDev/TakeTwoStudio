@@ -19,8 +19,11 @@ class ActivityLogWidget extends BaseWidget
     {
         return $table
             ->query(
-                ActivityLog::query()->whereNotNull('user_id')->latest()->limit(10)
+                ActivityLog::query()->whereNotNull('user_id')->limit(10)
             )
+            ->defaultSort('id', 'desc')
+            ->paginated(false)
+            ->poll('15s')
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Дата и час')

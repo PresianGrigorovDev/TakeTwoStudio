@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\EventExtraResource\Pages;
 
 use App\Filament\Resources\EventExtraResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListEventExtras extends ListRecords
+class ListEventExtras extends AuditedListRecords
 {
     protected static string $resource = EventExtraResource::class;
 

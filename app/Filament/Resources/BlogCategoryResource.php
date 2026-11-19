@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\BlogCategoryResource\Pages;
 use App\Models\BlogCategory;
 use Filament\Forms;
@@ -81,7 +82,7 @@ class BlogCategoryResource extends Resource
                     ->label('Поредност')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_visible')
+                AuditedToggleColumn::make('is_visible')
                     ->label('Видима'),
             ])
             ->defaultSort('display_order')

@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Traits\LogsActivity;
 use App\Support\ImageOptimizer;
 
 class Service extends Model
 {
-    use LogsActivity;
     protected $guarded = [];
 
     /** Hero = full-width cover background behind a dark overlay (LCP of every service page): fit inside this box (px). */

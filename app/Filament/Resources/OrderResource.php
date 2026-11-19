@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Support\OrderPaymentAction;
 use App\Models\Booking;
 use App\Models\Order;
 use Filament\Forms;
@@ -242,6 +243,7 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                OrderPaymentAction::onOrder(Tables\Actions\Action::make('recordPayment')),
                 Tables\Actions\Action::make('confirm_booking')
                     ->label('Запиши в календара')
                     ->icon('heroicon-o-calendar-days')

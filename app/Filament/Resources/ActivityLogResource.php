@@ -49,10 +49,10 @@ class ActivityLogResource extends Resource
 
                         $html = '<div style="display: flex; flex-direction: column; gap: 0.5rem; font-family: monospace;">';
                         foreach ($record->properties as $field => $change) {
-                            $old = is_array($change['old']) ? json_encode($change['old'], JSON_UNESCAPED_UNICODE) : $change['old'];
-                            $new = is_array($change['new']) ? json_encode($change['new'], JSON_UNESCAPED_UNICODE) : $change['new'];
+                            $old = e(self::formatValue($change['old'] ?? null));
+                            $new = e(self::formatValue($change['new'] ?? null));
 
-                            $fieldName = ucwords(str_replace('_', ' ', $field));
+                            $fieldName = e(ucwords(str_replace('_', ' ', $field)));
 
                             $html .= "<div><strong>{$fieldName}</strong>: <span style='color: #ef4444; text-decoration: line-through;'>\"{$old}\"</span> <span style='color: #9ca3af;'>➜</span> <span style='color: #22c55e;'>\"{$new}\"</span></div>";
                         }
@@ -97,7 +97,7 @@ class ActivityLogResource extends Resource
                     ->label('Описание')
                     ->searchable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('action')
                     ->label('Действие')
@@ -120,6 +120,11 @@ class ActivityLogResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->whereNotNull('user_id');
+    }
+
+    private static function formatValue(mixed $value): string
+    {
+        return is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
 
     public static function getRelations(): array

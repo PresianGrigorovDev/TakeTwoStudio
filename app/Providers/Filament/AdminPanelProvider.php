@@ -39,6 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->databaseTransactions()
             ->brandName('Take Two Studio 1603')
             ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
@@ -56,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
             // Daily work first, then one page per service, then the rest; settings start collapsed.
             ->navigationGroups([
                 NavigationGroup::make('Работа'),
+                NavigationGroup::make('Финанси'),
                 NavigationGroup::make('Услуги'),
                 NavigationGroup::make('Съдържание'),
                 NavigationGroup::make('Маркетинг'),

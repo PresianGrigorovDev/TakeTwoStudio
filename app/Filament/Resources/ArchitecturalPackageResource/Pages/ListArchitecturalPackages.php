@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\ArchitecturalPackageResource\Pages;
 
 use App\Filament\Resources\ArchitecturalPackageResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
 
-class ListArchitecturalPackages extends ListRecords
+class ListArchitecturalPackages extends AuditedListRecords
 {
     protected static string $resource = ArchitecturalPackageResource::class;
 

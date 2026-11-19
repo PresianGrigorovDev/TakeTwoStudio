@@ -1,0 +1,123 @@
+.tt-finance {
+    --finance-muted: #4b5563;
+    --finance-border: #e5e7eb;
+    min-width: 0;
+    font-size: 0.875rem;
+}
+
+.dark .tt-finance {
+    --finance-muted: #cbd5e1;
+    --finance-border: rgb(255 255 255 / 12%);
+}
+
+.tt-finance__stack {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.tt-finance__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 1rem;
+}
+
+.tt-finance__filters > div {
+    flex: 1 1 26rem;
+    min-width: 0;
+}
+
+.tt-finance__filters > button {
+    min-height: 2.75rem;
+}
+
+.tt-finance__metrics,
+.tt-finance__columns {
+    display: grid;
+    gap: 1.125rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tt-finance__metrics div {
+    min-width: 0;
+}
+
+.tt-finance__metrics dt,
+.tt-finance__muted {
+    color: var(--finance-muted);
+}
+
+.tt-finance__metrics dd,
+.tt-finance__amount {
+    margin-top: 0.25rem;
+    font-size: clamp(1.1rem, 2vw, 1.55rem);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+}
+
+.tt-finance__row,
+.tt-finance__project,
+.tt-finance__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
+}
+
+.tt-finance__row {
+    padding-block: 0.7rem;
+}
+
+.tt-finance__row > strong {
+    margin-inline-start: auto;
+    font-variant-numeric: tabular-nums;
+}
+
+.tt-finance__row + .tt-finance__row,
+.tt-finance__summary {
+    border-top: 1px solid var(--finance-border);
+}
+
+.tt-finance__summary,
+.tt-finance__actions {
+    margin-top: 0.85rem;
+    padding-top: 0.65rem;
+}
+
+.tt-finance__summary h3 {
+    font-weight: 600;
+}
+
+.tt-finance__project {
+    justify-content: space-between;
+}
+
+.tt-finance__project h2 {
+    font-size: 1.15rem;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.tt-finance__note {
+    margin-block: 0.75rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.tt-finance__notice {
+    margin-block: 0.65rem;
+    font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+    .tt-finance__metrics {
+        grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .tt-finance__columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

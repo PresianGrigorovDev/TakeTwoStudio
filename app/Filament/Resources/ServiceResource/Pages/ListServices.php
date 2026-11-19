@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\ServiceResource\Pages;
 
 use App\Filament\Resources\ServiceResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListServices extends ListRecords
+class ListServices extends AuditedListRecords
 {
     protected static string $resource = ServiceResource::class;
 

@@ -73,7 +73,7 @@ class BookingResource extends Resource
                     Forms\Components\CheckboxList::make('teamMembers')
                         ->label('Хора')
                         ->relationship('teamMembers', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('display_order'))
-                        ->default(fn () => request()->integer('member') ? [request()->integer('member')] : [])
+                        ->default(fn () => array_filter([request()->integer('assignee', request()->integer('member'))]))
                         ->helperText(fn (Get $get) => match ($get('kind')) {
                             Booking::KIND_CLOSED => 'Студиото е затворено за всички; хора не са нужни.',
                             Booking::KIND_BUSY => 'Кой е зает.',

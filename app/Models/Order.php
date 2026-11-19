@@ -12,7 +12,7 @@ class Order extends Model
     protected static function booted(): void
     {
         static::deleting(function (Order $order) {
-            $order->bookings()->delete();
+            $order->bookings()->eachById(fn (Booking $booking) => $booking->delete());
         });
     }
 
@@ -38,7 +38,8 @@ class Order extends Model
 
     public function teamMembers()
     {
-        return $this->belongsToMany(TeamMember::class, 'order_team_member');
+        return $this->belongsToMany(TeamMember::class, 'order_team_member')
+            ->using(TeamAssignment::class);
     }
 
     public function promoCode()

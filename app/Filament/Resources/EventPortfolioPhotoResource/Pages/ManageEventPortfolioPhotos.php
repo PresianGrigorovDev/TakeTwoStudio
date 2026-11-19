@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\EventPortfolioPhotoResource\Pages;
 
 use App\Filament\Resources\EventPortfolioPhotoResource;
+use App\Filament\Support\AuditedManageRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
 
-class ManageEventPortfolioPhotos extends ManageRecords
+class ManageEventPortfolioPhotos extends AuditedManageRecords
 {
     protected static string $resource = EventPortfolioPhotoResource::class;
 

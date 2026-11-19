@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\TeamMemberResource\Pages;
 
 use App\Filament\Resources\TeamMemberResource;
+use App\Filament\Support\AuditedListRecords;
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
 
-class ListTeamMembers extends ListRecords
+class ListTeamMembers extends AuditedListRecords
 {
     protected static string $resource = TeamMemberResource::class;
 

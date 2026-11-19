@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\TeamAssignment;
+use App\Observers\AdminActivityObserver;
+use App\Support\AdminDeletionEffects;
 use App\Support\Assets;
 use App\Support\Seo\Seo;
 use Filament\Support\Assets\Css;
@@ -20,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped(Seo::class);
+        $this->app->scoped(AdminDeletionEffects::class);
     }
 
     /**
@@ -35,6 +39,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->forceCanonicalUrls();
         $this->registerAdminAssets();
+
+        foreach (array_keys(AdminActivityObserver::SUBJECTS) as $model) {
+            $model::observe(AdminActivityObserver::class);
+        }
+        TeamAssignment::observe(AdminActivityObserver::class);
     }
 
     /**
@@ -51,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
             Js::make('game-qr', Assets::versioned('js/admin/game-qr.js', absolute: true)),
             // Dashboard team calendar + double-booking warning (Календар → Ангажименти).
             Css::make('team-calendar', Assets::versioned('css/admin/team-calendar.css', absolute: true)),
+            Css::make('finance', Assets::versioned('css/admin/finance.css', absolute: true)),
             // {{variable}} dropdown in FAQ texts (App\Support\ContentVariables).
             Js::make('content-variables', Assets::versioned('js/admin/content-variables.js', absolute: true)),
             Css::make('content-variables', Assets::versioned('css/admin/content-variables.css', absolute: true)),

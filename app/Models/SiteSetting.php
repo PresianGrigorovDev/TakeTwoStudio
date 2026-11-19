@@ -11,7 +11,8 @@ class SiteSetting extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => Settings::forget());
-        static::deleted(fn () => Settings::forget());
+        $forget = fn (SiteSetting $setting) => $setting->getConnection()->afterCommit(Settings::forget(...));
+        static::saved($forget);
+        static::deleted($forget);
     }
 }

@@ -6,7 +6,8 @@
         : ($colors->first() ?? '#94a3b8');
 @endphp
 <a href="{{ $entry['url'] }}"
-   @class(['tt-cal__entry', 'is-' . $entry['kind'], 'is-pending' => $entry['pending']])
+   @class(['tt-cal__entry', 'is-' . $entry['kind'], 'is-pending' => $entry['pending'], 'is-selected' => $entry['selected']])
+   @if($entry['selected']) aria-current="true" @endif
    style="--tt-bar: {{ $bar }}"
    title="{{ $entry['time'] }} · {{ $entry['title'] }}{{ $entry['location'] ? ' · ' . $entry['location'] : '' }}{{ $entry['people'] ? ' · ' . collect($entry['people'])->pluck('name')->implode(', ') : '' }}">
     <span class="tt-cal__time">@if($entry['kind'] === 'session')<span aria-label="фотосесия">📷</span> @endif{{ $entry['time'] }}@if($entry['multiDay']) <span aria-label="няколко дни">↔</span>@endif</span>

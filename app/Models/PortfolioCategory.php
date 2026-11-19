@@ -18,8 +18,9 @@ class PortfolioCategory extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget('nav.portfolio_categories'));
-        static::deleted(fn () => Cache::forget('nav.portfolio_categories'));
+        $forget = fn (PortfolioCategory $category) => $category->getConnection()->afterCommit(fn () => Cache::forget('nav.portfolio_categories'));
+        static::saved($forget);
+        static::deleted($forget);
 
         // Safety net for covers that skip the Filament client-side resize.
         static::created(fn (PortfolioCategory $category) => $category->optimizeCover());

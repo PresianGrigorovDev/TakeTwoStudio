@@ -1,6 +1,11 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <div class="tt-cal">
+        <div class="tt-cal"
+             x-on:calendar-booking-selected.window="$nextTick(() => {
+                 const booking = Array.from($el.querySelectorAll('.tt-cal__entry.is-selected')).find(entry => entry.offsetWidth > 0);
+                 booking?.focus({ preventScroll: true });
+                 booking?.scrollIntoView({ block: 'center' });
+             })">
             {{-- Toolbar: month navigation, person filter, new entry --}}
             <div class="tt-cal__toolbar">
                 <div class="tt-cal__nav">
@@ -40,14 +45,52 @@
                 <p class="tt-cal__period-error" role="alert">{{ $message }}</p>
             @enderror
 
-            {{-- Legend = person filter --}}
-            <div class="tt-cal__legend" role="group" aria-label="Филтър по човек">
-                <button type="button" wire:click="filterMember(null)" @class(['tt-cal__chip', 'is-active' => $member === null])>Всички</button>
-                @foreach($members as $person)
-                    <button type="button" wire:click="filterMember({{ $person->id }})" @class(['tt-cal__chip', 'is-active' => $member === $person->id])>
-                        <span class="tt-cal__dot" style="background: {{ $person->calendar_color_or_default }}"></span>{{ $person->name }}
-                    </button>
-                @endforeach
+            <div class="tt-cal__search" role="search" aria-label="Календар" wire:keydown.escape="clearSearch">
+                <x-filament::input.wrapper prefix-icon="heroicon-m-magnifying-glass">
+                    <x-filament::input
+                        type="search"
+                        wire:model.live.debounce.350ms="search"
+                        placeholder="Клиент, телефон или локация"
+                        aria-label="Търсене по клиент, телефон или локация"
+                        autocomplete="off"
+                        maxlength="100"
+                    />
+                </x-filament::input.wrapper>
+                <p class="sr-only" role="status" wire:loading wire:target="search">Търсене…</p>
+                @if($hasSearch)
+                    @if($searchResults->isEmpty())
+                        <p class="tt-cal__empty" role="status">Няма намерени ангажименти.</p>
+                    @else
+                        <ul class="tt-cal__results" aria-label="Намерени ангажименти">
+                            @foreach($searchResults as $result)
+                                <li wire:key="calendar-search-{{ $result->id }}">
+                                    <button type="button" class="tt-cal__result" wire:click="selectBooking({{ $result->id }})">
+                                        <strong>{{ $result->name }}</strong>
+                                        <span>{{ implode(' · ', array_filter([$result->event_date->format('d.m.Y'), $result->start_time, $result->phone, $result->location])) }}</span>
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                @endif
+            </div>
+
+            <div class="tt-cal__filters">
+                <div class="tt-cal__chips" role="group" aria-label="Филтър по човек">
+                    <button type="button" wire:click="filterMember(null)" class="tt-cal__chip" aria-pressed="{{ $member === null && ! $unassignedOnly ? 'true' : 'false' }}">Всички</button>
+                    @foreach($members as $person)
+                        <button type="button" wire:click="filterMember({{ $person->id }})" class="tt-cal__chip" aria-pressed="{{ $member === $person->id ? 'true' : 'false' }}">
+                            <span class="tt-cal__dot" style="background: {{ $person->calendar_color_or_default }}"></span>{{ $person->name }}
+                        </button>
+                    @endforeach
+                </div>
+                <div class="tt-cal__chips" role="group" aria-label="Филтър за ангажименти">
+                    <button type="button" wire:click="togglePending" class="tt-cal__chip" aria-pressed="{{ $pendingOnly ? 'true' : 'false' }}">Чакащи</button>
+                    <button type="button" wire:click="toggleUnassigned" class="tt-cal__chip" aria-pressed="{{ $unassignedOnly ? 'true' : 'false' }}">Без назначен екип</button>
+                </div>
+            </div>
+
+            <div class="tt-cal__legend" aria-label="Легенда">
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-session"></span>📷 фотосесия</span>
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-pending"></span>чакаща заявка</span>
                 <span class="tt-cal__hint"><span class="tt-cal__swatch is-busy"></span>лично зает</span>
@@ -63,9 +106,13 @@
                 @foreach($weeks as $week)
                     @foreach($week as $day)
                         <div @class(['tt-cal__day', 'is-other-month' => ! $day['inMonth'], 'is-today' => $day['isToday'], 'is-past' => $day['isPast']])>
-                            <a href="{{ $day['createUrl'] }}" class="tt-cal__daynum" title="Нов запис за {{ \Illuminate\Support\Carbon::parse($day['date'])->format('d.m.Y') }}">
-                                <span>{{ $day['day'] }}</span><span class="tt-cal__add" aria-hidden="true">+</span>
-                            </a>
+                            <div class="tt-cal__day-actions">
+                                <button type="button" class="tt-cal__daynum" aria-pressed="{{ $availabilityDate === $day['date'] ? 'true' : 'false' }}"
+                                        wire:click="checkAvailability('{{ $day['date'] }}')" aria-label="Кой е свободен на {{ $day['label'] }}" title="Кой е свободен на {{ $day['label'] }}">
+                                    <span>{{ $day['day'] }}</span>
+                                </button>
+                                <a href="{{ $day['createUrl'] }}" class="tt-cal__add" aria-label="Нов запис за {{ $day['label'] }}" title="Нов запис за {{ $day['label'] }}">+</a>
+                            </div>
                             @foreach($day['entries'] as $entry)
                                 @include('filament.widgets.partials.team-calendar-entry', ['entry' => $entry])
                             @endforeach
@@ -76,17 +123,35 @@
 
             {{-- Agenda list (phones) --}}
             <div class="tt-cal__agenda">
+                <div class="tt-cal__picker" role="group" aria-labelledby="tt-cal-availability-{{ $this->getId() }}">
+                    <p id="tt-cal-availability-{{ $this->getId() }}">Кой е свободен?</p>
+                    @foreach($weekdays as $weekday)
+                        <span class="tt-cal__picker-weekday" aria-hidden="true">{{ $weekday }}</span>
+                    @endforeach
+                    @foreach($weeks as $week)
+                        @foreach($week as $day)
+                            @if($day['inMonth'])
+                                <button type="button" @class(['tt-cal__picker-date', 'is-today' => $day['isToday']]) aria-pressed="{{ $availabilityDate === $day['date'] ? 'true' : 'false' }}"
+                                        wire:click="checkAvailability('{{ $day['date'] }}')" aria-label="Кой е свободен на {{ $day['label'] }}">{{ $day['day'] }}</button>
+                            @else
+                                <span aria-hidden="true"></span>
+                            @endif
+                        @endforeach
+                    @endforeach
+                </div>
                 @forelse($agenda as $day)
                     <div @class(['tt-cal__agenda-day', 'is-today' => $day['isToday']])>
-                        <a href="{{ $day['createUrl'] }}" class="tt-cal__agenda-date">
-                            {{ \Illuminate\Support\Carbon::parse($day['date'])->translatedFormat('D, d F') }} <span aria-hidden="true">+</span>
-                        </a>
+                        <div class="tt-cal__day-actions">
+                            <button type="button" class="tt-cal__agenda-date" wire:click="checkAvailability('{{ $day['date'] }}')"
+                                    aria-label="Кой е свободен на {{ $day['label'] }}">{{ $day['agendaLabel'] }}</button>
+                            <a href="{{ $day['createUrl'] }}" class="tt-cal__add" aria-label="Нов запис за {{ $day['label'] }}" title="Нов запис за {{ $day['label'] }}">+</a>
+                        </div>
                         @foreach($day['entries'] as $entry)
                             @include('filament.widgets.partials.team-calendar-entry', ['entry' => $entry])
                         @endforeach
                     </div>
                 @empty
-                    <p class="tt-cal__empty">Няма записи през този месец.</p>
+                    <p class="tt-cal__empty">{{ $pendingOnly || $unassignedOnly || $member ? 'Няма записи с тези филтри.' : 'Няма записи през този месец.' }}</p>
                 @endforelse
             </div>
         </div>

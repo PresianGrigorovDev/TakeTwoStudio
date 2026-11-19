@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Support\AuditedToggleColumn;
 use App\Filament\Resources\PromPortfolioPhotoResource\Pages;
 use App\Models\PromPortfolioPhoto;
 use Filament\Forms;
@@ -69,7 +70,7 @@ class PromPortfolioPhotoResource extends Resource
                 Tables\Columns\TextColumn::make('sort_order')
                     ->label('Подредба')
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_visible')
+                AuditedToggleColumn::make('is_visible')
                     ->label('Видима'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

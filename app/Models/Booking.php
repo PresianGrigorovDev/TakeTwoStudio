@@ -72,7 +72,9 @@ class Booking extends Model
 
     public function teamMembers()
     {
-        return $this->belongsToMany(TeamMember::class, 'booking_team_member')->withTimestamps();
+        return $this->belongsToMany(TeamMember::class, 'booking_team_member')
+            ->using(TeamAssignment::class)
+            ->withTimestamps();
     }
 
     public function scopeConfirmed($query)
