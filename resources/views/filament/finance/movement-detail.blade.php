@@ -3,6 +3,7 @@
     $kinds = \App\Models\FinanceMovement::KINDS;
     $stages = \App\Models\FinanceMovement::STAGES;
     $methods = \App\Models\FinanceMovement::METHODS;
+    $companyRate = (int) ($movement->details['company_reserve_bps'] ?? 0);
     $settlement = $movement->kind === \App\Models\FinanceMovement::SETTLEMENT;
     $accounts = $settlement ? \App\Models\FinanceAccount::choices() : [];
 @endphp
@@ -23,6 +24,12 @@
         @endif
         @if($movement->payment_stage)
             <p>{{ $stages[$movement->payment_stage] }}</p>
+        @endif
+        @if($companyRate > 0)
+            <div class="tt-finance__row tt-finance__summary">
+                <span>За фирмената сметка · {{ \App\Support\Finance\Euro::decimal($companyRate, ',') }}%</span>
+                <strong>{{ \App\Support\Finance\Euro::format(\App\Support\Finance\CompanyReserve::cents($movement->amount_cents, $companyRate)) }}</strong>
+            </div>
         @endif
         @if($movement->fromAccount)
             <p>Платил · {{ $movement->fromAccount->display_name }}</p>
