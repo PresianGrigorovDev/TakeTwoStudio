@@ -6,6 +6,7 @@ use App\Models\FinanceAccount;
 use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
 use App\Models\User;
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -172,7 +173,8 @@ final class Ledger
         return $transfers;
     }
 
-    public function record(FinanceProject $project, array $input, User $actor): FinanceMovement
+    /** @param FinanceProject|Closure(): FinanceProject $project */
+    public function record(FinanceProject|Closure $project, array $input, User $actor): FinanceMovement
     {
         $data = validator($input, [
             'kind' => ['required', Rule::in([FinanceMovement::INCOME, FinanceMovement::EXPENSE, FinanceMovement::REFUND, FinanceMovement::TRANSFER])],
@@ -188,7 +190,7 @@ final class Ledger
         $amount = Euro::parse($data['amount']);
 
         return $this->transaction(function () use ($project, $data, $amount, $actor) {
-            $project->refresh();
+            $project = $project instanceof Closure ? $project() : $project->refresh();
             $kind = $data['kind'];
             if ($project->isSharedExpense() && ! in_array($kind, [FinanceMovement::EXPENSE, FinanceMovement::TRANSFER], true)) {
                 throw ValidationException::withMessages(['kind' => 'Клиентските плащания се записват по конкретен проект.']);

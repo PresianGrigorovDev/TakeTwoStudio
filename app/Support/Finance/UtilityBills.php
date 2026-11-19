@@ -45,12 +45,13 @@ final class UtilityBills
         }
         $weights = self::weights(Euro::parse($data['amount']), $data);
 
-        return $this->ledger->transaction(function () use ($title, $weights, $data, $actor) {
-            $bill = FinanceProject::create(['title' => $title, 'kind' => FinanceProject::UTILITY, 'shares' => $weights]);
-            $this->ledger->record($bill, ['kind' => FinanceMovement::EXPENSE] + $data, $actor);
+        $payment = $this->ledger->record(
+            fn () => FinanceProject::create(['title' => $title, 'kind' => FinanceProject::UTILITY, 'shares' => $weights]),
+            ['kind' => FinanceMovement::EXPENSE] + $data,
+            $actor,
+        );
 
-            return $bill;
-        });
+        return $payment->project;
     }
 
     /** @return array<int,int> */

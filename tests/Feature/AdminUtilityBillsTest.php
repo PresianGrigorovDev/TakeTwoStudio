@@ -14,7 +14,10 @@ use App\Models\User;
 use App\Support\Finance\Ledger;
 use App\Support\Finance\UtilityBills;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use RuntimeException;
 use Tests\TestCase;
 
 class AdminUtilityBillsTest extends TestCase
@@ -93,6 +96,37 @@ class AdminUtilityBillsTest extends TestCase
             [$payer->id => -9001, $second->id => 2000, $third->id => 7001],
             $this->report($bill)['balances'],
         );
+    }
+
+    public function test_bill_and_payment_share_one_transaction_and_roll_back_together(): void
+    {
+        [$payer] = $this->accounts();
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+        $this->withoutExceptionHandling();
+
+        $before = DB::transactionLevel();
+        $during = null;
+        $event = 'eloquent.creating: '.FinanceMovement::class;
+        Event::listen($event, function () use (&$during) {
+            $during = DB::transactionLevel();
+
+            throw new RuntimeException('Simulated failed utility payment');
+        });
+
+        try {
+            Livewire::test(CreateUtilityBill::class)->fillForm($this->billFields($payer))->call('create');
+            $this->fail('The payment write should have failed.');
+        } catch (RuntimeException $error) {
+            $this->assertSame('Simulated failed utility payment', $error->getMessage());
+        } finally {
+            Event::forget($event);
+        }
+
+        $this->assertSame($before + 1, $during);
+        $this->assertSame($before, DB::transactionLevel());
+        $this->assertDatabaseMissing('finance_projects', ['kind' => FinanceProject::UTILITY]);
+        $this->assertDatabaseCount('finance_movements', 0);
+        $this->assertDatabaseCount('activity_logs', 0);
     }
 
     public function test_partial_reimbursements_and_period_settlement_reduce_the_same_bill_only_once(): void
