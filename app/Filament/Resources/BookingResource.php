@@ -120,7 +120,7 @@ class BookingResource extends Resource
                         ->default(fn () => preg_match('/^\d{2}:\d{2}$/', (string) request()->query('end')) ? request()->query('end') : sprintf('%02d:00', BookingController::getWorkEnd()))
                         ->rule(fn (Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
                             // "HH:MM" strings compare correctly as text.
-                            if ($get('start_time') && substr((string) $value, 0, 5) <= substr((string) $get('start_time'), 0, 5)) {
+                            if ($get('start_time') && self::endTime((string) $value) <= substr((string) $get('start_time'), 0, 5)) {
                                 $fail('Крайният час трябва да е след началния.');
                             }
                         })
@@ -195,16 +195,25 @@ class BookingResource extends Resource
                 $data[$field] = null;
             }
         }
-        foreach (['start_time', 'end_time'] as $field) {
-            if (! empty($data[$field])) {
-                $data[$field] = substr((string) $data[$field], 0, 5);
-            }
+        if (! empty($data['start_time'])) {
+            $data['start_time'] = substr((string) $data['start_time'], 0, 5);
+        }
+        if (! empty($data['end_time'])) {
+            $data['end_time'] = self::endTime((string) $data['end_time']);
         }
         if (! empty($data['end_date']) && substr((string) $data['end_date'], 0, 10) <= substr((string) $data['event_date'], 0, 10)) {
             $data['end_date'] = null;
         }
 
         return $data;
+    }
+
+    private static function endTime(string $value): string
+    {
+        // The time input displays the last boundary of the day as 00:00.
+        $time = substr($value, 0, 5);
+
+        return $time === '00:00' ? '24:00' : $time;
     }
 
     /** Notification after saving when somebody is double-booked (saving is still allowed). */
@@ -268,7 +277,7 @@ class BookingResource extends Resource
         $date = $get('event_date');
         // Time pickers may hold "13:30:00"; entries are stored as "HH:MM".
         $start = $get('start_time') ? substr((string) $get('start_time'), 0, 5) : null;
-        $end = $get('end_time') ? substr((string) $get('end_time'), 0, 5) : null;
+        $end = $get('end_time') ? self::endTime((string) $get('end_time')) : null;
 
         if (! $date || ! $start || ! $end || $start >= $end || $get('kind') === Booking::KIND_CLOSED) {
             return null;

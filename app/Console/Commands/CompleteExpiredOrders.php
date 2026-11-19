@@ -10,7 +10,7 @@ class CompleteExpiredOrders extends Command
 {
     protected $signature = 'orders:complete-expired';
 
-    protected $description = 'Маркира приетите поръчки като завършени, когато датата на събитието е минала';
+    protected $description = 'Завършва приетите поръчки с минала дата и без оставащи заснемания';
 
     public function handle()
     {

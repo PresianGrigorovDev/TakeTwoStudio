@@ -155,7 +155,7 @@ class AdminOrderShootsTest extends TestCase
         $order->teamMembers()->attach($member);
         $this->actingAs(User::factory()->create(['is_admin' => true]));
         $date = now()->addDays(15);
-        $fields = ['event_date' => $date->toDateString(), 'start_time' => '14:00', 'end_time' => '16:00'];
+        $fields = ['event_date' => $date->toDateString(), 'start_time' => '21:00', 'end_time' => '00:00'];
         $returnUrl = OrderResource::getUrl('shoots', ['record' => $order]);
 
         $first = Livewire::withQueryParams(['shoot' => $shoot->id])->test(CreateBooking::class)->fillForm($fields);
@@ -169,6 +169,7 @@ class AdminOrderShootsTest extends TestCase
         $this->assertNotNull($booking);
         $this->assertTrue($booking->order->is($order));
         $this->assertSame(Booking::KIND_SESSION, $booking->kind);
+        $this->assertSame('24:00', $booking->end_time);
         $this->assertTrue($booking->teamMembers->contains($member));
         $this->assertTrue(TeamCalendar::entries($date->toDateString(), $date->toDateString())->contains($booking));
 

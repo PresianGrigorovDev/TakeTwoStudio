@@ -8,6 +8,7 @@ use App\Filament\Support\PackageShootPlan;
 use App\Models\Booking;
 use App\Models\Order;
 use App\Models\OrderShoot;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -41,6 +42,14 @@ class ManageOrderShoots extends ManageRelatedRecords
         return 'Заснемания · '.$this->getRecord()->name;
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('order')->label('Към поръчката')->icon('heroicon-o-arrow-left')->color('gray')
+                ->url(fn () => OrderResource::getUrl('edit', ['record' => $this->getRecord()])),
+        ];
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema(PackageShootPlan::fields());
@@ -56,7 +65,6 @@ class ManageOrderShoots extends ManageRelatedRecords
             ->heading(fn () => $this->getRecord()->shoot_package_name)
             ->description($this->summary(...))
             ->emptyStateHeading('Няма добавени заснемания')
-            ->emptyStateDescription('Изберете пакет или добавете заснемане за тази поръчка.')
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['booking', 'shotBy']))
             ->defaultSort('id')
             ->columns([
@@ -150,6 +158,7 @@ class ManageOrderShoots extends ManageRelatedRecords
                     $order->shoots()->create(['name' => $item['name'], 'kind' => $item['kind']]);
                 }
 
+                $this->getRecord()->refresh();
                 $action->success();
             });
     }
@@ -242,8 +251,9 @@ class ManageOrderShoots extends ManageRelatedRecords
         if ($record->shot_on) {
             return $record->shotBy?->name;
         }
-        if ($record->booking?->isActive()) {
-            return substr((string) $record->booking->start_time, 0, 5).'–'.substr((string) $record->booking->end_time, 0, 5);
+        $booking = $record->booking;
+        if ($booking?->isActive() && $booking->start_time && $booking->end_time) {
+            return substr($booking->start_time, 0, 5).'–'.substr($booking->end_time, 0, 5);
         }
 
         return null;
