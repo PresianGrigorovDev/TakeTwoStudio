@@ -26,6 +26,68 @@ final class UtilityBills
     public function create(array $input, User $actor): FinanceProject
     {
         abort_unless($actor->isAdmin(), 403);
+        [$title, $weights, $data] = $this->prepare($input);
+
+        $payment = $this->ledger->record(
+            fn () => FinanceProject::create(['title' => $title, 'kind' => FinanceProject::UTILITY, 'shares' => $weights]),
+            ['kind' => FinanceMovement::EXPENSE] + $data,
+            $actor,
+        );
+
+        return $payment->project;
+    }
+
+    public function update(FinanceProject $bill, array $input, User $actor): FinanceProject
+    {
+        abort_unless($actor->isAdmin() && $bill->isUtility(), 403);
+        [$title, $weights, $data, $amount] = $this->prepare($input);
+
+        return $this->ledger->transaction(function () use ($bill, $title, $weights, $data, $amount) {
+            $expense = $bill->utilityExpense()->firstOrFail();
+            if ($expense->voided_at) {
+                throw ValidationException::withMessages(['amount' => 'Сметката е изтрита.']);
+            }
+
+            $bill->update(['title' => $title, 'shares' => $weights]);
+            $expense->update([
+                'amount_cents' => $amount,
+                'occurred_on' => $data['occurred_on'],
+                'from_account_id' => $data['from_account_id'],
+                'handled_by_id' => $data['handled_by_id'] ?? null,
+                'method' => $data['method'],
+                'details' => array_replace($expense->details ?? [], ['shares' => $weights]),
+            ]);
+
+            return $bill;
+        });
+    }
+
+    public static function formData(FinanceProject $bill): array
+    {
+        $expense = $bill->utilityExpense;
+        [$label, $periodLabel] = array_pad(explode(' · ', $bill->title, 2), 2, null);
+        $category = array_search($label, self::CATEGORIES, true);
+        $weights = $expense->details['shares'] ?? $bill->shares;
+        $equal = array_sum($weights) === count($weights);
+
+        return [
+            'category' => $category ?: 'other',
+            'period_label' => $category ? $periodLabel : $bill->title,
+            'amount' => Euro::decimal($expense->amount_cents),
+            'occurred_on' => $expense->occurred_on->toDateString(),
+            'from_account_id' => $expense->from_account_id,
+            'handled_by_id' => $expense->handled_by_id,
+            'method' => $expense->method,
+            'split_mode' => $equal ? 'equal' : 'custom',
+            'members' => array_keys($weights),
+            'allocations' => $equal ? [] : collect($weights)->map(fn ($cents, $account) => [
+                'account_id' => $account, 'amount' => Euro::decimal($cents),
+            ])->values()->all(),
+        ];
+    }
+
+    private function prepare(array $input): array
+    {
         $data = validator($input, [
             'category' => ['required', Rule::in(array_keys(self::CATEGORIES))],
             'period_label' => ['nullable', 'string', 'max:120'],
@@ -43,15 +105,9 @@ final class UtilityBills
         if (filled($data['period_label'] ?? null)) {
             $title .= ' · '.trim($data['period_label']);
         }
-        $weights = self::weights(Euro::parse($data['amount']), $data);
+        $amount = Euro::parse($data['amount']);
 
-        $payment = $this->ledger->record(
-            fn () => FinanceProject::create(['title' => $title, 'kind' => FinanceProject::UTILITY, 'shares' => $weights]),
-            ['kind' => FinanceMovement::EXPENSE] + $data,
-            $actor,
-        );
-
-        return $payment->project;
+        return [$title, self::weights($amount, $data), $data, $amount];
     }
 
     /** @return array<int,int> */

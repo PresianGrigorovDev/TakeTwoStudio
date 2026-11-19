@@ -8,6 +8,7 @@ use App\Filament\Resources\UtilityBillResource;
 use App\Models\FinanceAccount;
 use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
+use App\Support\Finance\Euro;
 use App\Support\Finance\Ledger;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -139,6 +140,52 @@ class FinanceOverview extends Page
             });
     }
 
+    public function markSharePaidAction(): Action
+    {
+        return Action::make('markSharePaid')->label('Отбележи платено')->size('sm')->color('gray')->icon('heroicon-m-check')
+            ->visible(fn () => $this->selectedProject?->isUtility() ?? false)
+            ->databaseTransaction(false)
+            ->modalHeading('Отбелязване на платен дял')
+            ->modalDescription(function (array $arguments): string {
+                $accounts = FinanceAccount::choices();
+
+                return ($accounts[$arguments['from'] ?? 0] ?? '').' → '.($accounts[$arguments['to'] ?? 0] ?? '').' · '.Euro::format((int) ($arguments['cents'] ?? 0));
+            })
+            ->form([
+                DatePicker::make('occurred_on')->label('Дата на плащане')->default(Ledger::today())->maxDate(Ledger::today())->required(),
+                Select::make('method')->label('Начин на плащане')->options(FinanceMovement::METHODS),
+            ])
+            ->modalSubmitActionLabel('Потвърди плащането')
+            ->action(function (array $data, array $arguments, Action $action) {
+                $bill = $this->selectedProject;
+                abort_unless(static::canAccess() && $bill?->isUtility(), 403);
+
+                try {
+                    $transfer = validator($arguments, [
+                        'from' => ['required', 'integer', 'min:1'],
+                        'to' => ['required', 'integer', 'min:1'],
+                        'cents' => ['required', 'integer', 'min:1', 'max:9999999999'],
+                    ])->validate();
+                    app(Ledger::class)->record($bill, [
+                        'kind' => FinanceMovement::TRANSFER,
+                        'from_account_id' => (int) $transfer['from'],
+                        'to_account_id' => (int) $transfer['to'],
+                        'amount' => Euro::decimal((int) $transfer['cents']),
+                        ...$data,
+                    ], auth()->user(), fullUtilityShare: true);
+                } catch (ValidationException $exception) {
+                    unset($this->report);
+                    Notification::make()->title($exception->getMessage())->danger()->send();
+                    $action->halt();
+
+                    return;
+                }
+
+                unset($this->report);
+                Notification::make()->title('Плащането е отбелязано')->success()->send();
+            });
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -148,6 +195,9 @@ class FinanceOverview extends Page
             Action::make('utilityBill')->label('Нова битова сметка')->color('gray')->icon('heroicon-m-document-text')
                 ->visible(fn () => $this->projectId === null)
                 ->url(fn () => UtilityBillResource::getUrl('create')),
+            Action::make('editBill')->label('Редактирай сметката')->color('gray')
+                ->visible(fn () => $this->selectedProject?->isUtility() && UtilityBillResource::canEdit($this->selectedProject))
+                ->url(fn () => UtilityBillResource::getUrl('edit', ['record' => $this->projectId])),
             Action::make('listMovements')->label('История')->color('gray')
                 ->url(fn () => FinanceMovementResource::historyUrl($this->projectId)),
         ];

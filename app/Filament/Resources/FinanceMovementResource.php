@@ -7,6 +7,7 @@ use App\Filament\Support\FinanceForms;
 use App\Models\FinanceAccount;
 use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
+use App\Support\Finance\CompanyReserve;
 use App\Support\Finance\Euro;
 use App\Support\Finance\Ledger;
 use Filament\Forms;
@@ -17,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\ValidationException;
 
 class FinanceMovementResource extends Resource
 {
@@ -72,11 +74,17 @@ class FinanceMovementResource extends Resource
                     ->default(FinanceMovement::INCOME),
                 Forms\Components\DatePicker::make('occurred_on')->label('Дата на плащането')
                     ->default(Ledger::today())->maxDate(Ledger::today())->required(),
-                FinanceForms::amount('amount', 'Сума')->required(),
+                FinanceForms::amount('amount', 'Сума')->required()->live(onBlur: true),
                 Forms\Components\Select::make('method')->label('Начин на плащане')->options(FinanceMovement::METHODS)->required(),
                 Forms\Components\Select::make('payment_stage')->label('Етап на плащането')
                     ->options(FinanceMovement::STAGES)->default('deposit')->required()
                     ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME),
+                FinanceForms::amount('company_percentage', 'Процент за фирмената сметка', '%')
+                    ->default('0')->maxLength(6)->live(onBlur: true)
+                    ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME),
+                Forms\Components\Placeholder::make('company_reserve_preview')->label('За фирмената сметка')
+                    ->content(fn (Forms\Get $get) => self::reservePreview($get))
+                    ->visible(fn (Forms\Get $get) => $get('kind') === FinanceMovement::INCOME && filled($get('amount')) && filled($get('company_percentage'))),
                 Forms\Components\Select::make('from_account_id')->label(fn (Forms\Get $get) => $get('kind') === FinanceMovement::TRANSFER
                     ? 'Кой даде парите' : 'Кой плати разхода или връщането')
                     ->options(fn () => FinanceAccount::choices())->required()->live()
@@ -94,6 +102,15 @@ class FinanceMovementResource extends Resource
                     ->placeholder('Например албум, транспорт или референция на превода')->rows(2)->columnSpanFull(),
             ]),
         ]);
+    }
+
+    private static function reservePreview(Forms\Get $get): string
+    {
+        try {
+            return Euro::format(CompanyReserve::cents(Euro::parse($get('amount')), CompanyReserve::basisPoints($get('company_percentage'))));
+        } catch (ValidationException $exception) {
+            return $exception->getMessage();
+        }
     }
 
     public static function movementKinds(int $project): array
@@ -125,6 +142,10 @@ class FinanceMovementResource extends Resource
                     ->formatStateUsing(fn ($state) => FinanceMovement::KINDS[$state]),
                 Tables\Columns\TextColumn::make('amount_cents')->label('Сума')->weight('semibold')
                     ->formatStateUsing(fn ($state) => Euro::format((int) $state))->sortable(),
+                Tables\Columns\TextColumn::make('company_reserve')->label('За фирмата')
+                    ->state(fn (FinanceMovement $record) => $record->kind === FinanceMovement::INCOME
+                        ? Euro::format(CompanyReserve::cents($record->amount_cents, (int) ($record->details['company_reserve_bps'] ?? 0))) : null)
+                    ->placeholder('—')->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('project.title')->label('Проект')->placeholder('Общо за периода')->searchable()->wrap(),
                 Tables\Columns\TextColumn::make('sender')->label('Платил')
                     ->state(fn (FinanceMovement $record) => $record->fromAccount?->display_name

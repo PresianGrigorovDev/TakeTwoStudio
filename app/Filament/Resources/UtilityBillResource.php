@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 
 class UtilityBillResource extends Resource
@@ -46,6 +47,11 @@ class UtilityBillResource extends Resource
     public static function canCreate(): bool
     {
         return FinanceProject::installed() && parent::canCreate();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return $record->isUtility() && $record->utilityExpense && ! $record->utilityExpense->voided_at && parent::canEdit($record);
     }
 
     public static function getEloquentQuery(): Builder
@@ -148,9 +154,28 @@ class UtilityBillResource extends Resource
                     ->state(fn (FinanceProject $record) => self::outstanding($record))
                     ->listWithLineBreaks()->wrap(),
             ])
+            ->filters([
+                Tables\Filters\TernaryFilter::make('status')->label('Състояние')->default(true)
+                    ->placeholder('Всички сметки')->trueLabel('Активни')->falseLabel('Изтрити')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('utilityExpense', fn (Builder $expense) => $expense->posted()),
+                        false: fn (Builder $query) => $query->whereHas('utilityExpense', fn (Builder $expense) => $expense->whereNotNull('voided_at')),
+                    ),
+            ])
             ->actions([
                 Tables\Actions\Action::make('balance')->label('Виж разпределението')
                     ->url(fn (FinanceProject $record) => self::balanceUrl($record)),
+                Tables\Actions\EditAction::make()->label('Редактирай'),
+                Tables\Actions\Action::make('delete')->label('Изтрий')->color('danger')->icon('heroicon-o-trash')
+                    ->visible(fn (FinanceProject $record) => self::canEdit($record))->databaseTransaction(false)
+                    ->modalHeading('Изтриване на битова сметка')
+                    ->modalDescription('Сметката се премества в „Изтрити“. Записаните плащания се пазят, а салдата се преизчисляват.')
+                    ->modalSubmitActionLabel('Изтрий сметката')
+                    ->form([Forms\Components\Textarea::make('void_reason')->label('Причина')->required()->maxLength(500)])
+                    ->action(function (FinanceProject $record, array $data, Tables\Actions\Action $action) {
+                        app(Ledger::class)->void($record->utilityExpense, $data['void_reason'], auth()->user());
+                        $action->success();
+                    })->successNotificationTitle('Сметката е изтрита'),
             ])
             ->emptyStateHeading('Няма записани битови сметки');
     }
@@ -165,13 +190,13 @@ class UtilityBillResource extends Resource
         $transfers = Ledger::transfers($report['projects'][$record->id]['balance'] ?? []);
         $voided = (bool) $record->utilityExpense?->voided_at;
         if ($transfers === []) {
-            return [$voided ? 'Анулирана' : 'Уредена'];
+            return [$voided ? 'Изтрита' : 'Уредена'];
         }
 
         $accounts = once(fn () => FinanceAccount::choices());
         $lines = array_map(fn (array $transfer) => $accounts[$transfer['from']].' → '.$accounts[$transfer['to']].' · '.Euro::format($transfer['cents']), $transfers);
 
-        return $voided ? ['Анулирана', ...$lines] : $lines;
+        return $voided ? ['Изтрита', ...$lines] : $lines;
     }
 
     public static function balanceUrl(FinanceProject $record): string
@@ -184,6 +209,7 @@ class UtilityBillResource extends Resource
         return [
             'index' => Pages\ListUtilityBills::route('/'),
             'create' => Pages\CreateUtilityBill::route('/create'),
+            'edit' => Pages\EditUtilityBill::route('/{record}/edit'),
         ];
     }
 }

@@ -44,7 +44,7 @@
                     @endif
                 </dl>
                 @if($utilityExpense->voided_at)
-                    <p class="tt-finance__notice">Анулирана сметка</p>
+                    <p class="tt-finance__notice">Изтрита сметка</p>
                 @endif
             </x-filament::section>
         @endif
@@ -69,6 +69,16 @@
                     <dt>Резултат след разходите</dt>
                     <dd>{{ Euro::format($received - $period['expenses']) }}</dd>
                 </div>
+                @if($report['company_reserve'] !== 0)
+                    <div>
+                        <dt>За фирмената сметка</dt>
+                        <dd>{{ Euro::format($report['company_reserve']) }}</dd>
+                    </div>
+                    <div>
+                        <dt>За екипа</dt>
+                        <dd>{{ Euro::format($received - $period['expenses'] - $report['company_reserve']) }}</dd>
+                    </div>
+                @endif
             </dl>
             @if($period['transfers'])
                 <div class="tt-finance__row tt-finance__summary">
@@ -116,15 +126,27 @@
                     <p class="tt-finance__muted">Няма суми за уреждане.</p>
                 @endforelse
 
-                @if($projectRow && $projectRow['shares'])
+                @if($projectRow && ($projectRow['shares'] || $projectRow['company_reserve'] > 0))
                     <div class="tt-finance__summary">
                         <h3>{{ $project->isSharedExpense() ? 'Дялове от разхода' : 'Дялове след разходите' }}</h3>
                         @foreach($projectRow['shares'] as $account => $amount)
                             <div class="tt-finance__row">
                                 <span>{{ $accounts[$account] }}</span>
                                 <strong>{{ Euro::format($project->isSharedExpense() ? -$amount : $amount) }}</strong>
+                                @if($project->isUtility())
+                                    @php($outstanding = $balances[$account] ?? 0)
+                                    <x-filament::badge :color="$outstanding > 0 ? 'warning' : 'success'">
+                                        {{ $outstanding > 0 ? 'Остава '.Euro::format($outstanding) : 'Платен дял' }}
+                                    </x-filament::badge>
+                                @endif
                             </div>
                         @endforeach
+                        @if($projectRow['company_reserve'] > 0)
+                            <div class="tt-finance__row">
+                                <span>Фирмена сметка · заделено</span>
+                                <strong>{{ Euro::format($projectRow['company_reserve']) }}</strong>
+                            </div>
+                        @endif
                     </div>
                 @endif
             </x-filament::section>
@@ -136,13 +158,16 @@
                         <span>{{ $accounts[$transfer['from']] }} → {{ $accounts[$transfer['to']] }}</span>
                         <strong>{{ Euro::format($transfer['cents']) }}</strong>
                         @if($project)
+                            @if($project->isUtility())
+                                {{ ($this->markSharePaidAction)($transfer) }}
+                            @endif
                             <x-filament::link :href="FinanceMovementResource::getUrl('create', [
                                 'project' => $project->id,
                                 'kind' => 'transfer',
                                 'from' => $transfer['from'],
                                 'to' => $transfer['to'],
                                 'amount' => Euro::decimal($transfer['cents']),
-                            ])">{{ $project->isUtility() ? 'Запиши възстановяване' : 'Запиши превод' }}</x-filament::link>
+                            ])">{{ $project->isUtility() ? 'Запиши друга сума' : 'Запиши превод' }}</x-filament::link>
                         @endif
                     </div>
                 @empty

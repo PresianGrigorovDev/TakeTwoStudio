@@ -52,9 +52,13 @@ final class Ledger
         $projects = $only ? collect([$only->id => $only]) : FinanceProject::orderBy('id')->get()->keyBy('id');
         $stats = [];
         $period = ['received' => 0, 'refunded' => 0, 'expenses' => 0, 'transfers' => 0];
+        $companyReserve = 0;
+        $receipts = [];
         $movements = FinanceMovement::posted()->where('occurred_on', '<=', $through)
             ->when($only, fn ($query) => $query->where(fn ($query) => $query
                 ->where('finance_project_id', $only->id)->orWhere('kind', FinanceMovement::SETTLEMENT)))
+            ->orderBy('occurred_on')
+            ->orderByRaw('CASE WHEN kind = ? THEN 0 ELSE 1 END', [FinanceMovement::INCOME])
             ->orderBy('id')->cursor();
 
         foreach ($movements as $movement) {
@@ -102,6 +106,20 @@ final class Ledger
                 $period[$field] += $amount;
             }
 
+            $reserve = 0;
+            if ($movement->kind === FinanceMovement::INCOME) {
+                $rate = (int) ($movement->details['company_reserve_bps'] ?? 0);
+                $receipts[$projectId][$movement->id] = [$amount, $rate];
+                $reserve = CompanyReserve::cents($amount, $rate);
+            } elseif ($movement->kind === FinanceMovement::REFUND) {
+                $receipts[$projectId] ??= [];
+                $reserve = -CompanyReserve::release($amount, $receipts[$projectId]);
+            }
+            $row['company_reserve'] += $reserve;
+            if ($inPeriod) {
+                $companyReserve += $reserve;
+            }
+
             if ($project->isSharedExpense() && $movement->kind === FinanceMovement::EXPENSE) {
                 self::add($row['shares'], self::split(-$amount, $movement->details['shares']));
             }
@@ -110,6 +128,7 @@ final class Ledger
 
         $balances = [];
         $unpaid = 0;
+        $bankAccountId = null;
         foreach ($projects as $project) {
             $stats[$project->id] ??= self::emptyProject();
             $row = &$stats[$project->id];
@@ -118,11 +137,15 @@ final class Ledger
             $row['remaining'] = $project->agreed_cents !== null ? $project->agreed_cents - $row['paid'] : null;
             $unpaid += max(0, $row['remaining'] ?? 0);
             if (! $project->isSharedExpense()) {
-                $row['shares'] = self::split($row['net'], $project->shares);
+                $row['shares'] = self::split($row['net'] - $row['company_reserve'], $project->shares);
             }
 
             $row['balance'] = $row['held'];
             self::add($row['balance'], array_map(fn (int $value) => -$value, $row['shares']));
+            if ($row['company_reserve'] > 0) {
+                $bankAccountId ??= FinanceAccount::where('key', 'bank')->firstOrFail(['id'])->id;
+                self::add($row['balance'], [$bankAccountId => -$row['company_reserve']]);
+            }
             $row['balance'] = array_filter($row['balance']);
             ksort($row['balance']);
             self::add($balances, $row['balance']);
@@ -131,12 +154,12 @@ final class Ledger
 
         ksort($balances);
 
-        return ['period' => $period, 'projects' => $stats, 'balances' => $balances, 'unpaid' => $unpaid];
+        return ['period' => $period, 'projects' => $stats, 'balances' => $balances, 'unpaid' => $unpaid, 'company_reserve' => $companyReserve];
     }
 
     private static function emptyProject(): array
     {
-        return ['received' => 0, 'refunded' => 0, 'expenses' => 0, 'transfers' => 0, 'shares' => [], 'held' => [], 'settlements' => []];
+        return ['received' => 0, 'refunded' => 0, 'expenses' => 0, 'transfers' => 0, 'company_reserve' => 0, 'shares' => [], 'held' => [], 'settlements' => []];
     }
 
     private static function add(array &$target, array $values): void
@@ -174,7 +197,7 @@ final class Ledger
     }
 
     /** @param FinanceProject|Closure(): FinanceProject $project */
-    public function record(FinanceProject|Closure $project, array $input, User $actor): FinanceMovement
+    public function record(FinanceProject|Closure $project, array $input, User $actor, bool $fullUtilityShare = false): FinanceMovement
     {
         $data = validator($input, [
             'kind' => ['required', Rule::in([FinanceMovement::INCOME, FinanceMovement::EXPENSE, FinanceMovement::REFUND, FinanceMovement::TRANSFER])],
@@ -184,14 +207,17 @@ final class Ledger
             'from_account_id' => ['required_unless:kind,income', 'nullable', 'integer', 'exists:finance_accounts,id'],
             'to_account_id' => ['required_if:kind,income,transfer', 'nullable', 'integer', 'exists:finance_accounts,id', 'different:from_account_id'],
             'handled_by_id' => ['nullable', 'integer', Rule::exists('finance_accounts', 'id')->where('kind', 'member')],
-            'method' => ['required', Rule::in(array_keys(FinanceMovement::METHODS))],
+            'method' => [$fullUtilityShare ? 'nullable' : 'required', Rule::in(array_keys(FinanceMovement::METHODS))],
             'description' => ['nullable', 'string', 'max:500'],
+            'company_percentage' => ['nullable'],
         ])->validate();
         $amount = Euro::parse($data['amount']);
+        $companyRate = $data['kind'] === FinanceMovement::INCOME ? CompanyReserve::basisPoints($data['company_percentage'] ?? null) : 0;
 
-        return $this->transaction(function () use ($project, $data, $amount, $actor) {
+        return $this->transaction(function () use ($project, $data, $amount, $actor, $fullUtilityShare, $companyRate) {
             $project = $project instanceof Closure ? $project() : $project->refresh();
             $kind = $data['kind'];
+            abort_if($fullUtilityShare && (! $project->isUtility() || $kind !== FinanceMovement::TRANSFER), 403);
             if ($project->isSharedExpense() && ! in_array($kind, [FinanceMovement::EXPENSE, FinanceMovement::TRANSFER], true)) {
                 throw ValidationException::withMessages(['kind' => 'Клиентските плащания се записват по конкретен проект.']);
             }
@@ -205,10 +231,10 @@ final class Ledger
             }
 
             if ($project->isUtility() && $kind === FinanceMovement::TRANSFER) {
-                $this->validateBillRepayment($project, $data, $amount);
+                $this->validateBillRepayment($project, $data, $amount, $fullUtilityShare);
             }
 
-            $details = null;
+            $details = $kind === FinanceMovement::INCOME ? ['company_reserve_bps' => $companyRate] : null;
             if ($project->isSharedExpense() && $kind === FinanceMovement::EXPENSE) {
                 $shares = $project->shares ?: FinanceAccount::activeMembers()->pluck('id')->mapWithKeys(fn ($id) => [$id => 1])->all();
                 if ($shares === []) {
@@ -225,7 +251,7 @@ final class Ledger
                 'from_account_id' => $kind === FinanceMovement::INCOME ? null : $data['from_account_id'],
                 'to_account_id' => in_array($kind, [FinanceMovement::INCOME, FinanceMovement::TRANSFER], true) ? $data['to_account_id'] : null,
                 'handled_by_id' => $data['handled_by_id'] ?? null,
-                'method' => $data['method'],
+                'method' => $data['method'] ?? null,
                 'description' => $data['description'] ?? null,
                 'details' => $details,
                 ...self::actorFields($actor),
@@ -253,14 +279,19 @@ final class Ledger
         return $available ?? $net;
     }
 
-    private function validateBillRepayment(FinanceProject $project, array $data, int $amount): void
+    private function validateBillRepayment(FinanceProject $project, array $data, int $amount, bool $fullShare): void
     {
         $date = $data['occurred_on'];
         $today = self::today();
         $limit = $amount;
-        foreach (array_unique([$date, $today]) as $cutoff) {
+        foreach (array_unique([$today, $date]) as $cutoff) {
             $balances = $this->report($cutoff, $cutoff, $project)['balances'];
             $limit = min($limit, $balances[$data['from_account_id']] ?? 0, -($balances[$data['to_account_id']] ?? 0));
+            if ($fullShare && $cutoff === $today && ! in_array([
+                'from' => (int) $data['from_account_id'], 'to' => (int) $data['to_account_id'], 'cents' => $amount,
+            ], self::transfers($balances), true)) {
+                throw ValidationException::withMessages(['amount' => 'Оставащият дял се промени. Проверете актуалното разпределение.']);
+            }
         }
 
         if ($limit < $amount) {
