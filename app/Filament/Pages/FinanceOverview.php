@@ -162,7 +162,9 @@ class FinanceOverview extends Page
             'report' => $report,
             'project' => $project,
             'projectRow' => $project ? $report['projects'][$project->id] : null,
-            'utilityExpense' => $project?->isUtility() ? $project->utilityExpense()->with('fromAccount.teamMember')->first() : null,
+            'utilityExpense' => $project?->isUtility()
+                ? $project->utilityExpense()->with(['fromAccount.teamMember', 'handler.teamMember'])->first()
+                : null,
             'accounts' => FinanceAccount::choices(),
             'transfers' => Ledger::transfers($report['balances']),
             'studioUrl' => FinanceProjectResource::getUrl('edit', ['record' => FinanceProject::studio()]),

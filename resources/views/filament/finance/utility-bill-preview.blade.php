@@ -11,6 +11,8 @@
         @empty
             <p>Няма суми за възстановяване.</p>
         @endforelse
+    @elseif($message)
+        <p class="tt-finance__muted">{{ $message }}</p>
     @else
         <p class="tt-finance__muted">Попълнете сумата, платилия и дяловете, за да видите разпределението.</p>
     @endif

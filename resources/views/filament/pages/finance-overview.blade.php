@@ -12,12 +12,14 @@
 
 <x-filament-panels::page>
     <div class="tt-finance tt-finance__stack">
-        <x-filament::section>
-            <form wire:submit="applyFilters" class="tt-finance__filters">
-                {{ $this->form }}
-                <x-filament::button type="submit" color="gray" wire:target="applyFilters">Покажи</x-filament::button>
-            </form>
-        </x-filament::section>
+        @if(! $project?->isUtility())
+            <x-filament::section>
+                <form wire:submit="applyFilters" class="tt-finance__filters">
+                    {{ $this->form }}
+                    <x-filament::button type="submit" color="gray" wire:target="applyFilters">Покажи</x-filament::button>
+                </form>
+            </x-filament::section>
+        @endif
 
         @if($project)
             <div class="tt-finance__project">
@@ -37,6 +39,9 @@
                     <div><dt>Платил</dt><dd>{{ $utilityExpense->fromAccount->display_name }}</dd></div>
                     <div><dt>Сума</dt><dd>{{ Euro::format($utilityExpense->amount_cents) }}</dd></div>
                     <div><dt>Дата</dt><dd>{{ $utilityExpense->occurred_on->format('d.m.Y') }}</dd></div>
+                    @if($utilityExpense->handler)
+                        <div><dt>Извършил плащането</dt><dd>{{ $utilityExpense->handler->display_name }}</dd></div>
+                    @endif
                 </dl>
                 @if($utilityExpense->voided_at)
                     <p class="tt-finance__notice">Анулирана сметка</p>

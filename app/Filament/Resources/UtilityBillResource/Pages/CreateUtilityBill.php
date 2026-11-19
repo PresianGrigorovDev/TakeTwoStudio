@@ -29,6 +29,11 @@ class CreateUtilityBill extends CreateRecord
         return parent::getCreateFormAction()->label('Запиши сметката');
     }
 
+    protected function getCancelFormAction(): Action
+    {
+        return parent::getCancelFormAction()->label('Отказ');
+    }
+
     protected function getCreatedNotificationTitle(): ?string
     {
         return 'Сметката е записана';

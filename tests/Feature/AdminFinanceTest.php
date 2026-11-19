@@ -189,6 +189,27 @@ class AdminFinanceTest extends TestCase
         ]);
     }
 
+    public function test_a_backdated_refund_cannot_overdraw_the_clients_receipts_before_a_later_payment(): void
+    {
+        $first = $this->member('Симеон');
+        $this->actingAs($admin = User::factory()->create(['is_admin' => true]));
+        $project = app(Projects::class)->save(null, [
+            'order_id' => $this->order()->id, 'title' => 'Сватба', 'participants' => [['account_id' => $first->id]],
+        ]);
+        $this->move($project, $admin, ['to_account_id' => $first->id, 'occurred_on' => '2026-01-03']);
+        $this->move($project, $admin, ['kind' => FinanceMovement::REFUND, 'from_account_id' => $first->id, 'occurred_on' => '2026-02-03']);
+        $this->move($project, $admin, ['to_account_id' => $first->id, 'occurred_on' => '2026-03-03']);
+
+        try {
+            $this->move($project, $admin, ['kind' => FinanceMovement::REFUND, 'from_account_id' => $first->id, 'occurred_on' => '2026-01-05']);
+            $this->fail('Refund would leave a negative customer balance in February.');
+        } catch (ValidationException $exception) {
+            $this->assertArrayHasKey('amount', $exception->errors());
+        }
+
+        $this->assertSame(3, $project->movements()->count());
+    }
+
     public function test_deleting_the_source_keeps_finance_history_and_existing_shares_editable(): void
     {
         $first = $this->member('Симеон');

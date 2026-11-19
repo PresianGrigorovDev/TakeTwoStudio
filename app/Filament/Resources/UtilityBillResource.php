@@ -110,21 +110,26 @@ class UtilityBillResource extends Resource
         $accounts = FinanceAccount::choices();
         $payerName = $accounts[$payer] ?? null;
         $shares = null;
+        $message = null;
+        $splitMode = $get('split_mode');
+        $allocations = $get('allocations') ?? [];
 
         if (filled($get('amount'))) {
             try {
                 $amount = Euro::parse($get('amount'));
                 $shares = Ledger::split($amount, UtilityBills::weights($amount, [
-                    'split_mode' => $get('split_mode'),
+                    'split_mode' => $splitMode,
                     'members' => $get('members'),
-                    'allocations' => $get('allocations'),
+                    'allocations' => $allocations,
                 ]));
-            } catch (ValidationException) {
-                // Show the calculation when all shares are valid. Validation messages follow the form fields.
+            } catch (ValidationException $exception) {
+                if ($splitMode === 'equal' || ($allocations && collect($allocations)->every(fn ($row) => filled($row['account_id'] ?? null) && filled($row['amount'] ?? null)))) {
+                    $message = $exception->getMessage();
+                }
             }
         }
 
-        return view('filament.finance.utility-bill-preview', compact('payer', 'payerName', 'accounts', 'shares'));
+        return view('filament.finance.utility-bill-preview', compact('payer', 'payerName', 'accounts', 'shares', 'message'));
     }
 
     public static function table(Table $table): Table
@@ -152,23 +157,21 @@ class UtilityBillResource extends Resource
 
     private static function outstanding(FinanceProject $record): array
     {
-        if ($record->utilityExpense?->voided_at) {
-            return ['Анулирана'];
-        }
-
         $report = once(function () {
             $today = Ledger::today();
 
             return app(Ledger::class)->report($today, $today);
         });
         $transfers = Ledger::transfers($report['projects'][$record->id]['balance'] ?? []);
+        $voided = (bool) $record->utilityExpense?->voided_at;
         if ($transfers === []) {
-            return ['Уредена'];
+            return [$voided ? 'Анулирана' : 'Уредена'];
         }
 
         $accounts = once(fn () => FinanceAccount::choices());
+        $lines = array_map(fn (array $transfer) => $accounts[$transfer['from']].' → '.$accounts[$transfer['to']].' · '.Euro::format($transfer['cents']), $transfers);
 
-        return array_map(fn (array $transfer) => $accounts[$transfer['from']].' → '.$accounts[$transfer['to']].' · '.Euro::format($transfer['cents']), $transfers);
+        return $voided ? ['Анулирана', ...$lines] : $lines;
     }
 
     public static function balanceUrl(FinanceProject $record): string
