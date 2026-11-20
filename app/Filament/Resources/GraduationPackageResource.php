@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GraduationPackageResource\Pages;
+use App\Filament\Support\PackageShootPlan;
 use App\Models\GraduationPackage;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -73,6 +74,7 @@ class GraduationPackageResource extends Resource
             Toggle::make('is_visible')
                 ->label('Видим')
                 ->default(true),
+            PackageShootPlan::items(),
         ]);
     }
 

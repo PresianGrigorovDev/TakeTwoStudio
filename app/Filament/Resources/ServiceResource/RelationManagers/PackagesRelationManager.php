@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ServiceResource\RelationManagers;
 
+use App\Filament\Support\PackageShootPlan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -46,6 +47,7 @@ class PackagesRelationManager extends RelationManager
                     ->label('Поредност')
                     ->numeric()
                     ->default(0),
+                PackageShootPlan::items(),
             ]);
     }
 

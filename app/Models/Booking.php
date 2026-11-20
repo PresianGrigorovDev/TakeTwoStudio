@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -63,11 +64,17 @@ class Booking extends Model
     protected $casts = [
         'event_date' => 'date',
         'end_date' => 'date',
+        'is_primary_for_order' => 'boolean',
     ];
 
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function orderShoot(): HasOne
+    {
+        return $this->hasOne(OrderShoot::class);
     }
 
     public function teamMembers()
@@ -96,6 +103,16 @@ class Booking extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereIn('status', self::ACTIVE_STATUSES);
+    }
+
+    public function isActive(): bool
+    {
+        return in_array($this->status, self::ACTIVE_STATUSES, true);
+    }
+
+    public function hasHours(): bool
+    {
+        return filled($this->start_time) && filled($this->end_time);
     }
 
     /** Entries touching at least one day of [$from, $to]. */
@@ -128,6 +145,10 @@ class Booking extends Model
      */
     public function occupiedHours(): array
     {
+        if (! $this->hasHours()) {
+            return [];
+        }
+
         [$sh, $sm] = array_map('intval', explode(':', (string) $this->start_time) + [1 => 0]);
         [$eh, $em] = array_map('intval', explode(':', (string) $this->end_time) + [1 => 0]);
         $lastHour = $em > 0 ? $eh : $eh - 1;

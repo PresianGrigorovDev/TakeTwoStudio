@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CommercialPackageResource\Pages;
+use App\Filament\Support\PackageShootPlan;
 use App\Models\CommercialPackage;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
@@ -73,6 +74,7 @@ class CommercialPackageResource extends Resource
             Toggle::make('is_visible')
                 ->label('Видим')
                 ->default(true),
+            PackageShootPlan::items(),
         ]);
     }
 

@@ -45,6 +45,7 @@ class AdminActivityObserver
         Models\LegalPage::class => 'Правна страница',
         Models\NavigationItem::class => 'Елемент от менюто',
         Models\Order::class => 'Поръчка',
+        Models\OrderShoot::class => 'Заснемане по поръчка',
         Models\PageContent::class => 'Съдържание на страница',
         Models\Partner::class => 'Партньор',
         Models\PortfolioCategory::class => 'Категория в портфолиото',
@@ -92,6 +93,14 @@ class AdminActivityObserver
             $description = $model->kind === Models\FinanceMovement::EXPENSE && $model->project?->isUtility()
                 ? 'Изтрита е битова сметка' : 'Анулирано е финансово движение';
             $this->changes($model, $changes, $description);
+
+            return;
+        }
+
+        if ($model instanceof Models\OrderShoot && isset($changes['shot_on'])) {
+            $this->changes($model, $changes, $model->shot_on
+                ? 'Заснемането е отбелязано като заснето'
+                : 'Заснемането е върнато като оставащо');
 
             return;
         }
@@ -163,13 +172,13 @@ class AdminActivityObserver
         }
 
         $private = in_array($type, [
-            Models\Booking::class, Models\Order::class, Models\Inquiry::class, Models\GameEvent::class,
+            Models\Booking::class, Models\Order::class, Models\OrderShoot::class, Models\Inquiry::class, Models\GameEvent::class,
         ], true);
 
         if ($action === 'updated') {
             foreach (array_keys($changes) as $field) {
                 $redact = in_array($field, ['address', 'egn', 'email', 'phone', 'setting_value', 'void_reason'], true)
-                    || ($private && ! in_array($field, ['status', 'kind', 'event_date', 'end_date', 'start_time', 'end_time', 'team_member_id', 'order_id', 'redeemed_at'], true));
+                    || ($private && ! in_array($field, ['status', 'kind', 'event_date', 'end_date', 'start_time', 'end_time', 'team_member_id', 'order_id', 'redeemed_at', 'booking_id', 'shot_on', 'shot_by_id'], true));
 
                 if ($redact) {
                     $changes[$field] = ['old' => 'Скрита стойност', 'new' => 'Скрита стойност'];

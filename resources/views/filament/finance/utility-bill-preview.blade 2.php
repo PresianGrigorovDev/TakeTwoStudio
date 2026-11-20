@@ -1,0 +1,19 @@
+<div class="tt-finance" role="status" aria-live="polite">
+    @if ($payerName)
+        <p class="tt-finance__muted">Платил · {{ $payerName }}</p>
+    @endif
+    @if ($transfers !== null)
+        @forelse ($transfers as $transfer)
+            <div class="tt-finance__row">
+                <span>{{ $accounts[$transfer['from']] }} → {{ $accounts[$transfer['to']] }}</span>
+                <strong>{{ \App\Support\Finance\Euro::format($transfer['cents']) }}</strong>
+            </div>
+        @empty
+            <p>Няма суми за възстановяване.</p>
+        @endforelse
+    @elseif($message)
+        <p class="tt-finance__muted">{{ $message }}</p>
+    @else
+        <p class="tt-finance__muted">Попълнете сумата, платилия и дяловете, за да видите разпределението.</p>
+    @endif
+</div>

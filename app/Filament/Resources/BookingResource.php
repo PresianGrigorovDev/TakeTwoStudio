@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Http\Controllers\BookingController;
 use App\Models\Booking;
+use App\Models\Order;
+use App\Support\OrderCalendar;
 use App\Support\TeamCalendar;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -13,6 +16,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 
 /**
@@ -46,6 +51,7 @@ class BookingResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $fromShoot = fn ($livewire) => $livewire instanceof Pages\CreateBooking && $livewire->orderShootId !== null;
         $isClient = fn (Get $get) => Booking::isClientKind($get('kind'));
 
         return $form->schema([
@@ -53,14 +59,45 @@ class BookingResource extends Resource
                 ->schema([
                     Forms\Components\ToggleButtons::make('kind')
                         ->label('Тип')
-                        ->options(Booking::KINDS)
+                        ->options(fn (?Booking $record) => $record?->orderShoot
+                            ? Arr::only(Booking::KINDS, Booking::CLIENT_KINDS)
+                            : Booking::KINDS)
                         ->colors([Booking::KIND_CLIENT => 'primary', Booking::KIND_SESSION => 'info', Booking::KIND_BUSY => 'gray', Booking::KIND_CLOSED => 'danger'])
                         ->icons([Booking::KIND_CLIENT => 'heroicon-o-briefcase', Booking::KIND_SESSION => 'heroicon-o-camera', Booking::KIND_BUSY => 'heroicon-o-user-minus', Booking::KIND_CLOSED => 'heroicon-o-no-symbol'])
                         ->default(fn () => in_array(request()->query('kind'), array_keys(Booking::KINDS), true) ? request()->query('kind') : Booking::KIND_CLIENT)
+                        ->hidden(fn (?Booking $record, $livewire) => $record?->is_primary_for_order || $fromShoot($livewire))
                         ->inline()
                         ->live()
                         ->required()
                         ->columnSpanFull(),
+                    Forms\Components\Select::make('order_id')
+                        ->label('Свързана поръчка')
+                        ->relationship('order', 'name', fn (Builder $query, ?Booking $record) => $query
+                            ->when($record?->orderShoot?->order_id, fn (Builder $query, int $orderId) => $query->whereKey($orderId)))
+                        ->disabled(fn (?Booking $record, $livewire) => $record?->is_primary_for_order || $fromShoot($livewire))
+                        ->visible($isClient)
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(function ($state, Get $get, Forms\Set $set): void {
+                            $id = filter_var($state, FILTER_VALIDATE_INT);
+                            $order = $id ? Order::find($id) : null;
+                            if (! $order) {
+                                return;
+                            }
+
+                            foreach (['name', 'phone', 'email', 'service_type'] as $field) {
+                                if (blank($get($field))) {
+                                    $set($field, $order->{$field});
+                                }
+                            }
+                            if (blank($get('event_date')) && ! $order->booking?->hasHours()) {
+                                $set('event_date', $order->event_date?->toDateString());
+                            }
+                            if (blank($get('teamMembers'))) {
+                                $set('teamMembers', $order->teamMembers()->where('team_members.is_active', true)
+                                    ->pluck('team_members.id')->map(fn ($id) => (string) $id)->all());
+                            }
+                        }),
                     Forms\Components\TextInput::make('name')
                         ->label(fn (Get $get) => $isClient($get) ? 'Клиент / заглавие' : 'Причина')
                         ->placeholder(fn (Get $get) => match ($get('kind')) {
@@ -103,24 +140,7 @@ class BookingResource extends Resource
                         ->displayFormat('d.m.Y')
                         ->afterOrEqual('event_date')
                         ->live(),
-                    Forms\Components\TimePicker::make('start_time')
-                        ->label('От')
-                        ->seconds(false)
-                        ->default(fn () => preg_match('/^\d{2}:\d{2}$/', (string) request()->query('start')) ? request()->query('start') : sprintf('%02d:00', BookingController::getWorkStart()))
-                        ->required()
-                        ->live(onBlur: true),
-                    Forms\Components\TimePicker::make('end_time')
-                        ->label('До')
-                        ->seconds(false)
-                        ->default(fn () => preg_match('/^\d{2}:\d{2}$/', (string) request()->query('end')) ? request()->query('end') : sprintf('%02d:00', BookingController::getWorkEnd()))
-                        ->rule(fn (Get $get) => function (string $attribute, $value, \Closure $fail) use ($get) {
-                            // "HH:MM" strings compare correctly as text.
-                            if ($get('start_time') && substr((string) $value, 0, 5) <= substr((string) $get('start_time'), 0, 5)) {
-                                $fail('Крайният час трябва да е след началния.');
-                            }
-                        })
-                        ->required()
-                        ->live(onBlur: true),
+                    ...self::timeFields(fn (?Booking $record) => ! $record?->is_primary_for_order, calendarDefaults: true),
                     Forms\Components\TextInput::make('location')
                         ->label('Локация')
                         ->placeholder('Ресторант „Морско конче“, Варна')
@@ -140,7 +160,11 @@ class BookingResource extends Resource
                 ->schema([
                     Forms\Components\Select::make('service_type')
                         ->label('Тип услуга')
-                        ->options(self::SERVICE_TYPES),
+                        ->options(function (Get $get): array {
+                            $service = $get('service_type');
+
+                            return self::SERVICE_TYPES + (is_string($service) && filled($service) ? [$service => $service] : []);
+                        }),
                     Forms\Components\Select::make('status')
                         ->label('Статус')
                         ->options(self::STATUSES)
@@ -154,11 +178,6 @@ class BookingResource extends Resource
                         ->label('Имейл')
                         ->email()
                         ->maxLength(255),
-                    Forms\Components\Select::make('order_id')
-                        ->label('Свързана поръчка')
-                        ->relationship('order', 'name')
-                        ->searchable()
-                        ->preload(),
                     Forms\Components\Textarea::make('message')
                         ->label('Съобщение от клиента')
                         ->columnSpanFull(),
@@ -170,6 +189,30 @@ class BookingResource extends Resource
                 ->label('Вътрешни бележки')
                 ->columnSpanFull(),
         ]);
+    }
+
+    public static function timeFields(bool|Closure $required = false, bool $calendarDefaults = false): array
+    {
+        return [
+            Forms\Components\TimePicker::make('start_time')->label('Начален час')->seconds(false)
+                ->default($calendarDefaults ? fn () => self::defaultTime('start', BookingController::getWorkStart()) : null)
+                ->required($required)->requiredWith('end_time')->live(onBlur: true),
+            Forms\Components\TimePicker::make('end_time')->label('Краен час')->seconds(false)
+                ->default($calendarDefaults ? fn () => self::defaultTime('end', BookingController::getWorkEnd()) : null)
+                ->required($required)->requiredWith('start_time')->live(onBlur: true)
+                ->rule(fn (Get $get) => function (string $attribute, $value, Closure $fail) use ($get) {
+                    if (filled($get('start_time')) && self::endTime((string) $value) <= substr((string) $get('start_time'), 0, 5)) {
+                        $fail('Крайният час трябва да е след началния.');
+                    }
+                }),
+        ];
+    }
+
+    private static function defaultTime(string $parameter, int $hour): string
+    {
+        $time = request()->query($parameter);
+
+        return is_string($time) && preg_match('/^\d{2}:\d{2}$/', $time) ? $time : sprintf('%02d:00', $hour);
     }
 
     /**
@@ -184,16 +227,27 @@ class BookingResource extends Resource
                 $data[$field] = null;
             }
         }
-        foreach (['start_time', 'end_time'] as $field) {
-            if (! empty($data[$field])) {
-                $data[$field] = substr((string) $data[$field], 0, 5);
-            }
-        }
         if (! empty($data['end_date']) && substr((string) $data['end_date'], 0, 10) <= substr((string) $data['event_date'], 0, 10)) {
             $data['end_date'] = null;
         }
 
+        return self::normalizeTimes($data);
+    }
+
+    public static function normalizeTimes(array $data): array
+    {
+        $data['start_time'] = filled($data['start_time'] ?? null) ? substr((string) $data['start_time'], 0, 5) : null;
+        $data['end_time'] = filled($data['end_time'] ?? null) ? self::endTime((string) $data['end_time']) : null;
+
         return $data;
+    }
+
+    private static function endTime(string $value): string
+    {
+        // The time input displays the last boundary of the day as 00:00.
+        $time = substr($value, 0, 5);
+
+        return $time === '00:00' ? '24:00' : $time;
     }
 
     /** Notification after saving when somebody is double-booked (saving is still allowed). */
@@ -202,6 +256,9 @@ class BookingResource extends Resource
         if ($record->kind === Booking::KIND_CLOSED) {
             $record->teamMembers()->detach();
 
+            return;
+        }
+        if (! $record->isActive() || ! $record->hasHours()) {
             return;
         }
 
@@ -257,7 +314,7 @@ class BookingResource extends Resource
         $date = $get('event_date');
         // Time pickers may hold "13:30:00"; entries are stored as "HH:MM".
         $start = $get('start_time') ? substr((string) $get('start_time'), 0, 5) : null;
-        $end = $get('end_time') ? substr((string) $get('end_time'), 0, 5) : null;
+        $end = $get('end_time') ? self::endTime((string) $get('end_time')) : null;
 
         if (! $date || ! $start || ! $end || $start >= $end || $get('kind') === Booking::KIND_CLOSED) {
             return null;
@@ -291,6 +348,7 @@ class BookingResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Час')
+                    ->placeholder('Часът предстои')
                     ->formatStateUsing(fn ($state, Booking $record) => $record->start_time.' – '.$record->end_time),
                 Tables\Columns\TextColumn::make('kind')
                     ->label('Тип')
@@ -371,11 +429,25 @@ class BookingResource extends Resource
                     ->modalDescription('Сигурни ли сте, че искате да потвърдите тази резервация? Ще бъде изпратен имейл до клиента.')
                     ->visible(fn (Booking $record) => $record->status === 'pending')
                     ->action(function (Booking $record) {
-                        $record->update(['status' => 'confirmed']);
-                        if ($record->email) {
+                        $confirmed = DB::transaction(function () use ($record) {
+                            if ($record->order_id) {
+                                Order::query()->lockForUpdate()->findOrFail($record->order_id);
+                            }
+                            $booking = Booking::query()->lockForUpdate()->findOrFail($record->id);
+                            if ($booking->status !== 'pending') {
+                                return null;
+                            }
+
+                            $booking->update(['status' => 'confirmed']);
+                            OrderCalendar::fromBooking($booking);
+
+                            return $booking;
+                        });
+
+                        if ($confirmed?->email) {
                             try {
-                                \Illuminate\Support\Facades\Mail::to($record->email)
-                                    ->send(new \App\Mail\BookingConfirmedNotification($record));
+                                \Illuminate\Support\Facades\Mail::to($confirmed->email)
+                                    ->send(new \App\Mail\BookingConfirmedNotification($confirmed));
                             } catch (\Exception $e) {
                                 \Illuminate\Support\Facades\Log::error("Failed to send booking confirmation: " . $e->getMessage());
                             }

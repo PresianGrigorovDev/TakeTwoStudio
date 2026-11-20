@@ -23,7 +23,7 @@ final class CalendarExport
         return 'https://calendar.google.com/calendar/render?'.http_build_query([
             'action' => 'TEMPLATE',
             'text' => self::title($booking),
-            'dates' => $start->format('Ymd\THis\Z').'/'.$end->format('Ymd\THis\Z'),
+            'dates' => $start.'/'.$end,
             'details' => self::details($booking),
             'location' => (string) $booking->location,
         ], '', '&', PHP_QUERY_RFC3986);
@@ -32,6 +32,7 @@ final class CalendarExport
     public static function ics(Booking $booking): string
     {
         [$start, $end] = self::range($booking);
+        $dateType = $booking->hasHours() ? '' : ';VALUE=DATE';
 
         $lines = [
             'BEGIN:VCALENDAR',
@@ -42,8 +43,8 @@ final class CalendarExport
             'BEGIN:VEVENT',
             'UID:booking-'.$booking->id.'@taketwostudio1603.com',
             'DTSTAMP:'.now()->utc()->format('Ymd\THis\Z'),
-            'DTSTART:'.$start->format('Ymd\THis\Z'),
-            'DTEND:'.$end->format('Ymd\THis\Z'),
+            'DTSTART'.$dateType.':'.$start,
+            'DTEND'.$dateType.':'.$end,
             'SUMMARY:'.self::escape(self::title($booking)),
             'DESCRIPTION:'.self::escape(self::details($booking)),
         ];
@@ -67,10 +68,14 @@ final class CalendarExport
     /** Start on the first day, end on the last day (multi-day entries become one event). */
     private static function range(Booking $booking): array
     {
+        if (! $booking->hasHours()) {
+            return [$booking->event_date->format('Ymd'), $booking->last_date->copy()->addDay()->format('Ymd')];
+        }
+
         $start = Carbon::parse($booking->event_date->toDateString().' '.$booking->start_time, self::TIMEZONE)->utc();
         $end = Carbon::parse($booking->last_date->toDateString().' '.$booking->end_time, self::TIMEZONE)->utc();
 
-        return [$start, $end];
+        return [$start->format('Ymd\THis\Z'), $end->format('Ymd\THis\Z')];
     }
 
     private static function title(Booking $booking): string
