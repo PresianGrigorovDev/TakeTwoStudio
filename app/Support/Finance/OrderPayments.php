@@ -6,6 +6,7 @@ use App\Models\FinanceMovement;
 use App\Models\FinanceProject;
 use App\Models\Order;
 use App\Models\User;
+use App\Support\OrderCalendar;
 use Closure;
 use Illuminate\Validation\ValidationException;
 
@@ -19,13 +20,16 @@ final class OrderPayments
         abort_unless($actor->isAdmin(), 403);
 
         return $this->ledger->record(function () use ($source, $accept): FinanceProject {
-            $order = $source instanceof Closure ? $source() : $source->refresh();
+            $order = $source instanceof Closure ? $source() : Order::query()->lockForUpdate()->findOrFail($source->id);
             if ($order->status === 'cancelled') {
                 throw ValidationException::withMessages(['amount' => 'Поръчката е отказана.']);
             }
 
             if ($accept && in_array($order->status, ['new', 'contacted'], true)) {
                 $order->update(['status' => 'accepted']);
+            }
+            if ($source instanceof Closure || $order->wasChanged('status')) {
+                OrderCalendar::fromOrder($order);
             }
 
             $project = FinanceProject::forOrder($order);

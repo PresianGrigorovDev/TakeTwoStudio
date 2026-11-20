@@ -231,7 +231,11 @@ class TeamCalendarWidget extends Widget
                     'kind' => $e->kind,
                     'title' => $e->name,
                     'location' => $e->location,
-                    'time' => [$e->start_time, $e->end_time] === $fullDay ? 'цял ден' : $e->start_time.'–'.$e->end_time,
+                    'time' => match (true) {
+                        ! $e->hasHours() => 'Часът предстои',
+                        [$e->start_time, $e->end_time] === $fullDay => 'цял ден',
+                        default => $e->start_time.'–'.$e->end_time,
+                    },
                     'pending' => $e->status === 'pending',
                     'selected' => $this->selectedBooking === $e->id && $date === $e->event_date->toDateString(),
                     'multiDay' => $e->end_date && $e->end_date->gt($e->event_date),

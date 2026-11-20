@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use App\Models\PromoCode;
 use App\Support\GameVoucher;
+use App\Support\OrderCalendar;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -85,7 +87,7 @@ class OrderController extends Controller
         }
 
         // Save to Database
-        $order = \App\Models\Order::create([
+        $orderData = [
             'name'            => $validated['name'],
             'phone'           => $validated['phone'],
             'email'           => $validated['email'] ?? null,
@@ -94,30 +96,19 @@ class OrderController extends Controller
             'details'         => $validated['details'],
             'status'          => 'new',
             'event_date'      => $eventDate,
-            'start_time'      => $startTime,
-            'end_time'        => $endTime,
+            'start_time'      => $startTime ?: ($eventDate ? sprintf('%02d:00', BookingController::getWorkStart()) : null),
+            'end_time'        => $endTime ?: ($eventDate ? sprintf('%02d:00', BookingController::getWorkEnd()) : null),
             'promo_code_id'   => $promoCodeId,
             'promo_code'      => $promoCodeStr,
             'discount_amount' => $discountAmount,
-        ]);
+        ];
 
-        // Auto-create a booking if we have an event date
-        if ($eventDate) {
-            $workStart = BookingController::WORK_START;
-            $workEnd   = BookingController::WORK_END;
+        $order = DB::transaction(function () use ($orderData) {
+            $order = \App\Models\Order::create($orderData);
+            OrderCalendar::fromOrder($order);
 
-            \App\Models\Booking::create([
-                'name'         => $validated['name'],
-                'phone'        => $validated['phone'],
-                'event_date'   => $eventDate,
-                'start_time'   => $startTime ?: str_pad($workStart, 2, '0', STR_PAD_LEFT) . ':00',
-                'end_time'     => $endTime ?: str_pad($workEnd, 2, '0', STR_PAD_LEFT) . ':00',
-                'service_type' => $typeOfService,
-                'message'      => $validated['details'],
-                'status'       => 'pending',
-                'order_id'     => $order->id,
-            ]);
-        }
+            return $order;
+        });
 
         Log::info("New Order: $typeOfService", $validated);
 

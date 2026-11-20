@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\OrderResource\Pages;
 
+use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\FinanceMovementResource;
 use App\Filament\Resources\OrderResource;
 use App\Filament\Support\OrderPaymentAction;
 use App\Models\FinanceProject;
 use App\Models\Order;
 use App\Support\Finance\OrderPayments;
+use App\Support\OrderCalendar;
 use Filament\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -17,6 +19,18 @@ use Illuminate\Validation\ValidationException;
 class CreateOrder extends CreateRecord
 {
     protected static string $resource = OrderResource::class;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return BookingResource::normalizeTimes($data);
+    }
+
+    protected function afterCreate(): void
+    {
+        if ($booking = OrderCalendar::fromOrder($this->record)) {
+            BookingResource::notifyConflicts($booking);
+        }
+    }
 
     protected function getFormActions(): array
     {
@@ -40,7 +54,7 @@ class CreateOrder extends CreateRecord
             })
             ->action(function (array $data, Action $action) {
                 $this->authorizeAccess();
-                $orderData = $this->form->getState();
+                $orderData = $this->mutateFormDataBeforeCreate($this->form->getState());
 
                 try {
                     $payment = app(OrderPayments::class)->record(function () use ($orderData): Order {

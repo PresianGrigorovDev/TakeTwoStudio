@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Order;
 use App\Models\OrderShoot;
 use App\Models\PromPackage;
+use App\Support\OrderCalendar;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -47,7 +48,8 @@ class May2026PromClassesSeeder extends Seeder
             ],
         ];
 
-        DB::transaction(function () use ($plans): void {
+        $linkedCalendar = Schema::hasColumn('bookings', 'is_primary_for_order');
+        DB::transaction(function () use ($plans, $linkedCalendar): void {
             $catalog = PromPackage::orderBy('id')->lockForUpdate()->get()
                 ->groupBy(fn (PromPackage $package) => self::packageType($package->name));
 
@@ -69,7 +71,7 @@ class May2026PromClassesSeeder extends Seeder
             }
 
             foreach (self::CLASSES as [$name, $date, $type]) {
-                $matches = Order::where('name', $name)->where('event_date', $date)->lockForUpdate()->get();
+                $matches = Order::where('name', $name)->whereDate('event_date', $date)->lockForUpdate()->get();
                 if ($matches->count() > 1) {
                     throw new RuntimeException("Има повече от една поръчка за „{$name}“ на {$date}.");
                 }
@@ -96,6 +98,9 @@ class May2026PromClassesSeeder extends Seeder
 
                 if (! $order->shoots()->exists()) {
                     $order->shoots()->createMany($package->shoot_plan);
+                }
+                if ($linkedCalendar) {
+                    OrderCalendar::fromOrder($order);
                 }
             }
         });

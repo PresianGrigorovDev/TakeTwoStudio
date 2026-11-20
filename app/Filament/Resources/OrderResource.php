@@ -7,9 +7,9 @@ use App\Filament\Support\OrderPaymentAction;
 use App\Models\Booking;
 use App\Models\Order;
 use App\Models\OrderShoot;
+use App\Support\OrderCalendar;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -49,7 +49,8 @@ class OrderResource extends Resource
                 Forms\Components\TextInput::make('phone')
                     ->label('Телефон')
                     ->tel()
-                    ->required()
+                    ->required(fn (?Order $record) => $record === null)
+                    ->dehydrateStateUsing(fn (?string $state) => $state ?? '')
                     ->maxLength(20),
                 Forms\Components\TextInput::make('email')
                     ->label('Имейл')
@@ -58,7 +59,7 @@ class OrderResource extends Resource
                 Forms\Components\Select::make('service_type')
                     ->label('Тип услуга')
                     ->placeholder('Изберете услуга')
-                    ->options([
+                    ->options(fn (Forms\Get $get) => [
                         'Сватба' => 'Сватба',
                         'Абитуриентски Бал' => 'Абитуриентски Бал',
                         'Свето Кръщение' => 'Свето Кръщение',
@@ -66,29 +67,13 @@ class OrderResource extends Resource
                         'Реклама и Бизнес' => 'Реклама и Бизнес',
                         'Общо запитване' => 'Общо запитване',
                         'Поръчка от калкулатор' => 'Поръчка от калкулатор',
-                    ])
+                    ] + (is_string($get('service_type')) ? [$get('service_type') => $get('service_type')] : []))
                     ->required(),
                 Forms\Components\DatePicker::make('event_date')
-                    ->label('Дата на събитието')
+                    ->label('Дата на основния ангажимент')
+                    ->requiredWith(['start_time', 'end_time'])
                     ->live(),
-                Forms\Components\Select::make('start_time')
-                    ->label('Начален час')
-                    ->options(fn () => array_combine(
-                        \App\Http\Controllers\BookingController::getWorkingHours(),
-                        \App\Http\Controllers\BookingController::getWorkingHours()
-                    ))
-                    ->live(),
-                Forms\Components\Select::make('end_time')
-                    ->label('Краен час')
-                    ->options(function () {
-                        $hours = [];
-                        for ($h = \App\Http\Controllers\BookingController::getWorkStart() + 1; $h <= \App\Http\Controllers\BookingController::getWorkEnd(); $h++) {
-                            $val = str_pad($h, 2, '0', STR_PAD_LEFT) . ':00';
-                            $hours[$val] = $val;
-                        }
-                        return $hours;
-                    })
-                    ->live(),
+                ...BookingResource::timeFields(),
                 Forms\Components\TextInput::make('price')
                     ->label('Цена (€)')
                     ->numeric()
@@ -105,7 +90,7 @@ class OrderResource extends Resource
                     ->required()
                     ->default('new'),
                 Forms\Components\Select::make('teamMembers')
-                    ->label('Назначени фотографи')
+                    ->label('Екип за основния ангажимент')
                     ->multiple()
                     ->relationship('teamMembers', 'name')
                     ->searchable()
@@ -150,12 +135,17 @@ class OrderResource extends Resource
 
     private static function getBusyMemberIds(string $eventDate, string $startTime, string $endTime, ?Order $record): \Illuminate\Support\Collection
     {
-        // People already in the team calendar at that time (other than this order's own entry).
+        $bookingId = $record?->booking?->id;
+        ['start_time' => $startTime, 'end_time' => $endTime] = BookingResource::normalizeTimes([
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
+
         $busyFromCalendar = Booking::active()
             ->overlappingDays($eventDate, $eventDate)
             ->where('start_time', '<', $endTime)
             ->where('end_time', '>', $startTime)
-            ->when($record, fn ($q) => $q->where(fn ($q) => $q->whereNull('order_id')->orWhere('order_id', '!=', $record->id)))
+            ->when($bookingId, fn ($q) => $q->whereKeyNot($bookingId))
             ->with('teamMembers')
             ->get()
             ->flatMap(fn (Booking $booking) => $booking->teamMembers->modelKeys());
@@ -177,7 +167,7 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->withCount([
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('booking')->withCount([
                 'shoots',
                 'shoots as remaining_sessions_count' => fn (Builder $shoots) => $shoots->remaining()->where('kind', OrderShoot::SESSION),
                 'shoots as remaining_events_count' => fn (Builder $shoots) => $shoots->remaining()->where('kind', OrderShoot::EVENT),
@@ -272,41 +262,32 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('calendar')->label('Ангажимент')->icon('heroicon-o-calendar-days')
+                    ->color('gray')
+                    ->visible(fn (Order $record) => self::bookingUrl($record) !== null)
+                    ->url(self::bookingUrl(...)),
                 OrderPaymentAction::onOrder(Tables\Actions\Action::make('recordPayment')),
                 Tables\Actions\Action::make('confirm_booking')
-                    ->label('Запиши в календара')
+                    ->label('Приеми поръчката')
                     ->icon('heroicon-o-calendar-days')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalHeading('Запиши в календара')
-                    ->modalDescription('Ще бъде създадена резервация в календара с данните от поръчката.')
+                    ->modalHeading('Приеми поръчката')
+                    ->databaseTransaction()
                     ->visible(fn (Order $record) => $record->event_date
-                        && $record->start_time
-                        && $record->end_time
-                        && !$record->booking()->exists())
-                    ->action(function (Order $record) {
-                        // One calendar entry for the whole order, with every assigned person.
-                        $booking = Booking::create([
-                            'kind' => Booking::KIND_CLIENT,
-                            'name' => $record->name,
-                            'phone' => $record->phone,
-                            'email' => $record->email,
-                            'event_date' => $record->event_date,
-                            'start_time' => $record->start_time,
-                            'end_time' => $record->end_time,
-                            'service_type' => $record->service_type,
-                            'message' => $record->details,
-                            'status' => 'confirmed',
-                            'order_id' => $record->id,
-                        ]);
-                        $booking->teamMembers()->sync($record->teamMembers()->pluck('team_members.id'));
-
+                        && in_array($record->status, ['new', 'contacted'], true))
+                    ->successNotificationTitle('Поръчката е приета')
+                    ->action(function (Order $record, Tables\Actions\Action $action) {
+                        $record = Order::query()->lockForUpdate()->findOrFail($record->id);
+                        if (! in_array($record->status, ['new', 'contacted'], true)) {
+                            return;
+                        }
                         $record->update(['status' => 'accepted']);
+                        if ($booking = OrderCalendar::fromOrder($record)) {
+                            BookingResource::notifyConflicts($booking);
+                        }
 
-                        Notification::make()
-                            ->title('Резервацията е записана в календара')
-                            ->success()
-                            ->send();
+                        $action->success();
                     }),
             ])
             ->bulkActions([
@@ -314,6 +295,15 @@ class OrderResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function bookingUrl(Order $order): ?string
+    {
+        $booking = $order->booking;
+
+        return $booking && BookingResource::canEdit($booking)
+            ? BookingResource::getUrl('edit', ['record' => $booking, 'from' => 'order'])
+            : null;
     }
 
     public static function getRelations(): array

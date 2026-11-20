@@ -64,6 +64,7 @@ class Booking extends Model
     protected $casts = [
         'event_date' => 'date',
         'end_date' => 'date',
+        'is_primary_for_order' => 'boolean',
     ];
 
     public function order()
@@ -109,6 +110,11 @@ class Booking extends Model
         return in_array($this->status, self::ACTIVE_STATUSES, true);
     }
 
+    public function hasHours(): bool
+    {
+        return filled($this->start_time) && filled($this->end_time);
+    }
+
     /** Entries touching at least one day of [$from, $to]. */
     public function scopeOverlappingDays(Builder $query, string $from, string $to): Builder
     {
@@ -139,6 +145,10 @@ class Booking extends Model
      */
     public function occupiedHours(): array
     {
+        if (! $this->hasHours()) {
+            return [];
+        }
+
         [$sh, $sm] = array_map('intval', explode(':', (string) $this->start_time) + [1 => 0]);
         [$eh, $em] = array_map('intval', explode(':', (string) $this->end_time) + [1 => 0]);
         $lastHour = $em > 0 ? $eh : $eh - 1;

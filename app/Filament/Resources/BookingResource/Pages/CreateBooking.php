@@ -5,7 +5,9 @@ namespace App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\BookingResource\Pages\Concerns\ReturnsToCalendar;
 use App\Filament\Resources\OrderResource;
+use App\Models\Order;
 use App\Models\OrderShoot;
+use App\Support\OrderCalendar;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
@@ -72,6 +74,8 @@ class CreateBooking extends CreateRecord
             $this->shootToSchedule = $shoot;
             $data['kind'] = $shoot->bookingKind();
             $data['order_id'] = $shoot->order_id;
+        } elseif (! empty($data['order_id'])) {
+            Order::query()->lockForUpdate()->findOrFail($data['order_id']);
         }
 
         return BookingResource::normalizeData($data);
@@ -80,6 +84,7 @@ class CreateBooking extends CreateRecord
     protected function afterCreate(): void
     {
         $this->shootToSchedule?->update(['booking_id' => $this->record->id]);
+        OrderCalendar::fromBooking($this->record, mayBecomePrimary: $this->shootToSchedule === null);
         BookingResource::notifyConflicts($this->record);
     }
 
